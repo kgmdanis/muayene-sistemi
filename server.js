@@ -6,7 +6,7 @@ const path = require('path');
 const xlsx = require('xlsx');
 const PDFDocument = require('pdfkit');
 const emailService = require('./emailService');
-const auth = require('./auth');
+const auth = require('./auth-prisma');
 const { generatePDF } = require('./pdfGenerator2');
 const { generateSertifikaPDF } = require('./sertifikaPdfGenerator');
 
@@ -88,13 +88,14 @@ app.get('/login', (req, res) => {
 // Login
 app.post('/api/auth/login', async (req, res) => {
   console.log('POST /api/auth/login - Giriş denemesi');
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
+  const loginEmail = email || username;
   
   if (!username || !password) {
     return res.status(400).json({ error: 'Kullanıcı adı ve şifre gereklidir' });
   }
   
-  const result = await auth.login(username, password);
+  const result = await auth.login(loginEmail, password);
   
   if (result.success) {
     res.json(result);
