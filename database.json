@@ -1,0 +1,4657 @@
+{
+  "firmaBilgi": {
+    "ad": "ÖNDER MUAYENE",
+    "unvan": "ÖNDER MUAYENE TEST VE ÖLÇÜM LABORATUVARI MÜH. İNŞ.SAN. VE TİC. LTD. ŞTİ.",
+    "adres": "Fetih Mahallesi Aslanlı Kışla Caddesi No:144S/1 Karatay/KONYA",
+    "telefon": "0332 300 00 20",
+    "fax": "0332 300 00 20",
+    "email": "info@ondermuayene.com.tr",
+    "web": "www.ondermuayene.com.tr",
+    "vergiDairesi": "Karatay V.D.",
+    "vergiNo": "1234567890",
+    "logo": "/images/logo.png",
+    "akreditasyon": {
+      "kurum": "TÜRKAK",
+      "standart": "TS EN ISO/IEC 17025",
+      "belgeNo": "AB-0000-T",
+      "logo": "/images/turkak-logo.png"
+    },
+    "dokuman": {
+      "kod": "FRM.01",
+      "ad": "Test ve Ölçüm Talep Teklif Formu",
+      "revizyon": "03",
+      "tarih": "01.01.2025"
+    }
+  },
+  "musteriler": [
+    {
+      "id": 1,
+      "unvan": "kgm danışmanlık",
+      "vergiNo": "36197262310",
+      "adres": "ulubatlı hasan mahallesi kafes sokak 11/11",
+      "telefon": "05543791632",
+      "email": "kgmdanismanlik@gmail.com",
+      "yetkiliKisi": "ABDULKADİR IŞIK",
+      "notlar": "",
+      "olusturmaTarihi": "2025-10-26T13:11:41.513Z"
+    },
+    {
+      "id": 2,
+      "unvan": "TEKNOKAL KALİBRASYON",
+      "vergiNo": "8360726264",
+      "adres": "KTM PLAZA",
+      "telefon": "05323176522",
+      "email": "",
+      "yetkiliKisi": "",
+      "notlar": "",
+      "olusturmaTarihi": "2025-10-28T10:26:12.465Z"
+    }
+  ],
+  "teklifler": [
+    {
+      "id": 1,
+      "teklifNo": "2025-001",
+      "musteriId": 2,
+      "teklifTarihi": "2025-10-28",
+      "gecerlilik": 14,
+      "konu": "Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi",
+      "hizmetler": [
+        {
+          "id": 25,
+          "ad": "Elektrik Topraklama,Cihaz Gövde Topaklama Ölçümü",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 2500,
+          "miktar": 1,
+          "toplam": 2500,
+          "kategori": "ELEKTRİKSEL KONTROLLER"
+        },
+        {
+          "id": 37,
+          "ad": "Basınçlı Kap",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 400,
+          "miktar": 1,
+          "toplam": 400,
+          "kategori": "BASINÇLI KAPLAR KONTROLLERİ"
+        }
+      ],
+      "araToplam": 2900,
+      "kdv": 580,
+      "genelToplam": 3480,
+      "durum": "Onaylandı",
+      "olusturmaTarihi": "2025-10-28T13:57:11.248Z",
+      "guncellemeTarihi": "2025-10-28T13:57:17.129Z",
+      "isEmriId": 1761659837129
+    }
+  ],
+  "hizmetler": [
+    {
+      "kategori": "İŞ HİJYENİ ÖLÇÜM  (ORTAM ÖLÇÜM)",
+      "items": [
+        {
+          "id": 16,
+          "ad": "İç Ortam Toz  Ölçümü",
+          "metod": "MDHS 14/3 - Grav. metod ile toplam toz tayini",
+          "birim": "Nokta",
+          "fiyat": 500
+        },
+        {
+          "id": 17,
+          "ad": "Kişisel Maruziyet Toz Ölçümü",
+          "metod": "MDHS 14/3 - Grav. metod ile toplam toz tayini",
+          "birim": "Adet",
+          "fiyat": 600
+        },
+        {
+          "id": 18,
+          "ad": "İç Ortam Aydınlatma Ölçümü",
+          "metod": "COHSR-928-1-IPG-039 - İş Yerindeki Aydınlatma/Işık Şiddeti Düzeyinin Ölçümü",
+          "birim": "Adet",
+          "fiyat": 400
+        },
+        {
+          "id": 19,
+          "ad": "Termal Konfor  Ölçümü",
+          "metod": "TS EN ISO 7730, TS EN ISO 7243",
+          "birim": "Nokta",
+          "fiyat": 550
+        },
+        {
+          "id": 20,
+          "ad": "İç Ortam Gürültü Ölçümü",
+          "metod": "TS ISO 1996-2 - Ses Basınç Seviyelerinin Tayini",
+          "birim": "Nokta",
+          "fiyat": 450
+        },
+        {
+          "id": 21,
+          "ad": "Kişisel Maruziyet Gürültü",
+          "metod": "TS EN ISO 9612",
+          "birim": "Adet",
+          "fiyat": 650
+        },
+        {
+          "id": 22,
+          "ad": "Ortamda Toksik Gaz ve Buhar Tayini",
+          "metod": "ASTM 4490-96 - Örnekleme ve Ölçüm: Dedektör Tüple Anlık Ölçüm",
+          "birim": "Nokta",
+          "fiyat": 500
+        },
+        {
+          "id": 23,
+          "ad": "El-Kol Titreşim Maruziyet Ölçümü",
+          "metod": "TS EN ISO 5349-1, TS EN ISO 5349-2",
+          "birim": "Adet",
+          "fiyat": 700
+        },
+        {
+          "id": 24,
+          "ad": "Tüm Vücut Titreşim Maruziyet Ölçümü",
+          "metod": "TS ISO 2631-1 (TS EN 1032+A1 ile birlikte)",
+          "birim": "Adet",
+          "fiyat": 700
+        }
+      ]
+    },
+    {
+      "kategori": "ELEKTRİKSEL KONTROLLER",
+      "items": [
+        {
+          "id": 25,
+          "ad": "Elektrik Topraklama,Cihaz Gövde Topaklama Ölçümü",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 2500
+        },
+        {
+          "id": 26,
+          "ad": "Elektrik İç Tesisat Kontrolü",
+          "metod": "Elektrik İç Tesisleri Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 2500
+        },
+        {
+          "id": 27,
+          "ad": "Yangın Algılama ve Alarm Sistemi",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 1500
+        },
+        {
+          "id": 28,
+          "ad": "Jeneratör  Kontrolü",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 750
+        },
+        {
+          "id": 29,
+          "ad": "Paratoner Kontrolü",
+          "metod": "TS EN 62305-1",
+          "birim": "Adet",
+          "fiyat": 750
+        }
+      ]
+    },
+    {
+      "kategori": "BASINÇLI KAPLAR KONTROLLERİ",
+      "items": [
+        {
+          "id": 30,
+          "ad": "Buhar Kazanı",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 600
+        },
+        {
+          "id": 31,
+          "ad": "Kalorifer Kazanı",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 525
+        },
+        {
+          "id": 32,
+          "ad": "Chiller Tankı",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 500
+        },
+        {
+          "id": 33,
+          "ad": "Kızgın Su Kazanı",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 600
+        },
+        {
+          "id": 34,
+          "ad": "Kompresör ve Hava Tankı",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 400
+        },
+        {
+          "id": 35,
+          "ad": "Hidrofor Tankı",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 400
+        },
+        {
+          "id": 36,
+          "ad": "Genleşme Tankı",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 400
+        },
+        {
+          "id": 37,
+          "ad": "Basınçlı Kap",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 400
+        }
+      ]
+    },
+    {
+      "kategori": "KALDIRMA İLETME ARAÇLARI KONTROLLERİ",
+      "items": [
+        {
+          "id": 38,
+          "ad": "Gezer Köprülü Vinç",
+          "metod": "TS ISO 11662-1, TS ISO 8566-5, TS EN 818-6+A1",
+          "birim": "Adet",
+          "fiyat": 1000
+        },
+        {
+          "id": 39,
+          "ad": "Portal Vinç",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 1000
+        },
+        {
+          "id": 40,
+          "ad": "Monoray Vinç",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 800
+        },
+        {
+          "id": 41,
+          "ad": "Pergel Vinç",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 800
+        },
+        {
+          "id": 42,
+          "ad": "Gırgır Vinç",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 700
+        },
+        {
+          "id": 43,
+          "ad": "Kule Vinç",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 1500
+        },
+        {
+          "id": 44,
+          "ad": "Mobil Vinç",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 1200
+        },
+        {
+          "id": 45,
+          "ad": "Caraskal",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 600
+        },
+        {
+          "id": 46,
+          "ad": "Forklift",
+          "metod": "TS EN ISO 3691-5",
+          "birim": "Adet",
+          "fiyat": 750
+        },
+        {
+          "id": 47,
+          "ad": "Transpalet",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 500
+        },
+        {
+          "id": 48,
+          "ad": "Araç Kaldırma Lifti",
+          "metod": "TS EN 1493",
+          "birim": "Adet",
+          "fiyat": 800
+        },
+        {
+          "id": 49,
+          "ad": "Manlift",
+          "metod": "TS EN 280+A1",
+          "birim": "Adet",
+          "fiyat": 900
+        },
+        {
+          "id": 50,
+          "ad": "Yük Asansörü",
+          "metod": "TS EN 81-3+A1",
+          "birim": "Adet",
+          "fiyat": 1000
+        },
+        {
+          "id": 51,
+          "ad": "Konveyör Bant",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 800
+        }
+      ]
+    },
+    {
+      "kategori": "DİĞER KONTROLLER",
+      "items": [
+        {
+          "id": 52,
+          "ad": "İş Makinesi",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 750
+        },
+        {
+          "id": 53,
+          "ad": "Makine Tezgah",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 600
+        },
+        {
+          "id": 54,
+          "ad": "Yangın Tüpü",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 60
+        },
+        {
+          "id": 55,
+          "ad": "Skreyper",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 500
+        },
+        {
+          "id": 56,
+          "ad": "Endüstriyel Kapı",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 400
+        },
+        {
+          "id": 57,
+          "ad": "Endüstriyel Raf",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 350
+        }
+      ]
+    },
+    {
+      "kategori": "MEKANİK TESİSAT KONTROLLERİ",
+      "items": [
+        {
+          "id": 58,
+          "ad": "Yangın Tesisatı",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 3000
+        },
+        {
+          "id": 59,
+          "ad": "Havalandırma Tesisatı",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 2500
+        },
+        {
+          "id": 60,
+          "ad": "Otomatik Yangın Söndürme Sist.",
+          "metod": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "birim": "Adet",
+          "fiyat": 3500
+        }
+      ]
+    }
+  ],
+  "muayeneler": [],
+  "sertifikalar": [],
+  "sertifikaSablonlari": [
+    {
+      "id": 1761644664154,
+      "ad": "FR7.2.48 Alimak Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Alimak Paraşüt/FR7.2.48 Alimak Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.154Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664156,
+      "ad": "FR7.2.13 Araç Kaldırma Lifti Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Araç Kaldırma Lifti/FR7.2.13 Araç Kaldırma Lifti Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664157,
+      "ad": "FR7.2.30 Bariyer Çakma Vinci Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Bariyer Çakma Vinci/FR7.2.30 Bariyer Çakma Vinci Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664158,
+      "ad": "FR7.2.78 C Kaldırma Ataşmanı Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/C Kaldırma Aparatı/FR7.2.78 C Kaldırma Ataşmanı Muayene ve Ölçüm Raporu - 1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664159,
+      "ad": "FR7.2.10 Caraskal Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Caraskal/FR7.2.10 Caraskal Muayene ve Ölçüm Raporu -1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664160,
+      "ad": "FR7.2.45 Dış Cephe Platform Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Dış Cephe Platformu/FR7.2.45 Dış Cephe Platform Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664161,
+      "ad": "FR7.2.11 Forklift Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Forklift/FR7.2.11 Forklift Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664162,
+      "ad": "FR7.2.79 Forklift Kaldırma Ataşmanı Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Forklift Kaldırma Aparatı/FR7.2.79 Forklift Kaldırma Ataşmanı Muayene ve Ölçüm Raporu - 1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664163,
+      "ad": "FR7.2.3 Gezer Köprülü Vinç Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Gezer Köprülü Vinç/FR7.2.3 Gezer Köprülü Vinç Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664164,
+      "ad": "FR7.2.7 Gırgır Vinç Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/GırGır Vinç/FR7.2.7 Gırgır Vinç Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664165,
+      "ad": "FR7.2.43 Hidrolik Garaj Vinci Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Hidrolik Garaj Vinci/FR7.2.43 Hidrolik Garaj Vinci Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664166,
+      "ad": "FR7.2.54 Hidrolik Kablo Makrası Taşıma Aracı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Hidrolik Kablo Makrası Taşıma Aracı/FR7.2.54 Hidrolik Kablo Makrası Taşıma Aracı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664167,
+      "ad": "FR7.2.81 Konveyör Bant Muayene ve Ölçüm Raporu-3",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Konveyör Bant/FR7.2.81 Konveyör Bant Muayene ve Ölçüm Raporu-3.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664168,
+      "ad": "FR7.2.16 Kriko Muayene ve Ölçüm Raporu-16",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Kriko/FR7.2.16 Kriko Muayene ve Ölçüm Raporu-16.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664169,
+      "ad": "FR7.2.8 Kule Vinç Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Kule Vinç/FR7.2.8 Kule Vinç Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664170,
+      "ad": "FR7.2.9 Mobil Vinç Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Mobil Vinç/FR7.2.9 Mobil Vinç Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664171,
+      "ad": "FR7.2.5 Monoray Vinç Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Monoray Vinç/FR7.2.5 Monoray Vinç Muayene ve Ölçüm Raporu -1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664172,
+      "ad": "FR7.2.44 Mıknatıs Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Mıknatıs Kaldırma/FR7.2.44 Mıknatıs Muayene ve Ölçüm Raporu - 1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664173,
+      "ad": "FR7.2.44 Opçuk Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Opçuk/FR7.2.44 Opçuk Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664174,
+      "ad": "FR7.2.6 Pergel Vinç Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Pergel Vinç/FR7.2.6 Pergel Vinç Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664175,
+      "ad": "FR7.2.14 Platform Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Platform/FR7.2.14 Platform Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664176,
+      "ad": "FR7.2.4 Portal Vinç Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Portal Vinç/FR7.2.4 Portal Vinç Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664177,
+      "ad": "FR7.2.173 Raylı Taşıma Konveyörü Muayene ve Ölçüm Raporu -1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Raylı Taşıma Konveyörü/FR7.2.173 Raylı Taşıma Konveyörü Muayene ve Ölçüm Raporu -1 - Kopya.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664178,
+      "ad": "FR7.2.118 Raylı Yer Vinç Muayene ve Ölçüm Raporu -1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Raylı Yer Vinç/FR7.2.118 Raylı Yer Vinç Muayene ve Ölçüm Raporu -1 - Kopya.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664179,
+      "ad": "FR7.2.82 Sapan Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Sapan/FR7.2.82 Sapan Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664180,
+      "ad": "FR7.2.137 Taşıma Arabası Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Taşıma Arabası/FR7.2.137 Taşıma Arabası Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664181,
+      "ad": "FR7.2.75 Telehander Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Telehanter/FR7.2.75 Telehander Muayene ve Ölçüm Raporu -1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664182,
+      "ad": "FR7.2.27 Teleskopik Forklift Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Teleskopik Forklift/FR7.2.27 Teleskopik Forklift Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664183,
+      "ad": "FR7.2.12 Transpalet Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Transpalet/FR7.2.12 Transpalet Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664184,
+      "ad": "FR7.2.61 Travers Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Travers/FR7.2.61 Travers Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664185,
+      "ad": "FR7.2.46 Trifor Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Trifor/FR7.2.46 Trifor Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664186,
+      "ad": "FR7.2.70 Portal Vinç Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Yarı Portal Vinç/FR7.2.70 Portal Vinç Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664187,
+      "ad": "FR7.2.15 Yük Asansörü Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Yük Asansörü/FR7.2.15 Yük Asansörü Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664188,
+      "ad": "FR7.2.130 Çelik Halat Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/Çelik Halat/FR7.2.130 Çelik Halat Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664189,
+      "ad": "FR7.2.47 İnsan Taşıma Sepeti Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/İnsan Taşıma Sepeti/FR7.2.47 İnsan Taşıma Sepeti Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664190,
+      "ad": "FR7.2.14 Seyyar İskele Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/İskele/FR7.2.14 Seyyar İskele Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664191,
+      "ad": "FR7.2.14 İskele Muayene ve Ölçüm Raporu-2",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/İskele/FR7.2.14 İskele Muayene ve Ölçüm Raporu-2 - Kopya - Kopya.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664192,
+      "ad": "FR7.2.69 İstif Makinesi Muayene ve Ölçüm Raporu-1",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/İstif Makinesi/FR7.2.69 İstif Makinesi Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664193,
+      "ad": "FR7.2.170 Merdivenli Araç Muayene ve Ölçüm Raporu",
+      "kategori": "Kaldırma ve İletme",
+      "aciklama": "Kaldırma ve İletme kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Motor Gücü",
+        "Kanca Tipi",
+        "Seri No"
+      ],
+      "testAlanlar": [
+        "Yük Testi",
+        "Emniyet Tertibatı Kontrolü",
+        "Tel Kontrolü",
+        "Elektrik Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "1. Kaldırma İletme/İtfaye Merdiveni/FR7.2.170 Merdivenli Araç Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.155Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.155Z"
+    },
+    {
+      "id": 1761644664395,
+      "ad": "FR7.2.26 Azot Tankı Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Azot Tankı/FR7.2.26 Azot Tankı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664396,
+      "ad": "FR7.2.180 Basınçlandırıcı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Basınçlandırıcı/FR7.2.180 Basınçlandırıcı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664397,
+      "ad": "FR7.2.26 Basınçlı Kap Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Basınçlı Kablar/FR7.2.26 Basınçlı Kap Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664398,
+      "ad": "FR7.2.24 Boyler Tankı Muayene ve Ölçüm Raporu 1",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Boyler/FR7.2.24 Boyler Tankı Muayene ve Ölçüm Raporu 1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664399,
+      "ad": "FR7.2.17 Buhar Kazanı Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Buhar Kazanı/FR7.2.17 Buhar Kazanı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664400,
+      "ad": "FR7.2.71 Chiller Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Chiller/FR7.2.71 Chiller  Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664401,
+      "ad": "FR7.2.71 Depolama Tankı Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Depolama Tankı/FR7.2.71 Depolama Tankı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664402,
+      "ad": "FR7.2.71 Gaz Tüpleri Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Gaz Tüpleri/FR7.2.71 Gaz Tüpleri Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664403,
+      "ad": "FR7.2.23 Genleşme Tankı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Genleşme Tankı/FR7.2.23 Genleşme Tankı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664404,
+      "ad": "FR7.2.156 Hava Tankı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Hava Tankı/FR7.2.156 Hava Tankı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664405,
+      "ad": "FR7.2.22 Hidrofor Tankı Muayene ve Ölçüm Raporu 2",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Hidrofor Tankı/FR7.2.22 Hidrofor Tankı Muayene ve Ölçüm Raporu 2.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664406,
+      "ad": "FR7.2.18 Kalorifer Kazanı Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Kalorifer Kazanı/FR7.2.18 Kalorifer Kazanı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664407,
+      "ad": "FR7.2.21 Kompresör Muayene ve Ölçüm Raporu-1",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Kompresör/FR7.2.21 Kompresör Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664408,
+      "ad": "FR7.2.21 Kompresör Muayene ve Ölçüm Raporu-1",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Kompresör - Kopya/FR7.2.21 Kompresör Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664409,
+      "ad": "FR7.2.21 Kompresör ve Hava Tankı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Kompresör ve Hava Tankı/FR7.2.21 Kompresör ve Hava Tankı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664410,
+      "ad": "FR7.2.21 Kompresör ve Hava Tankı Muayene ve Ölçüm Raporu-2",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Kompresör ve Hava Tankı/FR7.2.21 Kompresör ve Hava Tankı Muayene ve Ölçüm Raporu-2.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664411,
+      "ad": "FR7.2.20 Kızgın Su Kazanı Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Kızgın Su Kazanı/FR7.2.20 Kızgın Su Kazanı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664412,
+      "ad": "FR7.2.19 Kızgın Yağ Kazanı Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Kızgın Yağ Kazanı/FR7.2.19 Kızgın Yağ Kazanı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664413,
+      "ad": "FR7.2.25 Otoklav Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Otoklav/FR7.2.25 Otoklav Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664414,
+      "ad": "FR7.2.26 Basınçlı Kap Muayene ve Ölçüm Raporu",
+      "kategori": "Basınçlı Kaplar",
+      "aciklama": "Basınçlı Kaplar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Basınç Değeri",
+        "İmalat Yılı",
+        "Seri No",
+        "İmal Eden"
+      ],
+      "testAlanlar": [
+        "Hidrostatik Basınç Testi",
+        "Emniyet Valfi Kontrolü",
+        "Manometre Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "2. Basınçlı Kaplar/Yıkama Makinası/FR7.2.26 Basınçlı Kap Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.356Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.356Z"
+    },
+    {
+      "id": 1761644664622,
+      "ad": "FR7.2.35 Arasöz Muayene ve Ölçüm Raporu-4",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Arazöz/FR7.2.35 Arasöz Muayene ve Ölçüm Raporu-4.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664623,
+      "ad": "FR7.2.50 Beton Mikseri Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Beton Mikseri/FR7.2.50 Beton Mikseri Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664624,
+      "ad": "FR7.2.49 Beton Pompası Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Beton Pompası/FR7.2.49 Beton Pompası Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664625,
+      "ad": "FR7.2.28 Dozer Muayene ve Ölçüm Raporu 2",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Dozer/FR7.2.28 Dozer Muayene ve Ölçüm Raporu 2.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664626,
+      "ad": "FR7.2.14 Eklemli Seyyar İş Platform Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Eklemli Seyyar İş platformu/FR7.2.14 Eklemli Seyyar İş Platform Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664627,
+      "ad": "FR7.2.30 Ekskavatör Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Ekskavatör/FR7.2.30 Ekskavatör Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664628,
+      "ad": "FR7.2.130 Finişer Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Finişer/FR7.2.130 Finişer Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664629,
+      "ad": "FR7.2.33 Fore Kazık Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Fore Kazık/FR7.2.33 Fore Kazık Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664630,
+      "ad": "FR7.2.32 Greyder Muayene ve Ölçüm Raporu-1",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Greyder/FR7.2.32 Greyder Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664631,
+      "ad": "FR7.2.51 Kamyon Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Kamyon/FR7.2.51 Kamyon Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664632,
+      "ad": "FR7.2.27 Kazıcı Yükleyici Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Loader(Kazıcı-Yükleyici)/FR7.2.27 Kazıcı Yükleyici Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664633,
+      "ad": "FR7.2.29 Loader(Yükleyici) Muayene ve Ölçüm Raporu 9",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Loader(Yükleyici)/FR7.2.29 Loader(Yükleyici) Muayene ve Ölçüm Raporu  9.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664634,
+      "ad": "FR7.2.33 Roc Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Roc/FR7.2.33 Roc Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664635,
+      "ad": "FR7.2.35 Silindir Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Silindir/FR7.2.35 Silindir Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664636,
+      "ad": "FR7.2.31 Skreyper Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Skreyper/FR7.2.31 Skreyper Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664637,
+      "ad": "FR7.2.75 Telehander Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Telehander/FR7.2.75 Telehander Muayene ve Ölçüm Raporu -11.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664638,
+      "ad": "FR7.2.34 Trencher Muayene ve Ölçüm Raporu",
+      "kategori": "İş Makinesi",
+      "aciklama": "İş Makinesi kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Motor Gücü",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Fren Sistemi",
+        "Hidrolik Sistem",
+        "Emniyet Sistemleri",
+        "Görsel Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "3. İş Makinesi/Trencher/FR7.2.34 Trencher Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.563Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.563Z"
+    },
+    {
+      "id": 1761644664657,
+      "ad": "FR7.2.36 Elektrik Topraklama Ölçüm Raporu-1",
+      "kategori": "Elektrik",
+      "aciklama": "Elektrik kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Güç",
+        "Gerilim",
+        "Topraklama Değeri",
+        "Kesit"
+      ],
+      "testAlanlar": [
+        "Topraklama Ölçümü",
+        "İzolasyon Testi",
+        "Kaçak Akım Testi",
+        "Paratoner Testi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "4. Elektrik/FR7.2.36 Elektrik Topraklama Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.581Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.581Z"
+    },
+    {
+      "id": 1761644664658,
+      "ad": "FR7.2.37 Yıldırımdan Korunma Tesisatı Muayene Raporu-1",
+      "kategori": "Elektrik",
+      "aciklama": "Elektrik kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Güç",
+        "Gerilim",
+        "Topraklama Değeri",
+        "Kesit"
+      ],
+      "testAlanlar": [
+        "Topraklama Ölçümü",
+        "İzolasyon Testi",
+        "Kaçak Akım Testi",
+        "Paratoner Testi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "4. Elektrik/FR7.2.37 Yıldırımdan Korunma Tesisatı Muayene Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.581Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.581Z"
+    },
+    {
+      "id": 1761644664659,
+      "ad": "FR7.2.38 Jenaratör Muayene ve Ölçüm Raporu",
+      "kategori": "Elektrik",
+      "aciklama": "Elektrik kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Güç",
+        "Gerilim",
+        "Topraklama Değeri",
+        "Kesit"
+      ],
+      "testAlanlar": [
+        "Topraklama Ölçümü",
+        "İzolasyon Testi",
+        "Kaçak Akım Testi",
+        "Paratoner Testi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "4. Elektrik/FR7.2.38 Jenaratör Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.581Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.581Z"
+    },
+    {
+      "id": 1761644664660,
+      "ad": "FR7.2.40 Elektrik İç Tesisat Ölçüm Raporu-2",
+      "kategori": "Elektrik",
+      "aciklama": "Elektrik kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Güç",
+        "Gerilim",
+        "Topraklama Değeri",
+        "Kesit"
+      ],
+      "testAlanlar": [
+        "Topraklama Ölçümü",
+        "İzolasyon Testi",
+        "Kaçak Akım Testi",
+        "Paratoner Testi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "4. Elektrik/FR7.2.40 Elektrik İç Tesisat Ölçüm Raporu-2.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.581Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.581Z"
+    },
+    {
+      "id": 1761644664661,
+      "ad": "FR7.2.41 Paratoner Etki Alanı Projesi Raporu",
+      "kategori": "Elektrik",
+      "aciklama": "Elektrik kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Güç",
+        "Gerilim",
+        "Topraklama Değeri",
+        "Kesit"
+      ],
+      "testAlanlar": [
+        "Topraklama Ölçümü",
+        "İzolasyon Testi",
+        "Kaçak Akım Testi",
+        "Paratoner Testi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "4. Elektrik/FR7.2.41 Paratoner Etki Alanı Projesi Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.581Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.581Z"
+    },
+    {
+      "id": 1761644664662,
+      "ad": "FR7.2.49 Yangın Algılama Sistemi Muayene ve Ölçüm Raporu-1",
+      "kategori": "Elektrik",
+      "aciklama": "Elektrik kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Güç",
+        "Gerilim",
+        "Topraklama Değeri",
+        "Kesit"
+      ],
+      "testAlanlar": [
+        "Topraklama Ölçümü",
+        "İzolasyon Testi",
+        "Kaçak Akım Testi",
+        "Paratoner Testi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "4. Elektrik/FR7.2.49 Yangın Algılama Sistemi Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.581Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.581Z"
+    },
+    {
+      "id": 1761644664663,
+      "ad": "FR7.2.71 Katodik Koruma Ölçüm Raporu",
+      "kategori": "Elektrik",
+      "aciklama": "Elektrik kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Güç",
+        "Gerilim",
+        "Topraklama Değeri",
+        "Kesit"
+      ],
+      "testAlanlar": [
+        "Topraklama Ölçümü",
+        "İzolasyon Testi",
+        "Kaçak Akım Testi",
+        "Paratoner Testi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "4. Elektrik/FR7.2.71 Katodik Koruma Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.581Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.581Z"
+    },
+    {
+      "id": 1761644664664,
+      "ad": "FR7.2.73 Transformatör 1-36 kV Gözle Kontrol ve Topraklama Periyodik Kontrol Raporu",
+      "kategori": "Elektrik",
+      "aciklama": "Elektrik kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Güç",
+        "Gerilim",
+        "Topraklama Değeri",
+        "Kesit"
+      ],
+      "testAlanlar": [
+        "Topraklama Ölçümü",
+        "İzolasyon Testi",
+        "Kaçak Akım Testi",
+        "Paratoner Testi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "4. Elektrik/FR7.2.73 Transformatör 1-36 kV Gözle Kontrol ve Topraklama Periyodik Kontrol Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.581Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.581Z"
+    },
+    {
+      "id": 1761644664757,
+      "ad": "FR7.2.41 Havalandırma ve Klima Tesisatı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Tesisat Kontrolü",
+      "aciklama": "Tesisat Kontrolü kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Tesisat Tipi",
+        "Kapasite",
+        "Basınç",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Sızdırmazlık Kontrolü",
+        "Basınç Testi",
+        "Vana Kontrolü",
+        "Boru Muayenesi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "5. Tesisat Kontrolü/Havalandırma/FR7.2.41 Havalandırma ve Klima Tesisatı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.673Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.673Z"
+    },
+    {
+      "id": 1761644664758,
+      "ad": "FR7.2.41 Havalandırma ve Klima Tesisatı Muayene ve Ölçüm Raporu-14",
+      "kategori": "Tesisat Kontrolü",
+      "aciklama": "Tesisat Kontrolü kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Tesisat Tipi",
+        "Kapasite",
+        "Basınç",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Sızdırmazlık Kontrolü",
+        "Basınç Testi",
+        "Vana Kontrolü",
+        "Boru Muayenesi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "5. Tesisat Kontrolü/Havalandırma/Seyyar Havalandırma/FR7.2.41 Havalandırma ve Klima Tesisatı Muayene ve Ölçüm Raporu-14.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.673Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.673Z"
+    },
+    {
+      "id": 1761644664759,
+      "ad": "FR7.2.157 Merkezi İklimlendirme Sistemi Muayene ve Ölçüm Raporu-1",
+      "kategori": "Tesisat Kontrolü",
+      "aciklama": "Tesisat Kontrolü kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Tesisat Tipi",
+        "Kapasite",
+        "Basınç",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Sızdırmazlık Kontrolü",
+        "Basınç Testi",
+        "Vana Kontrolü",
+        "Boru Muayenesi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "5. Tesisat Kontrolü/Merkezi İklimlendirme Sistemi/FR7.2.157 Merkezi İklimlendirme Sistemi  Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.673Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.673Z"
+    },
+    {
+      "id": 1761644664760,
+      "ad": "FR7.2.134 Otomatik Yangın Söndürme Tesisatı Muayene ve Ölçüm Raporu",
+      "kategori": "Tesisat Kontrolü",
+      "aciklama": "Tesisat Kontrolü kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Tesisat Tipi",
+        "Kapasite",
+        "Basınç",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Sızdırmazlık Kontrolü",
+        "Basınç Testi",
+        "Vana Kontrolü",
+        "Boru Muayenesi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "5. Tesisat Kontrolü/Otomatik Yangın Söndürme Tesisatı/FR7.2.134 Otomatik Yangın Söndürme Tesisatı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.673Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.673Z"
+    },
+    {
+      "id": 1761644664761,
+      "ad": "FR7.2.40 Tavan Tipi Sprinkler Başlıklı Yangın Söndürme Sist Muayene ve Ölçüm Raporu-1",
+      "kategori": "Tesisat Kontrolü",
+      "aciklama": "Tesisat Kontrolü kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Tesisat Tipi",
+        "Kapasite",
+        "Basınç",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Sızdırmazlık Kontrolü",
+        "Basınç Testi",
+        "Vana Kontrolü",
+        "Boru Muayenesi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "5. Tesisat Kontrolü/Tavan Tipi Sprinkler Başlıklı Yangın Söndürme Sistemi/FR7.2.40 Tavan Tipi Sprinkler Başlıklı Yangın Söndürme Sist Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.673Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.673Z"
+    },
+    {
+      "id": 1761644664762,
+      "ad": "FR7.2.40 Yangın Tesisatı Muayene ve Ölçüm Raporu",
+      "kategori": "Tesisat Kontrolü",
+      "aciklama": "Tesisat Kontrolü kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Tesisat Tipi",
+        "Kapasite",
+        "Basınç",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Sızdırmazlık Kontrolü",
+        "Basınç Testi",
+        "Vana Kontrolü",
+        "Boru Muayenesi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "5. Tesisat Kontrolü/Yangın tesisatı/FR7.2.40 Yangın Tesisatı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.673Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.673Z"
+    },
+    {
+      "id": 1761644664763,
+      "ad": "FR7.2.42 Yangın Tesisatı Muayene ve Ölçüm Raporu--",
+      "kategori": "Tesisat Kontrolü",
+      "aciklama": "Tesisat Kontrolü kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Tesisat Tipi",
+        "Kapasite",
+        "Basınç",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Sızdırmazlık Kontrolü",
+        "Basınç Testi",
+        "Vana Kontrolü",
+        "Boru Muayenesi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "5. Tesisat Kontrolü/Yangın tesisatı/FR7.2.42 Yangın Tesisatı Muayene ve Ölçüm Raporu--.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.673Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.673Z"
+    },
+    {
+      "id": 1761644664764,
+      "ad": "FR7.2.42 Yangın Tesisatı Muayene ve Ölçüm Raporu-Yeni (1)",
+      "kategori": "Tesisat Kontrolü",
+      "aciklama": "Tesisat Kontrolü kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Tesisat Tipi",
+        "Kapasite",
+        "Basınç",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Sızdırmazlık Kontrolü",
+        "Basınç Testi",
+        "Vana Kontrolü",
+        "Boru Muayenesi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "5. Tesisat Kontrolü/Yangın tesisatı Yeni/FR7.2.42 Yangın Tesisatı Muayene ve Ölçüm Raporu-Yeni (1).docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.673Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.673Z"
+    },
+    {
+      "id": 1761644664765,
+      "ad": "FR7.2.40 Yangın Tüpleri Muayene ve Ölçüm Raporu-1",
+      "kategori": "Tesisat Kontrolü",
+      "aciklama": "Tesisat Kontrolü kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Tesisat Tipi",
+        "Kapasite",
+        "Basınç",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Sızdırmazlık Kontrolü",
+        "Basınç Testi",
+        "Vana Kontrolü",
+        "Boru Muayenesi"
+      ],
+      "aktif": true,
+      "dosyaYolu": "5. Tesisat Kontrolü/Yangın tüpü/FR7.2.40 Yangın Tüpleri Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.673Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.673Z"
+    },
+    {
+      "id": 1761644664917,
+      "ad": "FR7.2.100 Lazer Kesim Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.100 Lazer Kesim Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664918,
+      "ad": "FR7.2.100 Plazma Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.100 Plazma Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664919,
+      "ad": "FR7.2.101 Klavuz Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.101 Klavuz Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664920,
+      "ad": "FR7.2.102 Boy Kesme Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.102 Boy Kesme Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664921,
+      "ad": "FR7.2.103 Gıda Dolum Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.103 Gıda Dolum Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664922,
+      "ad": "FR7.2.104 Robot Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.104 Robot Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664923,
+      "ad": "FR7.2.105 Planya Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.105 Planya Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664924,
+      "ad": "FR7.2.106 Kaynak Makinesi Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.106 Kaynak Makinesi Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664925,
+      "ad": "FR7.2.107 Isıl işlem fırını Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.107 Isıl işlem fırını Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664926,
+      "ad": "FR7.2.108 Tel Erozyon Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.108 Tel Erozyon Muayene ve Ölçüm Raporu - Kopya.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664927,
+      "ad": "FR7.2.109 Dekopaj Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.109 Dekopaj Tezgahı Muayene ve Ölçüm Raporu - Kopya - Kopya - Kopya.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664928,
+      "ad": "FR7.2.110 Hareketli Taşlama Makineleri Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.110 Hareketli Taşlama Makineleri Muayene ve Ölçüm Raporu - Kopya.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664929,
+      "ad": "FR7.2.111 Kesim Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.111 Kesim Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664930,
+      "ad": "FR7.2.112 Büküm Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.112 Büküm Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664931,
+      "ad": "FR7.2.113 Ekstrüzyon Pres Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.113 Ekstrüzyon Pres Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664932,
+      "ad": "FR7.2.114 Kanal Açma Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.114 Kanal Açma Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664933,
+      "ad": "FR7.2.115 Yapıştırma Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.115 Yapıştırma Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664934,
+      "ad": "FR7.2.116 Planya tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.116 Planya tezgahı Muayene ve Ölçüm Raporu .docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664935,
+      "ad": "FR7.2.117 Kalvaniz Kaplama Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.117 Kalvaniz Kaplama Makinesi Muayene ve Ölçüm Raporu - .docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664936,
+      "ad": "FR7.2.118 İndiksiyon Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.118 İndiksiyon Makinesi Muayene ve Ölçüm Raporu -.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664937,
+      "ad": "FR7.2.119 Germe Makinesi Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.119 Germe Makinesi Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664938,
+      "ad": "FR7.2.120 Paketleme Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.120 Paketleme Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664939,
+      "ad": "FR7.2.121 Shrink Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.121 Shrink Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664940,
+      "ad": "FR7.2.122 Polisaj Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.122 Polisaj Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664941,
+      "ad": "FR7.2.123 Shrink Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.123 Shrink Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664942,
+      "ad": "FR7.2.124 Dikey Hızar Tezgahı Muayene ve Ölçüm Raporu 2",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.124 Dikey Hızar Tezgahı Muayene ve Ölçüm Raporu 2.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664943,
+      "ad": "FR7.2.125 Fitil Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.125 Fitil Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664944,
+      "ad": "FR7.2.126 Perçin Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.126 Perçin Makinesi Muayene ve Ölçüm Raporu - .docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664945,
+      "ad": "FR7.2.127 Hidrolik Papuç Sıkma Pensesi Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.127 Hidrolik Papuç Sıkma Pensesi Muayene ve Ölçüm Raporu-1 - Kopya.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664946,
+      "ad": "FR7.2.128 Kalıplama Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.128 Kalıplama Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664947,
+      "ad": "FR7.2.129 Maça Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.129 Maça Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664948,
+      "ad": "FR7.2.131 Balans Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.131 Balans Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664949,
+      "ad": "FR7.2.132 Revolver Tezgahı Muayene ve Ölçüm Raporu-19",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.132 Revolver Tezgahı  Muayene ve Ölçüm Raporu-19.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664950,
+      "ad": "FR7.2.133 Soğuk Çekme Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.133 Soğuk Çekme Tezgahı Muayene ve Ölçüm Raporu .docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664951,
+      "ad": "FR7.2.134 Rotasyon Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.134 Rotasyon Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664952,
+      "ad": "FR7.2.135 Profil Büküm Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.135 Profil Büküm Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664953,
+      "ad": "FR7.2.136 Boru Düzleme Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.136 Boru Düzleme Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664954,
+      "ad": "FR7.2.138 İşleme Merkezleri(Cnc Kayar Otomat) Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.138 İşleme Merkezleri(Cnc Kayar Otomat) Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664955,
+      "ad": "FR7.2.139 İşleme Merkezleri(Cnc Mil İşleme) Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.139 İşleme Merkezleri(Cnc  Mil İşleme) Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664956,
+      "ad": "FR7.2.140 Kapama Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.140 Kapama Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664957,
+      "ad": "FR7.2.141 Gaz Basma Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.141 Gaz Basma Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664958,
+      "ad": "FR7.2.151 Markalama Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.151 Markalama Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664959,
+      "ad": "FR7.2.152 Kırma Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.152 Kırma Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664960,
+      "ad": "FR7.2.153 Test Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.153 Test Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664961,
+      "ad": "FR7.2.154 Mil Devme Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.154 Mil Devme Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664962,
+      "ad": "FR7.2.155 Laminasyon Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.155 Laminasyon Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664963,
+      "ad": "FR7.2.156 Araç Lastik Sökme Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.156 Araç Lastik Sökme Makinesi Muayene ve Ölçüm Raporu .docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664964,
+      "ad": "FR7.2.157 Araç Lastik Balans Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.157 Araç Lastik Balans Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664965,
+      "ad": "FR7.2.52 Ağaç İşleme Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.52 Ağaç İşleme Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664966,
+      "ad": "FR7.2.53 Delme Makineleri Tezgahı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.53 Delme Makineleri Tezgahı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664967,
+      "ad": "FR7.2.54 Freze Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.54 Freze Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664968,
+      "ad": "FR7.2.55 Transfer Tipi ve Özel Amaçlı Tezgahlar Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.55 Transfer Tipi ve Özel Amaçlı Tezgahlar Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664969,
+      "ad": "FR7.2.56 Hareketsiz Taşlama Makineleri Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.56 Hareketsiz Taşlama Makineleri Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664970,
+      "ad": "FR7.2.57 Giyotin Makas Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.57 Giyotin Makas Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664971,
+      "ad": "FR7.2.58 Hidrolik Abkant Presler Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.58 Hidrolik Abkant Presler Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664972,
+      "ad": "FR7.2.59 Hidrolik Presler Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.59 Hidrolik Presler Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664973,
+      "ad": "FR7.2.60 İşleme Merkezleri(Cnc Torna) Muayene ve Ölçüm Raporu 2",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.60 İşleme Merkezleri(Cnc Torna) Muayene ve Ölçüm Raporu 2.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664974,
+      "ad": "FR7.2.61 Eksantrik Presler Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.61 Eksantrik Presler Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664975,
+      "ad": "FR7.2.62 Pnömatik Presler Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.62 Pnömatik Presler Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664976,
+      "ad": "FR7.2.63 Soğuk Metal Testereleri Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.63 Soğuk Metal Testereleri Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664977,
+      "ad": "FR7.2.64 Şerit Testere(Ağaç İşleme Makineleri) Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.64 Şerit Testere(Ağaç İşleme Makineleri) Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664978,
+      "ad": "FR7.2.65 Şerit Testere(Gıda İşleme Makineleri) Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.65 Şerit Testere(Gıda İşleme Makineleri) Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664979,
+      "ad": "FR7.2.66 Ovalama Tezgahı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.66 Ovalama Tezgahı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664980,
+      "ad": "FR7.2.66 Universal Torna Tezgahı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.66 Universal Torna Tezgahı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664981,
+      "ad": "FR7.2.73 İşleme Merkezleri(Cnc Yatay İşlem) Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.73 İşleme Merkezleri(Cnc Yatay İşlem) Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664982,
+      "ad": "FR7.2.74 Şerit Testere Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.74 Şerit Testere Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664983,
+      "ad": "FR7.2.75 Daire Testere Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.75 Daire Testere Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664984,
+      "ad": "FR7.2.76 İşleme Merkezleri(Cnc Dik İşlem) Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.76 İşleme Merkezleri(Cnc Dik İşlem) Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664985,
+      "ad": "FR7.2.77 Silindir Kıvırma Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.77 Silindir Kıvırma Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664986,
+      "ad": "FR7.2.81 Konveyör Bant Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.81 Konveyör Bant Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664987,
+      "ad": "FR7.2.82 İstifleme Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.82 İstifleme Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664988,
+      "ad": "FR7.2.83 Honlama Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.83 Honlama Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664989,
+      "ad": "FR7.2.84 Yıkama Makinesi Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.84 Yıkama Makinesi Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664990,
+      "ad": "FR7.2.90 Enjeksiyon Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.90 Enjeksiyon Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664991,
+      "ad": "FR7.2.91 Fellow Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.91 Fellow Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664992,
+      "ad": "FR7.2.92 Azdırma Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.92 Azdırma Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664993,
+      "ad": "FR7.2.92 Dişli Açma Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.92 Dişli Açma Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664994,
+      "ad": "FR7.2.93 Raspalama Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.93 Raspalama Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664995,
+      "ad": "FR7.2.94 Bileme Tezgahı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.94 Bileme Tezgahı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664996,
+      "ad": "FR7.2.94 Kumlama Tezgahı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.94 Kumlama Tezgahı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664997,
+      "ad": "FR7.2.94 Mikser Karıştırıcı Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.94 Mikser Karıştırıcı Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664998,
+      "ad": "FR7.2.95 Boya Tabancası Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.95 Boya Tabancası Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644664999,
+      "ad": "FR7.2.96 Köprü Kesme Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.96 Köprü Kesme Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644665000,
+      "ad": "FR7.2.97 Sayalama Makinesi Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.97 Sayalama Makinesi Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644665001,
+      "ad": "FR7.2.98 İşleme Merkezleri(Cnc Dik Torna) Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.98 İşleme Merkezleri(Cnc Dik Torna) Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644665002,
+      "ad": "FR7.2.99 Cnc İşleme Merkezleri Muayene ve Ölçüm Raporu",
+      "kategori": "Makine Tezgahları",
+      "aciklama": "Makine Tezgahları kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Marka/Model",
+        "Güç",
+        "Kapasite",
+        "Seri No",
+        "İmalat Yılı"
+      ],
+      "testAlanlar": [
+        "Emniyet Tertibatları",
+        "Koruyucu Donanım",
+        "Elektrik Kontrolü",
+        "Mekanik Kontrol"
+      ],
+      "aktif": true,
+      "dosyaYolu": "6- Makine Tezgahlar/FR7.2.99 Cnc İşleme Merkezleri Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.824Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.824Z"
+    },
+    {
+      "id": 1761644665023,
+      "ad": "FR7.2.67 Endüstriyel Kapı Muayene ve Ölçüm Raporu-1",
+      "kategori": "Endüstriyel Raf ve Kapılar",
+      "aciklama": "Endüstriyel Raf ve Kapılar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Genişlik",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Stabilite Kontrolü",
+        "Bağlantı Elemanları",
+        "Yük Testi",
+        "Korozyon Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "7. Endüstriyel Raf ve Kapılar/Endüstriyel Kapılar/FR7.2.67 Endüstriyel Kapı Muayene ve Ölçüm Raporu-1.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.844Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.844Z"
+    },
+    {
+      "id": 1761644665024,
+      "ad": "FR7.2.85 Raf Muayene ve Ölçüm Raporu",
+      "kategori": "Endüstriyel Raf ve Kapılar",
+      "aciklama": "Endüstriyel Raf ve Kapılar kategorisine ait muayene ve ölçüm raporu",
+      "teknikAlanlar": [
+        "Kapasite",
+        "Yükseklik",
+        "Genişlik",
+        "Malzeme"
+      ],
+      "testAlanlar": [
+        "Stabilite Kontrolü",
+        "Bağlantı Elemanları",
+        "Yük Testi",
+        "Korozyon Kontrolü"
+      ],
+      "aktif": true,
+      "dosyaYolu": "7. Endüstriyel Raf ve Kapılar/Endüstriyel Raflar/FR7.2.85 Raf Muayene ve Ölçüm Raporu.docx",
+      "olusturmaTarihi": "2025-10-28T09:44:24.844Z",
+      "guncellemeTarihi": "2025-10-28T09:44:24.844Z"
+    }
+  ],
+  "personeller": [
+    {
+      "id": 1761646558208,
+      "adSoyad": "Örnek Personel",
+      "unvan": "Muayene Teknikeri",
+      "sertifikaNo": "SERT-001",
+      "telefon": "0532 000 00 00",
+      "email": "personel@ondermuayene.com.tr",
+      "aktif": true,
+      "olusturmaTarihi": "2025-10-28T10:15:58.208Z"
+    },
+    {
+      "id": 1761659115804,
+      "adSoyad": "AHMET MAVUŞ",
+      "unvan": "Elektrik Teknikeri",
+      "sertifikaNo": "K2025232215",
+      "telefon": "",
+      "email": "",
+      "aktif": true,
+      "olusturmaTarihi": "2025-10-28T13:45:15.804Z",
+      "guncellemeTarihi": "2025-10-28T13:45:15.804Z"
+    },
+    {
+      "id": 1761659154965,
+      "adSoyad": "HÜSEYİN SARIKULAK",
+      "unvan": "Makine Teknikeri",
+      "sertifikaNo": "K2025232215",
+      "telefon": "",
+      "email": "",
+      "aktif": true,
+      "olusturmaTarihi": "2025-10-28T13:45:54.965Z",
+      "guncellemeTarihi": "2025-10-28T13:45:54.965Z"
+    },
+    {
+      "id": 1761659179909,
+      "adSoyad": "ABDULVAHAP ÖNDER",
+      "unvan": "GENEL MÜDÜR",
+      "sertifikaNo": "",
+      "telefon": "",
+      "email": "",
+      "aktif": true,
+      "olusturmaTarihi": "2025-10-28T13:46:19.909Z",
+      "guncellemeTarihi": "2025-10-28T13:46:19.909Z"
+    }
+  ],
+  "ayarlar": {
+    "sertifikaCounter": 1,
+    "isEmriCounter": 5
+  },
+  "isEmirleri": [
+    {
+      "id": 1761659837129,
+      "isEmriNo": "IE-2025-004",
+      "teklifId": 1,
+      "teklifNo": "2025-001",
+      "musteriId": 2,
+      "durum": "Beklemede",
+      "kalemler": [
+        {
+          "hizmetAdi": "Elektrik Topraklama,Cihaz Gövde Topaklama Ölçümü",
+          "aciklama": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "miktar": 1,
+          "birim": "Adet",
+          "durum": "Devam Ediyor",
+          "atananPersoneller": [
+            1761659115804
+          ]
+        },
+        {
+          "hizmetAdi": "Basınçlı Kap",
+          "aciklama": "İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği",
+          "miktar": 1,
+          "birim": "Adet",
+          "atananPersoneller": [
+            1761659154965
+          ],
+          "durum": "Beklemede"
+        }
+      ],
+      "notlar": "",
+      "olusturmaTarihi": "2025-10-28T13:57:17.130Z",
+      "guncellemeTarihi": "2025-10-28T14:05:46.206Z"
+    }
+  ],
+  "personelAtamalari": [
+    {
+      "id": 1761659235834,
+      "isEmriId": 1761657523160,
+      "personelId": 1761659115804,
+      "gorev": "",
+      "atamaTarihi": "2025-10-28T13:47:15.834Z"
+    }
+  ]
+}

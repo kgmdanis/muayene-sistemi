@@ -1,0 +1,18 @@
+
+> periyodik-muayene@1.0.0 start
+> node server.js
+
+===========================================
+🚀 PERİYODİK MUAYENE YÖNETİM SİSTEMİ
+===========================================
+✅ Server çalışıyor:
+   📍 Yerel: http://localhost:3001
+   📍 Ağ: http://172.26.27.85:3001
+📁 Database: /home/wsl-kgmkadir/periyodik-muayene/database.json
+⏰ Başlatma zamanı: 27.10.2025 12:52:31
+===========================================
+🌐 Aynı ağdaki diğer cihazlar yukarıdaki "Ağ" adresini kullanabilir
+===========================================
+POST /api/auth/login - Giriş denemesi
+POST /api/auth/login - Giriş denemesi
+GET /api/teklifler/:id/pdf - PDF oluştur

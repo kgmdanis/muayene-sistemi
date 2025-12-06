@@ -1,0 +1,233 @@
+===========================================
+🚀 PERİYODİK MUAYENE YÖNETİM SİSTEMİ
+===========================================
+✅ Server çalışıyor:
+   📍 Yerel: http://localhost:3001
+   📍 Ağ: http://172.26.27.85:3001
+📁 Database: /mnt/c/Users/kadir/Desktop/periyodik-muayene/database.json
+⏰ Başlatma zamanı: 28.10.2025 16:54:26
+===========================================
+🌐 Aynı ağdaki diğer cihazlar yukarıdaki "Ağ" adresini kullanabilir
+===========================================
+GET /api/sertifikalar - Tüm sertifikalar istendi
+GET /api/is-emirleri - İş emirleri istendi
+GET /api/is-emirleri/1761659561160 - İş emri detayı istendi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/is-emirleri - İş emirleri istendi
+DELETE /api/is-emirleri/1761659561160 - İş emri siliniyor
+✅ İş emri silindi: IE-2025-003
+GET /api/is-emirleri - İş emirleri istendi
+DELETE /api/teklifler/1 - Teklif silme
+Teklif başarıyla silindi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+POST /api/teklifler - Yeni teklif: {
+  musteriId: 2,
+  teklifTarihi: '2025-10-28',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  durum: 'Bekleyen',
+  hizmetler: [
+    {
+      id: 25,
+      ad: 'Elektrik Topraklama,Cihaz Gövde Topaklama Ölçümü',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 2500,
+      miktar: 1,
+      toplam: 2500,
+      kategori: 'ELEKTRİKSEL KONTROLLER'
+    },
+    {
+      id: 37,
+      ad: 'Basınçlı Kap',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 400,
+      miktar: 1,
+      toplam: 400,
+      kategori: 'BASINÇLI KAPLAR KONTROLLERİ'
+    }
+  ],
+  araToplam: 2900,
+  kdv: 580,
+  genelToplam: 3480
+}
+Teklif başarıyla oluşturuldu: {
+  id: 1,
+  teklifNo: '2025-001',
+  musteriId: 2,
+  teklifTarihi: '2025-10-28',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 25,
+      ad: 'Elektrik Topraklama,Cihaz Gövde Topaklama Ölçümü',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 2500,
+      miktar: 1,
+      toplam: 2500,
+      kategori: 'ELEKTRİKSEL KONTROLLER'
+    },
+    {
+      id: 37,
+      ad: 'Basınçlı Kap',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 400,
+      miktar: 1,
+      toplam: 400,
+      kategori: 'BASINÇLI KAPLAR KONTROLLERİ'
+    }
+  ],
+  araToplam: 2900,
+  kdv: 580,
+  genelToplam: 3480,
+  durum: 'Bekleyen',
+  olusturmaTarihi: '2025-10-28T13:57:11.248Z'
+}
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+PUT /api/teklifler/1 - Teklif güncelleme: {
+  id: 1,
+  teklifNo: '2025-001',
+  musteriId: 2,
+  teklifTarihi: '2025-10-28',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 25,
+      ad: 'Elektrik Topraklama,Cihaz Gövde Topaklama Ölçümü',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 2500,
+      miktar: 1,
+      toplam: 2500,
+      kategori: 'ELEKTRİKSEL KONTROLLER'
+    },
+    {
+      id: 37,
+      ad: 'Basınçlı Kap',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 400,
+      miktar: 1,
+      toplam: 400,
+      kategori: 'BASINÇLI KAPLAR KONTROLLERİ'
+    }
+  ],
+  araToplam: 2900,
+  kdv: 580,
+  genelToplam: 3480,
+  durum: 'Onaylandı',
+  olusturmaTarihi: '2025-10-28T13:57:11.248Z',
+  durumGecmisi: [
+    {
+      eskiDurum: 'Bekleyen',
+      yeniDurum: 'Onaylandı',
+      tarih: '2025-10-28T13:57:17.066Z',
+      not: ''
+    }
+  ]
+}
+Teklif onaylandı - İş emri oluşturuluyor...
+✅ İş emri otomatik oluşturuldu. No: IE-2025-004
+Teklif başarıyla güncellendi: {
+  id: 1,
+  teklifNo: '2025-001',
+  musteriId: 2,
+  teklifTarihi: '2025-10-28',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 25,
+      ad: 'Elektrik Topraklama,Cihaz Gövde Topaklama Ölçümü',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 2500,
+      miktar: 1,
+      toplam: 2500,
+      kategori: 'ELEKTRİKSEL KONTROLLER'
+    },
+    {
+      id: 37,
+      ad: 'Basınçlı Kap',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 400,
+      miktar: 1,
+      toplam: 400,
+      kategori: 'BASINÇLI KAPLAR KONTROLLERİ'
+    }
+  ],
+  araToplam: 2900,
+  kdv: 580,
+  genelToplam: 3480,
+  durum: 'Onaylandı',
+  olusturmaTarihi: '2025-10-28T13:57:11.248Z',
+  guncellemeTarihi: '2025-10-28T13:57:17.129Z',
+  isEmriId: 1761659837129
+}
+GET /api/is-emirleri - İş emirleri istendi
+GET /api/is-emirleri/1761659837129 - İş emri detayı istendi
+GET /api/is-emirleri/1761659837129 - İş emri detayı istendi
+PUT /api/is-emirleri/1761659837129/kalemler/0/durum - Kalem durumu güncelleniyor: Devam Ediyor
+✅ Kalem durumu güncellendi: Devam Ediyor
+✅ İş emri durumu otomatik güncellendi: Beklemede
+GET /api/is-emirleri - İş emirleri istendi
+GET /api/is-emirleri/1761659837129 - İş emri detayı istendi
+GET /api/is-emirleri/1761659837129 - İş emri detayı istendi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/is-emirleri - İş emirleri istendi
+GET /api/is-emirleri/1761659837129 - İş emri detayı istendi
+GET /api/is-emirleri/1761659837129 - İş emri detayı istendi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/personeller - Personel listesi istendi
+GET /api/is-emirleri - İş emirleri istendi
+GET /api/is-emirleri/1761659837129 - İş emri detayı istendi
+PUT /api/is-emirleri/1761659837129/kalemler/0/personel - Kaleme personel atanıyor
+✅ Personel kaleme atandı: AHMET MAVUŞ
+GET /api/is-emirleri/1761659837129 - İş emri detayı istendi
+PUT /api/is-emirleri/1761659837129/kalemler/1/personel - Kaleme personel atanıyor
+✅ Personel kaleme atandı: HÜSEYİN SARIKULAK
+GET /api/is-emirleri/1761659837129 - İş emri detayı istendi
+PUT /api/is-emirleri/1761659837129 - İş emri güncelleniyor
+✅ İş emri güncellendi: IE-2025-004
+GET /api/is-emirleri - İş emirleri istendi
+GET /api/is-emirleri/1761659837129 - İş emri detayı istendi
+PUT /api/is-emirleri/1761659837129 - İş emri güncelleniyor
+✅ İş emri güncellendi: IE-2025-004
+GET /api/is-emirleri - İş emirleri istendi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi

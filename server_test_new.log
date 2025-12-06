@@ -1,0 +1,546 @@
+===========================================
+🚀 PERİYODİK MUAYENE YÖNETİM SİSTEMİ
+===========================================
+✅ Server çalışıyor:
+   📍 Yerel: http://localhost:3001
+   📍 Ağ: http://172.26.27.85:3001
+📁 Database: /mnt/c/Users/kadir/Desktop/periyodik-muayene/database.json
+⏰ Başlatma zamanı: 27.10.2025 18:23:09
+===========================================
+🌐 Aynı ağdaki diğer cihazlar yukarıdaki "Ağ" adresini kullanabilir
+===========================================
+PUT /api/teklifler/2/durum - Durum güncelleme: { durum: 'Onaylandı', not: 'Test için yeniden onaylama' }
+Teklif onaylandı - Muayene oluşturuluyor...
+✅ Muayene otomatik oluşturuldu. ID: 1761578603247
+Teklif durumu güncellendi: Onaylandı
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d853077bcsm801761466b.13 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d853077bcsm801761466b.13 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d85308cb0sm810910166b.9 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d85308cb0sm810910166b.9 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 4fb4d7f45d1cf-63e7ef6be28sm6466890a12.2 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials 4fb4d7f45d1cf-63e7ef6be28sm6466890a12.2 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+POST /api/auth/login - Giriş denemesi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+POST /api/auth/logout
+POST /api/auth/login - Giriş denemesi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/email-ayarlar - E-posta ayarları istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/email-ayarlar - E-posta ayarları istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/email-ayarlar - E-posta ayarları istendi
+GET /api/email-ayarlar - E-posta ayarları istendi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+PUT /api/teklifler/3 - Teklif güncelleme: {
+  id: 3,
+  teklifNo: '2025-003',
+  musteriId: 1,
+  teklifTarihi: '2025-10-27',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 30,
+      ad: 'Buhar Kazanı',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 600,
+      miktar: 1,
+      toplam: 600,
+      kategori: 'BASINÇLI KAPLAR KONTROLLERİ'
+    }
+  ],
+  araToplam: 600,
+  kdv: 120,
+  genelToplam: 720,
+  durum: 'Reddedildi',
+  olusturmaTarihi: '2025-10-27T09:36:32.562Z',
+  guncellemeTarihi: '2025-10-27T14:44:30.356Z',
+  durumGecmisi: [
+    {
+      eskiDurum: 'Onaylandı',
+      yeniDurum: 'Reddedildi',
+      tarih: '2025-10-27T15:43:24.867Z',
+      not: ''
+    }
+  ]
+}
+Teklif başarıyla güncellendi: {
+  id: 3,
+  teklifNo: '2025-003',
+  musteriId: 1,
+  teklifTarihi: '2025-10-27',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 30,
+      ad: 'Buhar Kazanı',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 600,
+      miktar: 1,
+      toplam: 600,
+      kategori: 'BASINÇLI KAPLAR KONTROLLERİ'
+    }
+  ],
+  araToplam: 600,
+  kdv: 120,
+  genelToplam: 720,
+  durum: 'Reddedildi',
+  olusturmaTarihi: '2025-10-27T09:36:32.562Z',
+  guncellemeTarihi: '2025-10-27T15:43:24.995Z'
+}
+PUT /api/teklifler/3 - Teklif güncelleme: {
+  id: 3,
+  teklifNo: '2025-003',
+  musteriId: 1,
+  teklifTarihi: '2025-10-27',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 30,
+      ad: 'Buhar Kazanı',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 600,
+      miktar: 1,
+      toplam: 600,
+      kategori: 'BASINÇLI KAPLAR KONTROLLERİ'
+    }
+  ],
+  araToplam: 600,
+  kdv: 120,
+  genelToplam: 720,
+  durum: 'Onaylandı',
+  olusturmaTarihi: '2025-10-27T09:36:32.562Z',
+  guncellemeTarihi: '2025-10-27T14:44:30.356Z',
+  durumGecmisi: [
+    {
+      eskiDurum: 'Onaylandı',
+      yeniDurum: 'Reddedildi',
+      tarih: '2025-10-27T15:43:24.867Z',
+      not: ''
+    },
+    {
+      eskiDurum: 'Reddedildi',
+      yeniDurum: 'Onaylandı',
+      tarih: '2025-10-27T15:43:29.543Z',
+      not: ''
+    }
+  ]
+}
+Teklif başarıyla güncellendi: {
+  id: 3,
+  teklifNo: '2025-003',
+  musteriId: 1,
+  teklifTarihi: '2025-10-27',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 30,
+      ad: 'Buhar Kazanı',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 600,
+      miktar: 1,
+      toplam: 600,
+      kategori: 'BASINÇLI KAPLAR KONTROLLERİ'
+    }
+  ],
+  araToplam: 600,
+  kdv: 120,
+  genelToplam: 720,
+  durum: 'Onaylandı',
+  olusturmaTarihi: '2025-10-27T09:36:32.562Z',
+  guncellemeTarihi: '2025-10-27T15:43:29.675Z'
+}
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+POST /api/teklifler - Yeni teklif: {
+  musteriId: 1,
+  teklifTarihi: '2025-10-27',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  durum: 'Bekleyen',
+  hizmetler: [
+    {
+      id: 17,
+      ad: 'Kişisel Maruziyet Toz Ölçümü',
+      metod: 'MDHS 14/3 - Grav. metod ile toplam toz tayini',
+      birim: 'Adet',
+      fiyat: 600,
+      miktar: 1,
+      toplam: 600,
+      kategori: 'İŞ HİJYENİ ÖLÇÜM  (ORTAM ÖLÇÜM)'
+    }
+  ],
+  araToplam: 600,
+  kdv: 120,
+  genelToplam: 720
+}
+Teklif başarıyla oluşturuldu: {
+  id: 4,
+  teklifNo: '2025-004',
+  musteriId: 1,
+  teklifTarihi: '2025-10-27',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 17,
+      ad: 'Kişisel Maruziyet Toz Ölçümü',
+      metod: 'MDHS 14/3 - Grav. metod ile toplam toz tayini',
+      birim: 'Adet',
+      fiyat: 600,
+      miktar: 1,
+      toplam: 600,
+      kategori: 'İŞ HİJYENİ ÖLÇÜM  (ORTAM ÖLÇÜM)'
+    }
+  ],
+  araToplam: 600,
+  kdv: 120,
+  genelToplam: 720,
+  durum: 'Bekleyen',
+  olusturmaTarihi: '2025-10-27T15:43:53.141Z'
+}
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d8538478fsm802849866b.33 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d8538478fsm802849866b.33 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+PUT /api/teklifler/4 - Teklif güncelleme: {
+  id: 4,
+  teklifNo: '2025-004',
+  musteriId: 1,
+  teklifTarihi: '2025-10-27',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 17,
+      ad: 'Kişisel Maruziyet Toz Ölçümü',
+      metod: 'MDHS 14/3 - Grav. metod ile toplam toz tayini',
+      birim: 'Adet',
+      fiyat: 600,
+      miktar: 1,
+      toplam: 600,
+      kategori: 'İŞ HİJYENİ ÖLÇÜM  (ORTAM ÖLÇÜM)'
+    }
+  ],
+  araToplam: 600,
+  kdv: 120,
+  genelToplam: 720,
+  durum: 'Onaylandı',
+  olusturmaTarihi: '2025-10-27T15:43:53.141Z',
+  durumGecmisi: [
+    {
+      eskiDurum: 'Bekleyen',
+      yeniDurum: 'Onaylandı',
+      tarih: '2025-10-27T15:43:57.247Z',
+      not: ''
+    }
+  ]
+}
+Teklif başarıyla güncellendi: {
+  id: 4,
+  teklifNo: '2025-004',
+  musteriId: 1,
+  teklifTarihi: '2025-10-27',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 17,
+      ad: 'Kişisel Maruziyet Toz Ölçümü',
+      metod: 'MDHS 14/3 - Grav. metod ile toplam toz tayini',
+      birim: 'Adet',
+      fiyat: 600,
+      miktar: 1,
+      toplam: 600,
+      kategori: 'İŞ HİJYENİ ÖLÇÜM  (ORTAM ÖLÇÜM)'
+    }
+  ],
+  araToplam: 600,
+  kdv: 120,
+  genelToplam: 720,
+  durum: 'Onaylandı',
+  olusturmaTarihi: '2025-10-27T15:43:53.141Z',
+  guncellemeTarihi: '2025-10-27T15:43:57.366Z'
+}
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d853e5138sm795107666b.44 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d853e5138sm795107666b.44 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+GET /api/muayeneler - Tüm muayeneler istendi
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d8536968csm801630666b.29 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d8536968csm801630666b.29 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+GET /api/teklifler/:id/pdf - PDF oluştur
+PUT /api/teklifler/3/durum - Durum güncelleme: { durum: 'Bekleyen', not: 'Test için durum değişikliği' }
+Teklif durumu güncellendi: Bekleyen
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d85308cc6sm1018524366b.12 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d85308cc6sm1018524366b.12 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d85338663sm1017019166b.17 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d85338663sm1017019166b.17 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d8534d99dsm1027928966b.21 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d8534d99dsm1027928966b.21 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+PUT /api/teklifler/3/durum - Durum güncelleme: { durum: 'Onaylandı', not: 'Muayene oluşturma testi' }
+Teklif onaylandı - Muayene oluşturuluyor...
+✅ Muayene otomatik oluşturuldu. ID: 1761639050514
+Teklif durumu güncellendi: Onaylandı
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d853c5bd8sm1011952466b.38 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d853c5bd8sm1011952466b.38 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d85413b88sm997660866b.55 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d85413b88sm997660866b.55 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 4fb4d7f45d1cf-640325d4079sm273832a12.0 - gsmtp
+    at SMTPConnection._formatError (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/mnt/c/Users/kadir/Desktop/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials 4fb4d7f45d1cf-640325d4079sm273832a12.0 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+POST /api/auth/logout
+POST /api/auth/login - Giriş denemesi
+GET /api/muayeneler - Tüm muayeneler istendi

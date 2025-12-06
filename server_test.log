@@ -1,0 +1,106 @@
+===========================================
+🚀 PERİYODİK MUAYENE YÖNETİM SİSTEMİ
+===========================================
+✅ Server çalışıyor:
+   📍 Yerel: http://localhost:3001
+   📍 Ağ: http://172.26.27.85:3001
+📁 Database: /home/wsl-kgmkadir/periyodik-muayene/database.json
+⏰ Başlatma zamanı: 27.10.2025 12:31:49
+===========================================
+🌐 Aynı ağdaki diğer cihazlar yukarıdaki "Ağ" adresini kullanabilir
+===========================================
+POST /api/auth/login - Giriş denemesi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+POST /api/teklifler - Yeni teklif: {
+  musteriId: 1,
+  teklifTarihi: '2025-10-27',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  durum: 'Bekleyen',
+  hizmetler: [
+    {
+      id: 30,
+      ad: 'Buhar Kazanı',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 600,
+      miktar: 1,
+      toplam: 600,
+      kategori: 'BASINÇLI KAPLAR KONTROLLERİ'
+    }
+  ],
+  araToplam: 600,
+  kdv: 120,
+  genelToplam: 720
+}
+Teklif başarıyla oluşturuldu: {
+  id: 3,
+  teklifNo: '2025-003',
+  musteriId: 1,
+  teklifTarihi: '2025-10-27',
+  gecerlilik: 14,
+  konu: 'Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi',
+  hizmetler: [
+    {
+      id: 30,
+      ad: 'Buhar Kazanı',
+      metod: 'İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği',
+      birim: 'Adet',
+      fiyat: 600,
+      miktar: 1,
+      toplam: 600,
+      kategori: 'BASINÇLI KAPLAR KONTROLLERİ'
+    }
+  ],
+  araToplam: 600,
+  kdv: 120,
+  genelToplam: 720,
+  durum: 'Bekleyen',
+  olusturmaTarihi: '2025-10-27T09:36:32.562Z'
+}
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+E-posta gönderme hatası: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d85308c82sm711587366b.5 - gsmtp
+    at SMTPConnection._formatError (/home/wsl-kgmkadir/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/home/wsl-kgmkadir/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:1595:34)
+    at SMTPConnection.<anonymous> (/home/wsl-kgmkadir/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/home/wsl-kgmkadir/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/home/wsl-kgmkadir/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/home/wsl-kgmkadir/periyodik-muayene/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials a640c23a62f3a-b6d85308c82sm711587366b.5 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+GET /api/teklifler/:id/pdf - PDF oluştur
+node:_http_outgoing:849
+    throw new ERR_HTTP_HEADERS_SENT('remove');
+    ^
+
+Error [ERR_HTTP_HEADERS_SENT]: Cannot remove headers after they are sent to the client
+    at ServerResponse.removeHeader (node:_http_outgoing:849:11)
+    at write (/home/wsl-kgmkadir/periyodik-muayene/node_modules/finalhandler/index.js:287:9)
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+    at listener (/home/wsl-kgmkadir/periyodik-muayene/node_modules/on-finished/index.js:170:15)
+    at onFinish (/home/wsl-kgmkadir/periyodik-muayene/node_modules/on-finished/index.js:101:5)
+    at callback (/home/wsl-kgmkadir/periyodik-muayene/node_modules/ee-first/index.js:55:10)
+    at IncomingMessage.onevent (/home/wsl-kgmkadir/periyodik-muayene/node_modules/ee-first/index.js:93:5)
+    at IncomingMessage.emit (node:events:518:28)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'ERR_HTTP_HEADERS_SENT'
+}
+
+Node.js v22.17.1

@@ -1,0 +1,58 @@
+===========================================
+🚀 PERİYODİK MUAYENE YÖNETİM SİSTEMİ
+===========================================
+✅ Server çalışıyor:
+   📍 Yerel: http://localhost:3001
+   📍 Ağ: http://172.26.27.85:3001
+📁 Database: /mnt/c/Users/kadir/Desktop/periyodik-muayene/database.json
+⏰ Başlatma zamanı: 28.10.2025 11:52:14
+===========================================
+🌐 Aynı ağdaki diğer cihazlar yukarıdaki "Ağ" adresini kullanabilir
+===========================================
+POST /api/sertifikalar - Yeni sertifika oluştur
+✅ Sertifika oluşturuldu. ID: 1761641567510, No: CERT-1761641567510
+GET /api/sertifikalar/1761641567510/pdf - PDF oluştur
+✅ PDF oluşturuldu: CERT-1761641567510
+POST /api/auth/login - Giriş denemesi
+GET /api/firma-bilgi - Firma bilgileri istendi
+GET /api/hizmetler - Tüm hizmetler istendi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/musteriler - Tüm müşteriler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+DELETE /api/teklifler/4 - Teklif silme
+Teklif başarıyla silindi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+DELETE /api/teklifler/3 - Teklif silme
+Teklif başarıyla silindi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+DELETE /api/teklifler/2 - Teklif silme
+Teklif başarıyla silindi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+DELETE /api/teklifler/1 - Teklif silme
+Teklif başarıyla silindi
+GET /api/teklifler - Tüm teklifler istendi
+GET /api/dashboard/stats - Dashboard istatistikleri istendi
+GET /api/dashboard/son-teklifler - Son teklifler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/sertifikalar - Tüm sertifikalar istendi
+GET /api/sertifikalar/1761641567510/pdf - PDF oluştur
+✅ PDF oluşturuldu: CERT-1761641567510
+GET /api/sertifikalar/1761641567510/pdf - PDF oluştur
+✅ PDF oluşturuldu: CERT-1761641567510
+Sertifika başarıyla silindi
+GET /api/sertifikalar - Tüm sertifikalar istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/sertifikalar - Tüm sertifikalar istendi
+GET /api/email-ayarlar - E-posta ayarları istendi
+GET /api/muayeneler - Tüm muayeneler istendi
+GET /api/sertifikalar - Tüm sertifikalar istendi
+GET /api/muayeneler - Tüm muayeneler istendi
