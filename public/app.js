@@ -76,12 +76,32 @@ async function checkAuth() {
 }
 
 async function initializeApp() {
+    // Süper admin için Firma Yönetimi linkini ekle
+    if (currentUser && currentUser.role === 'superadmin') {
+        const navContainer = document.querySelector('.sidebar-nav');
+        const ayarlarLink = navContainer.querySelector('[data-page="ayarlar"]');
+        
+        // Firma Yönetimi linki oluştur
+        const firmaLink = document.createElement('a');
+        firmaLink.href = 'admin-tenants.html';
+        firmaLink.className = 'nav-item';
+        firmaLink.innerHTML = `
+            <span class="nav-icon">🏢</span>
+            <span class="nav-text">Firma Yönetimi</span>
+        `;
+        
+        // Ayarlar'dan önce ekle
+        navContainer.insertBefore(firmaLink, ayarlarLink);
+    }
+
     // Navigasyon event listener'ları
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
             const page = item.getAttribute('data-page');
-            navigateToPage(page);
+            if (page) {
+                navigateToPage(page);
+            }
         });
     });
 
