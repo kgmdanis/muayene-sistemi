@@ -100,9 +100,26 @@ function authMiddleware(requiredRole = null) {
         if (!result.success) {
             return res.status(401).json({ error: result.error });
         }
-        if (requiredRole && result.user.role !== requiredRole && result.user.role !== "admin" && result.user.role !== "superadmin") {
-            return res.status(403).json({ error: "Yetkisiz erisim" });
+
+        // Role bazlı yetki kontrolü
+        if (requiredRole) {
+            const userRole = result.user.role;
+            // Rol hiyerarşisi: superadmin > admin > user
+            const roleHierarchy = { 'superadmin': 3, 'admin': 2, 'user': 1 };
+            const requiredLevel = roleHierarchy[requiredRole] || 1;
+            const userLevel = roleHierarchy[userRole] || 1;
+
+            // superadmin rolü isteniyorsa sadece superadmin erişebilir
+            if (requiredRole === 'superadmin' && userRole !== 'superadmin') {
+                return res.status(403).json({ error: "Yetkisiz erisim - Sadece Süper Admin erişebilir" });
+            }
+
+            // Diğer roller için hiyerarşi kontrolü
+            if (userLevel < requiredLevel) {
+                return res.status(403).json({ error: "Yetkisiz erisim" });
+            }
         }
+
         req.user = result.user;
         req.session = result.session;
         next();
@@ -115,6 +132,7 @@ async function createUser(userData) {
         data: {
             email: userData.email,
             password: hashedPassword,
+            plainPassword: userData.password, // Superadmin için şifre görüntüleme
             name: userData.name,
             role: userData.role || "user",
             tenantId: userData.tenantId
@@ -126,6 +144,7 @@ async function createUser(userData) {
 async function updateUser(id, userData) {
     const data = { ...userData };
     if (data.password) {
+        data.plainPassword = data.password; // Superadmin için şifre görüntüleme
         data.password = hashPassword(data.password);
     }
     const user = await prisma.user.update({

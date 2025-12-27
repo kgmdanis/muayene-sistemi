@@ -173,10 +173,14 @@
                 // Başarılı mesajı göster
                 document.getElementById('success-message').textContent = 'Giriş başarılı! Yönlendiriliyorsunuz...';
                 document.getElementById('success-message').style.display = 'block';
-                
-                // Ana sayfaya yönlendir
+
+                // Role göre yönlendir
                 setTimeout(() => {
-                    window.location.href = '/';
+                    if (data.user.role === 'superadmin') {
+                        window.location.href = '/superadmin.html';
+                    } else {
+                        window.location.href = '/';
+                    }
                 }, 1000);
                 
             } catch (error) {
@@ -185,7 +189,7 @@
             }
         };
         
-        // Eğer token varsa ana sayfaya yönlendir
+        // Eğer token varsa role göre yönlendir
         const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
         if (token) {
             // Token'ı doğrula
@@ -193,14 +197,23 @@
                 headers: { 'Authorization': 'Bearer ' + token }
             }).then(response => {
                 if (response.ok) {
-                    window.location.href = '/';
+                    return response.json();
                 } else {
-                    // Geçersiz token'ı temizle
-                    localStorage.removeItem('authToken');
-                    localStorage.removeItem('user');
-                    sessionStorage.removeItem('authToken');
-                    sessionStorage.removeItem('user');
+                    throw new Error('Token geçersiz');
                 }
+            }).then(data => {
+                // Role göre yönlendir
+                if (data.user.role === 'superadmin') {
+                    window.location.href = '/superadmin.html';
+                } else {
+                    window.location.href = '/';
+                }
+            }).catch(() => {
+                // Geçersiz token'ı temizle
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                sessionStorage.removeItem('authToken');
+                sessionStorage.removeItem('user');
             });
         }
     </script>

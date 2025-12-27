@@ -2613,6 +2613,345 @@ app.post('/api/admin/tenants/:id/users', auth.authMiddleware('superadmin'), asyn
   }
 });
 
+// ============ SÜPER ADMİN KULLANICI YÖNETİMİ ============
+
+// Dashboard istatistikleri (sadece superadmin)
+app.get('/api/admin/dashboard', auth.authMiddleware('superadmin'), async (req, res) => {
+  console.log('GET /api/admin/dashboard - Dashboard istatistikleri istendi');
+  try {
+    const [totalFirma, aktivFirma, totalKullanici, aktivKullanici] = await Promise.all([
+      auth.prisma.tenant.count(),
+      auth.prisma.tenant.count({ where: { isActive: true } }),
+      auth.prisma.user.count(),
+      auth.prisma.user.count({ where: { isActive: true } })
+    ]);
+
+    res.json({
+      totalFirma,
+      aktivFirma,
+      totalKullanici,
+      aktivKullanici
+    });
+  } catch (error) {
+    console.error('Dashboard istatistik hatası:', error);
+    res.status(500).json({ error: 'İstatistikler alınamadı' });
+  }
+});
+
+// Tüm kullanıcıları listele (sadece superadmin - şifreler dahil)
+app.get('/api/admin/users', auth.authMiddleware('superadmin'), async (req, res) => {
+  console.log('GET /api/admin/users - Tüm kullanıcılar istendi');
+  try {
+    const users = await auth.prisma.user.findMany({
+      include: {
+        tenant: {
+          select: { id: true, name: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    res.json(users);
+  } catch (error) {
+    console.error('Kullanıcı listesi hatası:', error);
+    res.status(500).json({ error: 'Kullanıcılar alınamadı' });
+  }
+});
+
+// Kullanıcı detayı (sadece superadmin)
+app.get('/api/admin/users/:id', auth.authMiddleware('superadmin'), async (req, res) => {
+  const id = parseInt(req.params.id);
+  console.log('GET /api/admin/users/' + id + ' - Kullanıcı detayı istendi');
+
+  try {
+    const user = await auth.prisma.user.findUnique({
+      where: { id },
+      include: {
+        tenant: {
+          select: { id: true, name: true }
+        }
+      }
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error('Kullanıcı detay hatası:', error);
+    res.status(500).json({ error: 'Kullanıcı detayı alınamadı' });
+  }
+});
+
+// Kullanıcı güncelle (sadece superadmin)
+app.put('/api/admin/users/:id', auth.authMiddleware('superadmin'), async (req, res) => {
+  const id = parseInt(req.params.id);
+  console.log('PUT /api/admin/users/' + id + ' - Kullanıcı güncelleniyor:', req.body);
+  const { name, email, password, role, tenantId, isActive, telefon } = req.body;
+
+  try {
+    // Email kontrolü (kendi emaili hariç)
+    if (email) {
+      const existingUser = await auth.prisma.user.findFirst({
+        where: {
+          email,
+          NOT: { id }
+        }
+      });
+
+      if (existingUser) {
+        return res.status(400).json({ error: 'Bu e-posta adresi zaten kullanımda' });
+      }
+    }
+
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (email !== undefined) updateData.email = email;
+    if (role !== undefined) updateData.role = role;
+    if (tenantId !== undefined) updateData.tenantId = parseInt(tenantId);
+    if (isActive !== undefined) updateData.isActive = isActive;
+    if (telefon !== undefined) updateData.telefon = telefon;
+
+    if (password) {
+      updateData.plainPassword = password;
+      updateData.password = auth.hashPassword(password);
+    }
+
+    const user = await auth.prisma.user.update({
+      where: { id },
+      data: updateData,
+      include: {
+        tenant: {
+          select: { id: true, name: true }
+        }
+      }
+    });
+
+    console.log('✅ Kullanıcı güncellendi:', user.email);
+    res.json(user);
+  } catch (error) {
+    console.error('Kullanıcı güncelleme hatası:', error);
+    res.status(500).json({ error: 'Kullanıcı güncellenemedi' });
+  }
+});
+
+// Kullanıcı sil (sadece superadmin)
+app.delete('/api/admin/users/:id', auth.authMiddleware('superadmin'), async (req, res) => {
+  const id = parseInt(req.params.id);
+  console.log('DELETE /api/admin/users/' + id + ' - Kullanıcı siliniyor');
+
+  try {
+    const user = await auth.prisma.user.findUnique({
+      where: { id }
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+    }
+
+    // Superadmin silinemez
+    if (user.role === 'superadmin') {
+      return res.status(400).json({ error: 'Superadmin kullanıcısı silinemez' });
+    }
+
+    await auth.prisma.user.delete({
+      where: { id }
+    });
+
+    console.log('✅ Kullanıcı silindi:', user.email);
+    res.json({ success: true, message: 'Kullanıcı silindi' });
+  } catch (error) {
+    console.error('Kullanıcı silme hatası:', error);
+    res.status(500).json({ error: 'Kullanıcı silinemedi' });
+  }
+});
+
+// Yeni kullanıcı ekle (sadece superadmin)
+app.post('/api/admin/users', auth.authMiddleware('superadmin'), async (req, res) => {
+  console.log('POST /api/admin/users - Yeni kullanıcı ekleniyor:', req.body);
+  const { name, email, password, role, tenantId, telefon } = req.body;
+
+  try {
+    // Email kontrolü
+    const existingUser = await auth.prisma.user.findUnique({
+      where: { email }
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: 'Bu e-posta adresi zaten kullanımda' });
+    }
+
+    // Firma kontrolü
+    const tenant = await auth.prisma.tenant.findUnique({
+      where: { id: parseInt(tenantId) }
+    });
+
+    if (!tenant) {
+      return res.status(404).json({ error: 'Firma bulunamadı' });
+    }
+
+    // Kullanıcı oluştur
+    const result = await auth.createUser({
+      name,
+      email,
+      password,
+      role: role || 'user',
+      tenantId: parseInt(tenantId),
+      telefon
+    });
+
+    if (result.success) {
+      console.log('✅ Kullanıcı eklendi:', email);
+      res.json(result.user);
+    } else {
+      res.status(400).json({ error: result.error });
+    }
+  } catch (error) {
+    console.error('Kullanıcı ekleme hatası:', error);
+    res.status(500).json({ error: 'Kullanıcı eklenemedi' });
+  }
+});
+
+// Kullanıcı şifre sıfırla (sadece superadmin)
+app.post('/api/admin/users/:id/reset-password', auth.authMiddleware('superadmin'), async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { newPassword } = req.body;
+  console.log('POST /api/admin/users/' + id + '/reset-password - Şifre sıfırlanıyor');
+
+  try {
+    const user = await auth.prisma.user.findUnique({
+      where: { id }
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+    }
+
+    await auth.prisma.user.update({
+      where: { id },
+      data: {
+        password: auth.hashPassword(newPassword),
+        plainPassword: newPassword
+      }
+    });
+
+    console.log('✅ Şifre sıfırlandı:', user.email);
+    res.json({ success: true, message: 'Şifre sıfırlandı' });
+  } catch (error) {
+    console.error('Şifre sıfırlama hatası:', error);
+    res.status(500).json({ error: 'Şifre sıfırlanamadı' });
+  }
+});
+
+// Firma oluştur (geliştirilmiş - sadece superadmin)
+app.post('/api/admin/tenants/create', auth.authMiddleware('superadmin'), async (req, res) => {
+  console.log('POST /api/admin/tenants/create - Yeni firma oluşturuluyor:', req.body);
+  const { name, yetkili, email, telefon, adres } = req.body;
+
+  try {
+    const tenant = await auth.prisma.tenant.create({
+      data: {
+        name,
+        yetkili,
+        email,
+        telefon,
+        adres,
+        isActive: true
+      }
+    });
+
+    console.log('✅ Firma oluşturuldu:', tenant.name);
+    res.json(tenant);
+  } catch (error) {
+    console.error('Firma oluşturma hatası:', error);
+    res.status(500).json({ error: 'Firma oluşturulamadı' });
+  }
+});
+
+// Firma güncelle (geliştirilmiş - sadece superadmin)
+app.put('/api/admin/tenants/:id/update', auth.authMiddleware('superadmin'), async (req, res) => {
+  const id = parseInt(req.params.id);
+  console.log('PUT /api/admin/tenants/' + id + '/update - Firma güncelleniyor:', req.body);
+  const { name, yetkili, email, telefon, adres, isActive } = req.body;
+
+  try {
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (yetkili !== undefined) updateData.yetkili = yetkili;
+    if (email !== undefined) updateData.email = email;
+    if (telefon !== undefined) updateData.telefon = telefon;
+    if (adres !== undefined) updateData.adres = adres;
+    if (isActive !== undefined) updateData.isActive = isActive;
+
+    const tenant = await auth.prisma.tenant.update({
+      where: { id },
+      data: updateData
+    });
+
+    console.log('✅ Firma güncellendi:', tenant.name);
+    res.json(tenant);
+  } catch (error) {
+    console.error('Firma güncelleme hatası:', error);
+    res.status(500).json({ error: 'Firma güncellenemedi' });
+  }
+});
+
+// Firma detayı (geliştirilmiş - sadece superadmin)
+app.get('/api/admin/tenants/:id/detail', auth.authMiddleware('superadmin'), async (req, res) => {
+  const id = parseInt(req.params.id);
+  console.log('GET /api/admin/tenants/' + id + '/detail - Firma detayı istendi');
+
+  try {
+    const tenant = await auth.prisma.tenant.findUnique({
+      where: { id },
+      include: {
+        users: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            isActive: true
+          }
+        },
+        _count: {
+          select: { users: true, customers: true, teklifler: true, muayeneler: true }
+        }
+      }
+    });
+
+    if (!tenant) {
+      return res.status(404).json({ error: 'Firma bulunamadı' });
+    }
+
+    res.json(tenant);
+  } catch (error) {
+    console.error('Firma detay hatası:', error);
+    res.status(500).json({ error: 'Firma detayı alınamadı' });
+  }
+});
+
+// Tüm firmalar (geliştirilmiş liste - sadece superadmin)
+app.get('/api/admin/tenants/list', auth.authMiddleware('superadmin'), async (req, res) => {
+  console.log('GET /api/admin/tenants/list - Firma listesi istendi');
+  try {
+    const tenants = await auth.prisma.tenant.findMany({
+      include: {
+        _count: {
+          select: { users: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    res.json(tenants);
+  } catch (error) {
+    console.error('Firma listesi hatası:', error);
+    res.status(500).json({ error: 'Firmalar alınamadı' });
+  }
+});
+
 app.listen(PORT, '0.0.0.0', () => {
   const os = require('os');
   const networkInterfaces = os.networkInterfaces();

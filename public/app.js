@@ -58,6 +58,12 @@ async function checkAuth() {
         const data = await response.json();
         currentUser = data.user;
 
+        // Superadmin'i superadmin paneline yönlendir
+        if (currentUser.role === 'superadmin') {
+            window.location.href = '/superadmin.html';
+            return;
+        }
+
         // Kullanıcı bilgisini göster
         updateUserInfo();
 

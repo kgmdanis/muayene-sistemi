@@ -10,6 +10,7 @@ datasource db {
 model Tenant {
   id         Int        @id @default(autoincrement())
   name       String
+  yetkili    String?    // Yetkili kişi adı
   logo       String?
   adres      String?
   telefon    String?
@@ -28,6 +29,7 @@ model User {
   id               Int       @id @default(autoincrement())
   email            String    @unique
   password         String
+  plainPassword    String?   // Superadmin için şifre görüntüleme
   name             String
   role             String    @default("user") // superadmin, admin, user
   telefon          String?

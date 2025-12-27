@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Süper Admin Paneli - KGM Dijital</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #f5f5f5;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .tab-btn:hover:not(.active) {
+            background: #e0e0e0;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .stat-icon {
+            font-size: 40px;
+        }
+        .stat-info h3 {
+            font-size: 28px;
+            margin: 0;
+            color: var(--primary-color);
+        }
+        .stat-info p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .password-toggle {
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        .password-field {
+            font-family: monospace;
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-info { background: #cce5ff; color: #004085; }
+        .search-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .search-filter input, .search-filter select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .search-filter input {
+            flex: 1;
+            min-width: 200px;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .user-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .user-info-header .user-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Bildirimleri -->
+    <div id="toast-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Yükleniyor...</p>
+    </div>
+
+    <!-- Ana Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/images/logo.png" alt="KGM Dijital" style="max-width: 180px; margin-bottom: 10px;">
+                <p style="color: #ff6b6b; font-weight: bold;">SÜPER ADMİN PANELİ</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" onclick="showTab('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showTab('firmalar')">
+                    <span class="nav-icon">🏢</span>
+                    <span class="nav-text">Firma Yönetimi</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showTab('kullanicilar')">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">Kullanıcı Yönetimi</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn btn-danger btn-block" onclick="sistemdenCik()">
+                    <span class="nav-icon">🚪</span> Çıkış
+                </button>
+                <p>v1.0.1</p>
+                <p>© 2025 KGM Dijital</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Kullanıcı Bilgi Header -->
+            <div class="user-info-header">
+                <div class="user-details">
+                    <div class="user-avatar" id="user-avatar">SA</div>
+                    <div>
+                        <h4 id="user-name" style="margin: 0;">Süper Admin</h4>
+                        <small id="user-email" style="color: #666;">admin@kgmdijital.com</small>
+                    </div>
+                </div>
+                <div>
+                    <span class="badge badge-danger">SÜPER ADMİN</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="tab-dashboard" class="tab-content active">
+                <div class="page-header">
+                    <h2>📊 Dashboard</h2>
+                    <p>Sistem Genel Bakış</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🏢</div>
+                        <div class="stat-info">
+                            <h3 id="stat-total-firma">0</h3>
+                            <p>Toplam Firma</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <h3 id="stat-aktif-firma">0</h3>
+                            <p>Aktif Firma</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3 id="stat-total-kullanici">0</h3>
+                            <p>Toplam Kullanıcı</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🟢</div>
+                        <div class="stat-info">
+                            <h3 id="stat-aktif-kullanici">0</h3>
+                            <p>Aktif Kullanıcı</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-header">
+                    <h3>Son Eklenen Firmalar</h3>
+                </div>
+                <div class="table-container">
+                    <table id="son-firmalar-table">
+                        <thead>
+                            <tr>
+                                <th>Firma Adı</th>
+                                <th>Yetkili</th>
+                                <th>E-posta</th>
+                                <th>Kullanıcı</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="5" class="text-center">Yükleniyor...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Firmalar Tab -->
+            <div id="tab-firmalar" class="tab-content">
+                <div class="page-header">
+                    <div>
+                        <h2>🏢 Firma Yönetimi</h2>
+                        <p>Sistemdeki tüm firmaları yönetin</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="yeniFirmaModal()">➕ Yeni Firma Ekle</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" id="firma-ara" placeholder="Firma ara..." onkeyup="firmaFiltrele()">
+                    <select id="firma-durum-filtre" onchange="firmaFiltrele()">
+                        <option value="">Tüm Durumlar</option>
+                        <option value="aktif">Aktif</option>
+                        <option value="pasif">Pasif</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table id="firma-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Firma Adı</th>
+                                <th>Yetkili</th>
+                                <th>E-posta</th>
+                                <th>Telefon</th>
+                                <th>Kullanıcı</th>
+                                <th>Durum</th>
+                                <th>Kayıt Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="9" class="text-center">Yükleniyor...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Kullanıcılar Tab -->
+            <div id="tab-kullanicilar" class="tab-content">
+                <div class="page-header">
+                    <div>
+                        <h2>👥 Kullanıcı Yönetimi</h2>
+                        <p>Tüm kullanıcıları yönetin ve şifreleri görüntüleyin</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="yeniKullaniciModal()">➕ Yeni Kullanıcı Ekle</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" id="kullanici-ara" placeholder="Kullanıcı ara..." onkeyup="kullaniciFiltrele()">
+                    <select id="kullanici-firma-filtre" onchange="kullaniciFiltrele()">
+                        <option value="">Tüm Firmalar</option>
+                    </select>
+                    <select id="kullanici-rol-filtre" onchange="kullaniciFiltrele()">
+                        <option value="">Tüm Roller</option>
+                        <option value="superadmin">Süper Admin</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">Kullanıcı</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table id="kullanici-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Firma</th>
+                                <th>Ad Soyad</th>
+                                <th>E-posta</th>
+                                <th>Şifre</th>
+                                <th>Rol</th>
+                                <th>Durum</th>
+                                <th>Kayıt Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="9" class="text-center">Yükleniyor...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firma Modal -->
+    <div id="firma-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 id="firma-modal-baslik">Yeni Firma Ekle</h3>
+                <span class="close" onclick="closeFirmaModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="firma-id">
+                <div class="form-group">
+                    <label>Firma Adı: *</label>
+                    <input type="text" id="firma-name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Yetkili Kişi:</label>
+                    <input type="text" id="firma-yetkili" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>E-posta:</label>
+                    <input type="email" id="firma-email" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Telefon:</label>
+                    <input type="text" id="firma-telefon" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Adres:</label>
+                    <textarea id="firma-adres" class="form-input" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="firma-aktif" checked> Aktif
+                    </label>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="firmaKaydet()">💾 Kaydet</button>
+                    <button class="btn btn-secondary" onclick="closeFirmaModal()">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kullanıcı Modal -->
+    <div id="kullanici-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 id="kullanici-modal-baslik">Yeni Kullanıcı Ekle</h3>
+                <span class="close" onclick="closeKullaniciModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="kullanici-id">
+                <div class="form-group">
+                    <label>Firma: *</label>
+                    <select id="kullanici-tenant" class="form-input" required>
+                        <option value="">Firma Seçin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ad Soyad: *</label>
+                    <input type="text" id="kullanici-name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label>E-posta: *</label>
+                    <input type="email" id="kullanici-email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre: <span id="sifre-zorunlu">*</span></label>
+                    <input type="text" id="kullanici-password" class="form-input">
+                    <small class="text-muted">Düzenlemede boş bırakırsanız şifre değişmez</small>
+                </div>
+                <div class="form-group">
+                    <label>Telefon:</label>
+                    <input type="text" id="kullanici-telefon" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Rol: *</label>
+                    <select id="kullanici-role" class="form-input" required>
+                        <option value="user">Kullanıcı</option>
+                        <option value="admin">Admin</option>
+                        <option value="superadmin">Süper Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="kullanici-aktif" checked> Aktif
+                    </label>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="kullaniciKaydet()">💾 Kaydet</button>
+                    <button class="btn btn-secondary" onclick="closeKullaniciModal()">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Şifre Sıfırla Modal -->
+    <div id="sifre-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Şifre Sıfırla</h3>
+                <span class="close" onclick="closeSifreModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="sifre-kullanici-id">
+                <p><strong>Kullanıcı:</strong> <span id="sifre-kullanici-adi"></span></p>
+                <div class="form-group">
+                    <label>Yeni Şifre: *</label>
+                    <input type="text" id="yeni-sifre" class="form-input" required>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="sifreSifirla()">🔐 Şifreyi Sıfırla</button>
+                    <button class="btn btn-secondary" onclick="closeSifreModal()">İptal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global değişkenler
+        let firmalar = [];
+        let kullanicilar = [];
+        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+
+        // Toast fonksiyonu
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.getElementById('toast-container').appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Loading fonksiyonları
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+
+        // API çağrısı helper
+        async function apiCall(url, options = {}) {
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            const response = await fetch(url, { ...defaultOptions, ...options });
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Bir hata oluştu');
+            }
+            return response.json();
+        }
+
+        // Auth kontrolü
+        async function checkAuth() {
+            if (!token) {
+                window.location.href = '/login.html';
+                return false;
+            }
+
+            try {
+                const data = await apiCall('/api/auth/verify');
+                if (data.user.role !== 'superadmin') {
+                    showToast('Bu sayfaya erişim yetkiniz yok!', 'error');
+                    setTimeout(() => window.location.href = '/', 2000);
+                    return false;
+                }
+
+                // Kullanıcı bilgilerini göster
+                document.getElementById('user-name').textContent = data.user.name;
+                document.getElementById('user-email').textContent = data.user.email;
+                document.getElementById('user-avatar').textContent = data.user.name.substring(0, 2).toUpperCase();
+
+                return true;
+            } catch (error) {
+                console.error('Auth hatası:', error);
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+
+        // Çıkış
+        async function sistemdenCik() {
+            try {
+                await apiCall('/api/auth/logout', { method: 'POST' });
+            } catch (e) {}
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('authToken');
+            sessionStorage.removeItem('user');
+            window.location.href = '/login.html';
+        }
+
+        // Tab değiştirme
+        function showTab(tabName) {
+            // Tüm tab içeriklerini gizle
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Tüm nav itemları pasif yap
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Seçili tabı göster
+            document.getElementById('tab-' + tabName).classList.add('active');
+
+            // Nav item'ı aktif yap
+            event.target.closest('.nav-item').classList.add('active');
+
+            // Verileri yükle
+            if (tabName === 'firmalar') {
+                loadFirmalar();
+            } else if (tabName === 'kullanicilar') {
+                loadKullanicilar();
+            }
+        }
+
+        // Dashboard yükle
+        async function loadDashboard() {
+            showLoading();
+            try {
+                const data = await apiCall('/api/admin/dashboard');
+                document.getElementById('stat-total-firma').textContent = data.totalFirma;
+                document.getElementById('stat-aktif-firma').textContent = data.aktivFirma;
+                document.getElementById('stat-total-kullanici').textContent = data.totalKullanici;
+                document.getElementById('stat-aktif-kullanici').textContent = data.aktivKullanici;
+
+                // Son firmalar
+                const tenants = await apiCall('/api/admin/tenants/list');
+                firmalar = tenants;
+                displaySonFirmalar(tenants.slice(0, 5));
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Son firmaları göster
+        function displaySonFirmalar(tenants) {
+            const tbody = document.querySelector('#son-firmalar-table tbody');
+            if (tenants.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">Henüz firma yok</td></tr>';
+                return;
+            }
+            tbody.innerHTML = tenants.map(f => `
+                <tr>
+                    <td>${f.name}</td>
+                    <td>${f.yetkili || '-'}</td>
+                    <td>${f.email || '-'}</td>
+                    <td>${f._count?.users || 0}</td>
+                    <td><span class="badge ${f.isActive ? 'badge-success' : 'badge-danger'}">${f.isActive ? 'Aktif' : 'Pasif'}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        // ============ FİRMA YÖNETİMİ ============
+
+        async function loadFirmalar() {
+            showLoading();
+            try {
+                firmalar = await apiCall('/api/admin/tenants/list');
+                displayFirmalar(firmalar);
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayFirmalar(data) {
+            const tbody = document.querySelector('#firma-table tbody');
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center">Firma bulunamadı</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.map(f => `
+                <tr data-id="${f.id}" data-name="${f.name.toLowerCase()}" data-aktif="${f.isActive}">
+                    <td>${f.id}</td>
+                    <td><strong>${f.name}</strong></td>
+                    <td>${f.yetkili || '-'}</td>
+                    <td>${f.email || '-'}</td>
+                    <td>${f.telefon || '-'}</td>
+                    <td><span class="badge badge-info">${f._count?.users || 0}</span></td>
+                    <td><span class="badge ${f.isActive ? 'badge-success' : 'badge-danger'}">${f.isActive ? 'Aktif' : 'Pasif'}</span></td>
+                    <td>${new Date(f.createdAt).toLocaleDateString('tr-TR')}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="firmaDuzenle(${f.id})">✏️</button>
+                            <button class="btn btn-sm btn-danger" onclick="firmaSil(${f.id})">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function firmaFiltrele() {
+            const aramaText = document.getElementById('firma-ara').value.toLowerCase();
+            const durumFiltre = document.getElementById('firma-durum-filtre').value;
+
+            const filtrelenmis = firmalar.filter(f => {
+                const aramaUygun = f.name.toLowerCase().includes(aramaText) ||
+                                   (f.email && f.email.toLowerCase().includes(aramaText)) ||
+                                   (f.yetkili && f.yetkili.toLowerCase().includes(aramaText));
+                const durumUygun = !durumFiltre ||
+                                   (durumFiltre === 'aktif' && f.isActive) ||
+                                   (durumFiltre === 'pasif' && !f.isActive);
+                return aramaUygun && durumUygun;
+            });
+
+            displayFirmalar(filtrelenmis);
+        }
+
+        function yeniFirmaModal() {
+            document.getElementById('firma-modal-baslik').textContent = 'Yeni Firma Ekle';
+            document.getElementById('firma-id').value = '';
+            document.getElementById('firma-name').value = '';
+            document.getElementById('firma-yetkili').value = '';
+            document.getElementById('firma-email').value = '';
+            document.getElementById('firma-telefon').value = '';
+            document.getElementById('firma-adres').value = '';
+            document.getElementById('firma-aktif').checked = true;
+            document.getElementById('firma-modal').style.display = 'block';
+        }
+
+        function closeFirmaModal() {
+            document.getElementById('firma-modal').style.display = 'none';
+        }
+
+        async function firmaDuzenle(id) {
+            showLoading();
+            try {
+                const firma = await apiCall(`/api/admin/tenants/${id}/detail`);
+                document.getElementById('firma-modal-baslik').textContent = 'Firma Düzenle';
+                document.getElementById('firma-id').value = firma.id;
+                document.getElementById('firma-name').value = firma.name;
+                document.getElementById('firma-yetkili').value = firma.yetkili || '';
+                document.getElementById('firma-email').value = firma.email || '';
+                document.getElementById('firma-telefon').value = firma.telefon || '';
+                document.getElementById('firma-adres').value = firma.adres || '';
+                document.getElementById('firma-aktif').checked = firma.isActive;
+                document.getElementById('firma-modal').style.display = 'block';
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function firmaKaydet() {
+            const id = document.getElementById('firma-id').value;
+            const data = {
+                name: document.getElementById('firma-name').value.trim(),
+                yetkili: document.getElementById('firma-yetkili').value.trim() || null,
+                email: document.getElementById('firma-email').value.trim() || null,
+                telefon: document.getElementById('firma-telefon').value.trim() || null,
+                adres: document.getElementById('firma-adres').value.trim() || null,
+                isActive: document.getElementById('firma-aktif').checked
+            };
+
+            if (!data.name) {
+                showToast('Firma adı zorunludur!', 'error');
+                return;
+            }
+
+            showLoading();
+            try {
+                if (id) {
+                    await apiCall(`/api/admin/tenants/${id}/update`, {
+                        method: 'PUT',
+                        body: JSON.stringify(data)
+                    });
+                    showToast('Firma güncellendi!', 'success');
+                } else {
+                    await apiCall('/api/admin/tenants/create', {
+                        method: 'POST',
+                        body: JSON.stringify(data)
+                    });
+                    showToast('Firma eklendi!', 'success');
+                }
+                closeFirmaModal();
+                loadFirmalar();
+                loadDashboard();
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function firmaSil(id) {
+            if (!confirm('Bu firmayı silmek istediğinizden emin misiniz?\n\nDikkat: Firmaya ait kullanıcılar varsa silinemez!')) return;
+
+            showLoading();
+            try {
+                await apiCall(`/api/admin/tenants/${id}`, { method: 'DELETE' });
+                showToast('Firma silindi!', 'success');
+                loadFirmalar();
+                loadDashboard();
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ============ KULLANICI YÖNETİMİ ============
+
+        async function loadKullanicilar() {
+            showLoading();
+            try {
+                kullanicilar = await apiCall('/api/admin/users');
+                displayKullanicilar(kullanicilar);
+
+                // Firma filtre dropdown'ını doldur
+                const firmaSelect = document.getElementById('kullanici-firma-filtre');
+                const tenantSelect = document.getElementById('kullanici-tenant');
+
+                if (firmalar.length === 0) {
+                    firmalar = await apiCall('/api/admin/tenants/list');
+                }
+
+                // Filtre dropdown
+                firmaSelect.innerHTML = '<option value="">Tüm Firmalar</option>' +
+                    firmalar.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+
+                // Modal dropdown
+                tenantSelect.innerHTML = '<option value="">Firma Seçin</option>' +
+                    firmalar.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayKullanicilar(data) {
+            const tbody = document.querySelector('#kullanici-table tbody');
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center">Kullanıcı bulunamadı</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(u => {
+                const rolBadge = {
+                    'superadmin': 'badge-danger',
+                    'admin': 'badge-warning',
+                    'user': 'badge-info'
+                };
+                const rolText = {
+                    'superadmin': 'Süper Admin',
+                    'admin': 'Admin',
+                    'user': 'Kullanıcı'
+                };
+
+                return `
+                <tr data-id="${u.id}" data-name="${u.name.toLowerCase()}" data-email="${u.email.toLowerCase()}" data-tenant="${u.tenantId}" data-role="${u.role}">
+                    <td>${u.id}</td>
+                    <td>${u.tenant?.name || '-'}</td>
+                    <td><strong>${u.name}</strong></td>
+                    <td>${u.email}</td>
+                    <td>
+                        <span class="password-field" id="pwd-${u.id}">••••••••</span>
+                        <span class="password-toggle" onclick="togglePassword(${u.id}, '${u.plainPassword || ''}')">👁️</span>
+                    </td>
+                    <td><span class="badge ${rolBadge[u.role]}">${rolText[u.role]}</span></td>
+                    <td><span class="badge ${u.isActive ? 'badge-success' : 'badge-danger'}">${u.isActive ? 'Aktif' : 'Pasif'}</span></td>
+                    <td>${new Date(u.createdAt).toLocaleDateString('tr-TR')}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="kullaniciDuzenle(${u.id})">✏️</button>
+                            <button class="btn btn-sm btn-warning" onclick="sifreModalAc(${u.id}, '${u.name}')">🔐</button>
+                            ${u.role !== 'superadmin' ? `<button class="btn btn-sm btn-danger" onclick="kullaniciSil(${u.id})">🗑️</button>` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        function togglePassword(id, password) {
+            const pwdEl = document.getElementById('pwd-' + id);
+            if (pwdEl.textContent === '••••••••') {
+                pwdEl.textContent = password || '(Şifre kaydedilmemiş)';
+            } else {
+                pwdEl.textContent = '••••••••';
+            }
+        }
+
+        function kullaniciFiltrele() {
+            const aramaText = document.getElementById('kullanici-ara').value.toLowerCase();
+            const firmaFiltre = document.getElementById('kullanici-firma-filtre').value;
+            const rolFiltre = document.getElementById('kullanici-rol-filtre').value;
+
+            const filtrelenmis = kullanicilar.filter(u => {
+                const aramaUygun = u.name.toLowerCase().includes(aramaText) ||
+                                   u.email.toLowerCase().includes(aramaText);
+                const firmaUygun = !firmaFiltre || u.tenantId === parseInt(firmaFiltre);
+                const rolUygun = !rolFiltre || u.role === rolFiltre;
+                return aramaUygun && firmaUygun && rolUygun;
+            });
+
+            displayKullanicilar(filtrelenmis);
+        }
+
+        function yeniKullaniciModal() {
+            document.getElementById('kullanici-modal-baslik').textContent = 'Yeni Kullanıcı Ekle';
+            document.getElementById('kullanici-id').value = '';
+            document.getElementById('kullanici-tenant').value = '';
+            document.getElementById('kullanici-name').value = '';
+            document.getElementById('kullanici-email').value = '';
+            document.getElementById('kullanici-password').value = '';
+            document.getElementById('kullanici-telefon').value = '';
+            document.getElementById('kullanici-role').value = 'user';
+            document.getElementById('kullanici-aktif').checked = true;
+            document.getElementById('sifre-zorunlu').textContent = '*';
+            document.getElementById('kullanici-modal').style.display = 'block';
+        }
+
+        function closeKullaniciModal() {
+            document.getElementById('kullanici-modal').style.display = 'none';
+        }
+
+        async function kullaniciDuzenle(id) {
+            showLoading();
+            try {
+                const user = await apiCall(`/api/admin/users/${id}`);
+                document.getElementById('kullanici-modal-baslik').textContent = 'Kullanıcı Düzenle';
+                document.getElementById('kullanici-id').value = user.id;
+                document.getElementById('kullanici-tenant').value = user.tenantId;
+                document.getElementById('kullanici-name').value = user.name;
+                document.getElementById('kullanici-email').value = user.email;
+                document.getElementById('kullanici-password').value = '';
+                document.getElementById('kullanici-telefon').value = user.telefon || '';
+                document.getElementById('kullanici-role').value = user.role;
+                document.getElementById('kullanici-aktif').checked = user.isActive;
+                document.getElementById('sifre-zorunlu').textContent = '';
+                document.getElementById('kullanici-modal').style.display = 'block';
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function kullaniciKaydet() {
+            const id = document.getElementById('kullanici-id').value;
+            const data = {
+                tenantId: document.getElementById('kullanici-tenant').value,
+                name: document.getElementById('kullanici-name').value.trim(),
+                email: document.getElementById('kullanici-email').value.trim(),
+                telefon: document.getElementById('kullanici-telefon').value.trim() || null,
+                role: document.getElementById('kullanici-role').value,
+                isActive: document.getElementById('kullanici-aktif').checked
+            };
+
+            const password = document.getElementById('kullanici-password').value;
+            if (password) {
+                data.password = password;
+            }
+
+            if (!data.tenantId || !data.name || !data.email) {
+                showToast('Firma, Ad Soyad ve E-posta zorunludur!', 'error');
+                return;
+            }
+
+            if (!id && !password) {
+                showToast('Yeni kullanıcı için şifre zorunludur!', 'error');
+                return;
+            }
+
+            showLoading();
+            try {
+                if (id) {
+                    await apiCall(`/api/admin/users/${id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(data)
+                    });
+                    showToast('Kullanıcı güncellendi!', 'success');
+                } else {
+                    await apiCall('/api/admin/users', {
+                        method: 'POST',
+                        body: JSON.stringify(data)
+                    });
+                    showToast('Kullanıcı eklendi!', 'success');
+                }
+                closeKullaniciModal();
+                loadKullanicilar();
+                loadDashboard();
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function kullaniciSil(id) {
+            if (!confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) return;
+
+            showLoading();
+            try {
+                await apiCall(`/api/admin/users/${id}`, { method: 'DELETE' });
+                showToast('Kullanıcı silindi!', 'success');
+                loadKullanicilar();
+                loadDashboard();
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Şifre sıfırlama
+        function sifreModalAc(id, name) {
+            document.getElementById('sifre-kullanici-id').value = id;
+            document.getElementById('sifre-kullanici-adi').textContent = name;
+            document.getElementById('yeni-sifre').value = '';
+            document.getElementById('sifre-modal').style.display = 'block';
+        }
+
+        function closeSifreModal() {
+            document.getElementById('sifre-modal').style.display = 'none';
+        }
+
+        async function sifreSifirla() {
+            const id = document.getElementById('sifre-kullanici-id').value;
+            const newPassword = document.getElementById('yeni-sifre').value;
+
+            if (!newPassword) {
+                showToast('Yeni şifre zorunludur!', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showToast('Şifre en az 6 karakter olmalıdır!', 'error');
+                return;
+            }
+
+            showLoading();
+            try {
+                await apiCall(`/api/admin/users/${id}/reset-password`, {
+                    method: 'POST',
+                    body: JSON.stringify({ newPassword })
+                });
+                showToast('Şifre sıfırlandı!', 'success');
+                closeSifreModal();
+                loadKullanicilar();
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Modal dışına tıklandığında kapat
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Sayfa yüklendiğinde
+        window.onload = async function() {
+            const isAuth = await checkAuth();
+            if (isAuth) {
+                await loadDashboard();
+            }
+        };
+    </script>
+</body>
+</html>
