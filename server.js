@@ -2419,6 +2419,200 @@ app.put('/api/is-emirleri/:id/kalemler/:kalemIndex/durum', auth.authMiddleware()
   }
 });
 
+// ============ SÜPER ADMİN API'LERİ ============
+
+// Tüm firmaları listele (sadece superadmin)
+app.get('/api/admin/tenants', auth.authMiddleware('superadmin'), async (req, res) => {
+  console.log('GET /api/admin/tenants - Firmalar istendi');
+  try {
+    const tenants = await auth.prisma.tenant.findMany({
+      include: {
+        _count: {
+          select: { users: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(tenants);
+  } catch (error) {
+    console.error('Firma listesi hatası:', error);
+    res.status(500).json({ error: 'Firmalar alınamadı' });
+  }
+});
+
+// Firma detayını getir (sadece superadmin)
+app.get('/api/admin/tenants/:id', auth.authMiddleware('superadmin'), async (req, res) => {
+  const id = parseInt(req.params.id);
+  console.log('GET /api/admin/tenants/' + id + ' - Firma detayı istendi');
+  
+  try {
+    const tenant = await auth.prisma.tenant.findUnique({
+      where: { id },
+      include: {
+        users: true,
+        _count: {
+          select: { users: true }
+        }
+      }
+    });
+    
+    if (!tenant) {
+      return res.status(404).json({ error: 'Firma bulunamadı' });
+    }
+    
+    res.json(tenant);
+  } catch (error) {
+    console.error('Firma detay hatası:', error);
+    res.status(500).json({ error: 'Firma detayı alınamadı' });
+  }
+});
+
+// Yeni firma ekle (sadece superadmin)
+app.post('/api/admin/tenants', auth.authMiddleware('superadmin'), async (req, res) => {
+  console.log('POST /api/admin/tenants - Yeni firma ekleniyor:', req.body);
+  const { name, subdomain, logo, active } = req.body;
+  
+  try {
+    // Subdomain kontrolü
+    const existingTenant = await auth.prisma.tenant.findUnique({
+      where: { subdomain }
+    });
+    
+    if (existingTenant) {
+      return res.status(400).json({ error: 'Bu alan adı zaten kullanımda' });
+    }
+    
+    const tenant = await auth.prisma.tenant.create({
+      data: {
+        name,
+        subdomain,
+        logo: logo || null,
+        active: active !== undefined ? active : true
+      }
+    });
+    
+    console.log('✅ Yeni firma oluşturuldu:', tenant.name);
+    res.json(tenant);
+  } catch (error) {
+    console.error('Firma ekleme hatası:', error);
+    res.status(500).json({ error: 'Firma eklenemedi' });
+  }
+});
+
+// Firma güncelle (sadece superadmin)
+app.put('/api/admin/tenants/:id', auth.authMiddleware('superadmin'), async (req, res) => {
+  const id = parseInt(req.params.id);
+  console.log('PUT /api/admin/tenants/' + id + ' - Firma güncelleniyor:', req.body);
+  const { name, subdomain, logo, active } = req.body;
+  
+  try {
+    // Subdomain kontrolü (kendi subdomaini hariç)
+    if (subdomain) {
+      const existingTenant = await auth.prisma.tenant.findFirst({
+        where: {
+          subdomain,
+          NOT: { id }
+        }
+      });
+      
+      if (existingTenant) {
+        return res.status(400).json({ error: 'Bu alan adı zaten kullanımda' });
+      }
+    }
+    
+    const tenant = await auth.prisma.tenant.update({
+      where: { id },
+      data: {
+        name,
+        subdomain,
+        logo: logo || null,
+        active
+      }
+    });
+    
+    console.log('✅ Firma güncellendi:', tenant.name);
+    res.json(tenant);
+  } catch (error) {
+    console.error('Firma güncelleme hatası:', error);
+    res.status(500).json({ error: 'Firma güncellenemedi' });
+  }
+});
+
+// Firma sil (sadece superadmin)
+app.delete('/api/admin/tenants/:id', auth.authMiddleware('superadmin'), async (req, res) => {
+  const id = parseInt(req.params.id);
+  console.log('DELETE /api/admin/tenants/' + id + ' - Firma siliniyor');
+  
+  try {
+    // Önce firmaya ait kullanıcıları kontrol et
+    const userCount = await auth.prisma.user.count({
+      where: { tenantId: id }
+    });
+    
+    if (userCount > 0) {
+      return res.status(400).json({ 
+        error: `Bu firmaya ait ${userCount} kullanıcı bulunmaktadır. Önce kullanıcıları silin.` 
+      });
+    }
+    
+    const tenant = await auth.prisma.tenant.delete({
+      where: { id }
+    });
+    
+    console.log('✅ Firma silindi:', tenant.name);
+    res.json({ success: true, message: 'Firma silindi' });
+  } catch (error) {
+    console.error('Firma silme hatası:', error);
+    res.status(500).json({ error: 'Firma silinemedi' });
+  }
+});
+
+// Firmaya kullanıcı ekle (sadece superadmin)
+app.post('/api/admin/tenants/:id/users', auth.authMiddleware('superadmin'), async (req, res) => {
+  const tenantId = parseInt(req.params.id);
+  console.log('POST /api/admin/tenants/' + tenantId + '/users - Kullanıcı ekleniyor:', req.body);
+  const { name, email, password, role } = req.body;
+  
+  try {
+    // Firma kontrolü
+    const tenant = await auth.prisma.tenant.findUnique({
+      where: { id: tenantId }
+    });
+    
+    if (!tenant) {
+      return res.status(404).json({ error: 'Firma bulunamadı' });
+    }
+    
+    // Email kontrolü
+    const existingUser = await auth.prisma.user.findUnique({
+      where: { email }
+    });
+    
+    if (existingUser) {
+      return res.status(400).json({ error: 'Bu e-posta adresi zaten kullanımda' });
+    }
+    
+    // Kullanıcı oluştur
+    const result = await auth.createUser({
+      name,
+      email,
+      password,
+      role: role || 'user',
+      tenantId
+    });
+    
+    if (result.success) {
+      console.log('✅ Kullanıcı eklendi:', email);
+      res.json(result.user);
+    } else {
+      res.status(400).json({ error: result.error });
+    }
+  } catch (error) {
+    console.error('Kullanıcı ekleme hatası:', error);
+    res.status(500).json({ error: 'Kullanıcı eklenemedi' });
+  }
+});
+
 app.listen(PORT, '0.0.0.0', () => {
   const os = require('os');
   const networkInterfaces = os.networkInterfaces();

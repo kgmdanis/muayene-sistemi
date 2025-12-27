@@ -8,31 +8,143 @@ datasource db {
 }
 
 model Tenant {
-  id        Int      @id @default(autoincrement())
-  name      String
-  logo      String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  users     User[]
-  customers Customer[]
+  id         Int        @id @default(autoincrement())
+  name       String
+  logo       String?
+  adres      String?
+  telefon    String?
+  email      String?
+  vergiNo    String?
+  isActive   Boolean    @default(true)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  users      User[]
+  customers  Customer[]
+  teklifler  Teklif[]
+  muayeneler Muayene[]
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String
-  role      String   @default("user")
-  tenantId  Int
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
-  createdAt DateTime @default(now())
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  password         String
+  name             String
+  role             String    @default("user") // superadmin, admin, user
+  telefon          String?
+  isActive         Boolean   @default(true)
+  tenantId         Int
+  tenant           Tenant    @relation(fields: [tenantId], references: [id])
+  createdTeklifler Teklif[]  @relation("olusturan")
+  muayeneler       Muayene[] @relation("muayeneEden")
+  onaylananMuayeneler Muayene[] @relation("onaylayan")
+  olusturanMuayeneler Muayene[] @relation("olusturan")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
 
 model Customer {
-  id        Int      @id @default(autoincrement())
-  unvan     String
-  vergiNo   String?
-  tenantId  Int
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
-  createdAt DateTime @default(now())
+  id         Int         @id @default(autoincrement())
+  unvan      String
+  vergiNo    String?
+  adres      String?
+  telefon    String?
+  email      String?
+  tenantId   Int
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  teklifler  Teklif[]
+  muayeneler Muayene[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Hizmet {
+  id         Int                @id @default(autoincrement())
+  kod        String             @unique
+  ad         String
+  birimFiyat Decimal            @db.Decimal(10, 2)
+  birim      String             @default("Adet")
+  aciklama   String?
+  isActive   Boolean            @default(true)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  teklifDetaylari TeklifDetay[]
+}
+
+model Teklif {
+  id             Int            @id @default(autoincrement())
+  teklifNo       String         @unique
+  tarih          DateTime       @default(now())
+  gecerlilikGunu Int            @default(30)
+  customerId     Int
+  customer       Customer       @relation(fields: [customerId], references: [id])
+  tenantId       Int
+  tenant         Tenant         @relation(fields: [tenantId], references: [id])
+  durum          TeklifDurum    @default(TASLAK)
+  toplamTutar    Decimal        @db.Decimal(10, 2) @default(0)
+  kdvOrani       Int            @default(20)
+  kdvTutar       Decimal        @db.Decimal(10, 2) @default(0)
+  genelToplam    Decimal        @db.Decimal(10, 2) @default(0)
+  notlar         String?
+  detaylar       TeklifDetay[]
+  muayeneler     Muayene[]
+  createdBy      Int
+  olusturan      User           @relation("olusturan", fields: [createdBy], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model TeklifDetay {
+  id         Int      @id @default(autoincrement())
+  teklifId   Int
+  teklif     Teklif   @relation(fields: [teklifId], references: [id], onDelete: Cascade)
+  hizmetId   Int
+  hizmet     Hizmet   @relation(fields: [hizmetId], references: [id])
+  miktar     Int      @default(1)
+  birimFiyat Decimal  @db.Decimal(10, 2)
+  toplam     Decimal  @db.Decimal(10, 2)
+  aciklama   String?
+  createdAt  DateTime @default(now())
+}
+
+model Muayene {
+  id               Int            @id @default(autoincrement())
+  muayeneNo        String         @unique
+  teklifId         Int?
+  teklif           Teklif?        @relation(fields: [teklifId], references: [id])
+  customerId       Int
+  customer         Customer       @relation(fields: [customerId], references: [id])
+  tenantId         Int
+  tenant           Tenant         @relation(fields: [tenantId], references: [id])
+  muayeneTarihi    DateTime
+  muayeneYeri      String
+  muayeneEkipman   String
+  muayeneSonucu    MuayeneSonuc   @default(BEKLEMEDE)
+  sertifikaNo      String?
+  sertifikaTarihi  DateTime?
+  gecerlilikSuresi Int            @default(12) // Ay cinsinden
+  raporDosya       String?
+  notlar           String?
+  muayeneEdenId    Int
+  muayeneEden      User           @relation("muayeneEden", fields: [muayeneEdenId], references: [id])
+  onaylayanId      Int?
+  onaylayan        User?          @relation("onaylayan", fields: [onaylayanId], references: [id])
+  createdBy        Int
+  olusturan        User           @relation("olusturan", fields: [createdBy], references: [id])
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+enum TeklifDurum {
+  TASLAK
+  GONDERILDI
+  ONAYLANDI
+  REDDEDILDI
+  IPTAL
+}
+
+enum MuayeneSonuc {
+  BEKLEMEDE
+  UYGUN
+  UYGUN_DEGIL
+  SARTLI_UYGUN
 }
