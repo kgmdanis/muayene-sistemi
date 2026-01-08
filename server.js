@@ -270,7 +270,7 @@ app.get('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
 // Teklif oluştur
 app.post('/api/teklifler', auth.authMiddleware(), async (req, res) => {
     try {
-        const { customerId, teklifNo, konu, detaylar, iskontoOran, notlar, onayTelefon, gecerlilikGun } = req.body;
+        const { customerId, teklifNo, konu, detaylar, iskontoOran, notlar, onayTelefon, sahadaOnay, gecerlilikGun } = req.body;
 
         if (!customerId) {
             return res.status(400).json({ error: 'Müşteri seçilmedi' });
@@ -326,6 +326,7 @@ app.post('/api/teklifler', auth.authMiddleware(), async (req, res) => {
                 genelToplam,
                 notlar: notlar || null,
                 onayTelefon: onayTelefon || false,
+                sahadaOnay: sahadaOnay || false,
                 olusturanId: req.user.id,
                 detaylar: { create: detaylarData }
             },
@@ -343,7 +344,7 @@ app.post('/api/teklifler', auth.authMiddleware(), async (req, res) => {
 app.put('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const { customerId, konu, detaylar, iskontoOran, notlar, onayTelefon, durum, gecerlilikGun } = req.body;
+        const { customerId, konu, detaylar, iskontoOran, notlar, onayTelefon, sahadaOnay, durum, gecerlilikGun } = req.body;
 
         // Önce mevcut detayları sil
         await auth.prisma.teklifDetay.deleteMany({ where: { teklifId: id } });
@@ -388,6 +389,7 @@ app.put('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
                 genelToplam,
                 notlar: notlar || null,
                 onayTelefon: onayTelefon || false,
+                sahadaOnay: sahadaOnay || false,
                 durum: durum || undefined
             },
             include: { customer: true, detaylar: { include: { hizmet: true } } }

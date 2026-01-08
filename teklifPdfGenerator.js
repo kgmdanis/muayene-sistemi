@@ -162,7 +162,7 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
             doc.rect(40, y, 120, satirYuksekligi).stroke();
             doc.rect(280, y, 80, satirYuksekligi).stroke();
             doc.font(fontBold).text('FİRMA ADI', 45, y + 5);
-            doc.font(fontNormal).text((customer.unvan || '-').substring(0, 25), 165, y + 5);
+            doc.font(fontNormal).text((customer.unvan || '-').substring(0, 45), 165, y + 5);
             doc.font(fontBold).text('E-Mail', 285, y + 5);
             doc.font(fontNormal).text(customer.email || '-', 380, y + 5);
             y += satirYuksekligi;
@@ -172,7 +172,7 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
             doc.rect(40, y, 120, satirYuksekligi).stroke();
             doc.rect(280, y, 80, satirYuksekligi).stroke();
             doc.font(fontBold).text('FİRMA ADRESİ', 45, y + 5);
-            doc.font(fontNormal).text((customer.adres || '-').substring(0, 25), 165, y + 5);
+            doc.font(fontNormal).text((customer.adres || '-').substring(0, 45), 165, y + 5);
             doc.font(fontBold).text('KONU', 285, y + 5);
             doc.font(fontNormal).fontSize(7).text('PERİYODİK KONTROL VE İŞ HİJYENİ ÖLÇÜM', 380, y + 3, { width: 170 });
             y += satirYuksekligi + 15;
@@ -260,7 +260,7 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
                     
                     // Hücre içerikleri
                     doc.text((hizmet.ad || '').substring(0, 30), col[0] + 2, y + 4, { width: colW[0] - 4 });
-                    doc.text(metod.substring(0, 35), col[1] + 2, y + 4, { width: colW[1] - 4 });
+                    doc.text(metod.substring(0, 50), col[1] + 2, y + 4, { width: colW[1] - 4 });
                     doc.text(miktar.toString(), col[2] + 2, y + 4, { width: colW[2] - 4 });
                     doc.text(hizmet.birim || 'Adet', col[3] + 2, y + 4, { width: colW[3] - 4 });
                     doc.text(formatPara(birimFiyat), col[4] + 2, y + 4, { width: colW[4] - 4 });
