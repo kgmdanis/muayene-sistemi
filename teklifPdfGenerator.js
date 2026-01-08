@@ -46,18 +46,22 @@ function formatPara(deger) {
     return sayi.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-// Tarih formatı
+// Tarih formatı - DD.MM.YYYY
 function formatTarih(tarih) {
-    if (!tarih) return new Date().toLocaleDateString('tr-TR');
-    const d = new Date(tarih);
+    const d = tarih ? new Date(tarih) : new Date();
     if (isNaN(d.getTime())) return new Date().toLocaleDateString('tr-TR');
-    return d.toLocaleDateString('tr-TR');
+    const gun = String(d.getDate()).padStart(2, '0');
+    const ay = String(d.getMonth() + 1).padStart(2, '0');
+    const yil = d.getFullYear();
+    return `${gun}.${ay}.${yil}`;
 }
 
 /**
  * Teklif PDF oluştur
+ * @param {Object} teklif - Teklif verisi
+ * @param {Array} tumKategoriler - Tüm kategoriler (opsiyonel)
  */
-async function teklifPdfOlustur(teklif) {
+async function teklifPdfOlustur(teklif, tumKategoriler = []) {
     return new Promise((resolve, reject) => {
         try {
             const doc = new PDFDocument({
@@ -83,7 +87,8 @@ async function teklifPdfOlustur(teklif) {
             }
 
             const customer = teklif.customer || {};
-            const detaylar = teklif.detaylar || [];
+            // SADECE miktar > 0 olan hizmetleri göster
+            const detaylar = (teklif.detaylar || []).filter(d => d.miktar > 0);
 
             // Renkler
             const MAVI = '#006699';
@@ -137,7 +142,7 @@ async function teklifPdfOlustur(teklif) {
             doc.rect(40, y, 120, satirYuksekligi).stroke();
             doc.rect(280, y, 80, satirYuksekligi).stroke();
             doc.font(fontBold).text('TEKLİF TARİHİ', 45, y + 5);
-            doc.font(fontNormal).text(formatTarih(teklif.createdAt), 165, y + 5);
+            doc.font(fontNormal).text(formatTarih(teklif.teklifTarihi || teklif.createdAt), 165, y + 5);
             doc.font(fontBold).text('FİRMA YETKİLİSİ', 285, y + 5);
             doc.font(fontNormal).text(customer.yetkili || '-', 380, y + 5);
             y += satirYuksekligi;
