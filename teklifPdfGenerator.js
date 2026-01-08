@@ -99,7 +99,7 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
             // Logo yolları
             const logoPath = path.join(__dirname, 'public', 'images', 'logo.png');
             const turkakPath = path.join(__dirname, 'public', 'images', 'türkak-logo.png');
-            const muhurPath = path.join(__dirname, 'public', 'images', 'mühür.jpg');
+            const muhurPath = path.join(__dirname, 'public', 'images', 'mühür.jpeg');
 
             // ==================== SAYFA 1 - KAPAK (SABİT) ====================
 
@@ -183,13 +183,15 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
             y = 50;
 
             // Sayfa header fonksiyonu
-            // Sayfa 2+ header (TÜRKAK yok, sadece logo)
+            // Sayfa 2+ header (TÜRKAK yok, sadece logo ve kısa bilgi)
             function sayfaHeader() {
                 if (fs.existsSync(logoPath)) {
                     doc.image(logoPath, 40, 15, { width: 100 });
                 }
-                doc.fontSize(7).font(fontNormal).fillColor('black');
-                doc.text(FIRMA.unvan, 150, 20, { width: 400, align: 'center' });
+                doc.fontSize(8).font(fontBold).fillColor('black');
+                doc.text('ÖNDER MUAYENE TEST VE ÖLÇÜM LABORATUVARI', 150, 18, { width: 400, align: 'center' });
+                doc.fontSize(7).font(fontNormal);
+                doc.text('Tel: 0332 300 00 20 | www.ondermuayene.com.tr', 150, 30, { width: 400, align: 'center' });
             }
 
             sayfaHeader();
@@ -207,9 +209,9 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
 
             const siraliKategoriler = Object.entries(kategoriler).sort((a, b) => a[1].sira - b[1].sira);
 
-            // Sütun pozisyonları ve genişlikleri
-            const col = [40, 180, 340, 390, 440, 490];
-            const colW = [140, 160, 50, 50, 50, 65];
+            // Sütun pozisyonları ve genişlikleri (metod geniş)
+            const col = [40, 170, 355, 395, 440, 490];
+            const colW = [130, 185, 40, 45, 50, 65];
 
             siraliKategoriler.forEach(([katAd, katData]) => {
                 // Sayfa kontrolü - kategori başlığı için yer var mı
