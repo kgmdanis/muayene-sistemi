@@ -78,6 +78,7 @@ model Customer {
   telefon      String?
   email        String?
   yetkili      String?
+  notlar       String?
   teklifler    Teklif[]
   muayeneler   Muayene[]
   workOrders   WorkOrder[]
