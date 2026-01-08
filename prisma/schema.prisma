@@ -130,6 +130,7 @@ model Teklif {
   genelToplam    Decimal        @db.Decimal(12, 2) @default(0)
   notlar         String?
   onayTelefon    Boolean        @default(false)
+  sahadaOnay     Boolean        @default(false)
   olusturanId    Int
   olusturan      User           @relation(fields: [olusturanId], references: [id])
   detaylar       TeklifDetay[]

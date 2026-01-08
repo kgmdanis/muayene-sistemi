@@ -448,8 +448,19 @@ app.get('/api/teklifler/:id/pdf', auth.authMiddleware(), async (req, res) => {
         const firma = await auth.prisma.firmaAyarlari.findFirst();
         teklif.firma = firma;
 
-        // PDF oluştur
-        const pdfBuffer = await teklifPdfGenerator.teklifPdfOlustur(teklif);
+        // TÜM kategorileri ve hizmetleri çek (metodKapsam dahil)
+        const tumKategoriler = await auth.prisma.kategori.findMany({
+            include: {
+                hizmetler: {
+                    where: { isActive: true },
+                    orderBy: { sira: 'asc' }
+                }
+            },
+            orderBy: { sira: 'asc' }
+        });
+
+        // PDF oluştur (tüm kategorilerle birlikte)
+        const pdfBuffer = await teklifPdfGenerator.teklifPdfOlustur(teklif, tumKategoriler);
 
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=Teklif-${teklif.teklifNo}.pdf`);

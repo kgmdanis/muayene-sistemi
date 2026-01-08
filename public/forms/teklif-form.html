@@ -303,11 +303,11 @@
                                 ${hizmetler.map(h => `
                                     <tr>
                                         <td>${h.ad}</td>
-                                        <td class="col-metod">${h.aciklama || ''}</td>
+                                        <td class="col-metod">${h.metodKapsam || h.standartYonetmelik || ''}</td>
                                         <td class="col-miktar"><input type="number" class="miktar-input" id="mik-${h.id}" value="1" min="1"></td>
                                         <td class="col-birim">${h.birim}</td>
-                                        <td class="col-fiyat">${formatPara(h.birimFiyat)}</td>
-                                        <td class="col-toplam" id="sat-${h.id}">${formatPara(h.birimFiyat)}</td>
+                                        <td class="col-fiyat"><input type="number" class="miktar-input" id="fiyat-${h.id}" value="${parseFloat(h.birimFiyat) || 0}" min="0" step="0.01" style="width:70px;text-align:right;"></td>
+                                        <td class="col-toplam" id="sat-${h.id}">${formatPara(parseFloat(h.birimFiyat) || 0)}</td>
                                         <td class="col-aksiyon"><button class="ekle-btn" onclick="sepeteEkle(${h.id})">+</button></td>
                                     </tr>
                                 `).join('')}
@@ -317,15 +317,19 @@
                 `;
                 container.appendChild(div);
                 
-                // Miktar değiştiğinde satır toplamını güncelle
+                // Miktar veya fiyat değiştiğinde satır toplamını güncelle
                 hizmetler.forEach(h => {
-                    const input = document.getElementById('mik-' + h.id);
-                    if (input) {
-                        input.addEventListener('input', () => {
-                            const mik = parseInt(input.value) || 1;
-                            document.getElementById('sat-' + h.id).textContent = formatPara(mik * parseFloat(h.birimFiyat));
-                        });
+                    const mikInput = document.getElementById('mik-' + h.id);
+                    const fiyatInput = document.getElementById('fiyat-' + h.id);
+
+                    function updateSatirToplam() {
+                        const mik = parseInt(mikInput?.value) || 1;
+                        const fiyat = parseFloat(fiyatInput?.value) || 0;
+                        document.getElementById('sat-' + h.id).textContent = formatPara(mik * fiyat);
                     }
+
+                    if (mikInput) mikInput.addEventListener('input', updateSatirToplam);
+                    if (fiyatInput) fiyatInput.addEventListener('input', updateSatirToplam);
                 });
             });
         }
@@ -347,23 +351,30 @@
                 if (hizmet) break;
             }
             if (!hizmet) return;
-            
+
             const miktar = parseInt(document.getElementById('mik-' + hizmetId)?.value) || 1;
-            
+            const birimFiyat = parseFloat(document.getElementById('fiyat-' + hizmetId)?.value) || parseFloat(hizmet.birimFiyat) || 0;
+
+            if (birimFiyat <= 0) {
+                showToast('Lütfen birim fiyat girin', 'warning');
+                return;
+            }
+
             const existing = sepet.find(s => s.hizmetId === hizmetId);
             if (existing) {
                 existing.miktar += miktar;
+                existing.birimFiyat = birimFiyat; // Fiyatı güncelle
             } else {
                 sepet.push({
                     hizmetId: hizmet.id,
                     ad: hizmet.ad,
-                    aciklama: hizmet.aciklama || '',
+                    metodKapsam: hizmet.metodKapsam || hizmet.standartYonetmelik || '',
                     birim: hizmet.birim,
-                    birimFiyat: parseFloat(hizmet.birimFiyat),
+                    birimFiyat: birimFiyat,
                     miktar: miktar
                 });
             }
-            
+
             renderSepet();
             showToast('Eklendi: ' + hizmet.ad, 'success');
         }
@@ -376,6 +387,12 @@
         function miktarDegistir(index, yeniMiktar) {
             if (yeniMiktar < 1) yeniMiktar = 1;
             sepet[index].miktar = yeniMiktar;
+            renderSepet();
+        }
+
+        function fiyatDegistir(index, yeniFiyat) {
+            if (yeniFiyat < 0) yeniFiyat = 0;
+            sepet[index].birimFiyat = yeniFiyat;
             renderSepet();
         }
         
@@ -398,13 +415,17 @@
                 return `
                     <tr>
                         <td>${item.ad}</td>
-                        <td class="col-metod">${item.aciklama}</td>
+                        <td class="col-metod">${item.metodKapsam || ''}</td>
                         <td class="col-miktar">
-                            <input type="number" class="miktar-input" value="${item.miktar}" min="1" 
+                            <input type="number" class="miktar-input" value="${item.miktar}" min="1"
                                    onchange="miktarDegistir(${i}, parseInt(this.value))">
                         </td>
                         <td class="col-birim">${item.birim}</td>
-                        <td class="col-fiyat">${formatPara(item.birimFiyat)}</td>
+                        <td class="col-fiyat">
+                            <input type="number" class="miktar-input" value="${item.birimFiyat}" min="0" step="0.01"
+                                   style="width:70px;text-align:right;"
+                                   onchange="fiyatDegistir(${i}, parseFloat(this.value))">
+                        </td>
                         <td class="col-toplam">${formatPara(toplam)}</td>
                         <td class="col-aksiyon"><button class="sil-btn" onclick="sepettenSil(${i})">✕</button></td>
                     </tr>
