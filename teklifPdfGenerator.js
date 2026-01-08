@@ -2,68 +2,67 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
 
-// Dosya yolları
-const LOGO_PATH = path.join(__dirname, 'public', 'images', 'logo.png');
-const TURKAK_PATH = path.join(__dirname, 'public', 'images', 'türkak-logo.png');
-const MUHUR_PATH = path.join(__dirname, 'public', 'images', 'mühür.jpg');
+// Türkçe karakter desteği için font
+const FONT_PATH = path.join(__dirname, 'fonts', 'DejaVuSans.ttf');
+const FONT_BOLD_PATH = path.join(__dirname, 'fonts', 'DejaVuSans-Bold.ttf');
 
-// Renkler
-const MAVI = '#006699';
-const ACIK_MAVI = '#e6f2ff';
-const SARI = '#ffff00';
+// Sabit firma bilgileri
+const FIRMA = {
+    unvan: 'ÖNDER MUAYENE TEST VE ÖLÇÜM LABORATUVARI MÜH. İNŞ.SAN. VE TİC. LTD. ŞTİ.',
+    adres: 'Akabe Mahallesi Aslanlı Kışla Caddesi No:144S/1 Karatay/KONYA',
+    telefon: '0332 300 00 20',
+    web: 'www.ondermuayene.com.tr',
+    email: 'info@ondermuayene.com.tr',
+    banka: 'Ziraat Bankası / Buğday Pazarı / Konya',
+    iban: 'TR80 0001 0025 2894 1001 5650 01'
+};
 
-// 19 Madde
-const MADDELER = [
-    'Ölçüm / Numune alma işleminin gerçekleştirileceği alan ile ilgili, çalışma alanının iş sağlığı ve güvenliği kurallarına uygun olarak hazırlanması tarafınızca karşılanacaktır.',
-    'Ölçüm / Numune Alma noktasının hazır olmaması nedeniyle işlemin gerçekleştirilememesi halinde sorumluluk tarafınıza aittir.',
-    'Teklif onayı; "sözleşme onayı" bölümü müşteri tarafından kaşe-imza ile onaylanmalıdır.',
-    'Ücretin %50\'si teklif onayı ile birlikte, kalanı raporların tesliminden sonra ödenecektir.',
-    'Hizmet alımınız tarafınızca sonlandırıldığında yapılan işlem tutarı kadar tazminat fatura edilecektir.',
-    'Ölçüm esnasında başka parametre tespit edilirse ilave ücretlendirme yapılacaktır.',
-    'Rapor teslimi, işlem tamamlandıktan sonra 20 iş günü içinde yapılacaktır.',
-    'Raporlar, ödendi belgesinin iletilmesinden sonra 15 gün içinde teslim edilir.',
-    'Ölçüm/analiz sonuçlarına itiraz süresi rapor tarihinden itibaren 15 gündür.',
-    'Uygunsuz sonuçlar nedeniyle tekrar ölçüm birim fiyat üzerinden fatura edilir.',
-    'Teklif 1 ay geçerlidir, sonra revize edilir.',
-    'Ulaşım ve konaklama firmamıza aittir, müşteri kaynaklı gecikmeler hariç.',
-    'Müşteri bilgileri ve raporlar 3. şahıslarla paylaşılmaz.',
-    'İhtilaf durumunda müşteri deneye tanıklık edebilir.',
-    'Bu teklif onaylandıktan sonra sözleşme yerine geçer.',
-    'Müşteri talebiyle deney sonuçlarında değişiklik yapılmaz.',
-    'Her türlü ihtilafta Konya Mahkemeleri yetkilidir.',
-    'Onay için son sayfayı imzalayarak elden, fax veya e-posta ile iletin.',
-    'Banka: Ziraat Bankası Buğday Pazarı/Konya\nIBAN: TR80 0001 0025 2894 1001 5650 01'
+// 19 Madde - Genel ve Ticari Şartlar
+const SARTLAR = [
+    'Ölçüm / Numune alma işleminin gerçekleştirileceği alan ile ilgili, çalışma alanının iş sağlığı ve güvenliği kurallarına uygun olarak hazırlanması, numune alınacak bacanın bünyesinde numune alma deliğinin açılmasından ve numune alma noktasına yetişmek için gerekli olan iş ekipmanının standartlara ve mevzuata uygun olması tarafınızca karşılanacaktır.',
+    'Ölçüm / Numune Alma noktasının ve/veya platformun hazır olmaması nedeniyle ölçüm / numune alma işleminin gerçekleştirilememesi halinde sorumluluk tarafınıza ait olacaktır.',
+    'Teklif onayı; Teklifin her sayfası incelenerek "sözleşme onayı" bölümü müşteri tarafından kaşe-imza ile onaylanarak fatura bilgileri eksiksiz şekilde doldurulmalıdır.',
+    'Ücretin %50 si teklif onayı ile birlikte, kalanı ise raporların hazırlanıp tarafınıza bilgi verilmesini takiben ödenecektir.',
+    'Tarafınızca onayı iletilmiş hizmet teklifi dahilinde numune alımı gerçekleştirilmiş durumlarda tazminat bedeli fatura edilecektir.',
+    'Ölçüm / Numune alma esnasında başka bir kaynağın tespit edilmesi durumunda ilave ücretlendirme yapılacaktır.',
+    'Rapor teslimi, ölçüm / numune alma / analiz tamamlandıktan sonra, 20 iş günü içerisinde tarafınıza gönderilecektir.',
+    'Ölçüm/Analiz raporları, ödendi belgesinin tarafımıza iletilmesinden sonra 15 gün içerisinde teslim edilir.',
+    'Ölçüm süresi parametre sayısına göre değişmektedir.',
+    'Ölçüm/Analiz sonuçlarının uygun çıkmaması durumunda tekrar fatura edilir.',
+    'Teklifte belirtilen hükümler, teklifin verildiği tarihten itibaren 1 ay süre için geçerlidir.',
+    'Ulaşım ve konaklama giderleri firmamıza aittir.',
+    'Müşteri tarafından verilecek bilgi ve belgeler gizlilik prensibine uygun işlenecektir.',
+    'Bir ihtilaf söz konusu olduğunda ÖNDER MUAYENE deneye tanıklık etmeyi taahhüt eder.',
+    'Bu teklif, karşılıklı onaylandıktan sonra sözleşme yerine geçer.',
+    'Müşteri talebiyle deney sonuçlarında hiçbir şekilde değişiklik yapılmayacaktır.',
+    'Bu anlaşma kapsamındaki her türlü ihtilaf durumunda Konya Mahkemeleri yetkilidir.',
+    'Onay için Teklifin son sayfasını onaylayarak firma yetkililerimize iletebilirsiniz. Tel: 0332 300 00 20',
+    'Banka Hesap Bilgilerimiz: Önder Muayene Test ve Ölçüm - Ziraat Bankası / Buğday Pazarı / Konya / TR80 0001 0025 2894 1001 5650 01'
 ];
 
-// Para formatla
+// Para formatı
 function formatPara(deger) {
-    if (!deger && deger !== 0) return '';
     const sayi = parseFloat(deger) || 0;
-    if (sayi === 0) return '';
     return sayi.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-// Tarih formatla - DD.MM.YYYY
+// Tarih formatı
 function formatTarih(tarih) {
     if (!tarih) return new Date().toLocaleDateString('tr-TR');
     const d = new Date(tarih);
     if (isNaN(d.getTime())) return new Date().toLocaleDateString('tr-TR');
-    const gun = String(d.getDate()).padStart(2, '0');
-    const ay = String(d.getMonth() + 1).padStart(2, '0');
-    const yil = d.getFullYear();
-    return `${gun}.${ay}.${yil}`;
+    return d.toLocaleDateString('tr-TR');
 }
 
 /**
- * Teklif PDF oluştur - SADECE SEÇİLEN HİZMETLER
+ * Teklif PDF oluştur
  */
-async function teklifPdfOlustur(teklif, tumKategoriler) {
+async function teklifPdfOlustur(teklif) {
     return new Promise((resolve, reject) => {
         try {
             const doc = new PDFDocument({
                 size: 'A4',
-                margins: { top: 30, bottom: 30, left: 40, right: 40 },
-                bufferPages: true
+                margins: { top: 40, bottom: 40, left: 40, right: 40 }
             });
 
             const buffers = [];
@@ -71,347 +70,337 @@ async function teklifPdfOlustur(teklif, tumKategoriler) {
             doc.on('end', () => resolve(Buffer.concat(buffers)));
             doc.on('error', reject);
 
-            // Font ayarları
-            const FONT_PATH = path.join(__dirname, 'fonts', 'DejaVuSans.ttf');
-            const FONT_BOLD_PATH = path.join(__dirname, 'fonts', 'DejaVuSans-Bold.ttf');
-
-            if (fs.existsSync(FONT_PATH)) {
+            // Font ayarları - Türkçe karakter desteği
+            const hasCustomFont = fs.existsSync(FONT_PATH);
+            let fontNormal = 'Helvetica';
+            let fontBold = 'Helvetica-Bold';
+            
+            if (hasCustomFont) {
                 doc.registerFont('Normal', FONT_PATH);
                 doc.registerFont('Bold', fs.existsSync(FONT_BOLD_PATH) ? FONT_BOLD_PATH : FONT_PATH);
+                fontNormal = 'Normal';
+                fontBold = 'Bold';
             }
-            const fontN = fs.existsSync(FONT_PATH) ? 'Normal' : 'Helvetica';
-            const fontB = fs.existsSync(FONT_PATH) ? 'Bold' : 'Helvetica-Bold';
 
             const customer = teklif.customer || {};
-            const firma = teklif.firma || {};
             const detaylar = teklif.detaylar || [];
 
-            // Detayları kategorilere göre grupla
-            const kategoriGruplari = {};
-            detaylar.forEach(d => {
-                if (d.miktar > 0) { // Sadece miktar > 0 olanlar
-                    const katAd = d.hizmet?.kategori?.ad || 'Diğer';
-                    const katSira = d.hizmet?.kategori?.sira || 99;
-                    if (!kategoriGruplari[katAd]) {
-                        kategoriGruplari[katAd] = { sira: katSira, detaylar: [] };
-                    }
-                    kategoriGruplari[katAd].detaylar.push(d);
-                }
-            });
+            // Renkler
+            const MAVI = '#006699';
+            const ACIK_MAVI = '#e6f3ff';
 
-            let sayfaNo = 1;
+            // Logo yolları
+            const logoPath = path.join(__dirname, 'public', 'images', 'logo.png');
+            const turkakPath = path.join(__dirname, 'public', 'images', 'türkak-logo.png');
+            const muhurPath = path.join(__dirname, 'public', 'images', 'mühür.jpg');
 
-            // ========================================================
-            // SAYFA 1 - KAPAK
-            // ========================================================
+            // ==================== SAYFA 1 - KAPAK ====================
 
-            // Sol üst logo - BÜYÜK (180px)
-            if (fs.existsSync(LOGO_PATH)) {
-                doc.image(LOGO_PATH, 40, 20, { width: 180 });
+            // Logo - Sol üst (büyük)
+            if (fs.existsSync(logoPath)) {
+                doc.image(logoPath, 40, 20, { width: 180 });
+            } else {
+                doc.fontSize(18).font(fontBold).text('ÖNDER MUAYENE', 40, 30);
             }
 
-            // Sağ üst TÜRKAK logosu
-            if (fs.existsSync(TURKAK_PATH)) {
-                doc.image(TURKAK_PATH, 470, 20, { width: 85 });
+            // TÜRKAK Logo - Sağ üst
+            if (fs.existsSync(turkakPath)) {
+                doc.image(turkakPath, 480, 25, { width: 70 });
             }
 
-            // Başlık
-            doc.font(fontB).fontSize(14).fillColor(MAVI);
-            doc.text('TEST VE ÖLÇÜM TALEP TEKLİF FORMU', 40, 110, { align: 'center', width: 515 });
-            doc.fillColor('black');
-
-            // FİRMA BİLGİLERİ TABLOSU
-            let y = 140;
-            const tableW = 515;
-            const col1W = 130;
-            const rowH = 20;
+            // Firma bilgileri - Sağ üst
+            doc.fontSize(7).font(fontNormal);
+            doc.text(FIRMA.unvan, 240, 20, { width: 230, align: 'right' });
+            doc.text(FIRMA.adres, 240, 34, { width: 230, align: 'right' });
+            doc.text('Tel-Fax: ' + FIRMA.telefon + '   ' + FIRMA.web, 240, 48, { width: 230, align: 'right' });
 
             // Başlık
-            doc.rect(40, y, tableW, rowH).fill(MAVI);
-            doc.font(fontB).fontSize(10).fillColor('white');
-            doc.text('FİRMA BİLGİLERİ', 45, y + 5, { width: tableW - 10, align: 'center' });
+            doc.fontSize(14).font(fontBold).fillColor(MAVI);
+            doc.text('TEST VE ÖLÇÜM TALEP TEKLİF FORMU', 40, 100, { align: 'center', width: 515 });
             doc.fillColor('black');
-            y += rowH;
 
-            const bilgiler = [
-                ['TEKLİF TARİHİ', formatTarih(teklif.teklifTarihi || teklif.createdAt)],
-                ['TEKLİF NO', teklif.teklifNo || '-'],
-                ['FİRMA ADI', customer.unvan || '-'],
-                ['ADRES', (customer.adres || '-').substring(0, 60)],
-                ['YETKİLİ', customer.yetkili || '-'],
-                ['TELEFON', customer.telefon || '-'],
-                ['E-POSTA', customer.email || '-']
-            ];
-
-            bilgiler.forEach(([label, value]) => {
-                doc.rect(40, y, col1W, rowH).stroke('#333');
-                doc.rect(40 + col1W, y, tableW - col1W, rowH).stroke('#333');
-                doc.font(fontB).fontSize(9).text(label, 45, y + 5, { width: col1W - 10 });
-                doc.font(fontN).fontSize(9).text(value, 45 + col1W, y + 5, { width: tableW - col1W - 10 });
-                y += rowH;
-            });
-
-            // Açıklama
+            // Firma Bilgileri Tablosu
+            let y = 130;
+            
+            // Başlık satırı
+            doc.fillColor('white').rect(40, y, 515, 20).fill(MAVI);
+            doc.fillColor('white').fontSize(10).font(fontBold);
+            doc.text('FİRMA BİLGİLERİ', 45, y + 5);
             y += 20;
-            doc.font(fontN).fontSize(10);
-            doc.text('Sayın Firma Yetkilisi,', 40, y);
-            y += 15;
-            doc.text('Tarafımızdan talep etmiş olduğunuz ölçümlere ait fiyat teklifimiz aşağıda sunulmuştur.', 40, y, { width: 515 });
-            y += 30;
-            doc.font(fontB).fontSize(9).fillColor('#c00000');
-            doc.text('* Akredite ölçümler İŞ HİJYENİ (ORTAM ÖLÇÜMÜ) parametreleri ile yapılmaktadır.', 40, y, { width: 515 });
-            doc.fillColor('black');
 
-            // İmza alanı
-            doc.font(fontN).fontSize(10);
-            doc.text('Saygılarımızla,', 380, 620);
-            doc.font(fontB).text(firma.yetkili || 'ABDULVAHAP ÖNDER', 380, 635);
-            doc.font(fontN).fontSize(9).text(firma.yetkiliUnvan || 'Şirket Müdürü', 380, 650);
+            // Tablo satırları
+            const satirYuksekligi = 20;
+            doc.fillColor('black').font(fontNormal).fontSize(9);
 
-            if (fs.existsSync(MUHUR_PATH)) {
-                doc.image(MUHUR_PATH, 380, 670, { width: 70 });
-            }
+            // Satır 1
+            doc.rect(40, y, 515, satirYuksekligi).stroke();
+            doc.rect(40, y, 120, satirYuksekligi).stroke();
+            doc.rect(280, y, 80, satirYuksekligi).stroke();
+            doc.font(fontBold).text('TEKLİF TARİHİ', 45, y + 5);
+            doc.font(fontNormal).text(formatTarih(teklif.createdAt), 165, y + 5);
+            doc.font(fontBold).text('FİRMA YETKİLİSİ', 285, y + 5);
+            doc.font(fontNormal).text(customer.yetkili || '-', 380, y + 5);
+            y += satirYuksekligi;
 
-            // Footer
-            doc.font(fontN).fontSize(8).fillColor('#666');
-            doc.text('FRM.01/Rev:09', 40, 800);
-            doc.text(`Sayfa ${sayfaNo}`, 500, 800);
-            doc.fillColor('black');
+            // Satır 2
+            doc.rect(40, y, 515, satirYuksekligi).stroke();
+            doc.rect(40, y, 120, satirYuksekligi).stroke();
+            doc.rect(280, y, 80, satirYuksekligi).stroke();
+            doc.font(fontBold).text('TEKLİF NO', 45, y + 5);
+            doc.font(fontNormal).text(teklif.teklifNo || '-', 165, y + 5);
+            doc.font(fontBold).text('TEL/FAX', 285, y + 5);
+            doc.font(fontNormal).text(customer.telefon || '-', 380, y + 5);
+            y += satirYuksekligi;
 
-            // ========================================================
-            // SAYFA 2 - HİZMET TABLOSU (SADECE SEÇİLENLER)
-            // ========================================================
-            doc.addPage();
-            sayfaNo++;
+            // Satır 3
+            doc.rect(40, y, 515, satirYuksekligi).stroke();
+            doc.rect(40, y, 120, satirYuksekligi).stroke();
+            doc.rect(280, y, 80, satirYuksekligi).stroke();
+            doc.font(fontBold).text('FİRMA ADI', 45, y + 5);
+            doc.font(fontNormal).text((customer.unvan || '-').substring(0, 25), 165, y + 5);
+            doc.font(fontBold).text('E-Mail', 285, y + 5);
+            doc.font(fontNormal).text(customer.email || '-', 380, y + 5);
+            y += satirYuksekligi;
 
-            // Header
-            if (fs.existsSync(LOGO_PATH)) {
-                doc.image(LOGO_PATH, 40, 20, { width: 100 });
-            }
-            if (fs.existsSync(TURKAK_PATH)) {
-                doc.image(TURKAK_PATH, 480, 20, { width: 60 });
-            }
-            doc.moveTo(40, 55).lineTo(555, 55).stroke();
+            // Satır 4
+            doc.rect(40, y, 515, satirYuksekligi).stroke();
+            doc.rect(40, y, 120, satirYuksekligi).stroke();
+            doc.rect(280, y, 80, satirYuksekligi).stroke();
+            doc.font(fontBold).text('FİRMA ADRESİ', 45, y + 5);
+            doc.font(fontNormal).text((customer.adres || '-').substring(0, 25), 165, y + 5);
+            doc.font(fontBold).text('KONU', 285, y + 5);
+            doc.font(fontNormal).fontSize(7).text('PERİYODİK KONTROL VE İŞ HİJYENİ ÖLÇÜM', 380, y + 3, { width: 170 });
+            y += satirYuksekligi + 15;
 
-            y = 65;
+            // Açıklama metni
+            doc.fontSize(10).font(fontBold);
+            doc.text('Sayın Firma Yetkilisi;', 40, y);
+            y += 18;
+
+            doc.font(fontNormal).fontSize(9);
+            doc.text('Tarafımızdan talep etmiş olduğunuz ölçümlere ait fiyat teklifimiz ve ölçümlerde kullanılacak metotlar ekte bilginize sunulmuştur.', 40, y, { width: 515, align: 'justify' });
+            y += 25;
+            doc.text('Firmamıza göstermiş olduğunuz ilgi ve güvene teşekkür eder, teklifimizin uygun bulunacağını umar, iyi çalışmalar dileriz.', 40, y, { width: 515, align: 'justify' });
+            y += 25;
+            doc.text('Akredite kapsamında yapılan ölçümler, İŞ HİJYENİ (ORTAM ÖLÇÜMÜ) parametreleri ile yapılan ölçümlerdir.', 40, y, { width: 515, align: 'justify' });
+            y += 35;
+
+            // ==================== HİZMET TABLOLARI ====================
+
+            // Kategorilere göre grupla
+            const kategoriler = {};
+            detaylar.forEach(d => {
+                const katAd = d.hizmet?.kategori?.ad || 'DİĞER';
+                const katSira = d.hizmet?.kategori?.sira || 99;
+                if (!kategoriler[katAd]) {
+                    kategoriler[katAd] = { sira: katSira, hizmetler: [] };
+                }
+                kategoriler[katAd].hizmetler.push(d);
+            });
+
+            // Sırala
+            const siraliKategoriler = Object.entries(kategoriler).sort((a, b) => a[1].sira - b[1].sira);
 
             // Sütun genişlikleri
-            const cols = [180, 140, 40, 40, 55, 60]; // toplam 515
-            const colX = [40, 220, 360, 400, 440, 495];
+            const col = [40, 180, 330, 380, 430, 480, 555]; // x pozisyonları
+            const colW = [140, 150, 50, 50, 50, 75]; // genişlikler
 
-            // Kategorileri sırala ve yaz
-            const sortedKategoriler = Object.entries(kategoriGruplari).sort((a, b) => a[1].sira - b[1].sira);
+            siraliKategoriler.forEach(([katAd, katData]) => {
+                // Sayfa kontrolü
+                if (y > 680) {
+                    doc.addPage();
+                    y = 50;
+                }
 
-            if (sortedKategoriler.length === 0) {
-                doc.font(fontN).fontSize(12).text('Henüz hizmet seçilmemiş.', 40, y);
-            } else {
-                sortedKategoriler.forEach(([katAd, katData], idx) => {
-                    // Sayfa kontrolü
-                    if (y > 700) {
-                        doc.font(fontN).fontSize(8).fillColor('#666');
-                        doc.text('FRM.01/Rev:09', 40, 800);
-                        doc.text(`Sayfa ${sayfaNo}`, 500, 800);
+                // Kategori başlığı
+                doc.fillColor('white').rect(40, y, 515, 18).fill(MAVI);
+                doc.fillColor('white').fontSize(9).font(fontBold);
+                doc.text(katAd, 45, y + 4);
+                y += 18;
+
+                // Tablo header
+                doc.fillColor('black').rect(40, y, 515, 15).fill(ACIK_MAVI);
+                doc.fillColor('black').fontSize(7).font(fontBold);
+                doc.text('Ölçüm Parametresi', col[0] + 2, y + 4, { width: colW[0] });
+                doc.text('Metod/Kapsam/Açıklama', col[1] + 2, y + 4, { width: colW[1] });
+                doc.text('Miktar', col[2] + 2, y + 4, { width: colW[2] });
+                doc.text('Birim', col[3] + 2, y + 4, { width: colW[3] });
+                doc.text('Birim Fiyat', col[4] + 2, y + 4, { width: colW[4] });
+                doc.text('Fiyat', col[5] + 2, y + 4, { width: colW[5] });
+                
+                // Header kenarlıkları
+                doc.rect(col[0], y, colW[0], 15).stroke();
+                doc.rect(col[1], y, colW[1], 15).stroke();
+                doc.rect(col[2], y, colW[2], 15).stroke();
+                doc.rect(col[3], y, colW[3], 15).stroke();
+                doc.rect(col[4], y, colW[4], 15).stroke();
+                doc.rect(col[5], y, colW[5], 15).stroke();
+                y += 15;
+
+                // Hizmet satırları
+                katData.hizmetler.forEach(detay => {
+                    if (y > 750) {
                         doc.addPage();
-                        sayfaNo++;
-                        if (fs.existsSync(LOGO_PATH)) doc.image(LOGO_PATH, 40, 20, { width: 100 });
-                        doc.moveTo(40, 55).lineTo(555, 55).stroke();
-                        y = 65;
+                        y = 50;
                     }
 
-                    // Kategori başlığı
-                    const isHijyen = katAd.toUpperCase().includes('HİJYEN');
-                    doc.rect(40, y, 515, 18).fill(MAVI);
-                    doc.font(fontB).fontSize(9).fillColor('white');
-                    doc.text(`${idx + 1}. ${katAd}${isHijyen ? ' (AKREDİTE)' : ''}`, 45, y + 4);
-                    doc.fillColor('black');
-                    y += 18;
+                    const hizmet = detay.hizmet || {};
+                    const miktar = detay.miktar || 0;
+                    const birimFiyat = parseFloat(detay.birimFiyat) || 0;
+                    const fiyat = miktar * birimFiyat;
+                    const metod = hizmet.metodKapsam || hizmet.standartYonetmelik || '';
 
-                    // Tablo header
-                    doc.rect(40, y, 515, 16).fill(ACIK_MAVI).stroke('#333');
-                    // Dikey çizgiler
-                    colX.forEach((x, i) => {
-                        if (i > 0) doc.moveTo(x, y).lineTo(x, y + 16).stroke('#666');
-                    });
+                    const satirH = 18;
+                    doc.font(fontNormal).fontSize(7).fillColor('black');
+                    
+                    // Hücre içerikleri
+                    doc.text((hizmet.ad || '').substring(0, 30), col[0] + 2, y + 4, { width: colW[0] - 4 });
+                    doc.text(metod.substring(0, 35), col[1] + 2, y + 4, { width: colW[1] - 4 });
+                    doc.text(miktar.toString(), col[2] + 2, y + 4, { width: colW[2] - 4 });
+                    doc.text(hizmet.birim || 'Adet', col[3] + 2, y + 4, { width: colW[3] - 4 });
+                    doc.text(formatPara(birimFiyat), col[4] + 2, y + 4, { width: colW[4] - 4 });
+                    doc.text(formatPara(fiyat), col[5] + 2, y + 4, { width: colW[5] - 4 });
 
-                    doc.font(fontB).fontSize(7).fillColor('black');
-                    doc.text('Ölçüm/Kontrol Parametresi', colX[0] + 2, y + 4, { width: cols[0] - 4 });
-                    doc.text(isHijyen ? 'Metod/Kapsam' : 'Standart', colX[1] + 2, y + 4, { width: cols[1] - 4 });
-                    doc.text('Mik.', colX[2] + 2, y + 4, { width: cols[2] - 4, align: 'center' });
-                    doc.text('Birim', colX[3] + 2, y + 4, { width: cols[3] - 4, align: 'center' });
-                    doc.text('B.Fiyat', colX[4] + 2, y + 4, { width: cols[4] - 4, align: 'right' });
-                    doc.text('Toplam', colX[5] + 2, y + 4, { width: cols[5] - 4, align: 'right' });
-                    y += 16;
+                    // Hücre kenarlıkları
+                    doc.rect(col[0], y, colW[0], satirH).stroke();
+                    doc.rect(col[1], y, colW[1], satirH).stroke();
+                    doc.rect(col[2], y, colW[2], satirH).stroke();
+                    doc.rect(col[3], y, colW[3], satirH).stroke();
+                    doc.rect(col[4], y, colW[4], satirH).stroke();
+                    doc.rect(col[5], y, colW[5], satirH).stroke();
 
-                    // Hizmet satırları
-                    katData.detaylar.forEach(detay => {
-                        if (y > 750) {
-                            doc.font(fontN).fontSize(8).fillColor('#666');
-                            doc.text('FRM.01/Rev:09', 40, 800);
-                            doc.text(`Sayfa ${sayfaNo}`, 500, 800);
-                            doc.addPage();
-                            sayfaNo++;
-                            if (fs.existsSync(LOGO_PATH)) doc.image(LOGO_PATH, 40, 20, { width: 100 });
-                            doc.moveTo(40, 55).lineTo(555, 55).stroke();
-                            y = 65;
-                        }
-
-                        const hizmet = detay.hizmet || {};
-                        const miktar = detay.miktar || 0;
-                        const birimFiyat = parseFloat(detay.birimFiyat) || 0;
-                        const toplam = miktar * birimFiyat;
-                        const metod = hizmet.metodKapsam || hizmet.standartYonetmelik || '';
-
-                        const satirH = 14;
-
-                        // Satır çerçevesi
-                        doc.rect(40, y, 515, satirH).stroke('#333');
-                        // Dikey çizgiler
-                        colX.forEach((x, i) => {
-                            if (i > 0) doc.moveTo(x, y).lineTo(x, y + satirH).stroke('#999');
-                        });
-
-                        doc.font(fontN).fontSize(7).fillColor('black');
-                        doc.text((hizmet.ad || '').substring(0, 40), colX[0] + 2, y + 3, { width: cols[0] - 4 });
-                        doc.text(metod.substring(0, 35), colX[1] + 2, y + 3, { width: cols[1] - 4 });
-                        doc.text(String(miktar), colX[2] + 2, y + 3, { width: cols[2] - 4, align: 'center' });
-                        doc.text(hizmet.birim || 'Adet', colX[3] + 2, y + 3, { width: cols[3] - 4, align: 'center' });
-                        doc.text(formatPara(birimFiyat), colX[4] + 2, y + 3, { width: cols[4] - 4, align: 'right' });
-                        doc.text(formatPara(toplam), colX[5] + 2, y + 3, { width: cols[5] - 4, align: 'right' });
-
-                        y += satirH;
-                    });
-
-                    y += 10;
+                    y += satirH;
                 });
-            }
 
-            // TOPLAM KUTUSU
-            if (y > 650) {
-                doc.font(fontN).fontSize(8).fillColor('#666');
-                doc.text('FRM.01/Rev:09', 40, 800);
-                doc.text(`Sayfa ${sayfaNo}`, 500, 800);
-                doc.addPage();
-                sayfaNo++;
-                y = 60;
-            }
-
-            y += 20;
-            const topX = 350;
-            const topW = 205;
-            const topH = 20;
-
-            // Ara Toplam
-            doc.rect(topX, y, topW, topH).stroke('#333');
-            doc.font(fontN).fontSize(10).text('ARA TOPLAM:', topX + 5, y + 5);
-            doc.font(fontB).text(formatPara(teklif.araToplam) + ' TL', topX + 100, y + 5, { width: 100, align: 'right' });
-            y += topH;
-
-            // İskonto
-            if (parseFloat(teklif.iskontoOran) > 0) {
-                doc.rect(topX, y, topW, topH).stroke('#333');
-                doc.font(fontN).fontSize(10).text(`İSKONTO (%${teklif.iskontoOran}):`, topX + 5, y + 5);
-                doc.font(fontB).fillColor('#c00000').text('-' + formatPara(teklif.iskontoTutar) + ' TL', topX + 100, y + 5, { width: 100, align: 'right' });
-                doc.fillColor('black');
-                y += topH;
-            }
-
-            // Toplam
-            doc.rect(topX, y, topW, topH).stroke('#333');
-            doc.font(fontN).fontSize(10).text('TOPLAM:', topX + 5, y + 5);
-            doc.font(fontB).text(formatPara(teklif.toplamTutar) + ' TL', topX + 100, y + 5, { width: 100, align: 'right' });
-            y += topH;
-
-            // KDV
-            doc.rect(topX, y, topW, topH).stroke('#333');
-            doc.font(fontN).fontSize(10).text(`KDV (%${teklif.kdvOrani || 20}):`, topX + 5, y + 5);
-            doc.font(fontB).text(formatPara(teklif.kdvTutar) + ' TL', topX + 100, y + 5, { width: 100, align: 'right' });
-            y += topH;
-
-            // Genel Toplam
-            doc.rect(topX, y, topW, topH + 4).fill(SARI).stroke('#333');
-            doc.font(fontB).fontSize(11).fillColor('black');
-            doc.text('GENEL TOPLAM:', topX + 5, y + 6);
-            doc.text(formatPara(teklif.genelToplam) + ' TL', topX + 90, y + 6, { width: 110, align: 'right' });
-
-            // Footer
-            doc.font(fontN).fontSize(8).fillColor('#666');
-            doc.text('FRM.01/Rev:09', 40, 800);
-            doc.text(`Sayfa ${sayfaNo}`, 500, 800);
-            doc.fillColor('black');
-
-            // ========================================================
-            // SAYFA 3 - ŞARTLAR VE SÖZLEŞME ONAYI
-            // ========================================================
-            doc.addPage();
-            sayfaNo++;
-
-            // Header
-            if (fs.existsSync(LOGO_PATH)) {
-                doc.image(LOGO_PATH, 40, 20, { width: 100 });
-            }
-            doc.font(fontB).fontSize(12).fillColor(MAVI);
-            doc.text('GENEL VE TİCARİ ŞARTLAR', 200, 30, { width: 250, align: 'center' });
-            doc.fillColor('black');
-            doc.moveTo(40, 55).lineTo(555, 55).stroke();
-
-            y = 65;
-
-            // 19 Madde
-            MADDELER.forEach((madde, idx) => {
-                doc.font(fontB).fontSize(7.5).text(`${idx + 1}) `, 40, y, { continued: true });
-                doc.font(fontN).text(madde, { width: 510, align: 'justify' });
-                y = doc.y + 3;
+                y += 10;
             });
 
-            // SÖZLEŞME ONAYI - ŞARTLARIN ALTINDA
-            y = Math.max(doc.y + 20, 600);
+            // ==================== TOPLAM BÖLÜMÜ ====================
 
-            doc.rect(40, y, 515, 22).fill(MAVI);
-            doc.font(fontB).fontSize(11).fillColor('white');
-            doc.text('SÖZLEŞME ONAYI', 45, y + 5, { width: 505, align: 'center' });
-            doc.fillColor('black');
-            y += 24;
-
-            // İki kutu
-            const boxW = 250;
-            const boxH = 70;
-
-            // Sol - Müşteri
-            doc.rect(40, y, boxW, boxH).stroke('#333');
-            doc.font(fontB).fontSize(10).text('MÜŞTERİ ONAYI', 40, y + 8, { width: boxW, align: 'center' });
-            doc.font(fontN).fontSize(9).text('Kaşe / İmza', 40, y + 25, { width: boxW, align: 'center' });
-            doc.text('Tarih: ___/___/______', 55, y + 55);
-
-            // Sağ - Önder Muayene
-            doc.rect(305, y, boxW, boxH).stroke('#333');
-            doc.font(fontB).fontSize(10).text('ÖNDER MUAYENE ONAYI', 305, y + 8, { width: boxW, align: 'center' });
-            if (fs.existsSync(MUHUR_PATH)) {
-                doc.image(MUHUR_PATH, 350, y + 25, { width: 50 });
+            if (y > 650) {
+                doc.addPage();
+                y = 50;
             }
 
-            y += boxH + 15;
+            y += 10;
+            const toplamX = 380;
+
+            // Ara toplam hesapla
+            let araToplam = 0;
+            detaylar.forEach(d => {
+                araToplam += (d.miktar || 0) * (parseFloat(d.birimFiyat) || 0);
+            });
+
+            const iskontoTutar = parseFloat(teklif.iskontoTutar) || 0;
+            const toplam = araToplam - iskontoTutar;
+            const kdvTutar = toplam * 0.20;
+            const genelToplam = toplam + kdvTutar;
+
+            doc.fontSize(9).font(fontBold);
+
+            // Ara Toplam
+            doc.rect(toplamX, y, 175, 18).stroke();
+            doc.text('ARA TOPLAM:', toplamX + 5, y + 4);
+            doc.text(formatPara(araToplam) + ' TL', toplamX + 90, y + 4, { width: 80, align: 'right' });
+            y += 18;
+
+            // KDV
+            doc.rect(toplamX, y, 175, 18).stroke();
+            doc.text('KDV (%20):', toplamX + 5, y + 4);
+            doc.text(formatPara(kdvTutar) + ' TL', toplamX + 90, y + 4, { width: 80, align: 'right' });
+            y += 18;
+
+            // Genel Toplam (sarı arka plan)
+            doc.rect(toplamX, y, 175, 20).fillAndStroke('#ffff00', 'black');
+            doc.fillColor('black').fontSize(10).font(fontBold);
+            doc.text('GENEL TOPLAM:', toplamX + 5, y + 5);
+            doc.text(formatPara(genelToplam) + ' TL', toplamX + 80, y + 5, { width: 90, align: 'right' });
+            y += 35;
+
+            // ==================== SÖZLEŞME ONAYI ====================
+
+            if (y > 620) {
+                doc.addPage();
+                y = 50;
+            }
+
+            // Başlık
+            doc.fillColor('white').rect(40, y, 515, 20).fill(MAVI);
+            doc.fillColor('white').fontSize(10).font(fontBold);
+            doc.text('SÖZLEŞME ONAYI', 40, y + 5, { align: 'center', width: 515 });
+            y += 20;
+
+            // İki sütun
+            doc.fillColor('black');
+            doc.rect(40, y, 257, 60).stroke();
+            doc.rect(297, y, 258, 60).stroke();
+
+            doc.fontSize(9).font(fontBold);
+            doc.text('FİRMA ONAYI (KAŞE / İMZA)', 50, y + 8);
+            doc.text('ÖNDER MUAYENE ONAYI', 310, y + 8);
+
+            // Mühür
+            if (fs.existsSync(muhurPath)) {
+                doc.image(muhurPath, 420, y + 15, { width: 45 });
+            }
+
+            y += 70;
 
             // Onay checkboxları
+            doc.fontSize(9).font(fontBold).fillColor('red');
             const checkTelefon = teklif.onayTelefon ? '☑' : '☐';
             const checkSahada = teklif.sahadaOnay ? '☑' : '☐';
-            doc.font(fontB).fontSize(10).fillColor('#c00000');
-            doc.text(`${checkTelefon} TELEFON İLE ONAYLANDI     ${checkSahada} SAHADA ONAYLANDI`, 40, y, { width: 515, align: 'center' });
+            doc.text(checkTelefon + ' ONAY TELEFON İLE ALINMIŞTIR.', 40, y);
+            y += 15;
+            doc.text(checkSahada + ' SAHADA ONAYLANDI.', 40, y);
 
-            // Footer
-            doc.font(fontN).fontSize(8).fillColor('#666');
-            doc.text('FRM.01/Rev:09', 40, 800);
-            doc.text(`Sayfa ${sayfaNo}`, 500, 800);
+            // ==================== SAYFA 2 - ŞARTLAR ====================
+
+            doc.addPage();
+
+            // Header
+            if (fs.existsSync(logoPath)) {
+                doc.image(logoPath, 40, 20, { width: 100 });
+            }
+            doc.fontSize(7).font(fontNormal).fillColor('black');
+            doc.text(FIRMA.unvan, 300, 20, { width: 250, align: 'right' });
+            doc.text(FIRMA.adres, 300, 32, { width: 250, align: 'right' });
+
+            // Başlık
+            doc.fillColor(MAVI).fontSize(12).font(fontBold);
+            doc.text('GENEL VE TİCARİ ŞARTLAR', 40, 70, { align: 'center', width: 515 });
+            doc.fillColor('black');
+
+            y = 95;
+            doc.font(fontNormal).fontSize(8);
+
+            SARTLAR.forEach((sart, idx) => {
+                if (y > 750) {
+                    doc.addPage();
+                    y = 50;
+                }
+                doc.text((idx + 1) + ') ' + sart, 40, y, { width: 515, align: 'justify' });
+                y += 28;
+            });
 
             doc.end();
 
         } catch (error) {
-            console.error('PDF oluşturma hatası:', error);
             reject(error);
         }
     });
 }
 
+/**
+ * PDF'i dosyaya kaydet
+ */
+async function teklifPdfKaydet(teklif, outputPath) {
+    const buffer = await teklifPdfOlustur(teklif);
+    fs.writeFileSync(outputPath, buffer);
+    return outputPath;
+}
+
 module.exports = {
     teklifPdfOlustur,
-    MADDELER
+    teklifPdfKaydet
 };
