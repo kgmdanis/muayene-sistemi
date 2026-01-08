@@ -1626,7 +1626,7 @@ async function sendTeklifEmail(teklifId) {
 async function teklifPDFExcelFormat(id) {
     showLoading();
     try {
-        const response = await fetch(`${API_BASE}/teklifler/${id}/pdf-excel`, {
+        const response = await fetch(`${API_BASE}/teklifler/${id}/pdf`, {
             headers: { 'Authorization': 'Bearer ' + authToken }
         });
 
