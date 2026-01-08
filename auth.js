@@ -1,312 +1,294 @@
+const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const fs = require('fs').promises;
-const path = require('path');
+const { PrismaClient } = require('@prisma/client');
 
-const AUTH_FILE = path.join(__dirname, 'auth.json');
-const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 saat
+const prisma = new PrismaClient();
+const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
+const JWT_EXPIRES_IN = '24h';
 
-// Şifre hashleme fonksiyonu
+// Şifre hashleme
 function hashPassword(password) {
     const salt = crypto.randomBytes(16).toString('hex');
     const hash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
-    return { salt, hash };
+    return salt + ':' + hash;
 }
 
-// Şifre doğrulama fonksiyonu
-function verifyPassword(password, hash, salt) {
+// Şifre doğrulama
+function verifyPassword(password, storedPassword) {
+    const [salt, hash] = storedPassword.split(':');
     const verifyHash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
     return hash === verifyHash;
 }
 
-// Session token oluşturma
-function generateSessionToken() {
-    return crypto.randomBytes(32).toString('hex');
+// JWT Token oluştur
+function generateToken(user) {
+    return jwt.sign(
+        {
+            userId: user.id,
+            email: user.email,
+            role: user.role
+        },
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
+    );
 }
 
-// Auth dosyasını yükleme
-async function loadAuthData() {
+// JWT Token doğrula
+function verifyToken(token) {
     try {
-        const data = await fs.readFile(AUTH_FILE, 'utf8');
-        return JSON.parse(data);
+        return jwt.verify(token, JWT_SECRET);
     } catch (error) {
-        // Dosya yoksa varsayılan veri oluştur
-        const defaultData = {
-            users: [
-                {
-                    id: 1,
-                    username: 'admin',
-                    password: hashPassword('admin123'),
-                    role: 'admin',
-                    name: 'Sistem Yöneticisi',
-                    email: 'admin@ondermuayene.com',
-                    active: true,
-                    createdAt: new Date().toISOString()
-                }
-            ],
-            sessions: []
+        return null;
+    }
+}
+
+// Login
+async function login(email, password, ip, userAgent) {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email }
+        });
+
+        // Kullanıcı bulunamadı
+        if (!user) {
+            return { success: false, error: 'Kullanıcı bulunamadı' };
+        }
+
+        // Kullanıcı aktif değil
+        if (!user.isActive) {
+            return { success: false, error: 'Hesabınız devre dışı bırakılmış' };
+        }
+
+        // Şifre kontrolü
+        if (!verifyPassword(password, user.password)) {
+            // Başarısız giriş logu
+            await prisma.loginLog.create({
+                data: { userId: user.id, ip: ip || 'unknown', userAgent, basarili: false }
+            });
+            return { success: false, error: 'Şifre hatalı' };
+        }
+
+        // Başarılı giriş logu
+        await prisma.loginLog.create({
+            data: { userId: user.id, ip: ip || 'unknown', userAgent, basarili: true }
+        });
+
+        // Son giriş güncelle
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { lastLogin: new Date(), lastLoginIP: ip }
+        });
+
+        // Firma bilgilerini al
+        const firma = await prisma.firmaAyarlari.findFirst();
+
+        // Token oluştur
+        const token = generateToken(user);
+
+        return {
+            success: true,
+            token,
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                role: user.role,
+                firma: firma ? {
+                    id: firma.id,
+                    name: firma.name,
+                    logo: firma.logo
+                } : null
+            }
         };
-        await saveAuthData(defaultData);
-        return defaultData;
+    } catch (error) {
+        console.error('Login hatası:', error);
+        return { success: false, error: 'Giriş sırasında bir hata oluştu' };
     }
 }
 
-// Auth dosyasını kaydetme
-async function saveAuthData(data) {
-    await fs.writeFile(AUTH_FILE, JSON.stringify(data, null, 2));
-}
-
-// Kullanıcı girişi
-async function login(username, password) {
-    const authData = await loadAuthData();
-    
-    // Kullanıcıyı bul
-    const user = authData.users.find(u => u.username === username && u.active);
-    if (!user) {
-        return { success: false, error: 'Kullanıcı adı veya şifre hatalı' };
-    }
-    
-    // Şifreyi doğrula
-    if (!verifyPassword(password, user.password.hash, user.password.salt)) {
-        return { success: false, error: 'Kullanıcı adı veya şifre hatalı' };
-    }
-    
-    // Session oluştur
-    const token = generateSessionToken();
-    const session = {
-        token,
-        userId: user.id,
-        createdAt: new Date().toISOString(),
-        expiresAt: new Date(Date.now() + SESSION_DURATION).toISOString()
-    };
-    
-    // Eski sessionları temizle
-    authData.sessions = authData.sessions.filter(s => new Date(s.expiresAt) > new Date());
-    
-    // Yeni session ekle
-    authData.sessions.push(session);
-    await saveAuthData(authData);
-    
-    // Hassas bilgileri çıkar
-    const { password: _, ...userInfo } = user;
-    
-    return {
-        success: true,
-        token,
-        user: userInfo
-    };
-}
-
-// Session doğrulama
+// Token doğrulama ve kullanıcı bilgisi
 async function verifySession(token) {
-    if (!token) {
-        return { success: false, error: 'Token gereklidir' };
-    }
-    
-    const authData = await loadAuthData();
-    
-    // Session bul
-    const session = authData.sessions.find(s => s.token === token);
-    if (!session) {
+    const decoded = verifyToken(token);
+    if (!decoded) {
         return { success: false, error: 'Geçersiz token' };
     }
-    
-    // Süre kontrolü
-    if (new Date(session.expiresAt) < new Date()) {
-        // Süresi dolmuş sessionı sil
-        authData.sessions = authData.sessions.filter(s => s.token !== token);
-        await saveAuthData(authData);
-        return { success: false, error: 'Session süresi dolmuş' };
+
+    const user = await prisma.user.findUnique({
+        where: { id: decoded.userId }
+    });
+
+    if (!user || !user.isActive) {
+        return { success: false, error: 'Kullanıcı bulunamadı veya devre dışı' };
     }
-    
-    // Kullanıcıyı bul
-    const user = authData.users.find(u => u.id === session.userId);
-    if (!user || !user.active) {
-        return { success: false, error: 'Kullanıcı bulunamadı veya aktif değil' };
-    }
-    
-    // Hassas bilgileri çıkar
-    const { password: _, ...userInfo } = user;
-    
+
+    // Firma bilgilerini al
+    const firma = await prisma.firmaAyarlari.findFirst();
+
     return {
         success: true,
-        user: userInfo,
-        session
-    };
-}
-
-// Çıkış
-async function logout(token) {
-    const authData = await loadAuthData();
-    authData.sessions = authData.sessions.filter(s => s.token !== token);
-    await saveAuthData(authData);
-    return { success: true };
-}
-
-// Kullanıcı oluşturma
-async function createUser(userData, creatorId) {
-    const authData = await loadAuthData();
-    
-    // Kullanıcı adı kontrolü
-    if (authData.users.some(u => u.username === userData.username)) {
-        return { success: false, error: 'Bu kullanıcı adı zaten kullanılıyor' };
-    }
-    
-    // Yeni kullanıcı oluştur
-    const newUser = {
-        id: Math.max(...authData.users.map(u => u.id), 0) + 1,
-        username: userData.username,
-        password: hashPassword(userData.password),
-        role: userData.role || 'user',
-        name: userData.name,
-        email: userData.email,
-        active: true,
-        createdAt: new Date().toISOString(),
-        createdBy: creatorId
-    };
-    
-    authData.users.push(newUser);
-    await saveAuthData(authData);
-    
-    // Hassas bilgileri çıkar
-    const { password: _, ...userInfo } = newUser;
-    
-    return {
-        success: true,
-        user: userInfo
-    };
-}
-
-// Kullanıcı güncelleme
-async function updateUser(userId, updates, updaterId) {
-    const authData = await loadAuthData();
-    
-    const userIndex = authData.users.findIndex(u => u.id === userId);
-    if (userIndex === -1) {
-        return { success: false, error: 'Kullanıcı bulunamadı' };
-    }
-    
-    // Şifre güncellemesi varsa hashle
-    if (updates.password) {
-        updates.password = hashPassword(updates.password);
-    }
-    
-    // Kullanıcı adı değişikliği kontrolü
-    if (updates.username && updates.username !== authData.users[userIndex].username) {
-        if (authData.users.some(u => u.username === updates.username)) {
-            return { success: false, error: 'Bu kullanıcı adı zaten kullanılıyor' };
+        user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            firma: firma ? {
+                id: firma.id,
+                name: firma.name,
+                logo: firma.logo
+            } : null
         }
-    }
-    
-    // Güncelle
-    authData.users[userIndex] = {
-        ...authData.users[userIndex],
-        ...updates,
-        updatedAt: new Date().toISOString(),
-        updatedBy: updaterId
-    };
-    
-    await saveAuthData(authData);
-    
-    // Hassas bilgileri çıkar
-    const { password: _, ...userInfo } = authData.users[userIndex];
-    
-    return {
-        success: true,
-        user: userInfo
     };
 }
 
-// Kullanıcı silme (soft delete)
-async function deleteUser(userId, deleterId) {
-    const authData = await loadAuthData();
-    
-    const userIndex = authData.users.findIndex(u => u.id === userId);
-    if (userIndex === -1) {
-        return { success: false, error: 'Kullanıcı bulunamadı' };
-    }
-    
-    // Admin hesabı silinmesin
-    if (authData.users[userIndex].username === 'admin') {
-        return { success: false, error: 'Admin hesabı silinemez' };
-    }
-    
-    // Soft delete
-    authData.users[userIndex].active = false;
-    authData.users[userIndex].deletedAt = new Date().toISOString();
-    authData.users[userIndex].deletedBy = deleterId;
-    
-    // Bu kullanıcının sessionlarını sil
-    authData.sessions = authData.sessions.filter(s => s.userId !== userId);
-    
-    await saveAuthData(authData);
-    
-    return { success: true };
-}
-
-// Tüm kullanıcıları listele
-async function listUsers() {
-    const authData = await loadAuthData();
-    
-    // Aktif kullanıcıları listele ve hassas bilgileri çıkar
-    const users = authData.users
-        .filter(u => u.active)
-        .map(({ password, ...user }) => user);
-    
-    return users;
-}
-
-// Şifre değiştirme
-async function changePassword(userId, oldPassword, newPassword) {
-    const authData = await loadAuthData();
-    
-    const user = authData.users.find(u => u.id === userId);
-    if (!user) {
-        return { success: false, error: 'Kullanıcı bulunamadı' };
-    }
-    
-    // Eski şifreyi doğrula
-    if (!verifyPassword(oldPassword, user.password.hash, user.password.salt)) {
-        return { success: false, error: 'Mevcut şifre hatalı' };
-    }
-    
-    // Yeni şifreyi hashle ve kaydet
-    user.password = hashPassword(newPassword);
-    user.passwordChangedAt = new Date().toISOString();
-    
-    await saveAuthData(authData);
-    
-    return { success: true };
-}
-
-// Express middleware
+// Auth Middleware
 function authMiddleware(requiredRole = null) {
     return async (req, res, next) => {
-        const token = req.headers['authorization']?.replace('Bearer ', '') || req.query.token;
-        
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.replace('Bearer ', '');
+
+        if (!token) {
+            return res.status(401).json({ error: 'Token gerekli' });
+        }
+
         const result = await verifySession(token);
         if (!result.success) {
             return res.status(401).json({ error: result.error });
         }
-        
-        // Role kontrolü
-        if (requiredRole && result.user.role !== requiredRole && result.user.role !== 'admin') {
-            return res.status(403).json({ error: 'Yetkisiz erişim' });
+
+        // Rol kontrolü
+        if (requiredRole) {
+            const userRole = result.user.role;
+
+            // Admin her yere erişebilir
+            if (userRole === 'admin') {
+                req.user = result.user;
+                return next();
+            }
+
+            // Admin gerektiren endpoint - sadece admin erişebilir
+            if (requiredRole === 'admin' && userRole !== 'admin') {
+                return res.status(403).json({ error: 'Bu işlem için admin yetkisi gerekli' });
+            }
         }
-        
+
         req.user = result.user;
-        req.session = result.session;
         next();
     };
 }
 
+// Şifre sıfırlama kodu oluştur
+async function createResetToken(email) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+        return { success: false, error: 'Kullanıcı bulunamadı' };
+    }
+
+    const resetToken = Math.floor(100000 + Math.random() * 900000).toString(); // 6 haneli kod
+    const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 dakika
+
+    await prisma.user.update({
+        where: { id: user.id },
+        data: { resetToken, resetTokenExpiry }
+    });
+
+    return { success: true, resetToken, user };
+}
+
+// Şifre sıfırla
+async function resetPassword(email, token, newPassword) {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+        return { success: false, error: 'Kullanıcı bulunamadı' };
+    }
+
+    if (user.resetToken !== token) {
+        return { success: false, error: 'Geçersiz kod' };
+    }
+
+    if (new Date() > user.resetTokenExpiry) {
+        return { success: false, error: 'Kod süresi dolmuş' };
+    }
+
+    await prisma.user.update({
+        where: { id: user.id },
+        data: {
+            password: hashPassword(newPassword),
+            plainPassword: newPassword,
+            resetToken: null,
+            resetTokenExpiry: null
+        }
+    });
+
+    return { success: true };
+}
+
+// Kullanıcı oluştur
+async function createUser(userData) {
+    const hashedPassword = hashPassword(userData.password);
+
+    const user = await prisma.user.create({
+        data: {
+            email: userData.email,
+            password: hashedPassword,
+            plainPassword: userData.password,
+            name: userData.name,
+            role: userData.role || 'tekniker',
+            telefon: userData.telefon,
+            isActive: true,
+            emailVerified: true
+        }
+    });
+
+    return { success: true, user };
+}
+
+// Kullanıcı güncelle
+async function updateUser(id, userData) {
+    const data = { ...userData };
+
+    if (data.password) {
+        data.password = hashPassword(data.password);
+        data.plainPassword = userData.password;
+    }
+
+    delete data.id;
+
+    const user = await prisma.user.update({
+        where: { id: parseInt(id) },
+        data
+    });
+
+    return { success: true, user };
+}
+
+// Kullanıcı sil
+async function deleteUser(id) {
+    await prisma.user.delete({ where: { id: parseInt(id) } });
+    return { success: true };
+}
+
+// Kullanıcıları listele
+async function listUsers() {
+    const users = await prisma.user.findMany({
+        orderBy: { createdAt: 'desc' }
+    });
+
+    return users;
+}
+
 module.exports = {
     login,
-    logout,
     verifySession,
+    authMiddleware,
+    createResetToken,
+    resetPassword,
     createUser,
     updateUser,
     deleteUser,
     listUsers,
-    changePassword,
-    authMiddleware
+    hashPassword,
+    verifyPassword,
+    generateToken,
+    prisma
 };

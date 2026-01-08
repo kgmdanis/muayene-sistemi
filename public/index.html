@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Periyodik Muayene Yönetim Sistemi - ÖNDER MUAYENE</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/css/style.css?v=6">
 </head>
 <body>
     <!-- Toast Bildirimleri -->
@@ -200,10 +200,11 @@
                 <!-- Filtre -->
                 <div class="filter-bar" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="filter-btn active" data-filter="all" onclick="teklifFiltrele('all')" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;">📊 Tümü</button>
-                        <button class="filter-btn" data-filter="Bekleyen" onclick="teklifFiltrele('Bekleyen')" style="background: #fff3cd; color: #856404; border: 2px solid #ffeaa7; padding: 10px 20px; border-radius: 8px; font-weight: 600;">⏳ Bekleyen</button>
-                        <button class="filter-btn" data-filter="Onaylandı" onclick="teklifFiltrele('Onaylandı')" style="background: #d4edda; color: #155724; border: 2px solid #28a745; padding: 10px 20px; border-radius: 8px; font-weight: 600;">✅ Onaylandı</button>
-                        <button class="filter-btn" data-filter="Reddedildi" onclick="teklifFiltrele('Reddedildi')" style="background: #f8d7da; color: #721c24; border: 2px solid #dc3545; padding: 10px 20px; border-radius: 8px; font-weight: 600;">❌ Reddedildi</button>
+                        <button class="filter-btn active" data-filter="all" onclick="teklifFiltrele('all')">Tümü</button>
+                        <button class="filter-btn" data-filter="TASLAK" onclick="teklifFiltrele('TASLAK')">Taslak</button>
+                        <button class="filter-btn" data-filter="GONDERILDI" onclick="teklifFiltrele('GONDERILDI')">Gönderildi</button>
+                        <button class="filter-btn" data-filter="ONAYLANDI" onclick="teklifFiltrele('ONAYLANDI')">Onaylandı</button>
+                        <button class="filter-btn" data-filter="REDDEDILDI" onclick="teklifFiltrele('REDDEDILDI')">Reddedildi</button>
                     </div>
                 </div>
 
@@ -241,9 +242,10 @@
                         <h3>İş Emirleri</h3>
                         <div class="filter-buttons">
                             <button class="filter-btn active" onclick="isEmriFiltrele('all')">Tümü</button>
-                            <button class="filter-btn" onclick="isEmriFiltrele('Beklemede')">Beklemede</button>
-                            <button class="filter-btn" onclick="isEmriFiltrele('Devam Ediyor')">Devam Ediyor</button>
-                            <button class="filter-btn" onclick="isEmriFiltrele('Tamamlandı')">Tamamlandı</button>
+                            <button class="filter-btn" onclick="isEmriFiltrele('BEKLEMEDE')">Beklemede</button>
+                            <button class="filter-btn" onclick="isEmriFiltrele('ATANDI')">Atandı</button>
+                            <button class="filter-btn" onclick="isEmriFiltrele('SAHADA')">Sahada</button>
+                            <button class="filter-btn" onclick="isEmriFiltrele('TAMAMLANDI')">Tamamlandı</button>
                         </div>
                     </div>
                     <table id="is-emri-table">
@@ -601,6 +603,6 @@
     <!-- Hidden File Input for Excel -->
     <input type="file" id="excel-file-input" accept=".xlsx,.xls" style="display: none;" onchange="excelDosyaYukle(event)">
 
-    <script src="app.js"></script>
+    <script src="app.js?v=6"></script>
 </body>
 </html>

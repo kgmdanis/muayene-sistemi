@@ -35,19 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Auth kontrolü
 async function checkAuth() {
-    // Token'ı al
-    authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+    // Token'ı al (login.html 'token' olarak kaydediyor)
+    authToken = localStorage.getItem('token');
+    const userStr = localStorage.getItem('user');
 
     if (!authToken) {
         // Login sayfasına yönlendir
-        window.location.href = '/login';
+        window.location.href = '/login.html';
         return;
     }
 
     try {
-        // Token'ı doğrula
-        const response = await fetch(`${API_BASE}/auth/verify`, {
+        // Token'ı doğrula (server.js'de /api/auth/me endpoint'i var)
+        const response = await fetch(`${API_BASE}/auth/me`, {
             headers: { 'Authorization': 'Bearer ' + authToken }
         });
 
@@ -73,11 +73,9 @@ async function checkAuth() {
     } catch (error) {
         console.error('Auth hatası:', error);
         // Token'ları temizle ve login'e yönlendir
-        localStorage.removeItem('authToken');
+        localStorage.removeItem('token');
         localStorage.removeItem('user');
-        sessionStorage.removeItem('authToken');
-        sessionStorage.removeItem('user');
-        window.location.href = '/login';
+        window.location.href = '/login.html';
     }
 }
 
@@ -200,8 +198,29 @@ async function loadTeklifler() {
 async function loadHizmetler() {
     try {
         const response = await authenticatedFetch(`${API_BASE}/hizmetler`);
-        hizmetler = await response.json();
-        console.log('✅ Hizmetler yüklendi:', hizmetler.length);
+        const rawHizmetler = await response.json();
+
+        // API'den düz liste geliyor, kategorilere göre grupla
+        const kategoriMap = {};
+        rawHizmetler.forEach(hizmet => {
+            const kategoriAdi = hizmet.kategori?.ad || 'Diğer';
+            if (!kategoriMap[kategoriAdi]) {
+                kategoriMap[kategoriAdi] = {
+                    kategori: kategoriAdi,
+                    items: []
+                };
+            }
+            kategoriMap[kategoriAdi].items.push({
+                id: hizmet.id,
+                ad: hizmet.ad,
+                metod: hizmet.aciklama || '',
+                birim: hizmet.birim,
+                fiyat: parseFloat(hizmet.birimFiyat) || 0
+            });
+        });
+
+        hizmetler = Object.values(kategoriMap);
+        console.log('✅ Hizmetler yüklendi:', rawHizmetler.length);
     } catch (error) {
         console.error('❌ Hizmet yükleme hatası:', error);
         throw error;
@@ -225,10 +244,10 @@ async function loadDashboardStats() {
         const response = await authenticatedFetch(`${API_BASE}/dashboard/stats`);
         const stats = await response.json();
 
-        document.getElementById('stat-musteri').textContent = stats.toplamMusteri;
-        document.getElementById('stat-teklif').textContent = stats.buAyTeklifSayisi;
-        document.getElementById('stat-bekleyen').textContent = stats.bekleyenTeklifler;
-        document.getElementById('stat-tutar').textContent = formatParaTR(stats.buAyToplamTutar);
+        document.getElementById('stat-musteri').textContent = stats.musteriSayisi || 0;
+        document.getElementById('stat-teklif').textContent = stats.aylikTeklif || 0;
+        document.getElementById('stat-bekleyen').textContent = stats.bekleyenTeklif || 0;
+        document.getElementById('stat-tutar').textContent = formatParaTR(stats.aylikCiro || 0);
 
         // Son teklifleri yükle
         const tekliflerResponse = await authenticatedFetch(`${API_BASE}/dashboard/son-teklifler`);
@@ -649,28 +668,51 @@ function renderTeklifTable() {
     const paginatedTeklifler = filteredTeklifler.slice(startIndex, endIndex);
 
     tbody.innerHTML = paginatedTeklifler.map(teklif => {
-        const musteri = musteriler.find(m => m.id === teklif.musteriId);
-        const musteriAdi = musteri ? musteri.unvan : 'Bilinmeyen Müşteri';
+        // API'den customer ilişkisi ile geliyor, yoksa musteriler'den bul
+        const musteriAdi = teklif.customer?.unvan ||
+                          (musteriler.find(m => m.id === teklif.customerId)?.unvan) ||
+                          'Bilinmeyen Müşteri';
+
+        // Durum değerlerini Türkçe'ye çevir
+        const durumMap = {
+            'TASLAK': 'Taslak',
+            'GONDERILDI': 'Gönderildi',
+            'ONAYLANDI': 'Onaylandı',
+            'REDDEDILDI': 'Reddedildi',
+            'IPTAL': 'İptal',
+            'Bekleyen': 'Bekleyen'
+        };
+        const durumText = durumMap[teklif.durum] || teklif.durum;
+
+        // Badge renkleri
+        const badgeClass = {
+            'TASLAK': 'warning',
+            'GONDERILDI': 'info',
+            'ONAYLANDI': 'success',
+            'REDDEDILDI': 'danger',
+            'IPTAL': 'secondary',
+            'Bekleyen': 'warning'
+        }[teklif.durum] || 'primary';
 
         return `
             <tr>
                 <td><strong>${teklif.teklifNo}</strong></td>
-                <td>${formatTarihTR(teklif.teklifTarihi)}</td>
+                <td>${formatTarihTR(teklif.tarih || teklif.createdAt)}</td>
                 <td>${musteriAdi}</td>
-                <td><strong>${formatParaTR(teklif.genelToplam)}</strong></td>
+                <td><strong>${formatParaTR(parseFloat(teklif.genelToplam) || 0)}</strong></td>
                 <td>
-                    <span class="badge badge-${teklif.durum.toLowerCase().replace('ı', 'i')}"
+                    <span class="badge badge-${badgeClass}"
                           onclick="teklifDurumDegistirModal(${teklif.id})"
                           style="cursor: pointer;"
                           title="Durumu değiştirmek için tıklayın">
-                        ${teklif.durum}
+                        ${durumText}
                     </span>
                 </td>
                 <td>
                     <button class="btn btn-primary btn-small" onclick="teklifGoruntule(${teklif.id})" title="Görüntüle">👁️</button>
                     <button class="btn btn-secondary btn-small" onclick="teklifDuzenle(${teklif.id})" title="Düzenle">✏️</button>
-                    <button class="btn btn-success btn-small" onclick="teklifPDFOlustur(${teklif.id})" title="PDF">📄</button>
-                    <button class="btn btn-success btn-small" onclick="teklifExcelOlustur(${teklif.id})" title="Excel">📊</button>
+                    <button class="btn btn-success btn-small" onclick="teklifPDFExcelFormat(${teklif.id})" title="PDF (Excel Format)">📄</button>
+                    <button class="btn btn-info btn-small" onclick="teklifEmailGonder(${teklif.id})" title="E-posta Gönder">📧</button>
                     <button class="btn btn-danger btn-small" onclick="teklifSil(${teklif.id})" title="Sil">🗑️</button>
                 </td>
             </tr>
@@ -715,8 +757,8 @@ function yeniTeklifModal() {
         return;
     }
 
-    editingTeklif = null;
-    openTeklifModal();
+    // Excel formatına uygun yeni teklif formunu aç
+    window.location.href = '/forms/teklif-form.html';
 }
 
 function teklifDuzenle(id) {
@@ -837,6 +879,9 @@ function openTeklifModal(teklif = null, preSelectedMusteriId = null) {
 }
 
 function renderHizmetSecimi(secilenHizmetler = []) {
+    if (!hizmetler || hizmetler.length === 0) {
+        return '<p class="text-muted">Hizmet bulunamadı</p>';
+    }
     return hizmetler.map(kategori => `
         <div class="hizmet-kategori">
             <div class="hizmet-kategori-header">${kategori.kategori}</div>
@@ -934,19 +979,24 @@ async function teklifKaydet(event) {
 
     // Fiyatları hesapla
     const araToplam = secilenHizmetler.reduce((sum, h) => sum + h.toplam, 0);
-    const kdv = araToplam * 0.20;
+    const kdvOrani = 20;
+    const kdv = araToplam * (kdvOrani / 100);
     const genelToplam = araToplam + kdv;
 
+    // API formatına dönüştür
+    const detaylar = secilenHizmetler.map(h => ({
+        hizmetId: h.id,
+        miktar: h.miktar,
+        birimFiyat: h.fiyat,
+        aciklama: h.ad
+    }));
+
     const teklifData = {
-        musteriId: parseInt(document.getElementById('teklif-musteri').value),
-        teklifTarihi: document.getElementById('teklif-tarih').value,
-        gecerlilik: parseInt(document.getElementById('teklif-gecerlilik').value),
-        konu: document.getElementById('teklif-konu').value,
-        durum: document.getElementById('teklif-durum').value,
-        hizmetler: secilenHizmetler,
-        araToplam,
-        kdv,
-        genelToplam
+        customerId: parseInt(document.getElementById('teklif-musteri').value),
+        gecerlilikGunu: parseInt(document.getElementById('teklif-gecerlilik').value) || 30,
+        kdvOrani: kdvOrani,
+        notlar: document.getElementById('teklif-konu')?.value || '',
+        detaylar: detaylar
     };
 
     showLoading();
@@ -969,7 +1019,7 @@ async function teklifKaydet(event) {
 
         const result = await response.json();
 
-        if (result.success) {
+        if (response.ok) {
             showToast(editingTeklif ? 'Teklif başarıyla güncellendi' : 'Teklif başarıyla oluşturuldu', 'success');
             closeModal();
             await loadTeklifler();
@@ -1493,16 +1543,112 @@ function teklifEmailGonder(teklifId) {
     const teklif = teklifler.find(t => t.id === teklifId);
     if (!teklif) return;
 
-    const musteri = musteriler.find(m => m.id === teklif.musteriId);
-    if (!musteri || !musteri.email) {
+    const musteri = teklif.customer || musteriler.find(m => m.id === teklif.customerId);
+    if (!musteri || !musteri.email || musteri.email === '-') {
         showToast('Müşterinin email adresi tanımlı değil', 'warning');
         return;
     }
 
-    const subject = `${teklif.teklifNo} Nolu Teklif - ${firmaBilgi.ad}`;
-    const body = `Sayın ${musteri.yetkiliKisi || musteri.unvan},\n\nEkteki teklifimizi incelemenizi rica ederiz.\n\nTeklif No: ${teklif.teklifNo}\nToplam Tutar: ${formatParaTR(teklif.genelToplam)}\n\nSaygılarımızla,\n${firmaBilgi.ad}`;
+    // Email gönderim modalı aç
+    openEmailModal(teklifId, musteri.email);
+}
 
-    window.location.href = `mailto:${musteri.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+// Email gönderim modalı
+function openEmailModal(teklifId, email) {
+    const modalHtml = `
+        <div class="modal-overlay" id="email-modal-overlay">
+            <div class="modal" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h3>Teklifi E-posta ile Gönder</h3>
+                    <button class="modal-close" onclick="closeEmailModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Alıcı E-posta</label>
+                        <input type="email" id="email-to" value="${email}" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Ek Mesaj (Opsiyonel)</label>
+                        <textarea id="email-message" class="form-control" rows="4" placeholder="Müşteriye iletmek istediğiniz özel mesaj..."></textarea>
+                    </div>
+                    <p style="color: #666; font-size: 12px;">
+                        <strong>Not:</strong> Teklif PDF olarak eklenecektir.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeEmailModal()">İptal</button>
+                    <button class="btn btn-primary" onclick="sendTeklifEmail(${teklifId})">
+                        📧 Gönder
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeEmailModal() {
+    const modal = document.getElementById('email-modal-overlay');
+    if (modal) modal.remove();
+}
+
+async function sendTeklifEmail(teklifId) {
+    const customMessage = document.getElementById('email-message')?.value || '';
+
+    showLoading();
+    closeEmailModal();
+
+    try {
+        const response = await authenticatedFetch(`/api/teklifler/${teklifId}/send-email`, {
+            method: 'POST',
+            body: JSON.stringify({ customMessage })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showToast('Teklif başarıyla gönderildi: ' + result.to, 'success');
+            // Teklif listesini yenile
+            await loadTeklifler();
+        } else {
+            showToast(result.error || 'Email gönderilemedi', 'error');
+        }
+    } catch (error) {
+        console.error('Email gönderme hatası:', error);
+        showToast('Email gönderilirken bir hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Excel formatına uygun PDF indir
+async function teklifPDFExcelFormat(id) {
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE}/teklifler/${id}/pdf-excel`, {
+            headers: { 'Authorization': 'Bearer ' + authToken }
+        });
+
+        if (!response.ok) throw new Error('PDF oluşturulamadı');
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Teklif-${id}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+
+        showToast('PDF indirildi', 'success');
+    } catch (error) {
+        console.error('PDF hatası:', error);
+        showToast('PDF oluşturulamadı', 'error');
+    } finally {
+        hideLoading();
+    }
 }
 
 // ========================================
@@ -1512,22 +1658,41 @@ function teklifEmailGonder(teklifId) {
 function renderSonTeklifler(sonTeklifler) {
     const tbody = document.querySelector('#son-teklifler-table tbody');
 
-    if (sonTeklifler.length === 0) {
+    if (!sonTeklifler || sonTeklifler.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="text-center">Henüz teklif oluşturulmamış</td></tr>';
         return;
     }
 
+    // Durum değerlerini Türkçe'ye çevir
+    const durumMap = {
+        'TASLAK': 'Taslak',
+        'GONDERILDI': 'Gönderildi',
+        'ONAYLANDI': 'Onaylandı',
+        'REDDEDILDI': 'Reddedildi',
+        'IPTAL': 'İptal'
+    };
+
+    // Badge renkleri
+    const badgeClassMap = {
+        'TASLAK': 'warning',
+        'GONDERILDI': 'info',
+        'ONAYLANDI': 'success',
+        'REDDEDILDI': 'danger',
+        'IPTAL': 'secondary'
+    };
+
     tbody.innerHTML = sonTeklifler.map(teklif => {
-        const musteri = musteriler.find(m => m.id === teklif.musteriId);
-        const musteriAdi = musteri ? musteri.unvan : 'Bilinmeyen Müşteri';
+        const musteriAdi = teklif.customer?.unvan || 'Bilinmeyen Müşteri';
+        const durumText = durumMap[teklif.durum] || teklif.durum;
+        const badgeClass = badgeClassMap[teklif.durum] || 'primary';
 
         return `
             <tr>
                 <td><strong>${teklif.teklifNo}</strong></td>
-                <td>${formatTarihTR(teklif.teklifTarihi)}</td>
+                <td>${formatTarihTR(teklif.tarih || teklif.createdAt)}</td>
                 <td>${musteriAdi}</td>
-                <td><strong>${formatParaTR(teklif.genelToplam)}</strong></td>
-                <td><span class="badge badge-${teklif.durum.toLowerCase().replace('ı', 'i')}">${teklif.durum}</span></td>
+                <td><strong>${formatParaTR(parseFloat(teklif.genelToplam) || 0)}</strong></td>
+                <td><span class="badge badge-${badgeClass}">${durumText}</span></td>
             </tr>
         `;
     }).join('');
@@ -1551,22 +1716,31 @@ function renderFirmaBilgileri() {
 
 async function loadEmailAyarlar() {
     try {
-        const response = await authenticatedFetch('/api/email-ayarlar');
-        const data = await response.json();
-
         const container = document.getElementById('email-ayarlari');
         if (!container) return;
+
+        let data = { host: '', port: 587, secure: false, user: '', configured: false };
+
+        try {
+            const response = await authenticatedFetch('/api/email-ayarlar');
+            if (response.ok) {
+                const result = await response.json();
+                if (result) data = { ...data, ...result };
+            }
+        } catch (e) {
+            console.log('E-posta ayarları henüz yapılandırılmamış');
+        }
 
         container.innerHTML = `
             <form id="email-ayarlar-form">
                 <div class="form-group">
                     <label class="form-label">SMTP Sunucu</label>
-                    <input type="text" class="form-input" id="email-host" value="${data.host}" placeholder="örn: smtp.gmail.com">
+                    <input type="text" class="form-input" id="email-host" value="${data.host || ''}" placeholder="örn: smtp.gmail.com">
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Port</label>
-                        <input type="number" class="form-input" id="email-port" value="${data.port}" placeholder="587">
+                        <input type="number" class="form-input" id="email-port" value="${data.port || 587}" placeholder="587">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Güvenli Bağlantı</label>
@@ -1578,7 +1752,7 @@ async function loadEmailAyarlar() {
                 </div>
                 <div class="form-group">
                     <label class="form-label">E-posta Adresi</label>
-                    <input type="email" class="form-input" id="email-user" value="${data.user}" placeholder="your-email@gmail.com">
+                    <input type="email" class="form-input" id="email-user" value="${data.user || ''}" placeholder="your-email@gmail.com">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Uygulama Şifresi</label>
@@ -1592,7 +1766,7 @@ async function loadEmailAyarlar() {
                     <button type="button" class="btn btn-secondary" onclick="testEmailGonder()">Test E-postası Gönder</button>
                 </div>
             </form>
-            ${data.configured ? '<p style="color: var(--success-color); margin-top: 10px;">✓ E-posta ayarları yapılandırıldı</p>' : '<p style="color: var(--warning-color); margin-top: 10px;">⚠ E-posta ayarları henüz yapılandırılmadı</p>'}
+            ${data.configured ? '<p style="color: var(--success); margin-top: 10px;">✓ E-posta ayarları yapılandırıldı</p>' : '<p style="color: var(--warning); margin-top: 10px;">⚠ E-posta ayarları henüz yapılandırılmadı</p>'}
         `;
 
         document.getElementById('email-ayarlar-form').onsubmit = emailAyarlariKaydet;
@@ -1855,13 +2029,19 @@ let sertifikaSablonlari = [];
 async function loadSertifikaSablonlari() {
     try {
         const response = await authenticatedFetch('/api/sertifika-sablonlari');
-        sertifikaSablonlari = await response.json();
+        if (response.ok) {
+            const data = await response.json();
+            sertifikaSablonlari = Array.isArray(data) ? data : [];
+        } else {
+            sertifikaSablonlari = [];
+        }
         renderSertifikaSablonlari();
     } catch (error) {
         console.error('Şablon yükleme hatası:', error);
+        sertifikaSablonlari = [];
         const container = document.getElementById('sertifika-sablonlari');
         if (container) {
-            container.innerHTML = '<p class="text-danger">Şablonlar yüklenemedi</p>';
+            container.innerHTML = '<p class="text-muted">Şablonlar henüz yapılandırılmamış</p>';
         }
     }
 }
@@ -1870,18 +2050,19 @@ function renderSertifikaSablonlari() {
     const container = document.getElementById('sertifika-sablonlari');
     if (!container) return;
 
-    if (sertifikaSablonlari.length === 0) {
+    if (!sertifikaSablonlari || sertifikaSablonlari.length === 0) {
         container.innerHTML = '<p class="text-muted">Henüz şablon tanımlanmamış</p>';
         return;
     }
 
-    // Kategoriye göre grupla
+    // Kategoriye göre grupla (kategori yoksa kod veya 'Genel' kullan)
     const kategoriGruplari = {};
     sertifikaSablonlari.forEach(sablon => {
-        if (!kategoriGruplari[sablon.kategori]) {
-            kategoriGruplari[sablon.kategori] = [];
+        const kategori = sablon.kategori || sablon.kod || 'Genel';
+        if (!kategoriGruplari[kategori]) {
+            kategoriGruplari[kategori] = [];
         }
-        kategoriGruplari[sablon.kategori].push(sablon);
+        kategoriGruplari[kategori].push(sablon);
     });
 
     // İstatistikler
@@ -1943,16 +2124,19 @@ function renderSertifikaSablonlari() {
                                     ${sablon.aciklama || 'Açıklama yok'}
                                 </p>
                                 <div style="display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap;">
-                                    ${sablon.teknikAlanlar.length > 0 ? `
+                                    ${sablon.teknikAlanlar && sablon.teknikAlanlar.length > 0 ? `
                                         <span style="background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 12px; font-size: 11px;">
                                             🔧 ${sablon.teknikAlanlar.length} teknik alan
                                         </span>
                                     ` : ''}
-                                    ${sablon.testAlanlar.length > 0 ? `
+                                    ${sablon.testAlanlar && sablon.testAlanlar.length > 0 ? `
                                         <span style="background: #fff3e0; color: #ef6c00; padding: 3px 8px; border-radius: 12px; font-size: 11px;">
                                             📊 ${sablon.testAlanlar.length} test alanı
                                         </span>
                                     ` : ''}
+                                    <span style="background: #e3f2fd; color: #1565c0; padding: 3px 8px; border-radius: 12px; font-size: 11px;">
+                                        📋 ${sablon.kod || 'N/A'}
+                                    </span>
                                 </div>
                                 <div style="display: flex; gap: 5px; margin-top: 10px;">
                                     <button class="btn btn-sm btn-secondary" onclick="sertifikaSablonDuzenle(${sablon.id})" title="Düzenle" style="flex: 1;">
@@ -2177,11 +2361,13 @@ function drawDurumChart() {
 
     const ctx = canvas.getContext('2d');
 
-    // Durumları say
+    // Durumları say - API'den gelen enum değerleri
     const durumSayilari = {
-        'Bekleyen': 0,
-        'Onaylandı': 0,
-        'Reddedildi': 0
+        'TASLAK': 0,
+        'GONDERILDI': 0,
+        'ONAYLANDI': 0,
+        'REDDEDILDI': 0,
+        'IPTAL': 0
     };
 
     teklifler.forEach(teklif => {
@@ -2203,9 +2389,20 @@ function drawDurumChart() {
 
     // Renk tanımlamaları
     const renkler = {
-        'Bekleyen': '#ffc107',
-        'Onaylandı': '#28a745',
-        'Reddedildi': '#dc3545'
+        'TASLAK': '#ffc107',
+        'GONDERILDI': '#17a2b8',
+        'ONAYLANDI': '#28a745',
+        'REDDEDILDI': '#dc3545',
+        'IPTAL': '#6c757d'
+    };
+
+    // Türkçe etiketler
+    const durumEtiketleri = {
+        'TASLAK': 'Taslak',
+        'GONDERILDI': 'Gönderildi',
+        'ONAYLANDI': 'Onaylandı',
+        'REDDEDILDI': 'Reddedildi',
+        'IPTAL': 'İptal'
     };
 
     // Canvas boyutlarını ayarla
@@ -2271,15 +2468,16 @@ function drawDurumChart() {
     const detayHtml = Object.keys(durumSayilari).map(durum => {
         const sayı = durumSayilari[durum];
         const yuzde = toplam > 0 ? Math.round((sayı / toplam) * 100) : 0;
+        const durumAdi = durumEtiketleri[durum] || durum;
 
         return `
-            <div class="durum-item">
-                <div class="durum-label">
-                    <div class="durum-color" style="background-color: ${renkler[durum]}"></div>
-                    <span>${durum}</span>
+            <div class="durum-item" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                <div class="durum-label" style="display: flex; align-items: center; gap: 8px;">
+                    <div class="durum-color" style="width: 16px; height: 16px; border-radius: 4px; background-color: ${renkler[durum]}"></div>
+                    <span>${durumAdi}</span>
                 </div>
                 <div>
-                    <span class="durum-count">${sayı}</span>
+                    <span class="durum-count" style="font-weight: bold;">${sayı}</span>
                     <span style="color: #666; font-size: 14px;"> (%${yuzde})</span>
                 </div>
             </div>
@@ -2310,14 +2508,12 @@ async function sistemdenCik() {
         }
 
         // Token ve kullanıcı bilgilerini temizle
-        localStorage.removeItem('authToken');
+        localStorage.removeItem('token');
         localStorage.removeItem('user');
-        sessionStorage.removeItem('authToken');
-        sessionStorage.removeItem('user');
 
         // Login sayfasına yönlendir
         setTimeout(() => {
-            window.location.href = '/login';
+            window.location.href = '/login.html';
         }, 1000);
     }
 }
@@ -2606,7 +2802,10 @@ async function hizmetEkle(event) {
 // ========================================
 
 function formatParaTR(tutar) {
-    return '₺' + tutar.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (tutar === null || tutar === undefined || isNaN(tutar)) {
+        return '₺0,00';
+    }
+    return '₺' + Number(tutar).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function formatTarihTR(tarih) {
@@ -2788,7 +2987,7 @@ async function loadIsEmirleri() {
             console.log('✅ Personeller yüklendi:', personeller.length);
         }
 
-        const response = await authenticatedFetch('/api/is-emirleri');
+        const response = await authenticatedFetch(`${API_BASE}/workorders`);
         isEmirleri = await response.json();
         renderIsEmriTable();
     } catch (error) {
@@ -2824,20 +3023,36 @@ function renderIsEmriTable() {
     const paginatedIsEmirleri = filteredIsEmirleri.slice(startIndex, endIndex);
 
     paginatedIsEmirleri.forEach(isEmri => {
-        const musteri = musteriler.find(m => m.id === isEmri.musteriId);
+        // Müşteri adını al
+        const musteriAdi = isEmri.customer?.unvan ||
+                          (musteriler.find(m => m.id === isEmri.customerId)?.unvan) ||
+                          '-';
+
+        // Durum badge renkleri
         const durumClass = {
-            'Beklemede': 'badge-warning',
-            'Devam Ediyor': 'badge-primary',
-            'Tamamlandı': 'badge-success'
+            'BEKLEMEDE': 'badge-warning',
+            'ATANDI': 'badge-info',
+            'SAHADA': 'badge-primary',
+            'TAMAMLANDI': 'badge-success',
+            'IPTAL': 'badge-secondary'
         }[isEmri.durum] || 'badge-secondary';
+
+        // Durum Türkçe karşılığı
+        const durumText = {
+            'BEKLEMEDE': 'Beklemede',
+            'ATANDI': 'Atandı',
+            'SAHADA': 'Sahada',
+            'TAMAMLANDI': 'Tamamlandı',
+            'IPTAL': 'İptal'
+        }[isEmri.durum] || isEmri.durum;
 
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><strong>${isEmri.isEmriNo}</strong></td>
-            <td>${isEmri.teklifNo}</td>
-            <td>${musteri?.unvan || '-'}</td>
-            <td><span class="badge ${durumClass}">${isEmri.durum}</span></td>
-            <td>${formatTarihTR(isEmri.olusturmaTarihi)}</td>
+            <td><strong>${isEmri.workOrderNo}</strong></td>
+            <td>${isEmri.teklif?.teklifNo || '-'}</td>
+            <td>${musteriAdi}</td>
+            <td><span class="badge ${durumClass}">${durumText}</span></td>
+            <td>${formatTarihTR(isEmri.createdAt)}</td>
             <td>
                 <div class="action-buttons">
                     <button onclick="viewIsEmri(${isEmri.id})" class="btn btn-sm btn-info" title="Detaylar">

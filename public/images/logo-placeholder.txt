@@ -1,6 +1,0 @@
-ÖNDER MUAYENE logosunu buraya yerleştirin:
-- logo.png
-- logo.jpg
-- veya başka bir format
-
-Önerilen boyut: 200x80 piksel

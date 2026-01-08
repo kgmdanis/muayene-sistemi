@@ -3,223 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giriş - Periyodik Muayene Yönetim Sistemi</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--primary-color) 0%, #1a3d5c 100%);
-        }
-
-        .login-container {
-            background: var(--white);
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: var(--shadow-lg);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .login-header h1 {
-            color: var(--primary-color);
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .login-header p {
-            color: var(--text-light);
-            font-size: 14px;
-        }
-
-        .login-logo {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .login-form {
-            margin-bottom: 20px;
-        }
-
-        .login-footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .form-input:focus {
-            border-color: var(--primary-color);
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .remember-me input[type="checkbox"] {
-            margin-right: 8px;
-        }
-
-        .remember-me label {
-            font-size: 14px;
-            color: var(--text-dark);
-        }
-    </style>
+    <title>Giriş - Periyodik Muayene Sistemi</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-    <div class="login-container">
-        <div class="login-header">
-            <img src="/images/logo.png" alt="KGM Dijital" style="max-width: 200px; margin-bottom: 20px;">
-            <h1>KGM Dijital</h1>
-            <p>Periyodik Muayene Yönetim Sistemi</p>
+<body class="login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <img src="/images/logo.png" alt="Logo">
+            <h1>Periyodik Muayene Sistemi</h1>
+            <p>Guvenli giris yapin</p>
         </div>
 
-        <div id="error-message" class="error-message"></div>
-        <div id="success-message" class="success-message"></div>
+        <div id="alert-box"></div>
 
         <form id="login-form" class="login-form">
             <div class="form-group">
-                <label class="form-label" for="username">Kullanıcı Adı</label>
-                <input type="text" class="form-input" id="username" name="username" required autofocus placeholder="Kullanıcı adınız">
+                <label class="form-label">E-posta</label>
+                <input type="email" id="email" class="form-input" placeholder="ornek@email.com" required>
             </div>
-
             <div class="form-group">
-                <label class="form-label" for="password">Şifre</label>
-                <input type="password" class="form-input" id="password" name="password" required placeholder="••••••••">
+                <label class="form-label">Sifre</label>
+                <input type="password" id="password" class="form-input" placeholder="********" required>
             </div>
-
-            <div class="remember-me">
-                <input type="checkbox" id="remember" name="remember">
-                <label for="remember">Beni hatırla</label>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-login">Giriş Yap</button>
+            <button type="submit" class="btn btn-primary btn-block">Giris Yap</button>
         </form>
 
-        <div class="login-footer">
-            <p>© 2025 KGM Dijital KURULUŞU</p>
-            <p>Tüm hakları saklıdır.</p>
+        <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #999;">
+            2025 Periyodik Muayene Sistemi
         </div>
     </div>
 
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
     <script>
-        // Login form submit
-        document.getElementById('login-form').onsubmit = async function(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const remember = document.getElementById('remember').checked;
-            
-            // Hata mesajını gizle
-            document.getElementById('error-message').style.display = 'none';
-            document.getElementById('success-message').style.display = 'none';
-            
+        // SADECE FORM SUBMIT - HİCBİR OTOMATİK REDİRECT YOK!
+
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var alertBox = document.getElementById('alert-box');
+            var loading = document.getElementById('loading');
+
+            // Loading goster
+            loading.classList.add('active');
+            alertBox.innerHTML = '';
+
             try {
-                const response = await fetch('/api/auth/login', {
+                var response = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ email: email, password: password })
                 });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error || 'Giriş başarısız');
-                }
-                
-                // Token'ı sakla
-                if (remember) {
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                } else {
-                    sessionStorage.setItem('authToken', data.token);
-                    sessionStorage.setItem('user', JSON.stringify(data.user));
-                }
-                
-                // Başarılı mesajı göster
-                document.getElementById('success-message').textContent = 'Giriş başarılı! Yönlendiriliyorsunuz...';
-                document.getElementById('success-message').style.display = 'block';
 
-                // Role göre yönlendir
-                setTimeout(() => {
-                    if (data.user.role === 'superadmin') {
-                        window.location.href = '/superadmin.html';
-                    } else {
-                        window.location.href = '/';
-                    }
-                }, 1000);
-                
+                var data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Token kaydet
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                    alertBox.innerHTML = '<div class="alert alert-success">Giris basarili! Yonlendiriliyorsunuz...</div>';
+
+                    // Role gore yonlendir
+                    setTimeout(function() {
+                        if (data.user.role === 'superadmin') {
+                            window.location.href = '/superadmin.html';
+                        } else {
+                            window.location.href = '/index.html';
+                        }
+                    }, 500);
+                } else {
+                    alertBox.innerHTML = '<div class="alert alert-danger">' + (data.error || 'Giris basarisiz') + '</div>';
+                }
             } catch (error) {
-                document.getElementById('error-message').textContent = error.message;
-                document.getElementById('error-message').style.display = 'block';
+                alertBox.innerHTML = '<div class="alert alert-danger">Baglanti hatasi. Lutfen tekrar deneyin.</div>';
+            } finally {
+                loading.classList.remove('active');
             }
-        };
-        
-        // Eğer token varsa role göre yönlendir
-        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-        if (token) {
-            // Token'ı doğrula
-            fetch('/api/auth/verify', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Token geçersiz');
-                }
-            }).then(data => {
-                // Role göre yönlendir
-                if (data.user.role === 'superadmin') {
-                    window.location.href = '/superadmin.html';
-                } else {
-                    window.location.href = '/';
-                }
-            }).catch(() => {
-                // Geçersiz token'ı temizle
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('user');
-                sessionStorage.removeItem('authToken');
-                sessionStorage.removeItem('user');
-            });
-        }
+        });
     </script>
 </body>
-<!-- Versiyon Bilgisi -->
-<div style="position: fixed; bottom: 10px; right: 10px; font-size: 12px; color: #888;">
-    v1.0.1 - KGM Dijital
-</div>
 </html>

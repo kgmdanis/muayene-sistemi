@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dosya Yükle</title>
+    <style>
+        body { font-family: Arial; max-width: 500px; margin: 50px auto; padding: 20px; }
+        .upload-box { border: 2px dashed #ccc; padding: 40px; text-align: center; border-radius: 10px; }
+        input[type="file"] { margin: 20px 0; }
+        button { background: #1a5f7a; color: white; padding: 10px 30px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #134b61; }
+        .result { margin-top: 20px; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h2>Şablon Dosyası Yükle</h2>
+    <div class="upload-box">
+        <p>Excel veya Word şablon dosyanızı yükleyin</p>
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.docx,.doc,.pdf">
+        <br>
+        <button onclick="uploadFile()">Yükle</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const resultDiv = document.getElementById('result');
+            
+            if (!fileInput.files[0]) {
+                resultDiv.innerHTML = '<div class="result error">Lütfen bir dosya seçin</div>';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/api/upload-template', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = '<div class="result success">✓ Dosya başarıyla yüklendi: ' + data.filename + '</div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="result error">Hata: ' + data.error + '</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="result error">Yükleme hatası: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>

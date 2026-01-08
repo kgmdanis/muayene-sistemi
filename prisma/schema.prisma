@@ -7,133 +7,147 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Tenant {
-  id         Int        @id @default(autoincrement())
-  name       String
-  yetkili    String?    // Yetkili kişi adı
-  logo       String?
-  adres      String?
-  telefon    String?
-  email      String?
-  vergiNo    String?
-  isActive   Boolean    @default(true)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  users      User[]
-  customers  Customer[]
-  teklifler  Teklif[]
-  muayeneler Muayene[]
+// Tek firma ayarları - ÖNDER MUAYENE
+model FirmaAyarlari {
+  id              Int        @id @default(1)
+  name            String     @default("ÖNDER MUAYENE")
+  yetkili         String?
+  yetkiliUnvan    String?
+  logo            String?
+  adres           String?
+  telefon         String?
+  email           String?
+  vergiNo         String?
+  vergiDairesi    String?
+  bankaAdi        String?
+  bankaSube       String?
+  iban            String?
+  mahkemeYeri     String?
+  genelSartlar    String?    @db.Text
+  teklifUstYazi   String?    @db.Text
+  muhur           String?
+  imza            String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 }
 
 model User {
-  id               Int       @id @default(autoincrement())
-  email            String    @unique
-  password         String
-  plainPassword    String?   // Superadmin için şifre görüntüleme
-  name             String
-  role             String    @default("user") // superadmin, admin, user
-  telefon          String?
-  isActive         Boolean   @default(true)
-  tenantId         Int
-  tenant           Tenant    @relation(fields: [tenantId], references: [id])
-  createdTeklifler Teklif[]  @relation("olusturan")
-  muayeneler       Muayene[] @relation("muayeneEden")
+  id                Int         @id @default(autoincrement())
+  email             String      @unique
+  password          String
+  plainPassword     String?
+  name              String
+  role              String      @default("tekniker")
+  telefon           String?
+  isActive          Boolean     @default(true)
+  emailVerified     Boolean     @default(false)
+  verificationToken String?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  lastLogin         DateTime?
+  lastLoginIP       String?
+  sessionTimeout    Int         @default(30)
+  teklifler         Teklif[]
+  muayeneler        Muayene[]   @relation("muayeneEden")
   onaylananMuayeneler Muayene[] @relation("onaylayan")
-  olusturanMuayeneler Muayene[] @relation("olusturan")
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  olusturanMuayeneler Muayene[] @relation("olusturanMuayene")
+  loginLogs         LoginLog[]
+  atananWorkOrders  WorkOrder[] @relation("atananWorkOrder")
+  olusturanWorkOrders WorkOrder[] @relation("olusturanWorkOrder")
+  olcumler          FieldData[] @relation("olcumYapan")
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model LoginLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  ip        String
+  userAgent String?
+  basarili  Boolean
+  createdAt DateTime @default(now())
 }
 
 model Customer {
-  id         Int         @id @default(autoincrement())
-  unvan      String
-  vergiNo    String?
-  adres      String?
-  telefon    String?
-  email      String?
-  tenantId   Int
-  tenant     Tenant      @relation(fields: [tenantId], references: [id])
-  teklifler  Teklif[]
-  muayeneler Muayene[]
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id           Int         @id @default(autoincrement())
+  unvan        String
+  vergiNo      String?
+  vergiDairesi String?
+  adres        String?
+  telefon      String?
+  email        String?
+  yetkili      String?
+  teklifler    Teklif[]
+  muayeneler   Muayene[]
+  workOrders   WorkOrder[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+// ============ TEKLİF MODÜLÜ ============
+
+model Kategori {
+  id        Int       @id @default(autoincrement())
+  ad        String    @unique
+  sira      Int       @default(0)
+  hizmetler Hizmet[]
+  createdAt DateTime  @default(now())
 }
 
 model Hizmet {
-  id         Int                @id @default(autoincrement())
-  kod        String             @unique
-  ad         String
-  birimFiyat Decimal            @db.Decimal(10, 2)
-  birim      String             @default("Adet")
-  aciklama   String?
-  isActive   Boolean            @default(true)
-  createdAt  DateTime           @default(now())
-  updatedAt  DateTime           @updatedAt
-  teklifDetaylari TeklifDetay[]
+  id                 Int             @id @default(autoincrement())
+  kod                String          @unique
+  ad                 String
+  metodKapsam        String?         // Metod/Kapsam/Açıklama
+  standartYonetmelik String?         // Standart / Yönetmelik
+  birim              String          @default("Adet")
+  birimFiyat         Decimal         @db.Decimal(10, 2) @default(0)
+  kategoriId         Int
+  kategori           Kategori        @relation(fields: [kategoriId], references: [id])
+  sira               Int             @default(0)
+  akpireditasyon     Boolean         @default(false)  // TÜRKAK akrediteli mi
+  isActive           Boolean         @default(true)
+  teklifDetaylari    TeklifDetay[]
+  createdAt          DateTime        @default(now())
 }
 
 model Teklif {
   id             Int            @id @default(autoincrement())
   teklifNo       String         @unique
-  tarih          DateTime       @default(now())
-  gecerlilikGunu Int            @default(30)
+  teklifTarihi   DateTime       @default(now())
+  gecerlilikGun  Int            @default(30)
   customerId     Int
   customer       Customer       @relation(fields: [customerId], references: [id])
-  tenantId       Int
-  tenant         Tenant         @relation(fields: [tenantId], references: [id])
+  konu           String         @default("PERİYODİK KONTROL VE İŞ HİJYENİ ÖLÇÜM FİYAT TEKLİFİ")
   durum          TeklifDurum    @default(TASLAK)
-  toplamTutar    Decimal        @db.Decimal(10, 2) @default(0)
+  araToplam      Decimal        @db.Decimal(12, 2) @default(0)
+  iskontoOran    Decimal        @db.Decimal(5, 2) @default(0)
+  iskontoTutar   Decimal        @db.Decimal(12, 2) @default(0)
+  toplamTutar    Decimal        @db.Decimal(12, 2) @default(0)
   kdvOrani       Int            @default(20)
-  kdvTutar       Decimal        @db.Decimal(10, 2) @default(0)
-  genelToplam    Decimal        @db.Decimal(10, 2) @default(0)
+  kdvTutar       Decimal        @db.Decimal(12, 2) @default(0)
+  genelToplam    Decimal        @db.Decimal(12, 2) @default(0)
   notlar         String?
+  onayTelefon    Boolean        @default(false)
+  olusturanId    Int
+  olusturan      User           @relation(fields: [olusturanId], references: [id])
   detaylar       TeklifDetay[]
   muayeneler     Muayene[]
-  createdBy      Int
-  olusturan      User           @relation("olusturan", fields: [createdBy], references: [id])
+  workOrders     WorkOrder[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
 
 model TeklifDetay {
-  id         Int      @id @default(autoincrement())
-  teklifId   Int
-  teklif     Teklif   @relation(fields: [teklifId], references: [id], onDelete: Cascade)
-  hizmetId   Int
-  hizmet     Hizmet   @relation(fields: [hizmetId], references: [id])
-  miktar     Int      @default(1)
-  birimFiyat Decimal  @db.Decimal(10, 2)
-  toplam     Decimal  @db.Decimal(10, 2)
-  aciklama   String?
-  createdAt  DateTime @default(now())
-}
-
-model Muayene {
-  id               Int            @id @default(autoincrement())
-  muayeneNo        String         @unique
-  teklifId         Int?
-  teklif           Teklif?        @relation(fields: [teklifId], references: [id])
-  customerId       Int
-  customer         Customer       @relation(fields: [customerId], references: [id])
-  tenantId         Int
-  tenant           Tenant         @relation(fields: [tenantId], references: [id])
-  muayeneTarihi    DateTime
-  muayeneYeri      String
-  muayeneEkipman   String
-  muayeneSonucu    MuayeneSonuc   @default(BEKLEMEDE)
-  sertifikaNo      String?
-  sertifikaTarihi  DateTime?
-  gecerlilikSuresi Int            @default(12) // Ay cinsinden
-  raporDosya       String?
-  notlar           String?
-  muayeneEdenId    Int
-  muayeneEden      User           @relation("muayeneEden", fields: [muayeneEdenId], references: [id])
-  onaylayanId      Int?
-  onaylayan        User?          @relation("onaylayan", fields: [onaylayanId], references: [id])
-  createdBy        Int
-  olusturan        User           @relation("olusturan", fields: [createdBy], references: [id])
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  id          Int      @id @default(autoincrement())
+  teklifId    Int
+  teklif      Teklif   @relation(fields: [teklifId], references: [id], onDelete: Cascade)
+  hizmetId    Int
+  hizmet      Hizmet   @relation(fields: [hizmetId], references: [id])
+  miktar      Int      @default(0)
+  birimFiyat  Decimal  @db.Decimal(10, 2)
+  tutar       Decimal  @db.Decimal(12, 2) @default(0)
 }
 
 enum TeklifDurum {
@@ -144,9 +158,81 @@ enum TeklifDurum {
   IPTAL
 }
 
+// ============ MUAYENE MODÜLÜ ============
+
+model Muayene {
+  id               Int            @id @default(autoincrement())
+  muayeneNo        String         @unique
+  teklifId         Int?
+  teklif           Teklif?        @relation(fields: [teklifId], references: [id])
+  customerId       Int
+  customer         Customer       @relation(fields: [customerId], references: [id])
+  muayeneTarihi    DateTime
+  muayeneYeri      String
+  muayeneEkipman   String
+  muayeneSonucu    MuayeneSonuc   @default(BEKLEMEDE)
+  sertifikaNo      String?
+  sertifikaTarihi  DateTime?
+  gecerlilikSuresi Int            @default(12)
+  raporDosya       String?
+  notlar           String?
+  muayeneEdenId    Int
+  muayeneEden      User           @relation("muayeneEden", fields: [muayeneEdenId], references: [id])
+  onaylayanId      Int?
+  onaylayan        User?          @relation("onaylayan", fields: [onaylayanId], references: [id])
+  createdBy        Int
+  olusturan        User           @relation("olusturanMuayene", fields: [createdBy], references: [id])
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
 enum MuayeneSonuc {
   BEKLEMEDE
   UYGUN
   UYGUN_DEGIL
   SARTLI_UYGUN
+}
+
+// ============ RAPOR MOTORU ============
+
+model WorkOrder {
+  id              Int             @id @default(autoincrement())
+  workOrderNo     String          @unique
+  teklifId        Int?
+  teklif          Teklif?         @relation(fields: [teklifId], references: [id])
+  customerId      Int
+  customer        Customer        @relation(fields: [customerId], references: [id])
+  durum           WorkOrderDurum  @default(BEKLEMEDE)
+  planliTarih     DateTime?
+  tamamlanmaTarih DateTime?
+  atananUserId    Int?
+  atanan          User?           @relation("atananWorkOrder", fields: [atananUserId], references: [id])
+  fieldData       FieldData[]
+  createdBy       Int
+  olusturan       User            @relation("olusturanWorkOrder", fields: [createdBy], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model FieldData {
+  id           Int       @id @default(autoincrement())
+  workOrderId  Int
+  workOrder    WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  reportType   String    // "ET", "MEKANIK"
+  formData     Json      // Saha formundan gelen tüm veriler
+  sonuc        String?   // "UYGUN", "UYGUN_DEGIL"
+  pdfPath      String?
+  olcumTarihi  DateTime  @default(now())
+  olcumYapanId Int
+  olcumYapan   User      @relation("olcumYapan", fields: [olcumYapanId], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+enum WorkOrderDurum {
+  BEKLEMEDE
+  ATANDI
+  SAHADA
+  TAMAMLANDI
+  IPTAL
 }
