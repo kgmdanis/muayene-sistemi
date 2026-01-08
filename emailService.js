@@ -106,15 +106,30 @@ async function createTeklifPDFBuffer(teklif) {
 
         const pageWidth = doc.page.width - 80;
         const tableLeft = 40;
-        const formatDate = (date) => new Date(date).toLocaleDateString('tr-TR');
+        // Tarih formatı DD.MM.YYYY
+        const formatDate = (date) => {
+            const d = date ? new Date(date) : new Date();
+            if (isNaN(d.getTime())) return new Date().toLocaleDateString('tr-TR');
+            const gun = String(d.getDate()).padStart(2, '0');
+            const ay = String(d.getMonth() + 1).padStart(2, '0');
+            const yil = d.getFullYear();
+            return `${gun}.${ay}.${yil}`;
+        };
 
         // ===== SAYFA 1: TEKLİF =====
 
-        // LOGO (varsa)
+        // LOGO (varsa) - 180px genişlik
         const logoPath = path.join(__dirname, 'public', 'images', 'logo.png');
+        const turkakPath = path.join(__dirname, 'public', 'images', 'türkak-logo.png');
         if (fs.existsSync(logoPath)) {
             try {
-                doc.image(logoPath, 40, 25, { width: 60 });
+                doc.image(logoPath, 40, 20, { width: 180 });
+            } catch (e) {}
+        }
+        // TÜRKAK logo sağ üst
+        if (fs.existsSync(turkakPath)) {
+            try {
+                doc.image(turkakPath, 480, 25, { width: 70 });
             } catch (e) {}
         }
 
@@ -136,7 +151,7 @@ async function createTeklifPDFBuffer(teklif) {
 
         // Bilgi satırları
         const bilgiSol = [
-            ['TEKLİF TARİHİ', formatDate(teklif.tarih)],
+            ['TEKLİF TARİHİ', formatDate(teklif.teklifTarihi || teklif.tarih || teklif.createdAt)],
             ['TEKLİF NO', teklif.teklifNo],
             ['FİRMA ADI', teklif.customer?.unvan || ''],
             ['FİRMA ADRESİ', teklif.customer?.adres || '']
@@ -170,12 +185,14 @@ Akredite kapsamında yapılan ölçümler, İŞ HİJYENİ (ORTAM ÖLÇÜMÜ) par
         doc.fontSize(8).font(useFont).text(ustYazi, tableLeft + 5, y, { width: pageWidth - 10 });
         y = doc.y + 15;
 
-        // HİZMETLER TABLOSU
+        // HİZMETLER TABLOSU - SADECE miktar > 0 olanlar
         const groupedDetails = {};
         for (const detay of teklif.detaylar) {
-            const kat = detay.hizmet?.kategori?.ad || 'DİĞER KONTROLLER';
-            if (!groupedDetails[kat]) groupedDetails[kat] = [];
-            groupedDetails[kat].push(detay);
+            if (detay.miktar > 0) {  // Sadece miktar > 0
+                const kat = detay.hizmet?.kategori?.ad || 'DİĞER KONTROLLER';
+                if (!groupedDetails[kat]) groupedDetails[kat] = [];
+                groupedDetails[kat].push(detay);
+            }
         }
 
         const col1 = 150, col2 = 160, col3 = 35, col4 = 40, col5 = 55, col6 = 55;
@@ -208,8 +225,8 @@ Akredite kapsamında yapılan ölçümler, İŞ HİJYENİ (ORTAM ÖLÇÜMÜ) par
                 doc.fontSize(7).font(useFont).fillColor('#000');
                 doc.text(detay.hizmet?.ad || '', tableLeft + 2, y + 4, { width: col1 - 4 });
 
-                const aciklama = (detay.hizmet?.aciklama || '').substring(0, 70);
-                doc.fontSize(6).text(aciklama, tableLeft + col1 + 2, y + 4, { width: col2 - 4 });
+                const metod = (detay.hizmet?.metodKapsam || detay.hizmet?.standartYonetmelik || detay.hizmet?.aciklama || '').substring(0, 70);
+                doc.fontSize(6).text(metod, tableLeft + col1 + 2, y + 4, { width: col2 - 4 });
 
                 doc.fontSize(7);
                 doc.text(detay.miktar.toString(), tableLeft + col1 + col2 + 2, y + 4, { width: col3, align: 'center' });
