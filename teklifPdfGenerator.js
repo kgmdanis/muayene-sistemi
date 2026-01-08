@@ -142,8 +142,8 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
             const firmaBilgileri = [
                 ['TEKLİF TARİHİ', formatTarih(teklif.teklifTarihi || teklif.createdAt)],
                 ['TEKLİF NO', teklif.teklifNo || '-'],
-                ['FİRMA ADI', (customer.unvan || '-').substring(0, 60)],
-                ['FİRMA ADRESİ', (customer.adres || '-').substring(0, 60)],
+                ['FİRMA ADI', (customer.unvan || '-').substring(0, 100)],
+                ['FİRMA ADRESİ', (customer.adres || '-').substring(0, 100)],
                 ['FİRMA YETKİLİSİ', customer.yetkili || '-'],
                 ['TEL/FAX', customer.telefon || '-'],
                 ['E-MAIL', customer.email || '-'],
@@ -183,15 +183,13 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
             y = 50;
 
             // Sayfa header fonksiyonu
+            // Sayfa 2+ header (TÜRKAK yok, sadece logo)
             function sayfaHeader() {
                 if (fs.existsSync(logoPath)) {
                     doc.image(logoPath, 40, 15, { width: 100 });
                 }
-                if (fs.existsSync(turkakPath)) {
-                    doc.image(turkakPath, 490, 15, { width: 50 });
-                }
                 doc.fontSize(7).font(fontNormal).fillColor('black');
-                doc.text(FIRMA.unvan, 150, 20, { width: 330, align: 'center' });
+                doc.text(FIRMA.unvan, 150, 20, { width: 400, align: 'center' });
             }
 
             sayfaHeader();
@@ -262,8 +260,8 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
                     doc.font(fontNormal).fontSize(7).fillColor('black');
 
                     // Hücre içerikleri
-                    doc.text((hizmet.ad || '').substring(0, 35), col[0] + 2, y + 4, { width: colW[0] - 4 });
-                    doc.text(metod.substring(0, 50), col[1] + 2, y + 4, { width: colW[1] - 4 });
+                    doc.text((hizmet.ad || '').substring(0, 100), col[0] + 2, y + 4, { width: colW[0] - 4 });
+                    doc.text(metod.substring(0, 100), col[1] + 2, y + 4, { width: colW[1] - 4 });
                     doc.text(miktar.toString(), col[2] + 2, y + 4, { width: colW[2] - 4, align: 'center' });
                     doc.text(hizmet.birim || 'Adet', col[3] + 2, y + 4, { width: colW[3] - 4, align: 'center' });
                     doc.text(formatPara(birimFiyat), col[4] + 2, y + 4, { width: colW[4] - 4, align: 'right' });
