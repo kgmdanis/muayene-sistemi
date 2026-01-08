@@ -152,16 +152,19 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
 
             doc.fillColor('black').fontSize(9);
             firmaBilgileri.forEach(([label, value]) => {
+                // Adres satırı için daha yüksek
+                const currentRowH = (label === 'FİRMA ADRESİ' || label === 'KONU') ? 30 : rowH;
+
                 // Satır çerçevesi
-                doc.rect(40, y, 515, rowH).stroke();
-                doc.rect(40, y, labelWidth, rowH).stroke();
+                doc.rect(40, y, 515, currentRowH).stroke();
+                doc.rect(40, y, labelWidth, currentRowH).stroke();
 
                 // Label
                 doc.font(fontBold).text(label, 45, y + 5, { width: labelWidth - 10 });
                 // Value
                 doc.font(fontNormal).text(value, 40 + labelWidth + 5, y + 5, { width: valueWidth - 10 });
 
-                y += rowH;
+                y += currentRowH;
             });
 
             y += 15;
@@ -210,8 +213,8 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
             const siraliKategoriler = Object.entries(kategoriler).sort((a, b) => a[1].sira - b[1].sira);
 
             // Sütun pozisyonları ve genişlikleri (metod geniş)
-            const col = [40, 170, 355, 395, 440, 490];
-            const colW = [130, 185, 40, 45, 50, 65];
+            const col = [40, 180, 400, 440, 480, 530];
+            const colW = [140, 220, 40, 40, 50, 50];
 
             siraliKategoriler.forEach(([katAd, katData]) => {
                 // Sayfa kontrolü - kategori başlığı için yer var mı
@@ -258,12 +261,12 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
                     const fiyat = miktar * birimFiyat;
                     const metod = hizmet.metodKapsam || hizmet.standartYonetmelik || '';
 
-                    const satirH = 18;
-                    doc.font(fontNormal).fontSize(7).fillColor('black');
+                    const satirH = 28;
+                    doc.font(fontNormal).fontSize(6).fillColor('black');
 
-                    // Hücre içerikleri
-                    doc.text((hizmet.ad || '').substring(0, 100), col[0] + 2, y + 4, { width: colW[0] - 4 });
-                    doc.text(metod.substring(0, 100), col[1] + 2, y + 4, { width: colW[1] - 4 });
+                    // Hücre içerikleri (metin wrap etsin, substring yok)
+                    doc.text((hizmet.ad || ''), col[0] + 2, y + 3, { width: colW[0] - 4 });
+                    doc.text(metod, col[1] + 2, y + 3, { width: colW[1] - 4 });
                     doc.text(miktar.toString(), col[2] + 2, y + 4, { width: colW[2] - 4, align: 'center' });
                     doc.text(hizmet.birim || 'Adet', col[3] + 2, y + 4, { width: colW[3] - 4, align: 'center' });
                     doc.text(formatPara(birimFiyat), col[4] + 2, y + 4, { width: colW[4] - 4, align: 'right' });
@@ -324,17 +327,18 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
             // ==================== SON SAYFA - ŞARTLAR + ONAY (SABİT) ====================
             doc.addPage();
 
-            // Header
+            // Header (sayfa 2 ile aynı - kısa unvan + tel)
             if (fs.existsSync(logoPath)) {
                 doc.image(logoPath, 40, 15, { width: 100 });
             }
-            doc.fontSize(7).font(fontNormal).fillColor('black');
-            doc.text(FIRMA.unvan, 300, 20, { width: 250, align: 'right' });
-            doc.text(FIRMA.adres, 300, 32, { width: 250, align: 'right' });
+            doc.fontSize(8).font(fontBold).fillColor('black');
+            doc.text('ÖNDER MUAYENE TEST VE ÖLÇÜM LABORATUVARI', 150, 18, { width: 400, align: 'center' });
+            doc.fontSize(7).font(fontNormal);
+            doc.text('Tel: 0332 300 00 20 | www.ondermuayene.com.tr', 150, 30, { width: 400, align: 'center' });
 
             // Başlık
             doc.fillColor(MAVI).fontSize(12).font(fontBold);
-            doc.text('GENEL VE TİCARİ ŞARTLAR', 40, 60, { align: 'center', width: 515 });
+            doc.text('GENEL VE TİCARİ ŞARTLAR', 40, 55, { align: 'center', width: 515 });
             doc.fillColor('black');
 
             y = 85;
@@ -373,9 +377,9 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
             doc.text('FİRMA ONAYI (KAŞE / İMZA)', 50, y + 8);
             doc.text('ÖNDER MUAYENE ONAYI', 310, y + 8);
 
-            // Mühür
+            // Mühür (yazının altında, ortalanmış)
             if (fs.existsSync(muhurPath)) {
-                doc.image(muhurPath, 420, y + 12, { width: 45 });
+                doc.image(muhurPath, 370, y + 20, { width: 100 });
             }
 
             y += 70;

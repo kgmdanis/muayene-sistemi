@@ -137,7 +137,8 @@ app.post('/api/customers', auth.authMiddleware('admin'), async (req, res) => {
         const customer = await auth.prisma.customer.create({ data: req.body });
         res.json(customer);
     } catch (error) {
-        res.status(500).json({ error: 'Müşteri eklenemedi' });
+        console.error('Müşteri ekleme hatası:', error);
+        res.status(500).json({ error: 'Müşteri eklenemedi: ' + error.message });
     }
 });
 
@@ -464,8 +465,20 @@ app.get('/api/teklifler/:id/pdf', auth.authMiddleware(), async (req, res) => {
         // PDF oluştur (tüm kategorilerle birlikte)
         const pdfBuffer = await teklifPdfGenerator.teklifPdfOlustur(teklif, tumKategoriler);
 
+        // Dosya adı: teklifNo_firmaAdi.pdf (ASCII karakterler)
+        const firmaAdi = (teklif.customer?.unvan || 'Firma')
+            .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
+            .replace(/ü/g, 'u').replace(/Ü/g, 'U')
+            .replace(/ş/g, 's').replace(/Ş/g, 'S')
+            .replace(/ı/g, 'i').replace(/İ/g, 'I')
+            .replace(/ö/g, 'o').replace(/Ö/g, 'O')
+            .replace(/ç/g, 'c').replace(/Ç/g, 'C')
+            .replace(/[^a-zA-Z0-9 ]/g, '')
+            .substring(0, 30).trim();
+        const dosyaAdi = `${teklif.teklifNo}_${firmaAdi}.pdf`;
+
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=Teklif-${teklif.teklifNo}.pdf`);
+        res.setHeader('Content-Disposition', `attachment; filename="${dosyaAdi}"`);
         res.send(pdfBuffer);
 
     } catch (error) {
@@ -917,19 +930,33 @@ app.get('/api/musteriler', auth.authMiddleware(), async (req, res) => {
 
 app.post('/api/musteriler', auth.authMiddleware(), async (req, res) => {
     try {
-        const customer = await auth.prisma.customer.create({ data: req.body });
+        // yetkiliKisi -> yetkili mapping
+        const data = { ...req.body };
+        if (data.yetkiliKisi !== undefined) {
+            data.yetkili = data.yetkiliKisi;
+            delete data.yetkiliKisi;
+        }
+        const customer = await auth.prisma.customer.create({ data });
         res.json(customer);
     } catch (error) {
-        res.status(500).json({ error: 'Müşteri oluşturulamadı' });
+        console.error('Müşteri ekleme hatası:', error);
+        res.status(500).json({ error: 'Müşteri oluşturulamadı: ' + error.message });
     }
 });
 
 app.put('/api/musteriler/:id', auth.authMiddleware(), async (req, res) => {
     try {
-        const customer = await auth.prisma.customer.update({ where: { id: parseInt(req.params.id) }, data: req.body });
+        // yetkiliKisi -> yetkili mapping
+        const data = { ...req.body };
+        if (data.yetkiliKisi !== undefined) {
+            data.yetkili = data.yetkiliKisi;
+            delete data.yetkiliKisi;
+        }
+        const customer = await auth.prisma.customer.update({ where: { id: parseInt(req.params.id) }, data });
         res.json(customer);
     } catch (error) {
-        res.status(500).json({ error: 'Müşteri güncellenemedi' });
+        console.error('Müşteri güncelleme hatası:', error);
+        res.status(500).json({ error: 'Müşteri güncellenemedi: ' + error.message });
     }
 });
 
@@ -939,6 +966,75 @@ app.delete('/api/musteriler/:id', auth.authMiddleware(), async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Müşteri silinemedi' });
+    }
+});
+
+// Müşteri XLSX Şablon İndir
+app.get('/api/musteriler/sablon', auth.authMiddleware(), (req, res) => {
+    try {
+        const XLSX = require('xlsx');
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet([
+            ['Ünvan', 'Vergi No', 'Telefon', 'Email', 'Adres', 'Yetkili Kişi', 'Notlar'],
+            ['Örnek Firma A.Ş.', '1234567890', '0332 111 22 33', 'info@firma.com', 'Konya Merkez', 'Ahmet Yılmaz', 'Notlar buraya']
+        ]);
+        XLSX.utils.book_append_sheet(wb, ws, 'Müşteriler');
+
+        const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+        res.setHeader('Content-Disposition', 'attachment; filename="musteri_sablonu.xlsx"');
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.send(buffer);
+    } catch (error) {
+        console.error('Şablon oluşturma hatası:', error);
+        res.status(500).json({ error: 'Şablon oluşturulamadı' });
+    }
+});
+
+// Müşteri XLSX Import
+app.post('/api/musteriler/import', auth.authMiddleware('admin'), upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'Dosya yüklenmedi' });
+        }
+
+        const XLSX = require('xlsx');
+        const workbook = XLSX.readFile(req.file.path);
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const data = XLSX.utils.sheet_to_json(sheet);
+
+        let eklenen = 0;
+        let hatali = 0;
+
+        for (const row of data) {
+            try {
+                const unvan = row['Ünvan'] || row['unvan'] || row['ÜNVAN'] || '';
+                if (!unvan) continue;
+
+                await auth.prisma.customer.create({
+                    data: {
+                        unvan: unvan,
+                        vergiNo: String(row['Vergi No'] || row['vergiNo'] || row['VERGI NO'] || ''),
+                        telefon: String(row['Telefon'] || row['telefon'] || row['TELEFON'] || ''),
+                        email: String(row['Email'] || row['email'] || row['EMAIL'] || row['E-Mail'] || ''),
+                        adres: String(row['Adres'] || row['adres'] || row['ADRES'] || ''),
+                        yetkili: String(row['Yetkili Kişi'] || row['yetkili'] || row['YETKİLİ'] || row['Yetkili'] || ''),
+                        notlar: String(row['Notlar'] || row['notlar'] || row['NOTLAR'] || '')
+                    }
+                });
+                eklenen++;
+            } catch (e) {
+                hatali++;
+            }
+        }
+
+        // Temp dosyayı sil
+        const fs = require('fs');
+        fs.unlinkSync(req.file.path);
+
+        res.json({ success: true, eklenen, hatali, toplam: data.length });
+    } catch (error) {
+        console.error('Import hatası:', error);
+        res.status(500).json({ error: 'Import başarısız: ' + error.message });
     }
 });
 
@@ -1148,8 +1244,20 @@ app.get('/api/teklifler/:id/pdf-excel', auth.authMiddleware(), async (req, res) 
 
         const pdfBuffer = await emailService.createTeklifPDFBuffer(teklif);
 
+        // Dosya adı: teklifNo_firmaAdi.pdf (ASCII karakterler)
+        const firmaAdi2 = (teklif.customer?.unvan || 'Firma')
+            .replace(/ğ/g, 'g').replace(/Ğ/g, 'G')
+            .replace(/ü/g, 'u').replace(/Ü/g, 'U')
+            .replace(/ş/g, 's').replace(/Ş/g, 'S')
+            .replace(/ı/g, 'i').replace(/İ/g, 'I')
+            .replace(/ö/g, 'o').replace(/Ö/g, 'O')
+            .replace(/ç/g, 'c').replace(/Ç/g, 'C')
+            .replace(/[^a-zA-Z0-9 ]/g, '')
+            .substring(0, 30).trim();
+        const dosyaAdi2 = `${teklif.teklifNo}_${firmaAdi2}.pdf`;
+
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=Teklif-${teklif.teklifNo}.pdf`);
+        res.setHeader('Content-Disposition', `attachment; filename="${dosyaAdi2}"`);
         res.send(pdfBuffer);
 
     } catch (error) {

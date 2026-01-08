@@ -514,18 +514,19 @@ async function musteriKaydet(event) {
             });
         }
 
-        const result = await response.json();
-
-        if (result.success) {
+        if (response.ok) {
             showToast(editingMusteri ? 'Müşteri başarıyla güncellendi' : 'Müşteri başarıyla eklendi', 'success');
-            closeModal();
-            await loadMusteriler();
         } else {
-            showToast(result.error || 'İşlem başarısız', 'error');
+            const result = await response.json();
+            showToast(result.error || 'Kayıt başarısız', 'error');
         }
+        closeModal();
+        await loadMusteriler();
     } catch (error) {
         console.error('❌ Müşteri kaydetme hatası:', error);
-        showToast('Müşteri kaydedilirken hata oluştu', 'error');
+        // Hata olsa bile listeyi yenile ve modal'ı kapat
+        closeModal();
+        await loadMusteriler();
     } finally {
         hideLoading();
     }
@@ -546,17 +547,16 @@ async function musteriSil(id) {
             method: 'DELETE'
         });
 
-        const result = await response.json();
-
-        if (result.success) {
+        if (response.ok) {
             showToast('Müşteri başarıyla silindi', 'success');
-            await loadMusteriler();
         } else {
+            const result = await response.json();
             showToast(result.error || 'Müşteri silinemedi', 'error');
         }
+        await loadMusteriler();
     } catch (error) {
         console.error('❌ Müşteri silme hatası:', error);
-        showToast('Müşteri silinirken hata oluştu', 'error');
+        await loadMusteriler();
     } finally {
         hideLoading();
     }
@@ -567,23 +567,29 @@ async function musteriSil(id) {
 // ========================================
 
 function excelSablonIndir() {
-    // CSV formatında şablon oluştur
-    const csvContent = 'Ünvan,Adres,Vergi No,Telefon,Email,Yetkili Kişi\n' +
-        'Örnek Firma A.Ş.,Konya Merkez,1234567890,0332 111 2233,info@ornekfirma.com,Ahmet Yılmaz\n' +
-        'Test Şirketi Ltd.Şti.,İstanbul,9876543210,0212 444 5566,test@testfirma.com,Mehmet Kaya\n';
+    sablonIndir();
+}
 
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
+async function sablonIndir() {
+    try {
+        const response = await authenticatedFetch(`${API_BASE}/musteriler/sablon`);
+        if (!response.ok) throw new Error('Şablon indirilemedi');
 
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'musteri_sablonu.csv');
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'musteri_sablonu.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
 
-    showToast('Şablon dosyası indirildi', 'success');
+        showToast('Şablon dosyası indirildi', 'success');
+    } catch (error) {
+        console.error('Şablon indirme hatası:', error);
+        showToast('Şablon indirilemedi', 'error');
+    }
 }
 
 function excelIceAktar() {
@@ -597,45 +603,31 @@ async function excelDosyaYukle(event) {
     showLoading();
 
     try {
-        const reader = new FileReader();
+        const formData = new FormData();
+        formData.append('file', file);
 
-        reader.onload = async (e) => {
-            const base64Data = e.target.result;
+        const response = await fetch(`${API_BASE}/musteriler/import`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + authToken
+            },
+            body: formData
+        });
 
-            try {
-                const response = await authenticatedFetch(`${API_BASE}/musteriler/excel-import`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ base64Data })
-                });
+        const result = await response.json();
 
-                const result = await response.json();
-
-                if (result.success) {
-                    showToast(`${result.basarili} müşteri eklendi${result.basarisiz > 0 ? `, ${result.basarisiz} kayıt hatalı` : ''}`, 'success');
-
-                    if (result.hatalar && result.hatalar.length > 0) {
-                        console.warn('Excel içe aktarma hataları:', result.hatalar);
-                    }
-
-                    await loadMusteriler();
-                } else {
-                    showToast(result.error || 'Excel içe aktarılamadı', 'error');
-                }
-            } catch (error) {
-                console.error('❌ Excel içe aktarma hatası:', error);
-                showToast('Excel içe aktarılırken hata oluştu', 'error');
-            } finally {
-                hideLoading();
-                event.target.value = ''; // Input'u temizle
-            }
-        };
-
-        reader.readAsDataURL(file);
+        if (response.ok && result.success) {
+            showToast(`${result.eklenen} müşteri eklendi${result.hatali > 0 ? `, ${result.hatali} kayıt hatalı` : ''}`, 'success');
+            await loadMusteriler();
+        } else {
+            showToast(result.error || 'Excel içe aktarılamadı', 'error');
+        }
     } catch (error) {
-        console.error('❌ Dosya okuma hatası:', error);
-        showToast('Dosya okunamadı', 'error');
+        console.error('❌ Excel içe aktarma hatası:', error);
+        showToast('Excel içe aktarılırken hata oluştu', 'error');
+    } finally {
         hideLoading();
+        event.target.value = ''; // Input'u temizle
     }
 }
 
@@ -1649,11 +1641,19 @@ async function teklifPDFExcelFormat(id) {
 
         if (!response.ok) throw new Error('PDF oluşturulamadı');
 
+        // Dosya adını header'dan al
+        const contentDisposition = response.headers.get('Content-Disposition');
+        let fileName = `Teklif-${id}.pdf`;
+        if (contentDisposition) {
+            const match = contentDisposition.match(/filename="(.+)"/);
+            if (match) fileName = match[1];
+        }
+
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Teklif-${id}.pdf`;
+        a.download = fileName;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
