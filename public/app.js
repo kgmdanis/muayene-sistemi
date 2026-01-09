@@ -1076,6 +1076,38 @@ async function teklifSil(id) {
     }
 }
 
+async function tekliftenIsEmriOlustur(teklifId) {
+    const teklif = teklifler.find(t => t.id === teklifId);
+    if (!teklif) return;
+
+    if (!confirm(`${teklif.teklifNo} nolu tekliften iş emri oluşturulacak. Onaylıyor musunuz?`)) {
+        return;
+    }
+
+    showLoading();
+
+    try {
+        const response = await authenticatedFetch(`${API_BASE}/is-emirleri/tekliften-olustur/${teklifId}`, {
+            method: 'POST'
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showToast(`İş emri oluşturuldu: ${result.isEmriNo}`, 'success');
+            // İş emirleri sayfasına yönlendir
+            navigateToPage('is-emirleri');
+        } else {
+            showToast(result.error || 'İş emri oluşturulamadı', 'error');
+        }
+    } catch (error) {
+        console.error('❌ İş emri oluşturma hatası:', error);
+        showToast('İş emri oluşturulurken hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
 function teklifGoruntule(id) {
     const teklif = teklifler.find(t => t.id === id);
     if (!teklif) return;
@@ -2627,32 +2659,34 @@ async function teklifDurumGuncelle(event, teklifId) {
     showLoading();
 
     try {
-        const response = await authenticatedFetch(`${API_BASE}/teklifler/${teklifId}`, {
-            method: 'PUT',
+        // PATCH endpoint kullan - otomatik iş emri oluşturma bu endpoint'te
+        const response = await authenticatedFetch(`${API_BASE}/teklifler/${teklifId}/durum`, {
+            method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(teklif)
+            body: JSON.stringify({ durum: yeniDurum })
         });
 
         if (response.ok) {
             showToast(`Teklif durumu "${yeniDurum}" olarak güncellendi`, 'success');
             closeModal();
 
-            // Tabloyu yenile
-            renderTeklifTable();
+            // Teklifleri yeniden yükle
+            await loadTeklifler();
 
             // Dashboard istatistiklerini güncelle
             if (document.getElementById('page-dashboard').classList.contains('active')) {
                 loadDashboardStats();
             }
 
-            // Durum değişikliği bildirimi (ileride email gönderimi eklenebilir)
+            // Durum değişikliği bildirimi
             if (yeniDurum === 'Onaylandı') {
-                showToast('🎉 Tebrikler! Teklif onaylandı.', 'success');
+                showToast('🎉 Teklif onaylandı! İş emri otomatik oluşturuldu.', 'success');
             } else if (yeniDurum === 'Reddedildi') {
                 showToast('Teklif reddedildi. Müşteri ile görüşmeyi düşünebilirsiniz.', 'info');
             }
         } else {
-            showToast('Durum güncellenirken hata oluştu', 'error');
+            const error = await response.json();
+            showToast(error.error || 'Durum güncellenirken hata oluştu', 'error');
         }
     } catch (error) {
         console.error('Durum güncelleme hatası:', error);
@@ -3004,7 +3038,7 @@ async function loadIsEmirleri() {
             console.log('✅ Personeller yüklendi:', personeller.length);
         }
 
-        const response = await authenticatedFetch(`${API_BASE}/workorders`);
+        const response = await authenticatedFetch(`${API_BASE}/is-emirleri`);
         isEmirleri = await response.json();
         renderIsEmriTable();
     } catch (error) {
@@ -3027,7 +3061,7 @@ function renderIsEmriTable() {
     }
 
     if (filteredIsEmirleri.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Henüz iş emri bulunmamaktadır</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Henüz iş emri bulunmamaktadır</td></tr>';
         // Pagination'ı temizle
         const existingPagination = container.querySelector('.pagination-container');
         if (existingPagination) existingPagination.remove();
@@ -3045,34 +3079,43 @@ function renderIsEmriTable() {
                           (musteriler.find(m => m.id === isEmri.customerId)?.unvan) ||
                           '-';
 
-        // Durum badge renkleri
-        const durumClass = {
-            'BEKLEMEDE': 'badge-warning',
-            'ATANDI': 'badge-info',
-            'SAHADA': 'badge-primary',
-            'TAMAMLANDI': 'badge-success',
-            'IPTAL': 'badge-secondary'
-        }[isEmri.durum] || 'badge-secondary';
+        // Görev sayısı
+        const gorevSayisi = isEmri.altGorevler?.length || 0;
+
+        // Durum badge renkleri (BEKLIYOR=gri, ATANDI=mavi, SAHADA=turuncu, TAMAMLANDI=yeşil, RAPOR_YAZILDI=mor, TESLIM_EDILDI=koyu yeşil)
+        const durumStyles = {
+            'BEKLIYOR': 'background: #6c757d; color: white;',
+            'ATANDI': 'background: #0d6efd; color: white;',
+            'SAHADA': 'background: #fd7e14; color: white;',
+            'TAMAMLANDI': 'background: #198754; color: white;',
+            'RAPOR_YAZILDI': 'background: #6f42c1; color: white;',
+            'TESLIM_EDILDI': 'background: #0f5132; color: white;',
+            'IPTAL': 'background: #dc3545; color: white;'
+        };
+        const durumStyle = durumStyles[isEmri.durum] || 'background: #6c757d; color: white;';
 
         // Durum Türkçe karşılığı
         const durumText = {
-            'BEKLEMEDE': 'Beklemede',
+            'BEKLIYOR': 'Bekliyor',
             'ATANDI': 'Atandı',
             'SAHADA': 'Sahada',
             'TAMAMLANDI': 'Tamamlandı',
+            'RAPOR_YAZILDI': 'Rapor Yazıldı',
+            'TESLIM_EDILDI': 'Teslim Edildi',
             'IPTAL': 'İptal'
         }[isEmri.durum] || isEmri.durum;
 
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><strong>${isEmri.workOrderNo}</strong></td>
-            <td>${isEmri.teklif?.teklifNo || '-'}</td>
+            <td><strong>${isEmri.isEmriNo}</strong></td>
             <td>${musteriAdi}</td>
-            <td><span class="badge ${durumClass}">${durumText}</span></td>
-            <td>${formatTarihTR(isEmri.createdAt)}</td>
+            <td>${isEmri.teklif?.teklifNo || '-'}</td>
+            <td>${isEmri.planliTarih ? formatTarihTR(isEmri.planliTarih) : '-'}</td>
+            <td><span class="badge badge-info">${gorevSayisi} görev</span></td>
+            <td><span class="badge" style="${durumStyle} padding: 4px 8px; border-radius: 4px;">${durumText}</span></td>
             <td>
                 <div class="action-buttons">
-                    <button onclick="viewIsEmri(${isEmri.id})" class="btn btn-sm btn-info" title="Detaylar">
+                    <button onclick="viewIsEmri(${isEmri.id})" class="btn btn-sm btn-info" title="Detay">
                         👁️
                     </button>
                     <button onclick="deleteIsEmri(${isEmri.id})" class="btn btn-sm btn-danger" title="Sil">
@@ -3114,145 +3157,334 @@ function isEmriFiltrele(filter) {
     renderIsEmriTable();
 }
 
+// İş Emri Detay Sayfası
+let currentIsEmriId = null;
+let isEmriListeHTML = null; // Orijinal liste HTML'ini sakla
+
 async function viewIsEmri(isEmriId) {
+    await renderIsEmriDetay(isEmriId);
+}
+
+// İş Emirleri liste sayfasına geri dön
+function isEmriListeyeDon() {
+    const mainContent = document.getElementById('page-is-emirleri');
+    if (mainContent && isEmriListeHTML) {
+        mainContent.innerHTML = isEmriListeHTML;
+    }
+    currentIsEmriId = null;
+    loadIsEmirleri();
+}
+
+// İş Emirleri orijinal sayfa yapısını oluştur
+function getIsEmriListeHTML() {
+    return `
+        <div class="page-header">
+            <h2>İş Emri Yönetimi</h2>
+            <p>Onaylanan tekliflerden oluşturulan iş emirleri</p>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h3>İş Emirleri</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="isEmriFiltrele('all')">Tümü</button>
+                    <button class="filter-btn" onclick="isEmriFiltrele('BEKLIYOR')">Bekliyor</button>
+                    <button class="filter-btn" onclick="isEmriFiltrele('SAHADA')">Sahada</button>
+                    <button class="filter-btn" onclick="isEmriFiltrele('TAMAMLANDI')">Tamamlandı</button>
+                    <button class="filter-btn" onclick="isEmriFiltrele('TESLIM_EDILDI')">Teslim Edildi</button>
+                </div>
+            </div>
+            <table id="is-emri-table">
+                <thead>
+                    <tr>
+                        <th>İş Emri No</th>
+                        <th>Müşteri</th>
+                        <th>Teklif No</th>
+                        <th>Planlı Tarih</th>
+                        <th>Görev</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="7" class="text-center">Yükleniyor...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+async function renderIsEmriDetay(id) {
+    showLoading();
+    currentIsEmriId = id;
+
+    // Orijinal liste HTML'ini sakla
+    const mainContent = document.getElementById('page-is-emirleri');
+    if (mainContent && !isEmriListeHTML) {
+        isEmriListeHTML = getIsEmriListeHTML();
+    }
+
     try {
-        showLoading();
-        const response = await authenticatedFetch(`/api/is-emirleri/${isEmriId}`);
-        const data = await response.json();
+        const response = await authenticatedFetch(`/api/is-emirleri/${id}`);
+        const isEmri = await response.json();
+
+        if (!response.ok) {
+            showToast('İş emri bulunamadı', 'error');
+            hideLoading();
+            return;
+        }
+
+        const durumRenk = {
+            'BEKLIYOR': '#6c757d',
+            'ATANDI': '#0d6efd',
+            'SAHADA': '#fd7e14',
+            'TAMAMLANDI': '#198754',
+            'RAPOR_YAZILDI': '#6f42c1',
+            'TESLIM_EDILDI': '#0f5132'
+        };
+
+        const durumText = {
+            'BEKLIYOR': 'Bekliyor',
+            'ATANDI': 'Atandı',
+            'SAHADA': 'Sahada',
+            'TAMAMLANDI': 'Tamamlandı',
+            'RAPOR_YAZILDI': 'Rapor Yazıldı',
+            'TESLIM_EDILDI': 'Teslim Edildi'
+        };
 
         const content = `
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                <div class="info-card">
-                    <h3>📋 İş Emri Bilgileri</h3>
-                    <div class="info-row">
-                        <span class="label">İş Emri No:</span>
-                        <span class="value"><strong>${data.isEmriNo}</strong></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Teklif No:</span>
-                        <span class="value">${data.teklifNo}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Durum:</span>
-                        <span class="value">
-                            <select id="is-emri-durum" class="form-input" style="width: auto;">
-                                <option value="Beklemede" ${data.durum === 'Beklemede' ? 'selected' : ''}>Beklemede</option>
-                                <option value="Devam Ediyor" ${data.durum === 'Devam Ediyor' ? 'selected' : ''}>Devam Ediyor</option>
-                                <option value="Tamamlandı" ${data.durum === 'Tamamlandı' ? 'selected' : ''}>Tamamlandı</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Oluşturma Tarihi:</span>
-                        <span class="value">${formatTarihTR(data.olusturmaTarihi)}</span>
-                    </div>
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>📋 ${isEmri.isEmriNo}</h2>
+                    <p>İş Emri Detayları</p>
                 </div>
+                <button class="btn btn-secondary" onclick="isEmriListeyeDon();">
+                    ← Geri Dön
+                </button>
+            </div>
 
-                <div class="info-card">
-                    <h3>👤 Müşteri Bilgileri</h3>
-                    <div class="info-row">
-                        <span class="label">Ünvan:</span>
-                        <span class="value"><strong>${data.musteri?.unvan || '-'}</strong></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Telefon:</span>
-                        <span class="value">${data.musteri?.telefon || '-'}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">E-posta:</span>
-                        <span class="value">${data.musteri?.email || '-'}</span>
-                    </div>
+            <!-- Üst Bilgi Kartları -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                <div class="info-card" style="padding: 15px;">
+                    <strong>Müşteri</strong><br>
+                    <span style="font-size: 14px;">${isEmri.customer?.unvan || '-'}</span>
+                </div>
+                <div class="info-card" style="padding: 15px;">
+                    <strong>Teklif No</strong><br>
+                    <span style="font-size: 14px;">${isEmri.teklif?.teklifNo || '-'}</span>
+                </div>
+                <div class="info-card" style="padding: 15px;">
+                    <strong>Planlı Tarih</strong><br>
+                    <span style="font-size: 14px;">${isEmri.planliTarih ? formatTarihTR(isEmri.planliTarih) : '-'}</span>
+                </div>
+                <div class="info-card" style="padding: 15px;">
+                    <strong>Durum</strong><br>
+                    <span class="badge" style="background: ${durumRenk[isEmri.durum] || '#6c757d'}; color: white; padding: 4px 8px; border-radius: 4px;">
+                        ${durumText[isEmri.durum] || isEmri.durum}
+                    </span>
+                </div>
+                <div class="info-card" style="padding: 15px;">
+                    <strong>Durum Değiştir</strong><br>
+                    <select class="form-input" style="width: 100%; margin-top: 5px;" onchange="isEmriDurumDegistir(${isEmri.id}, this.value)">
+                        <option value="BEKLIYOR" ${isEmri.durum === 'BEKLIYOR' ? 'selected' : ''}>Bekliyor</option>
+                        <option value="ATANDI" ${isEmri.durum === 'ATANDI' ? 'selected' : ''}>Atandı</option>
+                        <option value="SAHADA" ${isEmri.durum === 'SAHADA' ? 'selected' : ''}>Sahada</option>
+                        <option value="TAMAMLANDI" ${isEmri.durum === 'TAMAMLANDI' ? 'selected' : ''}>Tamamlandı</option>
+                        <option value="RAPOR_YAZILDI" ${isEmri.durum === 'RAPOR_YAZILDI' ? 'selected' : ''}>Rapor Yazıldı</option>
+                        <option value="TESLIM_EDILDI" ${isEmri.durum === 'TESLIM_EDILDI' ? 'selected' : ''}>Teslim Edildi</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="info-card" style="margin-bottom: 20px;">
-                <h3>📦 İş Kalemleri ve Personel Atamaları</h3>
-                <table class="table" style="margin-top: 10px;">
+            <!-- Alt Görevler Tablosu -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>📦 Alt Görevler (${isEmri.altGorevler?.length || 0})</h3>
+                </div>
+                <table class="table">
                     <thead>
                         <tr>
-                            <th style="width: 25%;">Hizmet Adı</th>
-                            <th style="width: 20%;">Açıklama</th>
-                            <th style="width: 8%;">Miktar</th>
-                            <th style="width: 8%;">Birim</th>
-                            <th style="width: 15%;">Durum</th>
-                            <th style="width: 24%;">Atanan Personel</th>
+                            <th>#</th>
+                            <th>Hizmet</th>
+                            <th>Ekipman</th>
+                            <th>Konum</th>
+                            <th>Personel</th>
+                            <th>Durum</th>
+                            <th>Rapor No</th>
+                            <th>İşlem</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${data.kalemler.map((kalem, index) => `
+                        ${isEmri.altGorevler?.map((gorev, index) => `
                             <tr>
-                                <td><strong>${kalem.hizmetAdi}</strong></td>
-                                <td style="font-size: 12px;">${kalem.aciklama || '-'}</td>
-                                <td>${kalem.miktar}</td>
-                                <td>${kalem.birim}</td>
+                                <td>${index + 1}</td>
+                                <td><strong>${gorev.hizmetAdi || '-'}</strong></td>
+                                <td>${gorev.ekipmanAdi || '-'}</td>
+                                <td>${gorev.ekipmanKonum || '-'}</td>
+                                <td>${gorev.personelAdi || '<span style="color:#999;">Atanmadı</span>'}</td>
                                 <td>
-                                    <select
-                                        onchange="updateKalemDurum(${isEmriId}, ${index}, this.value)"
-                                        class="form-input"
-                                        style="width: 100%; padding: 5px; font-size: 12px;">
-                                        <option value="Beklemede" ${(kalem.durum || 'Beklemede') === 'Beklemede' ? 'selected' : ''}>Beklemede</option>
-                                        <option value="Devam Ediyor" ${kalem.durum === 'Devam Ediyor' ? 'selected' : ''}>Devam Ediyor</option>
-                                        <option value="Tamamlandı" ${kalem.durum === 'Tamamlandı' ? 'selected' : ''}>Tamamlandı</option>
-                                    </select>
+                                    <span class="badge" style="background: ${durumRenk[gorev.durum] || '#6c757d'}; color: white; padding: 3px 6px; border-radius: 3px; font-size: 11px;">
+                                        ${durumText[gorev.durum] || gorev.durum}
+                                    </span>
                                 </td>
+                                <td>${gorev.raporNo || '-'}</td>
                                 <td>
-                                    <div style="display: flex; flex-direction: column; gap: 5px;">
-                                        ${renderKalemPersoneller(kalem, index, isEmriId)}
-                                        <button
-                                            onclick="showKalemPersonelModal(${isEmriId}, ${index}, '${kalem.hizmetAdi.replace(/'/g, "\\'")}')"
-                                            class="btn btn-sm btn-primary"
-                                            style="width: 100%; padding: 3px; font-size: 11px;">
-                                            ➕ Personel Ekle
-                                        </button>
-                                    </div>
+                                    <button class="btn btn-sm btn-primary" onclick="altGorevDuzenle(${gorev.id})" title="Düzenle">
+                                        ✏️
+                                    </button>
                                 </td>
                             </tr>
-                        `).join('')}
+                        `).join('') || '<tr><td colspan="8" class="text-center">Alt görev bulunmamaktadır</td></tr>'}
                     </tbody>
                 </table>
             </div>
-
-            <div class="info-card">
-                <h3>📝 Notlar</h3>
-                <textarea id="is-emri-notlar" class="form-input" style="width: 100%; min-height: 100px;">${data.notlar || ''}</textarea>
-            </div>
-
-            <div style="margin-top: 20px; text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
-                <!-- Sertifika Oluştur butonu - Henüz aktif değil -->
-                <!--
-                <button onclick="createSertifikaFromIsEmri(${isEmriId})" class="btn btn-success">
-                    📜 Sertifika Oluştur
-                </button>
-                -->
-                <button onclick="updateIsEmri(${isEmriId})" class="btn btn-primary">
-                    💾 Değişiklikleri Kaydet
-                </button>
-                <button onclick="closeModal()" class="btn btn-secondary">
-                    Kapat
-                </button>
-            </div>
         `;
 
-        const modalHTML = `
+        // Ana içerik alanını güncelle
+        if (mainContent) {
+            mainContent.innerHTML = content;
+        }
+    } catch (error) {
+        console.error('İş emri detay hatası:', error);
+        showToast('Hata: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// İş Emri Durum Değiştir
+async function isEmriDurumDegistir(id, durum) {
+    try {
+        const response = await authenticatedFetch(`/api/is-emirleri/${id}/durum`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ durum })
+        });
+
+        if (response.ok) {
+            showToast('Durum güncellendi', 'success');
+            renderIsEmriDetay(id);
+        } else {
+            const error = await response.json();
+            showToast(error.error || 'Hata oluştu', 'error');
+        }
+    } catch (error) {
+        showToast('Hata: ' + error.message, 'error');
+    }
+}
+
+// Alt Görev Düzenleme Modal
+async function altGorevDuzenle(gorevId) {
+    try {
+        // Personelleri al
+        const persResponse = await authenticatedFetch('/api/personeller');
+        const personeller = await persResponse.json();
+
+        // Alt görevi al
+        const gorevResponse = await authenticatedFetch(`/api/alt-gorevler/${gorevId}`);
+        const gorev = gorevResponse.ok ? await gorevResponse.json() : {};
+
+        const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal" onclick="event.stopPropagation()" style="max-width: 1000px;">
+                <div class="modal" onclick="event.stopPropagation()" style="max-width: 500px;">
                     <div class="modal-header">
-                        <h3>İş Emri Detayları - ${data.isEmriNo}</h3>
+                        <h3>Alt Görev Düzenle</h3>
                         <button class="modal-close" onclick="closeModal()">&times;</button>
                     </div>
                     <div class="modal-body">
-                        ${content}
+                        <div class="form-group">
+                            <label class="form-label">Ekipman Adı</label>
+                            <input type="text" class="form-input" id="agEkipmanAdi" value="${gorev.ekipmanAdi || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Seri No</label>
+                            <input type="text" class="form-input" id="agSeriNo" value="${gorev.ekipmanSeriNo || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Konum</label>
+                            <input type="text" class="form-input" id="agKonum" value="${gorev.ekipmanKonum || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kapasite</label>
+                            <input type="text" class="form-input" id="agKapasite" value="${gorev.ekipmanKapasite || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Personel</label>
+                            <select class="form-input" id="agPersonel">
+                                <option value="">Seçiniz</option>
+                                ${personeller.map(p => `
+                                    <option value="${p.id}" ${gorev.personelId === p.id ? 'selected' : ''}>
+                                        ${p.adSoyad} (${p.kategori})
+                                    </option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Durum</label>
+                            <select class="form-input" id="agDurum">
+                                <option value="BEKLIYOR" ${gorev.durum === 'BEKLIYOR' ? 'selected' : ''}>Bekliyor</option>
+                                <option value="DEVAM_EDIYOR" ${gorev.durum === 'DEVAM_EDIYOR' ? 'selected' : ''}>Devam Ediyor</option>
+                                <option value="TAMAMLANDI" ${gorev.durum === 'TAMAMLANDI' ? 'selected' : ''}>Tamamlandı</option>
+                                <option value="RAPOR_YAZILDI" ${gorev.durum === 'RAPOR_YAZILDI' ? 'selected' : ''}>Rapor Yazıldı</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rapor No</label>
+                            <input type="text" class="form-input" id="agRaporNo" value="${gorev.raporNo || ''}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">İptal</button>
+                        <button class="btn btn-primary" onclick="altGorevKaydet(${gorevId})">Kaydet</button>
                     </div>
                 </div>
             </div>
         `;
-
-        document.getElementById('modal-container').innerHTML = modalHTML;
+        document.getElementById('modal-container').innerHTML = modalHtml;
     } catch (error) {
-        console.error('İş emri detay yükleme hatası:', error);
-        showToast('İş emri detayları yüklenirken hata oluştu', 'error');
-    } finally {
-        hideLoading();
+        showToast('Hata: ' + error.message, 'error');
+    }
+}
+
+// Alt Görev Kaydet
+async function altGorevKaydet(gorevId) {
+    const personelSelect = document.getElementById('agPersonel');
+    const personelId = personelSelect.value ? parseInt(personelSelect.value) : null;
+    const personelAdi = personelId ? personelSelect.options[personelSelect.selectedIndex].text.split(' (')[0] : null;
+
+    const data = {
+        ekipmanAdi: document.getElementById('agEkipmanAdi').value,
+        ekipmanSeriNo: document.getElementById('agSeriNo').value,
+        ekipmanKonum: document.getElementById('agKonum').value,
+        ekipmanKapasite: document.getElementById('agKapasite').value,
+        personelId: personelId,
+        personelAdi: personelAdi,
+        durum: document.getElementById('agDurum').value,
+        raporNo: document.getElementById('agRaporNo').value
+    };
+
+    try {
+        const response = await authenticatedFetch(`/api/alt-gorevler/${gorevId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            closeModal();
+            showToast('Alt görev kaydedildi', 'success');
+            // Detay sayfasını yenile
+            if (currentIsEmriId) {
+                renderIsEmriDetay(currentIsEmriId);
+            }
+        } else {
+            const error = await response.json();
+            showToast(error.error || 'Hata oluştu', 'error');
+        }
+    } catch (error) {
+        showToast('Hata: ' + error.message, 'error');
     }
 }
 

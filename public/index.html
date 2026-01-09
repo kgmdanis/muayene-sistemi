@@ -242,26 +242,27 @@
                         <h3>İş Emirleri</h3>
                         <div class="filter-buttons">
                             <button class="filter-btn active" onclick="isEmriFiltrele('all')">Tümü</button>
-                            <button class="filter-btn" onclick="isEmriFiltrele('BEKLEMEDE')">Beklemede</button>
-                            <button class="filter-btn" onclick="isEmriFiltrele('ATANDI')">Atandı</button>
+                            <button class="filter-btn" onclick="isEmriFiltrele('BEKLIYOR')">Bekliyor</button>
                             <button class="filter-btn" onclick="isEmriFiltrele('SAHADA')">Sahada</button>
                             <button class="filter-btn" onclick="isEmriFiltrele('TAMAMLANDI')">Tamamlandı</button>
+                            <button class="filter-btn" onclick="isEmriFiltrele('TESLIM_EDILDI')">Teslim Edildi</button>
                         </div>
                     </div>
                     <table id="is-emri-table">
                         <thead>
                             <tr>
                                 <th>İş Emri No</th>
-                                <th>Teklif No</th>
                                 <th>Müşteri</th>
+                                <th>Teklif No</th>
+                                <th>Planlı Tarih</th>
+                                <th>Görev</th>
                                 <th>Durum</th>
-                                <th>Oluşturma Tarihi</th>
                                 <th>İşlemler</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="6" class="text-center">Yükleniyor...</td>
+                                <td colspan="7" class="text-center">Yükleniyor...</td>
                             </tr>
                         </tbody>
                     </table>

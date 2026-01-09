@@ -82,6 +82,7 @@ model Customer {
   teklifler    Teklif[]
   muayeneler   Muayene[]
   workOrders   WorkOrder[]
+  isEmirleri   IsEmri[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 }
@@ -110,6 +111,7 @@ model Hizmet {
   akpireditasyon     Boolean         @default(false)  // TÜRKAK akrediteli mi
   isActive           Boolean         @default(true)
   teklifDetaylari    TeklifDetay[]
+  altGorevler        AltGorev[]
   createdAt          DateTime        @default(now())
 }
 
@@ -137,6 +139,7 @@ model Teklif {
   detaylar       TeklifDetay[]
   muayeneler     Muayene[]
   workOrders     WorkOrder[]
+  isEmirleri     IsEmri[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
@@ -237,4 +240,67 @@ enum WorkOrderDurum {
   SAHADA
   TAMAMLANDI
   IPTAL
+}
+
+// ============ PERSONEL VE İŞ EMRİ MODÜLÜ ============
+
+// Personel tablosu
+model Personel {
+  id              Int         @id @default(autoincrement())
+  adSoyad         String
+  unvan           String
+  meslek          String?
+  diplomaTarihi   String?
+  diplomaNo       String?
+  ekipnetNo       String?
+  telefon         String?
+  email           String?
+  kategori        String      // Elektriksel, Mekanik, IsHijyeni
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  altGorevler     AltGorev[]
+}
+
+// Ana İş Emri (Teklif bazlı)
+model IsEmri {
+  id              Int           @id @default(autoincrement())
+  isEmriNo        String        @unique
+  teklifId        Int
+  teklif          Teklif        @relation(fields: [teklifId], references: [id])
+  customerId      Int
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  planliTarih     DateTime?
+  baslangicTarihi DateTime?
+  bitisTarihi     DateTime?
+  durum           String        @default("BEKLIYOR")
+  notlar          String?
+  altGorevler     AltGorev[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+// Alt Görev (Her ekipman/ölçüm noktası için)
+model AltGorev {
+  id                  Int         @id @default(autoincrement())
+  isEmriId            Int
+  isEmri              IsEmri      @relation(fields: [isEmriId], references: [id], onDelete: Cascade)
+  hizmetId            Int
+  hizmet              Hizmet      @relation(fields: [hizmetId], references: [id])
+  hizmetAdi           String
+  kategori            String
+  siraNo              Int         @default(1)
+  ekipmanAdi          String?
+  ekipmanSeriNo       String?
+  ekipmanKonum        String?
+  ekipmanKapasite     String?
+  ekipmanPlaka        String?
+  durum               String      @default("BEKLIYOR")
+  personelId          Int?
+  personel            Personel?   @relation(fields: [personelId], references: [id])
+  personelAdi         String?
+  tamamlanmaTarihi    DateTime?
+  raporNo             String?
+  notlar              String?
+  sahaFormu           String?     @db.Text
+  createdAt           DateTime    @default(now())
 }

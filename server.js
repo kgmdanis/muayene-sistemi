@@ -341,6 +341,21 @@ app.post('/api/teklifler', auth.authMiddleware(), async (req, res) => {
     }
 });
 
+// Durum Türkçe → Enum dönüşümü
+const teklifDurumMap = {
+    'Taslak': 'TASLAK',
+    'Gönderildi': 'GONDERILDI',
+    'Onaylandı': 'ONAYLANDI',
+    'Reddedildi': 'REDDEDILDI',
+    'İptal': 'IPTAL',
+    // Enum değerleri de kabul et
+    'TASLAK': 'TASLAK',
+    'GONDERILDI': 'GONDERILDI',
+    'ONAYLANDI': 'ONAYLANDI',
+    'REDDEDILDI': 'REDDEDILDI',
+    'IPTAL': 'IPTAL'
+};
+
 // Teklif güncelle
 app.put('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
     try {
@@ -375,6 +390,9 @@ app.put('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
             await auth.prisma.teklifDetay.createMany({ data: detaylarData });
         }
 
+        // Durum dönüşümü
+        const mappedDurum = durum ? teklifDurumMap[durum] : undefined;
+
         const teklif = await auth.prisma.teklif.update({
             where: { id },
             data: {
@@ -391,7 +409,7 @@ app.put('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
                 notlar: notlar || null,
                 onayTelefon: onayTelefon || false,
                 sahadaOnay: sahadaOnay || false,
-                durum: durum || undefined
+                durum: mappedDurum
             },
             include: { customer: true, detaylar: { include: { hizmet: true } } }
         });
@@ -406,12 +424,89 @@ app.put('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
 // Teklif durum güncelle
 app.patch('/api/teklifler/:id/durum', auth.authMiddleware('admin'), async (req, res) => {
     try {
+        const teklifId = parseInt(req.params.id);
+        const mappedDurum = teklifDurumMap[req.body.durum] || req.body.durum;
+
         const teklif = await auth.prisma.teklif.update({
-            where: { id: parseInt(req.params.id) },
-            data: { durum: req.body.durum }
+            where: { id: teklifId },
+            data: { durum: mappedDurum }
         });
+
+        // ONAYLANDI durumuna geçince otomatik iş emri oluştur
+        if (mappedDurum === 'ONAYLANDI') {
+            // Bu teklif için zaten iş emri var mı kontrol et
+            const mevcutIsEmri = await auth.prisma.isEmri.findFirst({
+                where: { teklifId: teklifId }
+            });
+
+            if (!mevcutIsEmri) {
+                // İş emri numarası oluştur
+                const yil = new Date().getFullYear().toString().slice(-2);
+                const sonIsEmri = await auth.prisma.isEmri.findFirst({
+                    where: { isEmriNo: { startsWith: `IE-${yil}-` } },
+                    orderBy: { isEmriNo: 'desc' }
+                });
+
+                let siraNo = 1;
+                if (sonIsEmri) {
+                    const sonSira = parseInt(sonIsEmri.isEmriNo.split('-')[2]);
+                    siraNo = sonSira + 1;
+                }
+                const isEmriNo = `IE-${yil}-${siraNo.toString().padStart(4, '0')}`;
+
+                // Teklif detaylarını al
+                const teklifDetay = await auth.prisma.teklif.findUnique({
+                    where: { id: teklifId },
+                    include: { detaylar: { include: { hizmet: { include: { kategori: true } } } } }
+                });
+
+                // Personelleri al
+                const personeller = await auth.prisma.personel.findMany({ where: { isActive: true } });
+                const kategoriPersonelMap = {};
+                personeller.forEach(p => { kategoriPersonelMap[p.kategori] = p; });
+
+                // Alt görevleri hazırla
+                const altGorevler = [];
+                for (const detay of teklifDetay.detaylar) {
+                    const kategoriAdi = detay.hizmet.kategori?.ad || 'Diger';
+                    let personelKategori = 'Mekanik';
+                    if (kategoriAdi.includes('Elektrik')) personelKategori = 'Elektriksel';
+                    else if (kategoriAdi.includes('Hijyen') || kategoriAdi.includes('Ölçüm')) personelKategori = 'IsHijyeni';
+
+                    const atananPersonel = kategoriPersonelMap[personelKategori];
+
+                    for (let i = 1; i <= detay.miktar; i++) {
+                        altGorevler.push({
+                            hizmetId: detay.hizmetId,
+                            hizmetAdi: detay.hizmet.ad,
+                            kategori: personelKategori,
+                            siraNo: i,
+                            ekipmanAdi: `${detay.hizmet.ad} - ${i}`,
+                            durum: 'BEKLIYOR',
+                            personelId: atananPersonel?.id || null,
+                            personelAdi: atananPersonel?.adSoyad || null
+                        });
+                    }
+                }
+
+                // İş emri oluştur
+                await auth.prisma.isEmri.create({
+                    data: {
+                        isEmriNo,
+                        teklifId: teklif.id,
+                        customerId: teklif.customerId,
+                        durum: 'BEKLIYOR',
+                        altGorevler: { create: altGorevler }
+                    }
+                });
+
+                console.log(`✅ Otomatik iş emri oluşturuldu: ${isEmriNo}`);
+            }
+        }
+
         res.json(teklif);
     } catch (error) {
+        console.error('Durum güncelleme hatası:', error);
         res.status(500).json({ error: 'Durum güncellenemedi' });
     }
 });
@@ -654,111 +749,6 @@ app.put('/api/workorders/:id', auth.authMiddleware('admin'), async (req, res) =>
         res.json(workOrder);
     } catch (error) {
         res.status(500).json({ error: 'İş emri güncellenemedi' });
-    }
-});
-
-// ============ İŞ EMİRLERİ ALIAS (Frontend uyumu için) ============
-
-app.get('/api/is-emirleri', auth.authMiddleware(), async (req, res) => {
-    try {
-        const workOrders = await auth.prisma.workOrder.findMany({
-            include: {
-                customer: true,
-                teklif: { select: { teklifNo: true } },
-                atanan: { select: { name: true } }
-            },
-            orderBy: { createdAt: 'desc' }
-        });
-        res.json(workOrders);
-    } catch (error) {
-        console.error('İş emri listesi hatası:', error);
-        res.status(500).json({ error: 'İş emirleri alınamadı' });
-    }
-});
-
-app.get('/api/is-emirleri/:id', auth.authMiddleware(), async (req, res) => {
-    try {
-        const workOrder = await auth.prisma.workOrder.findUnique({
-            where: { id: parseInt(req.params.id) },
-            include: {
-                customer: true,
-                teklif: { include: { detaylar: { include: { hizmet: true } } } },
-                atanan: { select: { name: true } },
-                fieldData: true
-            }
-        });
-        if (!workOrder) return res.status(404).json({ error: 'İş emri bulunamadı' });
-
-        const response = {
-            ...workOrder,
-            isEmriNo: workOrder.workOrderNo,
-            teklifNo: workOrder.teklif?.teklifNo,
-            musteri: workOrder.customer,
-            olusturmaTarihi: workOrder.createdAt,
-            kalemler: workOrder.teklif?.detaylar?.map(d => ({
-                hizmetAdi: d.hizmet.ad,
-                aciklama: d.aciklama,
-                miktar: d.miktar,
-                birim: d.hizmet.birim,
-                durum: 'Beklemede',
-                personeller: []
-            })) || []
-        };
-        res.json(response);
-    } catch (error) {
-        console.error('İş emri detay hatası:', error);
-        res.status(500).json({ error: 'İş emri alınamadı' });
-    }
-});
-
-app.put('/api/is-emirleri/:id', auth.authMiddleware(), async (req, res) => {
-    try {
-        const { durum } = req.body;
-        const workOrder = await auth.prisma.workOrder.update({
-            where: { id: parseInt(req.params.id) },
-            data: { durum, updatedAt: new Date() }
-        });
-        res.json({ success: true, workOrder });
-    } catch (error) {
-        console.error('İş emri güncelleme hatası:', error);
-        res.status(500).json({ error: 'İş emri güncellenemedi' });
-    }
-});
-
-app.delete('/api/is-emirleri/:id', auth.authMiddleware('admin'), async (req, res) => {
-    try {
-        await auth.prisma.workOrder.delete({
-            where: { id: parseInt(req.params.id) }
-        });
-        res.json({ success: true });
-    } catch (error) {
-        console.error('İş emri silme hatası:', error);
-        res.status(500).json({ error: 'İş emri silinemedi' });
-    }
-});
-
-app.put('/api/is-emirleri/:id/kalemler/:kalemIndex/durum', auth.authMiddleware(), async (req, res) => {
-    try {
-        const { durum } = req.body;
-        res.json({ success: true, isEmriDurum: durum });
-    } catch (error) {
-        res.status(500).json({ error: 'Durum güncellenemedi' });
-    }
-});
-
-app.post('/api/is-emirleri/:id/kalemler/:kalemIndex/personel', auth.authMiddleware(), async (req, res) => {
-    try {
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: 'Personel eklenemedi' });
-    }
-});
-
-app.delete('/api/is-emirleri/:id/kalemler/:kalemIndex/personel/:personelId', auth.authMiddleware(), async (req, res) => {
-    try {
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: 'Personel silinemedi' });
     }
 });
 
@@ -1035,6 +1025,360 @@ app.post('/api/musteriler/import', auth.authMiddleware('admin'), upload.single('
     } catch (error) {
         console.error('Import hatası:', error);
         res.status(500).json({ error: 'Import başarısız: ' + error.message });
+    }
+});
+
+// ==================== PERSONEL API ====================
+
+// Personel listesi
+app.get('/api/personeller', auth.authMiddleware(), async (req, res) => {
+    try {
+        const personeller = await auth.prisma.personel.findMany({
+            where: { isActive: true },
+            orderBy: { adSoyad: 'asc' }
+        });
+        res.json(personeller);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kategoriye göre personel
+app.get('/api/personeller/kategori/:kategori', auth.authMiddleware(), async (req, res) => {
+    try {
+        const personeller = await auth.prisma.personel.findMany({
+            where: { kategori: req.params.kategori, isActive: true }
+        });
+        res.json(personeller);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== İŞ EMRİ API ====================
+
+// Yeni iş emri numarası
+app.get('/api/is-emirleri/yeni-numara', auth.authMiddleware(), async (req, res) => {
+    try {
+        const yil = new Date().getFullYear().toString().slice(-2);
+        const sonIsEmri = await auth.prisma.isEmri.findFirst({
+            where: { isEmriNo: { startsWith: `IE-${yil}-` } },
+            orderBy: { isEmriNo: 'desc' }
+        });
+
+        let siraNo = 1;
+        if (sonIsEmri) {
+            const sonSira = parseInt(sonIsEmri.isEmriNo.split('-')[2]);
+            siraNo = sonSira + 1;
+        }
+
+        const yeniNumara = `IE-${yil}-${siraNo.toString().padStart(4, '0')}`;
+        res.json({ isEmriNo: yeniNumara });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// İş emri listesi
+app.get('/api/is-emirleri', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { durum } = req.query;
+        const where = durum ? { durum } : {};
+
+        const isEmirleri = await auth.prisma.isEmri.findMany({
+            where,
+            include: {
+                customer: true,
+                teklif: true,
+                altGorevler: {
+                    include: { personel: true, hizmet: true }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(isEmirleri);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Tek iş emri detay
+app.get('/api/is-emirleri/:id', auth.authMiddleware(), async (req, res) => {
+    try {
+        const isEmri = await auth.prisma.isEmri.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                customer: true,
+                teklif: { include: { detaylar: { include: { hizmet: true } } } },
+                altGorevler: {
+                    include: { personel: true, hizmet: true },
+                    orderBy: [{ kategori: 'asc' }, { siraNo: 'asc' }]
+                }
+            }
+        });
+
+        if (!isEmri) {
+            return res.status(404).json({ error: 'İş emri bulunamadı' });
+        }
+        res.json(isEmri);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Tekliften iş emri oluştur
+app.post('/api/is-emirleri/tekliften-olustur/:teklifId', auth.authMiddleware(), async (req, res) => {
+    try {
+        const teklifId = parseInt(req.params.teklifId);
+
+        // Teklifi getir
+        const teklif = await auth.prisma.teklif.findUnique({
+            where: { id: teklifId },
+            include: {
+                customer: true,
+                detaylar: { include: { hizmet: { include: { kategori: true } } } }
+            }
+        });
+
+        if (!teklif) {
+            return res.status(404).json({ error: 'Teklif bulunamadı' });
+        }
+
+        // Yeni iş emri numarası
+        const yil = new Date().getFullYear().toString().slice(-2);
+        const sonIsEmri = await auth.prisma.isEmri.findFirst({
+            where: { isEmriNo: { startsWith: `IE-${yil}-` } },
+            orderBy: { isEmriNo: 'desc' }
+        });
+
+        let siraNo = 1;
+        if (sonIsEmri) {
+            const sonSira = parseInt(sonIsEmri.isEmriNo.split('-')[2]);
+            siraNo = sonSira + 1;
+        }
+        const isEmriNo = `IE-${yil}-${siraNo.toString().padStart(4, '0')}`;
+
+        // Kategori -> Personel eşleştirmesi
+        const personeller = await auth.prisma.personel.findMany({ where: { isActive: true } });
+        const kategoriPersonelMap = {};
+        personeller.forEach(p => {
+            kategoriPersonelMap[p.kategori] = p;
+        });
+
+        // Alt görevleri hazırla (her hizmet miktarı kadar satır)
+        const altGorevler = [];
+        for (const detay of teklif.detaylar) {
+            const kategoriAdi = detay.hizmet.kategori?.ad || 'Diger';
+
+            // Kategori ismini personel kategorisine çevir
+            let personelKategori = 'Mekanik';
+            if (kategoriAdi.includes('ELEKTRİK')) personelKategori = 'Elektriksel';
+            else if (kategoriAdi.includes('HİJYEN') || kategoriAdi.includes('ÖLÇÜM')) personelKategori = 'IsHijyeni';
+
+            const atananPersonel = kategoriPersonelMap[personelKategori];
+
+            // Miktar kadar alt görev oluştur
+            for (let i = 1; i <= detay.miktar; i++) {
+                altGorevler.push({
+                    hizmetId: detay.hizmetId,
+                    hizmetAdi: detay.hizmet.ad,
+                    kategori: personelKategori,
+                    siraNo: i,
+                    ekipmanAdi: `${detay.hizmet.ad} - ${i}`,
+                    durum: 'BEKLIYOR',
+                    personelId: atananPersonel?.id || null,
+                    personelAdi: atananPersonel?.adSoyad || null
+                });
+            }
+        }
+
+        // İş emri oluştur
+        const isEmri = await auth.prisma.isEmri.create({
+            data: {
+                isEmriNo,
+                teklifId: teklif.id,
+                customerId: teklif.customerId,
+                durum: 'BEKLIYOR',
+                planliTarih: req.body.planliTarih ? new Date(req.body.planliTarih) : null,
+                notlar: req.body.notlar || null,
+                altGorevler: {
+                    create: altGorevler
+                }
+            },
+            include: {
+                customer: true,
+                teklif: true,
+                altGorevler: { include: { personel: true } }
+            }
+        });
+
+        // Teklif durumunu güncelle
+        await auth.prisma.teklif.update({
+            where: { id: teklifId },
+            data: { durum: 'ONAYLANDI' }
+        });
+
+        res.json(isEmri);
+    } catch (error) {
+        console.error('İş emri oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// İş emri durum güncelle
+app.put('/api/is-emirleri/:id/durum', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { durum } = req.body;
+        const isEmri = await auth.prisma.isEmri.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                durum,
+                ...(durum === 'SAHADA' ? { baslangicTarihi: new Date() } : {}),
+                ...(durum === 'TAMAMLANDI' ? { bitisTarihi: new Date() } : {})
+            }
+        });
+        res.json(isEmri);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// İş emri güncelle
+app.put('/api/is-emirleri/:id', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { planliTarih, notlar, durum } = req.body;
+        const isEmri = await auth.prisma.isEmri.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                planliTarih: planliTarih ? new Date(planliTarih) : undefined,
+                notlar,
+                durum
+            },
+            include: { customer: true, altGorevler: true }
+        });
+        res.json(isEmri);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// İş emri sil
+app.delete('/api/is-emirleri/:id', auth.authMiddleware(), async (req, res) => {
+    try {
+        await auth.prisma.isEmri.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== ALT GÖREV API ====================
+
+// Tek alt görev getir
+app.get('/api/alt-gorevler/:id', auth.authMiddleware(), async (req, res) => {
+    try {
+        const altGorev = await auth.prisma.altGorev.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: { personel: true, hizmet: true }
+        });
+        if (!altGorev) {
+            return res.status(404).json({ error: 'Alt görev bulunamadı' });
+        }
+        res.json(altGorev);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Alt görev güncelle
+app.put('/api/alt-gorevler/:id', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { ekipmanAdi, ekipmanSeriNo, ekipmanKonum, ekipmanKapasite, ekipmanPlaka, durum, personelId, personelAdi, notlar, sahaFormu, raporNo } = req.body;
+
+        // Personel adını belirle (gönderilmediyse veritabanından al)
+        let finalPersonelAdi = personelAdi;
+        if (personelId && !personelAdi) {
+            const personel = await auth.prisma.personel.findUnique({ where: { id: personelId } });
+            finalPersonelAdi = personel?.adSoyad || null;
+        }
+
+        const updateData = {
+            ...(ekipmanAdi !== undefined && { ekipmanAdi }),
+            ...(ekipmanSeriNo !== undefined && { ekipmanSeriNo }),
+            ...(ekipmanKonum !== undefined && { ekipmanKonum }),
+            ...(ekipmanKapasite !== undefined && { ekipmanKapasite }),
+            ...(ekipmanPlaka !== undefined && { ekipmanPlaka }),
+            ...(durum !== undefined && { durum }),
+            ...(personelId !== undefined && { personelId }),
+            ...(finalPersonelAdi !== undefined && { personelAdi: finalPersonelAdi }),
+            ...(notlar !== undefined && { notlar }),
+            ...(sahaFormu !== undefined && { sahaFormu }),
+            ...(raporNo !== undefined && { raporNo }),
+            ...(durum === 'TAMAMLANDI' ? { tamamlanmaTarihi: new Date() } : {})
+        };
+
+        const altGorev = await auth.prisma.altGorev.update({
+            where: { id: parseInt(req.params.id) },
+            data: updateData,
+            include: { personel: true, hizmet: true }
+        });
+        res.json(altGorev);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Alt görev rapor numarası ata
+app.put('/api/alt-gorevler/:id/rapor', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { raporNo } = req.body;
+        const altGorev = await auth.prisma.altGorev.update({
+            where: { id: parseInt(req.params.id) },
+            data: { raporNo, durum: 'RAPOR_YAZILDI' }
+        });
+        res.json(altGorev);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Alt görev saha formu kaydet (mobil için)
+app.put('/api/alt-gorevler/:id/saha-formu', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { sahaFormu, durum } = req.body;
+        const altGorev = await auth.prisma.altGorev.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                sahaFormu: JSON.stringify(sahaFormu),
+                durum: durum || 'TAMAMLANDI',
+                tamamlanmaTarihi: new Date()
+            }
+        });
+        res.json(altGorev);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Personelin görevleri (mobil için)
+app.get('/api/personel/:personelId/gorevler', auth.authMiddleware(), async (req, res) => {
+    try {
+        const gorevler = await auth.prisma.altGorev.findMany({
+            where: {
+                personelId: parseInt(req.params.personelId),
+                durum: { in: ['BEKLIYOR', 'DEVAM_EDIYOR'] }
+            },
+            include: {
+                isEmri: { include: { customer: true } },
+                hizmet: true
+            },
+            orderBy: { createdAt: 'asc' }
+        });
+        res.json(gorevler);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 
