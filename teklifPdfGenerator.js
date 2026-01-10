@@ -384,16 +384,10 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
 
             y += 70;
 
-            // ONAY SEÇENEKLERİ
+            // SAHADA ONAY
             doc.fontSize(9).font(fontBold).fillColor('red');
-
-            // Telefon onayı
-            const checkTelefon = teklif.onayTelefon ? '☑' : '☐';
-            doc.text(checkTelefon + ' ONAY TELEFON İLE ALINMIŞTIR.', 40, y);
-
-            // Sahada onay
             const checkSahada = teklif.sahadaOnay ? '☑' : '☐';
-            doc.text(checkSahada + ' SAHADA ONAYLANDI.', 280, y);
+            doc.text(checkSahada + ' SAHADA ONAYLANDI.', 40, y);
 
             doc.end();
 
