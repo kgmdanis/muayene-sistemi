@@ -24,38 +24,8 @@
                 <img src="/images/logo.png" alt="ÖNDER MUAYENE" style="max-width: 180px; margin-bottom: 10px;">
                 <p>Periyodik Muayene Yönetim</p>
             </div>
-            <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" data-page="dashboard">
-                    <span class="nav-icon">🏠</span>
-                    <span class="nav-text">Dashboard</span>
-                </a>
-                <a href="#" class="nav-item" data-page="musteriler">
-                    <span class="nav-icon">👥</span>
-                    <span class="nav-text">Müşteriler</span>
-                </a>
-                <a href="#" class="nav-item" data-page="teklifler">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-text">Teklifler</span>
-                </a>
-                <a href="#" class="nav-item" data-page="is-emirleri">
-                    <span class="nav-icon">📋</span>
-                    <span class="nav-text">İş Emirleri</span>
-                </a>
-                <a href="#" class="nav-item" data-page="olcum-cihazlari">
-                    <span class="nav-icon">🔧</span>
-                    <span class="nav-text">Ölçüm Cihazları</span>
-                </a>
-                <!-- Sertifikalar - Henüz aktif değil -->
-                <!--
-                <a href="#" class="nav-item" data-page="sertifikalar">
-                    <span class="nav-icon">📜</span>
-                    <span class="nav-text">Sertifikalar</span>
-                </a>
-                -->
-                <a href="#" class="nav-item" data-page="ayarlar">
-                    <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">Ayarlar</span>
-                </a>
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Dinamik olarak doldurulacak -->
             </nav>
             <div class="sidebar-footer">
                 <button class="btn btn-danger btn-block" onclick="sistemdenCik()">
@@ -270,6 +240,27 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Görevlerim Sayfası (Tekniker için) -->
+            <div id="page-gorevlerim" class="page-content">
+                <div class="page-header">
+                    <h2>📋 Görevlerim</h2>
+                    <p>Size atanan görevleri görüntüleyin ve yönetin</p>
+                </div>
+
+                <!-- Tab Filtreleri -->
+                <div class="filter-buttons" style="margin-bottom: 20px;">
+                    <button class="filter-btn active" onclick="gorevlerimFiltrele('hepsi')">Tümü</button>
+                    <button class="filter-btn" onclick="gorevlerimFiltrele('ATANDI')">Atanan</button>
+                    <button class="filter-btn" onclick="gorevlerimFiltrele('SAHADA')">Sahada</button>
+                    <button class="filter-btn" onclick="gorevlerimFiltrele('TAMAMLANDI')">Tamamlanan</button>
+                </div>
+
+                <!-- Görev Kartları -->
+                <div id="gorevlerim-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+                    <!-- JavaScript ile doldurulacak -->
                 </div>
             </div>
 

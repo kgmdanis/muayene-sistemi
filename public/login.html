@@ -5,6 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giriş - Periyodik Muayene Sistemi</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .login-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        .login-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            background: #f5f5f5;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .login-tab.active {
+            background: #0d6efd;
+            color: white;
+        }
+        .login-tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 <body class="login-page">
     <div class="login-box">
@@ -14,16 +47,36 @@
             <p>Guvenli giris yapin</p>
         </div>
 
+        <!-- Login Tabs -->
+        <div class="login-tabs">
+            <button class="login-tab active" onclick="switchTab('admin')">Admin Girisi</button>
+            <button class="login-tab" onclick="switchTab('tekniker')">Tekniker Girisi</button>
+        </div>
+
         <div id="alert-box"></div>
 
-        <form id="login-form" class="login-form">
+        <!-- Admin Login Form -->
+        <form id="admin-login-form" class="login-form tab-content active">
             <div class="form-group">
                 <label class="form-label">E-posta</label>
-                <input type="email" id="email" class="form-input" placeholder="ornek@email.com" required>
+                <input type="email" id="admin-email" class="form-input" placeholder="ornek@email.com" required>
             </div>
             <div class="form-group">
                 <label class="form-label">Sifre</label>
-                <input type="password" id="password" class="form-input" placeholder="********" required>
+                <input type="password" id="admin-password" class="form-input" placeholder="********" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Giris Yap</button>
+        </form>
+
+        <!-- Tekniker Login Form -->
+        <form id="tekniker-login-form" class="login-form tab-content">
+            <div class="form-group">
+                <label class="form-label">Kullanici Adi</label>
+                <input type="text" id="tekniker-username" class="form-input" placeholder="kullanici_adi" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Sifre</label>
+                <input type="password" id="tekniker-password" class="form-input" placeholder="********" required>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Giris Yap</button>
         </form>
@@ -38,17 +91,28 @@
     </div>
 
     <script>
-        // SADECE FORM SUBMIT - HİCBİR OTOMATİK REDİRECT YOK!
+        function switchTab(tab) {
+            // Tab butonlarini guncelle
+            document.querySelectorAll('.login-tab').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
 
-        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            // Formlari guncelle
+            document.querySelectorAll('.tab-content').forEach(form => form.classList.remove('active'));
+            document.getElementById(tab + '-login-form').classList.add('active');
+
+            // Alert temizle
+            document.getElementById('alert-box').innerHTML = '';
+        }
+
+        // Admin Login
+        document.getElementById('admin-login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            var email = document.getElementById('email').value;
-            var password = document.getElementById('password').value;
+            var email = document.getElementById('admin-email').value;
+            var password = document.getElementById('admin-password').value;
             var alertBox = document.getElementById('alert-box');
             var loading = document.getElementById('loading');
 
-            // Loading goster
             loading.classList.add('active');
             alertBox.innerHTML = '';
 
@@ -62,18 +126,72 @@
                 var data = await response.json();
 
                 if (response.ok && data.success) {
-                    // Token kaydet
+                    // Token ve kullanici bilgilerini kaydet
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('userId', data.user.id);
+                    localStorage.setItem('userName', data.user.name);
+                    localStorage.setItem('userRole', data.user.role);
+                    localStorage.setItem('userKategori', '');
+                    localStorage.setItem('loginType', 'admin');
 
                     alertBox.innerHTML = '<div class="alert alert-success">Giris basarili! Yonlendiriliyorsunuz...</div>';
 
-                    // Role gore yonlendir
                     setTimeout(function() {
                         if (data.user.role === 'superadmin') {
                             window.location.href = '/superadmin.html';
                         } else {
                             window.location.href = '/index.html';
+                        }
+                    }, 500);
+                } else {
+                    alertBox.innerHTML = '<div class="alert alert-danger">' + (data.error || 'Giris basarisiz') + '</div>';
+                }
+            } catch (error) {
+                alertBox.innerHTML = '<div class="alert alert-danger">Baglanti hatasi. Lutfen tekrar deneyin.</div>';
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+
+        // Tekniker Login
+        document.getElementById('tekniker-login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            var username = document.getElementById('tekniker-username').value;
+            var password = document.getElementById('tekniker-password').value;
+            var alertBox = document.getElementById('alert-box');
+            var loading = document.getElementById('loading');
+
+            loading.classList.add('active');
+            alertBox.innerHTML = '';
+
+            try {
+                var response = await fetch('/api/auth/personel-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, password: password })
+                });
+
+                var data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Token ve kullanici bilgilerini kaydet
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('userId', data.user.id);
+                    localStorage.setItem('userName', data.user.ad);
+                    localStorage.setItem('userRole', data.user.role);
+                    localStorage.setItem('userKategori', data.user.kategori || '');
+                    localStorage.setItem('loginType', 'tekniker');
+
+                    alertBox.innerHTML = '<div class="alert alert-success">Giris basarili! Yonlendiriliyorsunuz...</div>';
+
+                    setTimeout(function() {
+                        if (data.user.role === 'admin') {
+                            window.location.href = '/index.html';
+                        } else {
+                            window.location.href = '/index.html#gorevlerim';
                         }
                     }, 500);
                 } else {

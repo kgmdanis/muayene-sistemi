@@ -63,6 +63,30 @@ app.post('/api/auth/logout', (req, res) => {
     res.json({ success: true });
 });
 
+// Personel Login (username ile)
+app.post('/api/auth/personel-login', async (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Kullanıcı adı ve şifre gerekli' });
+    }
+    const result = await auth.personelLogin(username, password);
+    if (result.success) {
+        res.json(result);
+    } else {
+        res.status(401).json({ error: result.error });
+    }
+});
+
+// Personel şifre değiştir
+app.put('/api/auth/personel-password/:id', auth.authMiddleware(), async (req, res) => {
+    const { newPassword } = req.body;
+    if (!newPassword) {
+        return res.status(400).json({ error: 'Yeni şifre gerekli' });
+    }
+    const result = await auth.updatePersonelPassword(req.params.id, newPassword);
+    res.json(result);
+});
+
 app.post('/api/auth/forgot-password', async (req, res) => {
     const { email } = req.body;
     const result = await auth.createResetToken(email);
@@ -1362,19 +1386,32 @@ app.put('/api/alt-gorevler/:id/saha-formu', auth.authMiddleware(), async (req, r
     }
 });
 
-// Personelin görevleri (mobil için)
-app.get('/api/personel/:personelId/gorevler', auth.authMiddleware(), async (req, res) => {
+// Personelin görevleri (tekniker paneli için)
+app.get('/api/personel/:personelId/gorevler', async (req, res) => {
     try {
+        const { durum } = req.query; // Filtre: ATANDI, SAHADA, TAMAMLANDI veya hepsi için boş
+
+        const whereClause = {
+            personelId: parseInt(req.params.personelId)
+        };
+
+        // Durum filtresi
+        if (durum && durum !== 'hepsi') {
+            whereClause.durum = durum.toUpperCase();
+        }
+
         const gorevler = await auth.prisma.altGorev.findMany({
-            where: {
-                personelId: parseInt(req.params.personelId),
-                durum: { in: ['BEKLIYOR', 'DEVAM_EDIYOR'] }
-            },
+            where: whereClause,
             include: {
-                isEmri: { include: { customer: true } },
-                hizmet: true
+                isEmri: {
+                    include: {
+                        customer: true,
+                        teklif: { select: { teklifNo: true } }
+                    }
+                },
+                hizmet: { include: { kategori: true } }
             },
-            orderBy: { createdAt: 'asc' }
+            orderBy: { createdAt: 'desc' }
         });
         res.json(gorevler);
     } catch (error) {

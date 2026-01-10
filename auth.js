@@ -176,6 +176,68 @@ function authMiddleware(requiredRole = null) {
     };
 }
 
+// Personel Login (username ile)
+async function personelLogin(username, password) {
+    try {
+        const personel = await prisma.personel.findUnique({
+            where: { username }
+        });
+
+        // Personel bulunamadı
+        if (!personel) {
+            return { success: false, error: 'Kullanıcı bulunamadı' };
+        }
+
+        // Personel aktif değil
+        if (!personel.isActive) {
+            return { success: false, error: 'Hesabınız devre dışı bırakılmış' };
+        }
+
+        // Şifre kontrolü
+        if (!personel.password || !verifyPassword(password, personel.password)) {
+            return { success: false, error: 'Şifre hatalı' };
+        }
+
+        // Token oluştur
+        const token = jwt.sign(
+            {
+                personelId: personel.id,
+                username: personel.username,
+                role: personel.role,
+                kategori: personel.kategori
+            },
+            JWT_SECRET,
+            { expiresIn: JWT_EXPIRES_IN }
+        );
+
+        return {
+            success: true,
+            token,
+            user: {
+                id: personel.id,
+                ad: personel.adSoyad,
+                username: personel.username,
+                role: personel.role,
+                kategori: personel.kategori,
+                unvan: personel.unvan
+            }
+        };
+    } catch (error) {
+        console.error('Personel login hatası:', error);
+        return { success: false, error: 'Giriş sırasında bir hata oluştu' };
+    }
+}
+
+// Personel şifre güncelle
+async function updatePersonelPassword(personelId, newPassword) {
+    const hashedPassword = hashPassword(newPassword);
+    await prisma.personel.update({
+        where: { id: parseInt(personelId) },
+        data: { password: hashedPassword }
+    });
+    return { success: true };
+}
+
 // Şifre sıfırlama kodu oluştur
 async function createResetToken(email) {
     const user = await prisma.user.findUnique({ where: { email } });
@@ -279,6 +341,8 @@ async function listUsers() {
 
 module.exports = {
     login,
+    personelLogin,
+    updatePersonelPassword,
     verifySession,
     authMiddleware,
     createResetToken,

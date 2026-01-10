@@ -38,10 +38,25 @@ async function checkAuth() {
     // Token'ı al (login.html 'token' olarak kaydediyor)
     authToken = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
+    const userRole = localStorage.getItem('userRole');
+    const loginType = localStorage.getItem('loginType');
 
     if (!authToken) {
         // Login sayfasına yönlendir
         window.location.href = '/login.html';
+        return;
+    }
+
+    // Tekniker girişi için özel kontrol
+    if (loginType === 'tekniker') {
+        currentUser = JSON.parse(userStr || '{}');
+        currentUser.role = userRole || 'tekniker';
+        currentUser.kategori = localStorage.getItem('userKategori');
+
+        // Sidebar'ı oluştur ve uygulamayı başlat
+        renderSidebar();
+        updateUserInfo();
+        initializeApp();
         return;
     }
 
@@ -64,6 +79,9 @@ async function checkAuth() {
             return;
         }
 
+        // Sidebar'ı oluştur
+        renderSidebar();
+
         // Kullanıcı bilgisini göster
         updateUserInfo();
 
@@ -73,18 +91,51 @@ async function checkAuth() {
     } catch (error) {
         console.error('Auth hatası:', error);
         // Token'ları temizle ve login'e yönlendir
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login.html';
+        sistemdenCik();
     }
 }
 
+// Sidebar'ı role göre render et
+function renderSidebar() {
+    const sidebarNav = document.getElementById('sidebar-nav');
+    if (!sidebarNav) return;
+
+    const userRole = localStorage.getItem('userRole') || currentUser?.role || 'admin';
+
+    // Admin menü öğeleri
+    const adminMenuItems = [
+        { icon: '🏠', text: 'Dashboard', page: 'dashboard' },
+        { icon: '👥', text: 'Müşteriler', page: 'musteriler' },
+        { icon: '📄', text: 'Teklifler', page: 'teklifler' },
+        { icon: '📋', text: 'İş Emirleri', page: 'is-emirleri' },
+        { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' },
+        { icon: '⚙️', text: 'Ayarlar', page: 'ayarlar' }
+    ];
+
+    // Tekniker menü öğeleri
+    const teknikerMenuItems = [
+        { icon: '✅', text: 'Görevlerim', page: 'gorevlerim' },
+        { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' }
+    ];
+
+    const menuItems = userRole === 'tekniker' ? teknikerMenuItems : adminMenuItems;
+
+    sidebarNav.innerHTML = menuItems.map((item, index) => `
+        <a href="#" class="nav-item ${index === 0 ? 'active' : ''}" data-page="${item.page}">
+            <span class="nav-icon">${item.icon}</span>
+            <span class="nav-text">${item.text}</span>
+        </a>
+    `).join('');
+}
+
 async function initializeApp() {
+    const userRole = localStorage.getItem('userRole') || currentUser?.role || 'admin';
+
     // Süper admin için Firma Yönetimi linkini ekle
     if (currentUser && currentUser.role === 'superadmin') {
         const navContainer = document.querySelector('.sidebar-nav');
         const ayarlarLink = navContainer.querySelector('[data-page="ayarlar"]');
-        
+
         // Firma Yönetimi linki oluştur
         const firmaLink = document.createElement('a');
         firmaLink.href = 'admin-tenants.html';
@@ -93,9 +144,11 @@ async function initializeApp() {
             <span class="nav-icon">🏢</span>
             <span class="nav-text">Firma Yönetimi</span>
         `;
-        
+
         // Ayarlar'dan önce ekle
-        navContainer.insertBefore(firmaLink, ayarlarLink);
+        if (ayarlarLink) {
+            navContainer.insertBefore(firmaLink, ayarlarLink);
+        }
     }
 
     // Navigasyon event listener'ları
@@ -109,11 +162,17 @@ async function initializeApp() {
         });
     });
 
-    // Veri yükle
-    await loadAllData();
-
-    // Dashboard'u göster
-    navigateToPage('dashboard');
+    // Veri yükle (tekniker için sadece görevleri yükle)
+    if (userRole === 'tekniker') {
+        // Tekniker için görevlerim sayfasını göster
+        navigateToPage('gorevlerim');
+    } else {
+        // Admin için tüm verileri yükle
+        await loadAllData();
+        // URL hash varsa o sayfaya git, yoksa dashboard
+        const hash = window.location.hash.replace('#', '');
+        navigateToPage(hash || 'dashboard');
+    }
 }
 
 // Kullanıcı bilgisini güncelle
@@ -268,6 +327,21 @@ async function loadDashboardStats() {
 // ========================================
 
 function navigateToPage(page) {
+    const userRole = localStorage.getItem('userRole') || currentUser?.role || 'admin';
+
+    // Tekniker kısıtlı sayfalara giremez
+    const adminOnlyPages = ['dashboard', 'musteriler', 'teklifler', 'is-emirleri', 'ayarlar'];
+    if (userRole === 'tekniker' && adminOnlyPages.includes(page)) {
+        page = 'gorevlerim'; // Tekniker için varsayılan sayfa
+    }
+
+    // Sayfa element kontrolü
+    const pageElement = document.getElementById(`page-${page}`);
+    if (!pageElement) {
+        console.error(`Sayfa bulunamadı: page-${page}`);
+        return;
+    }
+
     // Tüm sayfaları gizle
     document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
 
@@ -275,10 +349,11 @@ function navigateToPage(page) {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
     // Seçili sayfayı göster
-    document.getElementById(`page-${page}`).classList.add('active');
+    pageElement.classList.add('active');
 
     // Seçili nav item'ı aktif et
-    document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
+    const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+    if (navItem) navItem.classList.add('active');
 
     // Sayfa yüklendiğinde özel işlemler
     if (page === 'dashboard') {
@@ -298,6 +373,8 @@ function navigateToPage(page) {
         loadEmailAyarlar();
         loadPersoneller();
         loadSertifikaSablonlari();
+    } else if (page === 'gorevlerim') {
+        loadGorevlerim();
     }
 
     console.log(`📄 Sayfa değiştirildi: ${page}`);
@@ -4702,6 +4779,221 @@ async function cihazSil(id) {
     } finally {
         hideLoading();
     }
+}
+
+// ========================================
+// GÖREVLERİM SAYFASI (TEKNİKER İÇİN)
+// ========================================
+
+let gorevlerimFilter = 'hepsi';
+
+async function loadGorevlerim() {
+    const personelId = localStorage.getItem('userId');
+    if (!personelId) {
+        document.getElementById('gorevlerim-list').innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666;">
+                <p>Kullanıcı bilgisi bulunamadı. Lütfen tekrar giriş yapın.</p>
+            </div>
+        `;
+        return;
+    }
+
+    try {
+        showLoading();
+        const url = gorevlerimFilter === 'hepsi'
+            ? `${API_BASE}/personel/${personelId}/gorevler`
+            : `${API_BASE}/personel/${personelId}/gorevler?durum=${gorevlerimFilter}`;
+
+        const response = await authenticatedFetch(url);
+        const gorevler = await response.json();
+
+        renderGorevCards(gorevler);
+    } catch (error) {
+        console.error('Görevler yükleme hatası:', error);
+        document.getElementById('gorevlerim-list').innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #dc3545;">
+                <p>Görevler yüklenirken hata oluştu.</p>
+            </div>
+        `;
+    } finally {
+        hideLoading();
+    }
+}
+
+function renderGorevCards(gorevler) {
+    const container = document.getElementById('gorevlerim-list');
+
+    if (!gorevler || gorevler.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666; grid-column: 1 / -1;">
+                <p style="font-size: 48px; margin-bottom: 10px;">📋</p>
+                <p>Henüz size atanmış görev bulunmamaktadır.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const durumRenk = {
+        'BEKLIYOR': { bg: '#6c757d', text: 'Bekliyor' },
+        'ATANDI': { bg: '#0d6efd', text: 'Atandı' },
+        'SAHADA': { bg: '#fd7e14', text: 'Sahada' },
+        'TAMAMLANDI': { bg: '#198754', text: 'Tamamlandı' }
+    };
+
+    container.innerHTML = gorevler.map(gorev => {
+        const durum = durumRenk[gorev.durum] || { bg: '#6c757d', text: gorev.durum };
+        const musteriAdi = gorev.isEmri?.customer?.unvan || '-';
+        const isEmriNo = gorev.isEmri?.isEmriNo || '-';
+        const planliTarih = gorev.isEmri?.planliTarih ? formatTarihTR(gorev.isEmri.planliTarih) : '-';
+
+        return `
+            <div class="gorev-card" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';" onmouseout="this.style.transform=''; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';">
+                <div style="background: ${durum.bg}; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 600;">${gorev.hizmetAdi || 'Görev'}</span>
+                    <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px;">${durum.text}</span>
+                </div>
+                <div style="padding: 16px;">
+                    <div style="margin-bottom: 12px;">
+                        <div style="color: #666; font-size: 12px; margin-bottom: 2px;">Müşteri</div>
+                        <div style="font-weight: 500;">${musteriAdi}</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <div style="color: #666; font-size: 12px; margin-bottom: 2px;">İş Emri No</div>
+                            <div style="font-weight: 500;">${isEmriNo}</div>
+                        </div>
+                        <div>
+                            <div style="color: #666; font-size: 12px; margin-bottom: 2px;">Planlı Tarih</div>
+                            <div style="font-weight: 500;">${planliTarih}</div>
+                        </div>
+                    </div>
+                    ${gorev.ekipmanAdi ? `
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee;">
+                        <div style="color: #666; font-size: 12px; margin-bottom: 2px;">Ekipman</div>
+                        <div style="font-weight: 500;">${gorev.ekipmanAdi}</div>
+                    </div>
+                    ` : ''}
+                </div>
+                <div style="padding: 12px 16px; background: #f8f9fa; border-top: 1px solid #eee; display: flex; gap: 8px;">
+                    ${gorev.durum === 'ATANDI' ? `
+                        <button onclick="gorevDurumDegistir(${gorev.id}, 'SAHADA')" class="btn btn-sm btn-warning" style="flex: 1;">🚀 İşe Başla</button>
+                    ` : ''}
+                    ${gorev.durum === 'SAHADA' ? `
+                        <button onclick="gorevDurumDegistir(${gorev.id}, 'TAMAMLANDI')" class="btn btn-sm btn-success" style="flex: 1;">✅ Tamamla</button>
+                    ` : ''}
+                    <button onclick="gorevDetayGoster(${gorev.id})" class="btn btn-sm btn-info" style="${gorev.durum === 'TAMAMLANDI' ? 'flex: 1;' : ''}">📄 Detay</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function gorevlerimFiltrele(durum) {
+    gorevlerimFilter = durum;
+
+    // Filtre butonlarını güncelle
+    document.querySelectorAll('#page-gorevlerim .filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    loadGorevlerim();
+}
+
+async function gorevDurumDegistir(gorevId, yeniDurum) {
+    try {
+        showLoading();
+        const response = await authenticatedFetch(`${API_BASE}/alt-gorevler/${gorevId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ durum: yeniDurum })
+        });
+
+        if (response.ok) {
+            showToast(`Görev durumu güncellendi: ${yeniDurum}`, 'success');
+            loadGorevlerim();
+        } else {
+            showToast('Durum güncellenemedi', 'error');
+        }
+    } catch (error) {
+        console.error('Durum güncelleme hatası:', error);
+        showToast('Bir hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function gorevDetayGoster(gorevId) {
+    try {
+        const response = await authenticatedFetch(`${API_BASE}/alt-gorevler/${gorevId}`);
+        const gorev = await response.json();
+
+        const modalHtml = `
+            <div class="modal-overlay" onclick="closeModal(event)">
+                <div class="modal" onclick="event.stopPropagation()" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h3>📋 Görev Detayı</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">Hizmet</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.hizmetAdi || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kategori</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.kategori || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ekipman Adı</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanAdi || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Seri No</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanSeriNo || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Konum</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanKonum || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kapasite</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanKapasite || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Notlar</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.notlar || '-'}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Kapat</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('modal-container').innerHTML = modalHtml;
+    } catch (error) {
+        console.error('Görev detay hatası:', error);
+        showToast('Detay yüklenemedi', 'error');
+    }
+}
+
+// ========================================
+// ÇIKIŞ FONKSİYONU
+// ========================================
+
+function sistemdenCik() {
+    // Tüm localStorage'ı temizle
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userKategori');
+    localStorage.removeItem('loginType');
+
+    // Login sayfasına yönlendir
+    window.location.href = '/login.html';
 }
 
 // ========================================

@@ -257,6 +257,10 @@ model Personel {
   email           String?
   kategori        String      // Elektriksel, Mekanik, IsHijyeni
   isActive        Boolean     @default(true)
+  // Login bilgileri
+  username        String?     @unique
+  password        String?     // hashlenmiş şifre
+  role            String      @default("tekniker") // admin | tekniker
   createdAt       DateTime    @default(now())
   altGorevler     AltGorev[]
 }
