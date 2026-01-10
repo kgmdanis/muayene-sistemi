@@ -756,11 +756,7 @@ function yeniTeklifModal() {
 }
 
 function teklifDuzenle(id) {
-    const teklif = teklifler.find(t => t.id === id);
-    if (!teklif) return;
-
-    editingTeklif = teklif;
-    openTeklifModal(teklif);
+    window.location.href = '/forms/teklif-form.html?id=' + id;
 }
 
 function musteriIcinTeklifOlustur(musteriId) {

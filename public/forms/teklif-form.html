@@ -206,7 +206,8 @@
         let musteriler = [];
         let kategoriler = [];
         let sepet = [];
-        
+        let editingTeklifId = null; // Düzenleme modu için
+
         // Sayfa yüklendiğinde
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');
@@ -214,12 +215,74 @@
                 window.location.href = '/login.html';
                 return;
             }
-            
+
             // Bugünün tarihini ayarla
             document.getElementById('teklifTarihi').value = new Date().toISOString().split('T')[0];
-            
+
             await Promise.all([loadMusteriler(), loadKategoriler()]);
+
+            // URL'den id parametresini kontrol et (düzenleme modu)
+            const urlParams = new URLSearchParams(window.location.search);
+            const teklifId = urlParams.get('id');
+            if (teklifId) {
+                await loadTeklifForEdit(teklifId);
+            }
         });
+
+        // Düzenleme için teklifi yükle
+        async function loadTeklifForEdit(id) {
+            try {
+                const res = await fetch(API_BASE + '/api/teklifler/' + id, { headers: getHeaders() });
+                if (!res.ok) {
+                    showToast('Teklif bulunamadı', 'error');
+                    return;
+                }
+
+                const teklif = await res.json();
+                editingTeklifId = teklif.id;
+
+                // Başlığı güncelle
+                document.querySelector('.header h1').textContent = 'TEKLİF DÜZENLE: ' + teklif.teklifNo;
+
+                // Teklif No'yu göster
+                document.getElementById('teklifNo').value = teklif.teklifNo;
+
+                // Tarihi ayarla
+                if (teklif.teklifTarihi) {
+                    document.getElementById('teklifTarihi').value = teklif.teklifTarihi.split('T')[0];
+                }
+
+                // Müşteriyi seç
+                document.getElementById('musteriSelect').value = teklif.customerId;
+                musteriSecildi();
+
+                // KDV oranını ayarla
+                document.getElementById('kdvOrani').value = teklif.kdvOrani || 20;
+
+                // Detayları sepete ekle
+                if (teklif.detaylar && teklif.detaylar.length > 0) {
+                    teklif.detaylar.forEach(detay => {
+                        sepet.push({
+                            hizmetId: detay.hizmetId,
+                            ad: detay.hizmet?.ad || 'Bilinmeyen Hizmet',
+                            metodKapsam: detay.hizmet?.metodKapsam || detay.hizmet?.standartYonetmelik || '',
+                            birim: detay.hizmet?.birim || 'Adet',
+                            birimFiyat: parseFloat(detay.birimFiyat) || 0,
+                            miktar: detay.miktar || 1
+                        });
+                    });
+                    renderSepet();
+                }
+
+                // Kaydet butonunu güncelle
+                document.querySelector('.btn-success').innerHTML = '💾 Teklifi Güncelle';
+
+                showToast('Teklif yüklendi: ' + teklif.teklifNo, 'success');
+            } catch (e) {
+                console.error('Teklif yükleme hatası:', e);
+                showToast('Teklif yüklenirken hata oluştu', 'error');
+            }
+        }
         
         function getHeaders() {
             return {
@@ -465,7 +528,7 @@
                 showToast('Lütfen en az bir hizmet ekleyin', 'error');
                 return;
             }
-            
+
             const data = {
                 customerId: parseInt(musteriId),
                 gecerlilikGunu: 30,
@@ -477,23 +540,35 @@
                     birimFiyat: s.birimFiyat
                 }))
             };
-            
+
             try {
-                const res = await fetch(API_BASE + '/api/teklifler', {
-                    method: 'POST',
-                    headers: getHeaders(),
-                    body: JSON.stringify(data)
-                });
-                
+                let res;
+                if (editingTeklifId) {
+                    // Düzenleme modu - PUT
+                    res = await fetch(API_BASE + '/api/teklifler/' + editingTeklifId, {
+                        method: 'PUT',
+                        headers: getHeaders(),
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // Yeni teklif - POST
+                    res = await fetch(API_BASE + '/api/teklifler', {
+                        method: 'POST',
+                        headers: getHeaders(),
+                        body: JSON.stringify(data)
+                    });
+                }
+
                 const result = await res.json();
-                
+
                 if (res.ok) {
-                    showToast('Teklif oluşturuldu: ' + result.teklifNo, 'success');
+                    const mesaj = editingTeklifId ? 'Teklif güncellendi: ' : 'Teklif oluşturuldu: ';
+                    showToast(mesaj + result.teklifNo, 'success');
                     setTimeout(() => {
                         window.location.href = '/index.html';
                     }, 1500);
                 } else {
-                    showToast(result.error || 'Teklif oluşturulamadı', 'error');
+                    showToast(result.error || 'İşlem başarısız', 'error');
                 }
             } catch (e) {
                 console.error('Kaydetme hatası:', e);
