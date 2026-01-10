@@ -1610,6 +1610,213 @@ app.get('/api/teklifler/:id/pdf-excel', auth.authMiddleware(), async (req, res) 
     }
 });
 
+// ===================== ÖLÇÜM CİHAZLARI =====================
+
+// Tüm cihazları listele
+app.get('/api/olcum-cihazlari', async (req, res) => {
+    try {
+        const cihazlar = await auth.prisma.olcumCihazi.findMany({
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(cihazlar);
+    } catch (error) {
+        console.error('Ölçüm cihazları listeleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Tek cihaz getir
+app.get('/api/olcum-cihazlari/:id', async (req, res) => {
+    try {
+        const cihaz = await auth.prisma.olcumCihazi.findUnique({
+            where: { id: parseInt(req.params.id) }
+        });
+        if (!cihaz) {
+            return res.status(404).json({ error: 'Cihaz bulunamadı' });
+        }
+        res.json(cihaz);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Yeni cihaz ekle
+app.post('/api/olcum-cihazlari', async (req, res) => {
+    try {
+        const cihaz = await auth.prisma.olcumCihazi.create({
+            data: req.body
+        });
+        res.json(cihaz);
+    } catch (error) {
+        console.error('Cihaz ekleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Cihaz güncelle
+app.put('/api/olcum-cihazlari/:id', async (req, res) => {
+    try {
+        const cihaz = await auth.prisma.olcumCihazi.update({
+            where: { id: parseInt(req.params.id) },
+            data: req.body
+        });
+        res.json(cihaz);
+    } catch (error) {
+        console.error('Cihaz güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Cihaz sil
+app.delete('/api/olcum-cihazlari/:id', async (req, res) => {
+    try {
+        await auth.prisma.olcumCihazi.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Cihaz silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kalibrasyon süresi dolan/dolacak cihazlar (30 gün içinde)
+app.get('/api/olcum-cihazlari-kalibrasyon-uyari', async (req, res) => {
+    try {
+        const bugun = new Date();
+        const otuzGunSonra = new Date();
+        otuzGunSonra.setDate(otuzGunSonra.getDate() + 30);
+
+        const cihazlar = await auth.prisma.olcumCihazi.findMany({
+            where: {
+                isActive: true,
+                kalibrasyonGecerlilik: {
+                    lte: otuzGunSonra
+                }
+            },
+            orderBy: { kalibrasyonGecerlilik: 'asc' }
+        });
+        res.json(cihazlar);
+    } catch (error) {
+        console.error('Kalibrasyon uyarı hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ===================== İŞ EMRİ FİRMA BİLGİLERİ =====================
+
+// Firma bilgisi getir
+app.get('/api/is-emirleri/:id/firma-bilgi', async (req, res) => {
+    try {
+        const firmaBilgi = await auth.prisma.isEmriFirmaBilgi.findUnique({
+            where: { isEmriId: parseInt(req.params.id) }
+        });
+        res.json(firmaBilgi || {});
+    } catch (error) {
+        console.error('Firma bilgi getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Firma bilgisi kaydet/güncelle
+app.post('/api/is-emirleri/:id/firma-bilgi', async (req, res) => {
+    try {
+        const isEmriId = parseInt(req.params.id);
+        const firmaBilgi = await auth.prisma.isEmriFirmaBilgi.upsert({
+            where: { isEmriId: isEmriId },
+            update: req.body,
+            create: { ...req.body, isEmriId: isEmriId }
+        });
+        res.json(firmaBilgi);
+    } catch (error) {
+        console.error('Firma bilgi kaydetme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ===================== TOPRAKLAMA ÖLÇÜMLERİ =====================
+
+// Topraklama ölçümleri getir
+app.get('/api/alt-gorevler/:id/topraklama-olcumler', async (req, res) => {
+    try {
+        const olcumler = await auth.prisma.topraklamaOlcum.findMany({
+            where: { altGorevId: parseInt(req.params.id) },
+            include: { cihaz: true },
+            orderBy: { siraNo: 'asc' }
+        });
+        res.json(olcumler);
+    } catch (error) {
+        console.error('Topraklama ölçümleri getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Topraklama ölçüm ekle
+app.post('/api/alt-gorevler/:id/topraklama-olcumler', async (req, res) => {
+    try {
+        const altGorevId = parseInt(req.params.id);
+
+        // Sıra numarası bul
+        const sonOlcum = await auth.prisma.topraklamaOlcum.findFirst({
+            where: { altGorevId },
+            orderBy: { siraNo: 'desc' }
+        });
+        const siraNo = (sonOlcum?.siraNo || 0) + 1;
+
+        const olcum = await auth.prisma.topraklamaOlcum.create({
+            data: { ...req.body, altGorevId, siraNo }
+        });
+        res.json(olcum);
+    } catch (error) {
+        console.error('Topraklama ölçüm ekleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Topraklama ölçüm güncelle
+app.put('/api/topraklama-olcumler/:id', async (req, res) => {
+    try {
+        const olcum = await auth.prisma.topraklamaOlcum.update({
+            where: { id: parseInt(req.params.id) },
+            data: req.body
+        });
+        res.json(olcum);
+    } catch (error) {
+        console.error('Topraklama ölçüm güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Topraklama ölçüm sil
+app.delete('/api/topraklama-olcumler/:id', async (req, res) => {
+    try {
+        await auth.prisma.topraklamaOlcum.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Topraklama ölçüm silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Ölçüm cihazlarını kategori ile getir
+app.get('/api/olcum-cihazlari/kategori/:kategori', async (req, res) => {
+    try {
+        const cihazlar = await auth.prisma.olcumCihazi.findMany({
+            where: {
+                kategori: req.params.kategori,
+                isActive: true
+            },
+            orderBy: { cihazAdi: 'asc' }
+        });
+        res.json(cihazlar);
+    } catch (error) {
+        console.error('Cihaz kategori getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // ============ STATIK SAYFALAR ============
 
 app.get('/login', (req, res) => {

@@ -275,6 +275,7 @@ model IsEmri {
   durum           String        @default("BEKLIYOR")
   notlar          String?
   altGorevler     AltGorev[]
+  firmaBilgi      IsEmriFirmaBilgi?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 }
@@ -302,5 +303,63 @@ model AltGorev {
   raporNo             String?
   notlar              String?
   sahaFormu           String?     @db.Text
+  topraklamaOlcumler  TopraklamaOlcum[]
   createdAt           DateTime    @default(now())
+}
+
+// ============ RAPOR SİSTEMİ ============
+
+// İş Emri Firma Bilgileri (saha formu için ek bilgiler)
+model IsEmriFirmaBilgi {
+  id                    Int       @id @default(autoincrement())
+  isEmriId              Int       @unique
+  isEmri                IsEmri    @relation(fields: [isEmriId], references: [id], onDelete: Cascade)
+  sgkSicilNo            String?
+  isgKatipId            String?
+  enerjiKurulusu        String?
+  basvuruNo             String?
+  makineOperatoru       String?
+  kaynak                String?   // KAYNAKLI / KAYNAKSIZ
+  ortamNemi             String?
+  ortamSicaklik         String?
+  olcumYapanAdi         String?
+  olcumTarihi           DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+// Ölçüm Cihazları
+model OlcumCihazi {
+  id                    Int       @id @default(autoincrement())
+  cihazAdi              String
+  marka                 String?
+  model                 String?
+  seriNo                String?
+  olcumAraligi          String?   // örn: "0-2000 Ohm"
+  hassasiyet            String?   // örn: "±0.5%"
+  kalibrasyonTarihi     DateTime?
+  kalibrasyonGecerlilik DateTime? // Geçerlilik bitiş tarihi
+  kalibrasyonNo         String?   // Sertifika/Kalibrasyon No
+  kategori              String?   // TOPRAKLAMA, IZOLASYON, SICAKLIK, NEM vb.
+  isActive              Boolean   @default(true)
+  topraklamaOlcumler    TopraklamaOlcum[]
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+// Topraklama Ölçüm Kayıtları
+model TopraklamaOlcum {
+  id                    Int          @id @default(autoincrement())
+  altGorevId            Int
+  altGorev              AltGorev     @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
+  siraNo                Int          @default(1)
+  olcumNoktasi          String?      // örn: "Ana Topraklama", "Panel 1"
+  olcumDegeri           Decimal?     @db.Decimal(10, 4) // Ohm değeri
+  birim                 String       @default("Ω")
+  sinirDeger            Decimal?     @db.Decimal(10, 4) // Kabul sınırı
+  sonuc                 String?      // UYGUN / UYGUN_DEGIL
+  cihazId               Int?
+  cihaz                 OlcumCihazi? @relation(fields: [cihazId], references: [id])
+  notlar                String?
+  createdAt             DateTime     @default(now())
 }

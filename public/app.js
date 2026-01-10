@@ -291,6 +291,8 @@ function navigateToPage(page) {
         loadIsEmirleri();
     } else if (page === 'sertifikalar') {
         loadSertifikalar();
+    } else if (page === 'olcum-cihazlari') {
+        loadOlcumCihazlari();
     } else if (page === 'ayarlar') {
         renderFirmaBilgileri();
         loadEmailAyarlar();
@@ -4396,6 +4398,300 @@ async function sertifikaKaydet() {
     } catch (error) {
         console.error('Sertifika kaydetme hatası:', error);
         showToast('Kaydetme sırasında hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ========================================
+// ===================== ÖLÇÜM CİHAZLARI =====================
+
+async function loadOlcumCihazlari() {
+    showLoading();
+    try {
+        const response = await fetch('/api/olcum-cihazlari');
+        const cihazlar = await response.json();
+        renderOlcumCihazlari(cihazlar);
+    } catch (error) {
+        console.error('Ölçüm cihazları yüklenemedi:', error);
+        showToast('Cihazlar yüklenemedi', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function renderOlcumCihazlari(cihazlar) {
+    const bugun = new Date();
+
+    // Kalibrasyon uyarıları
+    let uyarilar = [];
+    try {
+        const uyariResponse = await fetch('/api/olcum-cihazlari-kalibrasyon-uyari');
+        uyarilar = await uyariResponse.json();
+    } catch (e) {
+        console.error('Kalibrasyon uyarıları alınamadı:', e);
+    }
+
+    let html = `
+        <div class="page-header">
+            <h1>🔧 Ölçüm Cihazları</h1>
+            <button class="btn btn-primary" onclick="yeniCihazModal()">+ Yeni Cihaz Ekle</button>
+        </div>
+    `;
+
+    // Kalibrasyon uyarı kutusu
+    if (uyarilar.length > 0) {
+        html += `
+            <div class="alert alert-warning" style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <h4 style="margin: 0 0 10px 0;">⚠️ Kalibrasyon Uyarıları</h4>
+                <ul style="margin: 0; padding-left: 20px;">
+        `;
+        uyarilar.forEach(c => {
+            const gecerlilik = new Date(c.kalibrasyonGecerlilik);
+            const kalanGun = Math.ceil((gecerlilik - bugun) / (1000 * 60 * 60 * 24));
+            const durum = kalanGun < 0 ? '❌ SÜRESİ DOLDU' : '⚠️ ' + kalanGun + ' gün kaldı';
+            html += '<li><strong>' + c.cihazAdi + '</strong> - ' + durum + '</li>';
+        });
+        html += '</ul></div>';
+    }
+
+    // Cihaz tablosu
+    html += `
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Cihaz Adı</th>
+                    <th>Marka/Model</th>
+                    <th>Seri No</th>
+                    <th>Kategori</th>
+                    <th>Kalibrasyon Tarihi</th>
+                    <th>Geçerlilik</th>
+                    <th>Durum</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    if (!cihazlar || cihazlar.length === 0) {
+        html += '<tr><td colspan="8" style="text-align:center;">Henüz cihaz eklenmemiş</td></tr>';
+    } else {
+        cihazlar.forEach(c => {
+            const gecerlilik = c.kalibrasyonGecerlilik ? new Date(c.kalibrasyonGecerlilik) : null;
+            const kalanGun = gecerlilik ? Math.ceil((gecerlilik - bugun) / (1000 * 60 * 60 * 24)) : null;
+
+            let durumBadge = '<span class="badge" style="background:#6c757d">Belirsiz</span>';
+            if (kalanGun !== null) {
+                if (kalanGun < 0) {
+                    durumBadge = '<span class="badge" style="background:#dc3545">Süresi Doldu</span>';
+                } else if (kalanGun <= 30) {
+                    durumBadge = '<span class="badge" style="background:#ffc107;color:#000">' + kalanGun + ' gün</span>';
+                } else {
+                    durumBadge = '<span class="badge" style="background:#198754">Geçerli</span>';
+                }
+            }
+
+            const kategoriMap = {
+                'TOPRAKLAMA': 'Topraklama',
+                'IZOLASYON': 'İzolasyon',
+                'CEVRIM_EMPEDANS': 'Çevrim Empedans',
+                'RCD_TEST': 'RCD Test',
+                'TERMAL_KAMERA': 'Termal Kamera',
+                'MULTIMETRE': 'Multimetre',
+                'PENS_AMPERMETRE': 'Pens Ampermetre',
+                'DIGER': 'Diğer'
+            };
+
+            html += `
+                <tr>
+                    <td><strong>${c.cihazAdi || '-'}</strong></td>
+                    <td>${c.marka || ''} ${c.model || ''}</td>
+                    <td>${c.seriNo || '-'}</td>
+                    <td>${kategoriMap[c.kategori] || c.kategori || '-'}</td>
+                    <td>${c.kalibrasyonTarihi ? new Date(c.kalibrasyonTarihi).toLocaleDateString('tr-TR') : '-'}</td>
+                    <td>${gecerlilik ? gecerlilik.toLocaleDateString('tr-TR') : '-'}</td>
+                    <td>${durumBadge}</td>
+                    <td>
+                        <button class="btn btn-sm" onclick="cihazDuzenleModal(${c.id})" title="Düzenle">✏️</button>
+                        <button class="btn btn-sm btn-danger" onclick="cihazSil(${c.id})" title="Sil">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    html += '</tbody></table>';
+
+    document.getElementById('olcum-cihazlari-content').innerHTML = html;
+}
+
+// Yeni Cihaz Modal
+function yeniCihazModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.id = 'cihazModal';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>Yeni Ölçüm Cihazı Ekle</h2>
+                <span class="close" onclick="closeModal('cihazModal')">&times;</span>
+            </div>
+            <form id="cihazForm" onsubmit="cihazKaydet(event)">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Cihaz Adı *</label>
+                        <input type="text" name="cihazAdi" required placeholder="Topraklama Ölçer">
+                    </div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select name="kategori">
+                            <option value="">Seçiniz</option>
+                            <option value="TOPRAKLAMA">Topraklama</option>
+                            <option value="IZOLASYON">İzolasyon</option>
+                            <option value="CEVRIM_EMPEDANS">Çevrim Empedans</option>
+                            <option value="RCD_TEST">RCD Test</option>
+                            <option value="TERMAL_KAMERA">Termal Kamera</option>
+                            <option value="MULTIMETRE">Multimetre</option>
+                            <option value="PENS_AMPERMETRE">Pens Ampermetre</option>
+                            <option value="DIGER">Diğer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Marka</label>
+                        <input type="text" name="marka" placeholder="Fluke, Megger, Chauvin Arnoux">
+                    </div>
+                    <div class="form-group">
+                        <label>Model</label>
+                        <input type="text" name="model" placeholder="CA 6417">
+                    </div>
+                    <div class="form-group">
+                        <label>Seri No</label>
+                        <input type="text" name="seriNo" placeholder="ABC123456">
+                    </div>
+                    <div class="form-group">
+                        <label>Sertifika No</label>
+                        <input type="text" name="kalibrasyonNo" placeholder="2500290">
+                    </div>
+                    <div class="form-group">
+                        <label>Kalibrasyon Tarihi</label>
+                        <input type="date" name="kalibrasyonTarihi">
+                    </div>
+                    <div class="form-group">
+                        <label>Geçerlilik Tarihi</label>
+                        <input type="date" name="kalibrasyonGecerlilik">
+                    </div>
+                </div>
+                <div style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="btn" onclick="closeModal('cihazModal')">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+}
+
+// Cihaz Kaydet
+async function cihazKaydet(event, id = null) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    const data = {
+        cihazAdi: formData.get('cihazAdi'),
+        kategori: formData.get('kategori') || null,
+        marka: formData.get('marka') || null,
+        model: formData.get('model') || null,
+        seriNo: formData.get('seriNo') || null,
+        kalibrasyonNo: formData.get('kalibrasyonNo') || null,
+        kalibrasyonTarihi: formData.get('kalibrasyonTarihi') ? new Date(formData.get('kalibrasyonTarihi')).toISOString() : null,
+        kalibrasyonGecerlilik: formData.get('kalibrasyonGecerlilik') ? new Date(formData.get('kalibrasyonGecerlilik')).toISOString() : null,
+        isActive: true
+    };
+
+    const url = id ? '/api/olcum-cihazlari/' + id : '/api/olcum-cihazlari';
+    const method = id ? 'PUT' : 'POST';
+
+    try {
+        showLoading();
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            closeModal('cihazModal');
+            showToast(id ? 'Cihaz güncellendi' : 'Cihaz eklendi', 'success');
+            loadOlcumCihazlari();
+        } else {
+            const error = await response.json();
+            showToast('Hata: ' + error.error, 'error');
+        }
+    } catch (error) {
+        console.error('Cihaz kaydetme hatası:', error);
+        showToast('Kaydetme sırasında hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Cihaz Düzenle Modal
+async function cihazDuzenleModal(id) {
+    try {
+        showLoading();
+        const response = await fetch('/api/olcum-cihazlari/' + id);
+        const cihaz = await response.json();
+
+        if (!cihaz) {
+            showToast('Cihaz bulunamadı', 'error');
+            return;
+        }
+
+        yeniCihazModal();
+
+        const form = document.getElementById('cihazForm');
+        document.querySelector('#cihazModal h2').textContent = 'Cihaz Düzenle';
+        form.onsubmit = (e) => cihazKaydet(e, id);
+
+        form.querySelector('[name="cihazAdi"]').value = cihaz.cihazAdi || '';
+        form.querySelector('[name="kategori"]').value = cihaz.kategori || '';
+        form.querySelector('[name="marka"]').value = cihaz.marka || '';
+        form.querySelector('[name="model"]').value = cihaz.model || '';
+        form.querySelector('[name="seriNo"]').value = cihaz.seriNo || '';
+        form.querySelector('[name="kalibrasyonNo"]').value = cihaz.kalibrasyonNo || '';
+
+        if (cihaz.kalibrasyonTarihi) {
+            form.querySelector('[name="kalibrasyonTarihi"]').value = cihaz.kalibrasyonTarihi.split('T')[0];
+        }
+        if (cihaz.kalibrasyonGecerlilik) {
+            form.querySelector('[name="kalibrasyonGecerlilik"]').value = cihaz.kalibrasyonGecerlilik.split('T')[0];
+        }
+    } catch (error) {
+        console.error('Cihaz yüklenemedi:', error);
+        showToast('Cihaz bilgileri alınamadı', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Cihaz Sil
+async function cihazSil(id) {
+    if (!confirm('Bu cihazı silmek istediğinizden emin misiniz?')) return;
+
+    try {
+        showLoading();
+        const response = await fetch('/api/olcum-cihazlari/' + id, { method: 'DELETE' });
+        if (response.ok) {
+            showToast('Cihaz silindi', 'success');
+            loadOlcumCihazlari();
+        } else {
+            showToast('Silme işlemi başarısız', 'error');
+        }
+    } catch (error) {
+        console.error('Cihaz silme hatası:', error);
+        showToast('Silme sırasında hata oluştu', 'error');
     } finally {
         hideLoading();
     }
