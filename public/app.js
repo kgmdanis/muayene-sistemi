@@ -3423,9 +3423,9 @@ async function altGorevDuzenle(gorevId) {
                             <label class="form-label">Durum</label>
                             <select class="form-input" id="agDurum">
                                 <option value="BEKLIYOR" ${gorev.durum === 'BEKLIYOR' ? 'selected' : ''}>Bekliyor</option>
-                                <option value="DEVAM_EDIYOR" ${gorev.durum === 'DEVAM_EDIYOR' ? 'selected' : ''}>Devam Ediyor</option>
+                                <option value="ATANDI" ${gorev.durum === 'ATANDI' ? 'selected' : ''}>Atandı</option>
+                                <option value="SAHADA" ${gorev.durum === 'SAHADA' ? 'selected' : ''}>Sahada</option>
                                 <option value="TAMAMLANDI" ${gorev.durum === 'TAMAMLANDI' ? 'selected' : ''}>Tamamlandı</option>
-                                <option value="RAPOR_YAZILDI" ${gorev.durum === 'RAPOR_YAZILDI' ? 'selected' : ''}>Rapor Yazıldı</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -3452,6 +3452,17 @@ async function altGorevKaydet(gorevId) {
     const personelId = personelSelect.value ? parseInt(personelSelect.value) : null;
     const personelAdi = personelId ? personelSelect.options[personelSelect.selectedIndex].text.split(' (')[0] : null;
 
+    let durum = document.getElementById('agDurum').value;
+
+    // Personel atama mantığı:
+    // - Personel atandıysa ve durum BEKLIYOR ise → ATANDI yap
+    // - Personel kaldırıldıysa → BEKLIYOR yap
+    if (personelId && durum === 'BEKLIYOR') {
+        durum = 'ATANDI';
+    } else if (!personelId && (durum === 'ATANDI' || durum === 'SAHADA')) {
+        durum = 'BEKLIYOR';
+    }
+
     const data = {
         ekipmanAdi: document.getElementById('agEkipmanAdi').value,
         ekipmanSeriNo: document.getElementById('agSeriNo').value,
@@ -3459,7 +3470,7 @@ async function altGorevKaydet(gorevId) {
         ekipmanKapasite: document.getElementById('agKapasite').value,
         personelId: personelId,
         personelAdi: personelAdi,
-        durum: document.getElementById('agDurum').value,
+        durum: durum,
         raporNo: document.getElementById('agRaporNo').value
     };
 
