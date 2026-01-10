@@ -142,6 +142,13 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="firma-row">
+                            <div class="firma-label">SAHADA ONAY</div>
+                            <div class="firma-value" style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" id="sahadaOnay" style="width: 20px; height: 20px; cursor: pointer;">
+                                <label for="sahadaOnay" style="cursor: pointer; font-size: 14px;">Sahada onaylandı</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -258,6 +265,9 @@
 
                 // KDV oranını ayarla
                 document.getElementById('kdvOrani').value = teklif.kdvOrani || 20;
+
+                // Sahada onay durumunu ayarla
+                document.getElementById('sahadaOnay').checked = teklif.sahadaOnay || false;
 
                 // Detayları sepete ekle
                 if (teklif.detaylar && teklif.detaylar.length > 0) {
@@ -533,6 +543,7 @@
                 customerId: parseInt(musteriId),
                 gecerlilikGunu: 30,
                 kdvOrani: parseInt(document.getElementById('kdvOrani').value),
+                sahadaOnay: document.getElementById('sahadaOnay').checked,
                 notlar: '',
                 detaylar: sepet.map(s => ({
                     hizmetId: s.hizmetId,
