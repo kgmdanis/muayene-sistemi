@@ -83,6 +83,114 @@
         /* Arama */
         .search-box { padding: 10px; background: #f5f5f5; border-bottom: 1px solid #ccc; }
         .search-box input { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; }
+
+        /* Yeni Hizmet Ekle Butonu */
+        .yeni-hizmet-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 10px;
+        }
+        .yeni-hizmet-btn:hover { background: #138496; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: modalSlide 0.3s ease;
+        }
+        @keyframes modalSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-header {
+            background: #1a5f7a;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 { margin: 0; font-size: 18px; }
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .modal-close:hover { opacity: 0.8; }
+        .modal-body { padding: 20px; }
+        .modal-footer {
+            padding: 15px 20px;
+            background: #f5f5f5;
+            border-radius: 0 0 8px 8px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group label .required { color: #dc3545; }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1a5f7a;
+            box-shadow: 0 0 0 2px rgba(26,95,122,0.2);
+        }
+
+        /* Hizmet Sil Butonu */
+        .hizmet-sil-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+        .hizmet-sil-btn:hover { background: #c82333; }
     </style>
 </head>
 <body>
@@ -142,6 +250,28 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="firma-row">
+                            <div class="firma-label">İSKONTO ORANI</div>
+                            <div class="firma-value" style="display: flex; align-items: center; gap: 10px;">
+                                <select id="iskontoOrani" onchange="hesaplaToplamlar()" style="width: auto;">
+                                    <option value="0" selected>%0</option>
+                                    <option value="5">%5</option>
+                                    <option value="10">%10</option>
+                                    <option value="15">%15</option>
+                                    <option value="20">%20</option>
+                                    <option value="manuel">Manuel</option>
+                                </select>
+                                <input type="number" id="iskontoManuel" placeholder="%" min="0" max="100" step="0.1"
+                                       style="width: 70px; display: none;" onchange="hesaplaToplamlar()">
+                            </div>
+                        </div>
+                        <div class="firma-row">
+                            <div class="firma-label">SAHADA ONAY</div>
+                            <div class="firma-value" style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" id="sahadaOnay" style="width: 20px; height: 20px; cursor: pointer;">
+                                <label for="sahadaOnay" style="cursor: pointer; font-size: 14px;">Sahada onaylandı</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -179,6 +309,14 @@
                     <div class="toplam-label">ARA TOPLAM</div>
                     <div class="toplam-value" id="araToplam">0,00 ₺</div>
                 </div>
+                <div class="toplam-row" id="iskontoRow" style="display:none;">
+                    <div class="toplam-label" style="color: #dc3545;">İSKONTO (<span id="iskontoOranText">0</span>%)</div>
+                    <div class="toplam-value" id="iskontoTutar" style="color: #dc3545;">-0,00 ₺</div>
+                </div>
+                <div class="toplam-row" id="kdvMatrahRow" style="display:none;">
+                    <div class="toplam-label">KDV MATRAHI</div>
+                    <div class="toplam-value" id="kdvMatrah">0,00 ₺</div>
+                </div>
                 <div class="toplam-row">
                     <div class="toplam-label">KDV (<span id="kdvOranText">20</span>%)</div>
                     <div class="toplam-value" id="kdvTutar">0,00 ₺</div>
@@ -201,12 +339,61 @@
         </div>
     </div>
 
+    <!-- Yeni Hizmet Ekle Modal -->
+    <div class="modal-overlay" id="yeniHizmetModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Yeni Hizmet Ekle</h3>
+                <button class="modal-close" onclick="modalKapat()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="hizmetKategori" disabled>
+                        <!-- Kategoriler JavaScript ile doldurulacak -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Hizmet Adı <span class="required">*</span></label>
+                    <input type="text" id="hizmetAd" placeholder="Hizmet adını girin" required>
+                </div>
+                <div class="form-group">
+                    <label>Mevzuat / Referans</label>
+                    <input type="text" id="hizmetMevzuat" placeholder="Standart veya yönetmelik">
+                </div>
+                <div class="form-group">
+                    <label>Varsayılan Birim</label>
+                    <select id="hizmetBirim">
+                        <option value="Adet">Adet</option>
+                        <option value="Nokta">Nokta</option>
+                        <option value="m²">m²</option>
+                        <option value="m³">m³</option>
+                        <option value="Ölçüm">Ölçüm</option>
+                        <option value="Saat">Saat</option>
+                        <option value="Gün">Gün</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Varsayılan Birim Fiyat (₺)</label>
+                    <input type="number" id="hizmetFiyat" placeholder="0.00" min="0" step="0.01">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" onclick="modalKapat()">İptal</button>
+                <button class="btn btn-success" onclick="yeniHizmetKaydet()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_BASE = '';
         let musteriler = [];
         let kategoriler = [];
         let sepet = [];
-        
+        let editingTeklifId = null; // Düzenleme modu için
+        let secilenKategoriId = null; // Modal için seçilen kategori
+        let isAdmin = false; // Admin kontrolü
+
         // Sayfa yüklendiğinde
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');
@@ -214,12 +401,101 @@
                 window.location.href = '/login.html';
                 return;
             }
-            
+
+            // Admin kontrolü - JWT token'dan rol bilgisi al
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                isAdmin = payload.role === 'admin' || payload.role === 'ADMIN';
+            } catch (e) {
+                isAdmin = false;
+            }
+
             // Bugünün tarihini ayarla
             document.getElementById('teklifTarihi').value = new Date().toISOString().split('T')[0];
-            
+
             await Promise.all([loadMusteriler(), loadKategoriler()]);
+
+            // URL'den id parametresini kontrol et (düzenleme modu)
+            const urlParams = new URLSearchParams(window.location.search);
+            const teklifId = urlParams.get('id');
+            if (teklifId) {
+                await loadTeklifForEdit(teklifId);
+            }
         });
+
+        // Düzenleme için teklifi yükle
+        async function loadTeklifForEdit(id) {
+            try {
+                const res = await fetch(API_BASE + '/api/teklifler/' + id, { headers: getHeaders() });
+                if (!res.ok) {
+                    showToast('Teklif bulunamadı', 'error');
+                    return;
+                }
+
+                const teklif = await res.json();
+                editingTeklifId = teklif.id;
+
+                // Başlığı güncelle
+                document.querySelector('.header h1').textContent = 'TEKLİF DÜZENLE: ' + teklif.teklifNo;
+
+                // Teklif No'yu göster
+                document.getElementById('teklifNo').value = teklif.teklifNo;
+
+                // Tarihi ayarla
+                if (teklif.teklifTarihi) {
+                    document.getElementById('teklifTarihi').value = teklif.teklifTarihi.split('T')[0];
+                }
+
+                // Müşteriyi seç
+                document.getElementById('musteriSelect').value = teklif.customerId;
+                musteriSecildi();
+
+                // KDV oranını ayarla
+                document.getElementById('kdvOrani').value = teklif.kdvOrani || 20;
+
+                // İskonto oranını ayarla
+                const iskontoOrani = teklif.iskontoOrani || 0;
+                const iskontoSelect = document.getElementById('iskontoOrani');
+                const iskontoManuelInput = document.getElementById('iskontoManuel');
+
+                // Standart seçeneklerde varsa seç, yoksa manuel olarak ayarla
+                const standartOranlar = ['0', '5', '10', '15', '20'];
+                if (standartOranlar.includes(String(iskontoOrani))) {
+                    iskontoSelect.value = iskontoOrani;
+                    iskontoManuelInput.style.display = 'none';
+                } else {
+                    iskontoSelect.value = 'manuel';
+                    iskontoManuelInput.value = iskontoOrani;
+                    iskontoManuelInput.style.display = 'block';
+                }
+
+                // Sahada onay durumunu ayarla
+                document.getElementById('sahadaOnay').checked = teklif.sahadaOnay || false;
+
+                // Detayları sepete ekle
+                if (teklif.detaylar && teklif.detaylar.length > 0) {
+                    teklif.detaylar.forEach(detay => {
+                        sepet.push({
+                            hizmetId: detay.hizmetId,
+                            ad: detay.hizmet?.ad || 'Bilinmeyen Hizmet',
+                            metodKapsam: detay.hizmet?.metodKapsam || detay.hizmet?.standartYonetmelik || '',
+                            birim: detay.hizmet?.birim || 'Adet',
+                            birimFiyat: parseFloat(detay.birimFiyat) || 0,
+                            miktar: detay.miktar || 1
+                        });
+                    });
+                    renderSepet();
+                }
+
+                // Kaydet butonunu güncelle
+                document.querySelector('.btn-success').innerHTML = '💾 Teklifi Güncelle';
+
+                showToast('Teklif yüklendi: ' + teklif.teklifNo, 'success');
+            } catch (e) {
+                console.error('Teklif yükleme hatası:', e);
+                showToast('Teklif yüklenirken hata oluştu', 'error');
+            }
+        }
         
         function getHeaders() {
             return {
@@ -269,16 +545,16 @@
         function renderKategoriler(filter = '') {
             const container = document.getElementById('kategorilerContainer');
             container.innerHTML = '';
-            
+
             kategoriler.forEach(kat => {
-                const hizmetler = kat.hizmetler.filter(h => 
-                    !filter || 
+                const hizmetler = kat.hizmetler.filter(h =>
+                    !filter ||
                     h.ad.toLowerCase().includes(filter.toLowerCase()) ||
                     (h.aciklama && h.aciklama.toLowerCase().includes(filter.toLowerCase()))
                 );
-                
+
                 if (hizmetler.length === 0 && filter) return;
-                
+
                 const div = document.createElement('div');
                 div.className = 'kategori-box';
                 div.innerHTML = `
@@ -302,7 +578,10 @@
                             <tbody>
                                 ${hizmetler.map(h => `
                                     <tr>
-                                        <td>${h.ad}</td>
+                                        <td>
+                                            ${h.ad}
+                                            ${isAdmin ? `<button class="hizmet-sil-btn" onclick="hizmetSil(${h.id}, '${h.ad.replace(/'/g, "\\'")}')">Sil</button>` : ''}
+                                        </td>
                                         <td class="col-metod">${h.metodKapsam || h.standartYonetmelik || ''}</td>
                                         <td class="col-miktar"><input type="number" class="miktar-input" id="mik-${h.id}" value="1" min="1"></td>
                                         <td class="col-birim">${h.birim}</td>
@@ -313,10 +592,15 @@
                                 `).join('')}
                             </tbody>
                         </table>
+                        ${isAdmin ? `
+                        <button class="yeni-hizmet-btn" onclick="yeniHizmetModalAc(${kat.id}, '${kat.ad.replace(/'/g, "\\'")}')">
+                            + Yeni Hizmet Ekle
+                        </button>
+                        ` : ''}
                     </div>
                 `;
                 container.appendChild(div);
-                
+
                 // Miktar veya fiyat değiştiğinde satır toplamını güncelle
                 hizmetler.forEach(h => {
                     const mikInput = document.getElementById('mik-' + h.id);
@@ -438,9 +722,40 @@
         function hesaplaToplamlar() {
             const kdvOrani = parseInt(document.getElementById('kdvOrani').value);
             const araToplam = sepet.reduce((sum, item) => sum + (item.miktar * item.birimFiyat), 0);
-            const kdvTutar = araToplam * (kdvOrani / 100);
-            const genelToplam = araToplam + kdvTutar;
-            
+
+            // İskonto hesaplama
+            const iskontoSelect = document.getElementById('iskontoOrani');
+            const iskontoManuelInput = document.getElementById('iskontoManuel');
+            let iskontoOrani = 0;
+
+            if (iskontoSelect.value === 'manuel') {
+                iskontoManuelInput.style.display = 'block';
+                iskontoOrani = parseFloat(iskontoManuelInput.value) || 0;
+            } else {
+                iskontoManuelInput.style.display = 'none';
+                iskontoOrani = parseFloat(iskontoSelect.value) || 0;
+            }
+
+            const iskontoTutar = araToplam * (iskontoOrani / 100);
+            const kdvMatrah = araToplam - iskontoTutar;
+            const kdvTutar = kdvMatrah * (kdvOrani / 100);
+            const genelToplam = kdvMatrah + kdvTutar;
+
+            // İskonto ve KDV Matrahı satırlarını göster/gizle
+            const iskontoRow = document.getElementById('iskontoRow');
+            const kdvMatrahRow = document.getElementById('kdvMatrahRow');
+
+            if (iskontoOrani > 0) {
+                iskontoRow.style.display = 'grid';
+                kdvMatrahRow.style.display = 'grid';
+                document.getElementById('iskontoOranText').textContent = iskontoOrani;
+                document.getElementById('iskontoTutar').textContent = '-' + formatPara(iskontoTutar);
+                document.getElementById('kdvMatrah').textContent = formatPara(kdvMatrah);
+            } else {
+                iskontoRow.style.display = 'none';
+                kdvMatrahRow.style.display = 'none';
+            }
+
             document.getElementById('araToplam').textContent = formatPara(araToplam);
             document.getElementById('kdvOranText').textContent = kdvOrani;
             document.getElementById('kdvTutar').textContent = formatPara(kdvTutar);
@@ -465,11 +780,23 @@
                 showToast('Lütfen en az bir hizmet ekleyin', 'error');
                 return;
             }
-            
+
+            // İskonto oranını hesapla
+            const iskontoSelect = document.getElementById('iskontoOrani');
+            const iskontoManuelInput = document.getElementById('iskontoManuel');
+            let iskontoOran = 0;
+            if (iskontoSelect.value === 'manuel') {
+                iskontoOran = parseFloat(iskontoManuelInput.value) || 0;
+            } else {
+                iskontoOran = parseFloat(iskontoSelect.value) || 0;
+            }
+
             const data = {
                 customerId: parseInt(musteriId),
                 gecerlilikGunu: 30,
                 kdvOrani: parseInt(document.getElementById('kdvOrani').value),
+                iskontoOran: iskontoOran,
+                sahadaOnay: document.getElementById('sahadaOnay').checked,
                 notlar: '',
                 detaylar: sepet.map(s => ({
                     hizmetId: s.hizmetId,
@@ -477,23 +804,35 @@
                     birimFiyat: s.birimFiyat
                 }))
             };
-            
+
             try {
-                const res = await fetch(API_BASE + '/api/teklifler', {
-                    method: 'POST',
-                    headers: getHeaders(),
-                    body: JSON.stringify(data)
-                });
-                
+                let res;
+                if (editingTeklifId) {
+                    // Düzenleme modu - PUT
+                    res = await fetch(API_BASE + '/api/teklifler/' + editingTeklifId, {
+                        method: 'PUT',
+                        headers: getHeaders(),
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // Yeni teklif - POST
+                    res = await fetch(API_BASE + '/api/teklifler', {
+                        method: 'POST',
+                        headers: getHeaders(),
+                        body: JSON.stringify(data)
+                    });
+                }
+
                 const result = await res.json();
-                
+
                 if (res.ok) {
-                    showToast('Teklif oluşturuldu: ' + result.teklifNo, 'success');
+                    const mesaj = editingTeklifId ? 'Teklif güncellendi: ' : 'Teklif oluşturuldu: ';
+                    showToast(mesaj + result.teklifNo, 'success');
                     setTimeout(() => {
                         window.location.href = '/index.html';
                     }, 1500);
                 } else {
-                    showToast(result.error || 'Teklif oluşturulamadı', 'error');
+                    showToast(result.error || 'İşlem başarısız', 'error');
                 }
             } catch (e) {
                 console.error('Kaydetme hatası:', e);
@@ -512,6 +851,127 @@
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
+
+        // ============ YENİ HİZMET MODAL FONKSİYONLARI ============
+
+        function yeniHizmetModalAc(kategoriId, kategoriAd) {
+            secilenKategoriId = kategoriId;
+
+            // Kategori select'ini doldur
+            const kategoriSelect = document.getElementById('hizmetKategori');
+            kategoriSelect.innerHTML = '';
+            kategoriler.forEach(k => {
+                const opt = document.createElement('option');
+                opt.value = k.id;
+                opt.textContent = k.ad;
+                if (k.id === kategoriId) opt.selected = true;
+                kategoriSelect.appendChild(opt);
+            });
+
+            // Formu temizle
+            document.getElementById('hizmetAd').value = '';
+            document.getElementById('hizmetMevzuat').value = '';
+            document.getElementById('hizmetBirim').value = 'Adet';
+            document.getElementById('hizmetFiyat').value = '';
+
+            // Modalı aç
+            document.getElementById('yeniHizmetModal').classList.add('active');
+        }
+
+        function modalKapat() {
+            document.getElementById('yeniHizmetModal').classList.remove('active');
+            secilenKategoriId = null;
+        }
+
+        async function yeniHizmetKaydet() {
+            const ad = document.getElementById('hizmetAd').value.trim();
+            if (!ad) {
+                showToast('Hizmet adı zorunludur', 'error');
+                return;
+            }
+
+            const kategoriId = secilenKategoriId || parseInt(document.getElementById('hizmetKategori').value);
+            const mevzuat = document.getElementById('hizmetMevzuat').value.trim();
+            const birim = document.getElementById('hizmetBirim').value;
+            const birimFiyat = parseFloat(document.getElementById('hizmetFiyat').value) || 0;
+
+            // Benzersiz kod oluştur (kategori id + timestamp)
+            const kod = `HZM-${kategoriId}-${Date.now()}`;
+
+            const data = {
+                kod: kod,
+                ad: ad,
+                standartYonetmelik: mevzuat || null,
+                metodKapsam: mevzuat || null,
+                birim: birim,
+                birimFiyat: birimFiyat,
+                kategoriId: kategoriId,
+                isActive: true
+            };
+
+            try {
+                const res = await fetch(API_BASE + '/api/hizmetler', {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    const yeniHizmet = await res.json();
+                    showToast('Hizmet başarıyla eklendi: ' + ad, 'success');
+                    modalKapat();
+
+                    // Kategorileri yeniden yükle
+                    await loadKategoriler();
+                } else {
+                    const err = await res.json();
+                    showToast(err.error || 'Hizmet eklenemedi', 'error');
+                }
+            } catch (e) {
+                console.error('Hizmet ekleme hatası:', e);
+                showToast('Bir hata oluştu', 'error');
+            }
+        }
+
+        // ============ HİZMET SİLME FONKSİYONU ============
+
+        async function hizmetSil(hizmetId, hizmetAd) {
+            if (!isAdmin) {
+                showToast('Bu işlem için yetkiniz yok', 'error');
+                return;
+            }
+
+            if (!confirm(`"${hizmetAd}" hizmetini silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz!`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + '/api/hizmetler/' + hizmetId, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+
+                if (res.ok) {
+                    showToast('Hizmet silindi: ' + hizmetAd, 'success');
+
+                    // Kategorileri yeniden yükle
+                    await loadKategoriler();
+                } else {
+                    const err = await res.json();
+                    showToast(err.error || 'Hizmet silinemedi', 'error');
+                }
+            } catch (e) {
+                console.error('Hizmet silme hatası:', e);
+                showToast('Bir hata oluştu', 'error');
+            }
+        }
+
+        // Modal dışına tıklanınca kapat
+        document.getElementById('yeniHizmetModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                modalKapat();
+            }
+        });
     </script>
 </body>
 </html>

@@ -5,6 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giriş - Periyodik Muayene Sistemi</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .login-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        .login-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            background: #f5f5f5;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .login-tab.active {
+            background: #0d6efd;
+            color: white;
+        }
+        .login-tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .forgot-password-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #0d6efd;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .forgot-password-link:hover {
+            text-decoration: underline;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-overlay .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #1a5f7a, #134b61);
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .modal-body {
+            padding: 25px;
+        }
+        .modal-footer {
+            padding: 15px 25px 25px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #666;
+        }
+        .step.active {
+            background: #0d6efd;
+            color: white;
+        }
+        .step.completed {
+            background: #28a745;
+            color: white;
+        }
+        .code-input {
+            font-size: 24px;
+            letter-spacing: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
 </head>
 <body class="login-page">
     <div class="login-box">
@@ -14,19 +138,44 @@
             <p>Guvenli giris yapin</p>
         </div>
 
+        <!-- Login Tabs -->
+        <div class="login-tabs">
+            <button class="login-tab active" onclick="switchTab('admin')">Admin Girisi</button>
+            <button class="login-tab" onclick="switchTab('tekniker')">Tekniker Girisi</button>
+        </div>
+
         <div id="alert-box"></div>
 
-        <form id="login-form" class="login-form">
+        <!-- Admin Login Form -->
+        <form id="admin-login-form" class="login-form tab-content active">
             <div class="form-group">
                 <label class="form-label">E-posta</label>
-                <input type="email" id="email" class="form-input" placeholder="ornek@email.com" required>
+                <input type="email" id="admin-email" class="form-input" placeholder="ornek@email.com" required>
             </div>
             <div class="form-group">
                 <label class="form-label">Sifre</label>
-                <input type="password" id="password" class="form-input" placeholder="********" required>
+                <input type="password" id="admin-password" class="form-input" placeholder="********" required>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Giris Yap</button>
+            <a class="forgot-password-link" onclick="openForgotPasswordModal()">Sifremi Unuttum</a>
         </form>
+
+        <!-- Tekniker Login Form -->
+        <form id="tekniker-login-form" class="login-form tab-content">
+            <div class="form-group">
+                <label class="form-label">Kullanici Adi</label>
+                <input type="text" id="tekniker-username" class="form-input" placeholder="kullanici_adi" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Sifre</label>
+                <input type="password" id="tekniker-password" class="form-input" placeholder="********" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Giris Yap</button>
+            <a class="forgot-password-link" onclick="openForgotPasswordModal()">Sifremi Unuttum</a>
+        </form>
+
+        <!-- Modal Container -->
+        <div id="modal-container"></div>
 
         <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #999;">
             2025 Periyodik Muayene Sistemi
@@ -38,17 +187,28 @@
     </div>
 
     <script>
-        // SADECE FORM SUBMIT - HİCBİR OTOMATİK REDİRECT YOK!
+        function switchTab(tab) {
+            // Tab butonlarini guncelle
+            document.querySelectorAll('.login-tab').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
 
-        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            // Formlari guncelle
+            document.querySelectorAll('.tab-content').forEach(form => form.classList.remove('active'));
+            document.getElementById(tab + '-login-form').classList.add('active');
+
+            // Alert temizle
+            document.getElementById('alert-box').innerHTML = '';
+        }
+
+        // Admin Login
+        document.getElementById('admin-login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            var email = document.getElementById('email').value;
-            var password = document.getElementById('password').value;
+            var email = document.getElementById('admin-email').value;
+            var password = document.getElementById('admin-password').value;
             var alertBox = document.getElementById('alert-box');
             var loading = document.getElementById('loading');
 
-            // Loading goster
             loading.classList.add('active');
             alertBox.innerHTML = '';
 
@@ -62,13 +222,17 @@
                 var data = await response.json();
 
                 if (response.ok && data.success) {
-                    // Token kaydet
+                    // Token ve kullanici bilgilerini kaydet
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('userId', data.user.id);
+                    localStorage.setItem('userName', data.user.name);
+                    localStorage.setItem('userRole', data.user.role);
+                    localStorage.setItem('userKategori', '');
+                    localStorage.setItem('loginType', 'admin');
 
                     alertBox.innerHTML = '<div class="alert alert-success">Giris basarili! Yonlendiriliyorsunuz...</div>';
 
-                    // Role gore yonlendir
                     setTimeout(function() {
                         if (data.user.role === 'superadmin') {
                             window.location.href = '/superadmin.html';
@@ -85,6 +249,216 @@
                 loading.classList.remove('active');
             }
         });
+
+        // Tekniker Login
+        document.getElementById('tekniker-login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            var username = document.getElementById('tekniker-username').value;
+            var password = document.getElementById('tekniker-password').value;
+            var alertBox = document.getElementById('alert-box');
+            var loading = document.getElementById('loading');
+
+            loading.classList.add('active');
+            alertBox.innerHTML = '';
+
+            try {
+                var response = await fetch('/api/auth/personel-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, password: password })
+                });
+
+                var data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Token ve kullanici bilgilerini kaydet
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('userId', data.user.id);
+                    localStorage.setItem('userName', data.user.ad);
+                    localStorage.setItem('userRole', data.user.role);
+                    localStorage.setItem('userKategori', data.user.kategori || '');
+                    localStorage.setItem('loginType', 'tekniker');
+
+                    alertBox.innerHTML = '<div class="alert alert-success">Giris basarili! Yonlendiriliyorsunuz...</div>';
+
+                    setTimeout(function() {
+                        if (data.user.role === 'admin') {
+                            window.location.href = '/index.html';
+                        } else {
+                            window.location.href = '/index.html#gorevlerim';
+                        }
+                    }, 500);
+                } else {
+                    alertBox.innerHTML = '<div class="alert alert-danger">' + (data.error || 'Giris basarisiz') + '</div>';
+                }
+            } catch (error) {
+                alertBox.innerHTML = '<div class="alert alert-danger">Baglanti hatasi. Lutfen tekrar deneyin.</div>';
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+
+        // Sifremi Unuttum Modal
+        var resetEmail = '';
+        var currentStep = 1;
+
+        function openForgotPasswordModal() {
+            resetEmail = '';
+            currentStep = 1;
+            renderForgotPasswordModal();
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('modal-container').innerHTML = '';
+        }
+
+        function renderForgotPasswordModal() {
+            var stepContent = '';
+
+            if (currentStep === 1) {
+                stepContent = `
+                    <div class="form-group">
+                        <label class="form-label">E-posta Adresiniz</label>
+                        <input type="email" id="reset-email" class="form-input" placeholder="ornek@email.com" required>
+                    </div>
+                    <p style="font-size: 13px; color: #666; margin-top: 10px;">
+                        Kayitli e-posta adresinizi girin. Size bir dogrulama kodu gonderecegiz.
+                    </p>
+                `;
+            } else if (currentStep === 2) {
+                stepContent = `
+                    <div class="form-group">
+                        <label class="form-label">Dogrulama Kodu</label>
+                        <input type="text" id="reset-code" class="form-input code-input" placeholder="000000" maxlength="6" required>
+                    </div>
+                    <p style="font-size: 13px; color: #666; margin-top: 10px;">
+                        <strong>${resetEmail}</strong> adresine gonderilen 6 haneli kodu girin.
+                    </p>
+                `;
+            } else if (currentStep === 3) {
+                stepContent = `
+                    <div class="form-group">
+                        <label class="form-label">Yeni Sifre</label>
+                        <input type="password" id="new-password" class="form-input" placeholder="En az 6 karakter" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Yeni Sifre (Tekrar)</label>
+                        <input type="password" id="new-password-confirm" class="form-input" placeholder="Sifreyi tekrar girin" required>
+                    </div>
+                `;
+            }
+
+            var modalHTML = `
+                <div class="modal-overlay" onclick="if(event.target === this) closeForgotPasswordModal()">
+                    <div class="modal" onclick="event.stopPropagation()">
+                        <div class="modal-header">
+                            <h3>Sifremi Unuttum</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="step-indicator">
+                                <div class="step ${currentStep >= 1 ? (currentStep > 1 ? 'completed' : 'active') : ''}">1</div>
+                                <div class="step ${currentStep >= 2 ? (currentStep > 2 ? 'completed' : 'active') : ''}">2</div>
+                                <div class="step ${currentStep >= 3 ? 'active' : ''}">3</div>
+                            </div>
+                            <div id="reset-alert"></div>
+                            ${stepContent}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeForgotPasswordModal()">Iptal</button>
+                            <button type="button" class="btn btn-primary" onclick="handleResetStep()">
+                                ${currentStep === 3 ? 'Sifreyi Degistir' : 'Devam'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modal-container').innerHTML = modalHTML;
+        }
+
+        async function handleResetStep() {
+            var alertBox = document.getElementById('reset-alert');
+            alertBox.innerHTML = '';
+
+            if (currentStep === 1) {
+                var email = document.getElementById('reset-email').value;
+                if (!email) {
+                    alertBox.innerHTML = '<div class="alert alert-danger">E-posta adresi gerekli</div>';
+                    return;
+                }
+
+                try {
+                    var response = await fetch('/api/auth/forgot-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email })
+                    });
+
+                    var data = await response.json();
+
+                    if (response.ok && data.success) {
+                        resetEmail = email;
+                        currentStep = 2;
+                        renderForgotPasswordModal();
+                    } else {
+                        alertBox.innerHTML = '<div class="alert alert-danger">' + (data.error || 'Bir hata olustu') + '</div>';
+                    }
+                } catch (error) {
+                    alertBox.innerHTML = '<div class="alert alert-danger">Baglanti hatasi</div>';
+                }
+
+            } else if (currentStep === 2) {
+                var code = document.getElementById('reset-code').value;
+                if (!code || code.length !== 6) {
+                    alertBox.innerHTML = '<div class="alert alert-danger">6 haneli kodu girin</div>';
+                    return;
+                }
+
+                // Kodu gecici olarak sakla ve sonraki adima gec
+                window.resetCode = code;
+                currentStep = 3;
+                renderForgotPasswordModal();
+
+            } else if (currentStep === 3) {
+                var newPassword = document.getElementById('new-password').value;
+                var confirmPassword = document.getElementById('new-password-confirm').value;
+
+                if (!newPassword || newPassword.length < 6) {
+                    alertBox.innerHTML = '<div class="alert alert-danger">Sifre en az 6 karakter olmali</div>';
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    alertBox.innerHTML = '<div class="alert alert-danger">Sifreler eslesmiyor</div>';
+                    return;
+                }
+
+                try {
+                    var response = await fetch('/api/auth/reset-password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: resetEmail,
+                            token: window.resetCode,
+                            newPassword: newPassword
+                        })
+                    });
+
+                    var data = await response.json();
+
+                    if (response.ok && data.success) {
+                        closeForgotPasswordModal();
+                        document.getElementById('alert-box').innerHTML = '<div class="alert alert-success">Sifreniz basariyla degistirildi. Simdi giris yapabilirsiniz.</div>';
+                    } else {
+                        alertBox.innerHTML = '<div class="alert alert-danger">' + (data.error || 'Bir hata olustu') + '</div>';
+                    }
+                } catch (error) {
+                    alertBox.innerHTML = '<div class="alert alert-danger">Baglanti hatasi</div>';
+                }
+            }
+        }
     </script>
 </body>
 </html>

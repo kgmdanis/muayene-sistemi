@@ -32,21 +32,23 @@ model FirmaAyarlari {
 }
 
 model User {
-  id                Int         @id @default(autoincrement())
-  email             String      @unique
-  password          String
-  plainPassword     String?
-  name              String
-  role              String      @default("tekniker")
-  telefon           String?
-  isActive          Boolean     @default(true)
-  emailVerified     Boolean     @default(false)
-  verificationToken String?
-  resetToken        String?
-  resetTokenExpiry  DateTime?
-  lastLogin         DateTime?
-  lastLoginIP       String?
-  sessionTimeout    Int         @default(30)
+  id                  Int         @id @default(autoincrement())
+  email               String      @unique
+  password            String
+  plainPassword       String?
+  name                String
+  role                String      @default("tekniker")
+  telefon             String?
+  isActive            Boolean     @default(true)
+  emailVerified       Boolean     @default(false)
+  verificationToken   String?
+  resetToken          String?
+  resetTokenExpiry    DateTime?
+  lastLogin           DateTime?
+  lastLoginIP         String?
+  sessionTimeout      Int         @default(30)
+  emailNotifications  Boolean     @default(true)
+  systemNotifications Boolean     @default(true)
   teklifler         Teklif[]
   muayeneler        Muayene[]   @relation("muayeneEden")
   onaylananMuayeneler Muayene[] @relation("onaylayan")
@@ -82,6 +84,7 @@ model Customer {
   teklifler    Teklif[]
   muayeneler   Muayene[]
   workOrders   WorkOrder[]
+  isEmirleri   IsEmri[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 }
@@ -110,6 +113,7 @@ model Hizmet {
   akpireditasyon     Boolean         @default(false)  // TÜRKAK akrediteli mi
   isActive           Boolean         @default(true)
   teklifDetaylari    TeklifDetay[]
+  altGorevler        AltGorev[]
   createdAt          DateTime        @default(now())
 }
 
@@ -137,6 +141,7 @@ model Teklif {
   detaylar       TeklifDetay[]
   muayeneler     Muayene[]
   workOrders     WorkOrder[]
+  isEmirleri     IsEmri[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
@@ -237,4 +242,133 @@ enum WorkOrderDurum {
   SAHADA
   TAMAMLANDI
   IPTAL
+}
+
+// ============ PERSONEL VE İŞ EMRİ MODÜLÜ ============
+
+// Personel tablosu
+model Personel {
+  id                  Int         @id @default(autoincrement())
+  adSoyad             String
+  unvan               String
+  meslek              String?
+  diplomaTarihi       String?
+  diplomaNo           String?
+  ekipnetNo           String?
+  telefon             String?
+  email               String?
+  kategori            String      // Elektriksel, Mekanik, IsHijyeni
+  isActive            Boolean     @default(true)
+  // Login bilgileri
+  username            String?     @unique
+  password            String?     // hashlenmiş şifre
+  role                String      @default("tekniker") // admin | tekniker
+  // Bildirim ayarları
+  emailNotifications  Boolean     @default(true)
+  systemNotifications Boolean     @default(true)
+  createdAt           DateTime    @default(now())
+  altGorevler         AltGorev[]
+}
+
+// Ana İş Emri (Teklif bazlı)
+model IsEmri {
+  id              Int           @id @default(autoincrement())
+  isEmriNo        String        @unique
+  teklifId        Int
+  teklif          Teklif        @relation(fields: [teklifId], references: [id])
+  customerId      Int
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  planliTarih     DateTime?
+  baslangicTarihi DateTime?
+  bitisTarihi     DateTime?
+  durum           String        @default("BEKLIYOR")
+  notlar          String?
+  altGorevler     AltGorev[]
+  firmaBilgi      IsEmriFirmaBilgi?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+// Alt Görev (Her ekipman/ölçüm noktası için)
+model AltGorev {
+  id                  Int         @id @default(autoincrement())
+  isEmriId            Int
+  isEmri              IsEmri      @relation(fields: [isEmriId], references: [id], onDelete: Cascade)
+  hizmetId            Int
+  hizmet              Hizmet      @relation(fields: [hizmetId], references: [id])
+  hizmetAdi           String
+  kategori            String
+  siraNo              Int         @default(1)
+  ekipmanAdi          String?
+  ekipmanSeriNo       String?
+  ekipmanKonum        String?
+  ekipmanKapasite     String?
+  ekipmanPlaka        String?
+  durum               String      @default("BEKLIYOR")
+  personelId          Int?
+  personel            Personel?   @relation(fields: [personelId], references: [id])
+  personelAdi         String?
+  tamamlanmaTarihi    DateTime?
+  raporNo             String?
+  notlar              String?
+  sahaFormu           String?     @db.Text
+  topraklamaOlcumler  TopraklamaOlcum[]
+  createdAt           DateTime    @default(now())
+}
+
+// ============ RAPOR SİSTEMİ ============
+
+// İş Emri Firma Bilgileri (saha formu için ek bilgiler)
+model IsEmriFirmaBilgi {
+  id                    Int       @id @default(autoincrement())
+  isEmriId              Int       @unique
+  isEmri                IsEmri    @relation(fields: [isEmriId], references: [id], onDelete: Cascade)
+  sgkSicilNo            String?
+  isgKatipId            String?
+  enerjiKurulusu        String?
+  basvuruNo             String?
+  makineOperatoru       String?
+  kaynak                String?   // KAYNAKLI / KAYNAKSIZ
+  ortamNemi             String?
+  ortamSicaklik         String?
+  olcumYapanAdi         String?
+  olcumTarihi           DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+// Ölçüm Cihazları
+model OlcumCihazi {
+  id                    Int       @id @default(autoincrement())
+  cihazAdi              String
+  marka                 String?
+  model                 String?
+  seriNo                String?
+  olcumAraligi          String?   // örn: "0-2000 Ohm"
+  hassasiyet            String?   // örn: "±0.5%"
+  kalibrasyonTarihi     DateTime?
+  kalibrasyonGecerlilik DateTime? // Geçerlilik bitiş tarihi
+  kalibrasyonNo         String?   // Sertifika/Kalibrasyon No
+  kategori              String?   // TOPRAKLAMA, IZOLASYON, SICAKLIK, NEM vb.
+  isActive              Boolean   @default(true)
+  topraklamaOlcumler    TopraklamaOlcum[]
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+// Topraklama Ölçüm Kayıtları
+model TopraklamaOlcum {
+  id                    Int          @id @default(autoincrement())
+  altGorevId            Int
+  altGorev              AltGorev     @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
+  siraNo                Int          @default(1)
+  olcumNoktasi          String?      // örn: "Ana Topraklama", "Panel 1"
+  olcumDegeri           Decimal?     @db.Decimal(10, 4) // Ohm değeri
+  birim                 String       @default("Ω")
+  sinirDeger            Decimal?     @db.Decimal(10, 4) // Kabul sınırı
+  sonuc                 String?      // UYGUN / UYGUN_DEGIL
+  cihazId               Int?
+  cihaz                 OlcumCihazi? @relation(fields: [cihazId], references: [id])
+  notlar                String?
+  createdAt             DateTime     @default(now())
 }

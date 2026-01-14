@@ -38,10 +38,25 @@ async function checkAuth() {
     // Token'ı al (login.html 'token' olarak kaydediyor)
     authToken = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
+    const userRole = localStorage.getItem('userRole');
+    const loginType = localStorage.getItem('loginType');
 
     if (!authToken) {
         // Login sayfasına yönlendir
         window.location.href = '/login.html';
+        return;
+    }
+
+    // Tekniker girişi için özel kontrol
+    if (loginType === 'tekniker') {
+        currentUser = JSON.parse(userStr || '{}');
+        currentUser.role = userRole || 'tekniker';
+        currentUser.kategori = localStorage.getItem('userKategori');
+
+        // Sidebar'ı oluştur ve uygulamayı başlat
+        renderSidebar();
+        updateUserInfo();
+        initializeApp();
         return;
     }
 
@@ -64,6 +79,9 @@ async function checkAuth() {
             return;
         }
 
+        // Sidebar'ı oluştur
+        renderSidebar();
+
         // Kullanıcı bilgisini göster
         updateUserInfo();
 
@@ -73,18 +91,53 @@ async function checkAuth() {
     } catch (error) {
         console.error('Auth hatası:', error);
         // Token'ları temizle ve login'e yönlendir
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login.html';
+        sistemdenCik();
     }
 }
 
+// Sidebar'ı role göre render et
+function renderSidebar() {
+    const sidebarNav = document.getElementById('sidebar-nav');
+    if (!sidebarNav) return;
+
+    const userRole = localStorage.getItem('userRole') || currentUser?.role || 'admin';
+
+    // Admin menü öğeleri
+    const adminMenuItems = [
+        { icon: '🏠', text: 'Dashboard', page: 'dashboard' },
+        { icon: '👥', text: 'Müşteriler', page: 'musteriler' },
+        { icon: '📄', text: 'Teklifler', page: 'teklifler' },
+        { icon: '📋', text: 'İş Emirleri', page: 'is-emirleri' },
+        { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' },
+        { icon: '👤', text: 'Profilim', page: 'profil' },
+        { icon: '⚙️', text: 'Ayarlar', page: 'ayarlar' }
+    ];
+
+    // Tekniker menü öğeleri
+    const teknikerMenuItems = [
+        { icon: '✅', text: 'Görevlerim', page: 'gorevlerim' },
+        { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' },
+        { icon: '👤', text: 'Profilim', page: 'profil' }
+    ];
+
+    const menuItems = userRole === 'tekniker' ? teknikerMenuItems : adminMenuItems;
+
+    sidebarNav.innerHTML = menuItems.map((item, index) => `
+        <a href="#" class="nav-item ${index === 0 ? 'active' : ''}" data-page="${item.page}">
+            <span class="nav-icon">${item.icon}</span>
+            <span class="nav-text">${item.text}</span>
+        </a>
+    `).join('');
+}
+
 async function initializeApp() {
+    const userRole = localStorage.getItem('userRole') || currentUser?.role || 'admin';
+
     // Süper admin için Firma Yönetimi linkini ekle
     if (currentUser && currentUser.role === 'superadmin') {
         const navContainer = document.querySelector('.sidebar-nav');
         const ayarlarLink = navContainer.querySelector('[data-page="ayarlar"]');
-        
+
         // Firma Yönetimi linki oluştur
         const firmaLink = document.createElement('a');
         firmaLink.href = 'admin-tenants.html';
@@ -93,9 +146,11 @@ async function initializeApp() {
             <span class="nav-icon">🏢</span>
             <span class="nav-text">Firma Yönetimi</span>
         `;
-        
+
         // Ayarlar'dan önce ekle
-        navContainer.insertBefore(firmaLink, ayarlarLink);
+        if (ayarlarLink) {
+            navContainer.insertBefore(firmaLink, ayarlarLink);
+        }
     }
 
     // Navigasyon event listener'ları
@@ -109,11 +164,17 @@ async function initializeApp() {
         });
     });
 
-    // Veri yükle
-    await loadAllData();
-
-    // Dashboard'u göster
-    navigateToPage('dashboard');
+    // Veri yükle (tekniker için sadece görevleri yükle)
+    if (userRole === 'tekniker') {
+        // Tekniker için görevlerim sayfasını göster
+        navigateToPage('gorevlerim');
+    } else {
+        // Admin için tüm verileri yükle
+        await loadAllData();
+        // URL hash varsa o sayfaya git, yoksa dashboard
+        const hash = window.location.hash.replace('#', '');
+        navigateToPage(hash || 'dashboard');
+    }
 }
 
 // Kullanıcı bilgisini güncelle
@@ -268,6 +329,21 @@ async function loadDashboardStats() {
 // ========================================
 
 function navigateToPage(page) {
+    const userRole = localStorage.getItem('userRole') || currentUser?.role || 'admin';
+
+    // Tekniker kısıtlı sayfalara giremez
+    const adminOnlyPages = ['dashboard', 'musteriler', 'teklifler', 'is-emirleri', 'ayarlar'];
+    if (userRole === 'tekniker' && adminOnlyPages.includes(page)) {
+        page = 'gorevlerim'; // Tekniker için varsayılan sayfa
+    }
+
+    // Sayfa element kontrolü
+    const pageElement = document.getElementById(`page-${page}`);
+    if (!pageElement) {
+        console.error(`Sayfa bulunamadı: page-${page}`);
+        return;
+    }
+
     // Tüm sayfaları gizle
     document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
 
@@ -275,10 +351,11 @@ function navigateToPage(page) {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
     // Seçili sayfayı göster
-    document.getElementById(`page-${page}`).classList.add('active');
+    pageElement.classList.add('active');
 
     // Seçili nav item'ı aktif et
-    document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
+    const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+    if (navItem) navItem.classList.add('active');
 
     // Sayfa yüklendiğinde özel işlemler
     if (page === 'dashboard') {
@@ -291,11 +368,17 @@ function navigateToPage(page) {
         loadIsEmirleri();
     } else if (page === 'sertifikalar') {
         loadSertifikalar();
+    } else if (page === 'olcum-cihazlari') {
+        loadOlcumCihazlari();
     } else if (page === 'ayarlar') {
         renderFirmaBilgileri();
         loadEmailAyarlar();
         loadPersoneller();
         loadSertifikaSablonlari();
+    } else if (page === 'gorevlerim') {
+        loadGorevlerim();
+    } else if (page === 'profil') {
+        loadProfilBilgileri();
     }
 
     console.log(`📄 Sayfa değiştirildi: ${page}`);
@@ -754,11 +837,7 @@ function yeniTeklifModal() {
 }
 
 function teklifDuzenle(id) {
-    const teklif = teklifler.find(t => t.id === id);
-    if (!teklif) return;
-
-    editingTeklif = teklif;
-    openTeklifModal(teklif);
+    window.location.href = '/forms/teklif-form.html?id=' + id;
 }
 
 function musteriIcinTeklifOlustur(musteriId) {
@@ -1071,6 +1150,38 @@ async function teklifSil(id) {
     } catch (error) {
         console.error('❌ Teklif silme hatası:', error);
         showToast('Teklif silinirken hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function tekliftenIsEmriOlustur(teklifId) {
+    const teklif = teklifler.find(t => t.id === teklifId);
+    if (!teklif) return;
+
+    if (!confirm(`${teklif.teklifNo} nolu tekliften iş emri oluşturulacak. Onaylıyor musunuz?`)) {
+        return;
+    }
+
+    showLoading();
+
+    try {
+        const response = await authenticatedFetch(`${API_BASE}/is-emirleri/tekliften-olustur/${teklifId}`, {
+            method: 'POST'
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showToast(`İş emri oluşturuldu: ${result.isEmriNo}`, 'success');
+            // İş emirleri sayfasına yönlendir
+            navigateToPage('is-emirleri');
+        } else {
+            showToast(result.error || 'İş emri oluşturulamadı', 'error');
+        }
+    } catch (error) {
+        console.error('❌ İş emri oluşturma hatası:', error);
+        showToast('İş emri oluşturulurken hata oluştu', 'error');
     } finally {
         hideLoading();
     }
@@ -2627,32 +2738,34 @@ async function teklifDurumGuncelle(event, teklifId) {
     showLoading();
 
     try {
-        const response = await authenticatedFetch(`${API_BASE}/teklifler/${teklifId}`, {
-            method: 'PUT',
+        // PATCH endpoint kullan - otomatik iş emri oluşturma bu endpoint'te
+        const response = await authenticatedFetch(`${API_BASE}/teklifler/${teklifId}/durum`, {
+            method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(teklif)
+            body: JSON.stringify({ durum: yeniDurum })
         });
 
         if (response.ok) {
             showToast(`Teklif durumu "${yeniDurum}" olarak güncellendi`, 'success');
             closeModal();
 
-            // Tabloyu yenile
-            renderTeklifTable();
+            // Teklifleri yeniden yükle
+            await loadTeklifler();
 
             // Dashboard istatistiklerini güncelle
             if (document.getElementById('page-dashboard').classList.contains('active')) {
                 loadDashboardStats();
             }
 
-            // Durum değişikliği bildirimi (ileride email gönderimi eklenebilir)
+            // Durum değişikliği bildirimi
             if (yeniDurum === 'Onaylandı') {
-                showToast('🎉 Tebrikler! Teklif onaylandı.', 'success');
+                showToast('🎉 Teklif onaylandı! İş emri otomatik oluşturuldu.', 'success');
             } else if (yeniDurum === 'Reddedildi') {
                 showToast('Teklif reddedildi. Müşteri ile görüşmeyi düşünebilirsiniz.', 'info');
             }
         } else {
-            showToast('Durum güncellenirken hata oluştu', 'error');
+            const error = await response.json();
+            showToast(error.error || 'Durum güncellenirken hata oluştu', 'error');
         }
     } catch (error) {
         console.error('Durum güncelleme hatası:', error);
@@ -3004,7 +3117,7 @@ async function loadIsEmirleri() {
             console.log('✅ Personeller yüklendi:', personeller.length);
         }
 
-        const response = await authenticatedFetch(`${API_BASE}/workorders`);
+        const response = await authenticatedFetch(`${API_BASE}/is-emirleri`);
         isEmirleri = await response.json();
         renderIsEmriTable();
     } catch (error) {
@@ -3027,7 +3140,7 @@ function renderIsEmriTable() {
     }
 
     if (filteredIsEmirleri.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Henüz iş emri bulunmamaktadır</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Henüz iş emri bulunmamaktadır</td></tr>';
         // Pagination'ı temizle
         const existingPagination = container.querySelector('.pagination-container');
         if (existingPagination) existingPagination.remove();
@@ -3045,34 +3158,43 @@ function renderIsEmriTable() {
                           (musteriler.find(m => m.id === isEmri.customerId)?.unvan) ||
                           '-';
 
-        // Durum badge renkleri
-        const durumClass = {
-            'BEKLEMEDE': 'badge-warning',
-            'ATANDI': 'badge-info',
-            'SAHADA': 'badge-primary',
-            'TAMAMLANDI': 'badge-success',
-            'IPTAL': 'badge-secondary'
-        }[isEmri.durum] || 'badge-secondary';
+        // Görev sayısı
+        const gorevSayisi = isEmri.altGorevler?.length || 0;
+
+        // Durum badge renkleri (BEKLIYOR=gri, ATANDI=mavi, SAHADA=turuncu, TAMAMLANDI=yeşil, RAPOR_YAZILDI=mor, TESLIM_EDILDI=koyu yeşil)
+        const durumStyles = {
+            'BEKLIYOR': 'background: #6c757d; color: white;',
+            'ATANDI': 'background: #0d6efd; color: white;',
+            'SAHADA': 'background: #fd7e14; color: white;',
+            'TAMAMLANDI': 'background: #198754; color: white;',
+            'RAPOR_YAZILDI': 'background: #6f42c1; color: white;',
+            'TESLIM_EDILDI': 'background: #0f5132; color: white;',
+            'IPTAL': 'background: #dc3545; color: white;'
+        };
+        const durumStyle = durumStyles[isEmri.durum] || 'background: #6c757d; color: white;';
 
         // Durum Türkçe karşılığı
         const durumText = {
-            'BEKLEMEDE': 'Beklemede',
+            'BEKLIYOR': 'Bekliyor',
             'ATANDI': 'Atandı',
             'SAHADA': 'Sahada',
             'TAMAMLANDI': 'Tamamlandı',
+            'RAPOR_YAZILDI': 'Rapor Yazıldı',
+            'TESLIM_EDILDI': 'Teslim Edildi',
             'IPTAL': 'İptal'
         }[isEmri.durum] || isEmri.durum;
 
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><strong>${isEmri.workOrderNo}</strong></td>
-            <td>${isEmri.teklif?.teklifNo || '-'}</td>
+            <td><strong>${isEmri.isEmriNo}</strong></td>
             <td>${musteriAdi}</td>
-            <td><span class="badge ${durumClass}">${durumText}</span></td>
-            <td>${formatTarihTR(isEmri.createdAt)}</td>
+            <td>${isEmri.teklif?.teklifNo || '-'}</td>
+            <td>${isEmri.planliTarih ? formatTarihTR(isEmri.planliTarih) : '-'}</td>
+            <td><span class="badge badge-info">${gorevSayisi} görev</span></td>
+            <td><span class="badge" style="${durumStyle} padding: 4px 8px; border-radius: 4px;">${durumText}</span></td>
             <td>
                 <div class="action-buttons">
-                    <button onclick="viewIsEmri(${isEmri.id})" class="btn btn-sm btn-info" title="Detaylar">
+                    <button onclick="viewIsEmri(${isEmri.id})" class="btn btn-sm btn-info" title="Detay">
                         👁️
                     </button>
                     <button onclick="deleteIsEmri(${isEmri.id})" class="btn btn-sm btn-danger" title="Sil">
@@ -3114,145 +3236,345 @@ function isEmriFiltrele(filter) {
     renderIsEmriTable();
 }
 
+// İş Emri Detay Sayfası
+let currentIsEmriId = null;
+let isEmriListeHTML = null; // Orijinal liste HTML'ini sakla
+
 async function viewIsEmri(isEmriId) {
+    await renderIsEmriDetay(isEmriId);
+}
+
+// İş Emirleri liste sayfasına geri dön
+function isEmriListeyeDon() {
+    const mainContent = document.getElementById('page-is-emirleri');
+    if (mainContent && isEmriListeHTML) {
+        mainContent.innerHTML = isEmriListeHTML;
+    }
+    currentIsEmriId = null;
+    loadIsEmirleri();
+}
+
+// İş Emirleri orijinal sayfa yapısını oluştur
+function getIsEmriListeHTML() {
+    return `
+        <div class="page-header">
+            <h2>İş Emri Yönetimi</h2>
+            <p>Onaylanan tekliflerden oluşturulan iş emirleri</p>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h3>İş Emirleri</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="isEmriFiltrele('all')">Tümü</button>
+                    <button class="filter-btn" onclick="isEmriFiltrele('BEKLIYOR')">Bekliyor</button>
+                    <button class="filter-btn" onclick="isEmriFiltrele('SAHADA')">Sahada</button>
+                    <button class="filter-btn" onclick="isEmriFiltrele('TAMAMLANDI')">Tamamlandı</button>
+                    <button class="filter-btn" onclick="isEmriFiltrele('TESLIM_EDILDI')">Teslim Edildi</button>
+                </div>
+            </div>
+            <table id="is-emri-table">
+                <thead>
+                    <tr>
+                        <th>İş Emri No</th>
+                        <th>Müşteri</th>
+                        <th>Teklif No</th>
+                        <th>Planlı Tarih</th>
+                        <th>Görev</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="7" class="text-center">Yükleniyor...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+async function renderIsEmriDetay(id) {
+    showLoading();
+    currentIsEmriId = id;
+
+    // Orijinal liste HTML'ini sakla
+    const mainContent = document.getElementById('page-is-emirleri');
+    if (mainContent && !isEmriListeHTML) {
+        isEmriListeHTML = getIsEmriListeHTML();
+    }
+
     try {
-        showLoading();
-        const response = await authenticatedFetch(`/api/is-emirleri/${isEmriId}`);
-        const data = await response.json();
+        const response = await authenticatedFetch(`/api/is-emirleri/${id}`);
+        const isEmri = await response.json();
+
+        if (!response.ok) {
+            showToast('İş emri bulunamadı', 'error');
+            hideLoading();
+            return;
+        }
+
+        const durumRenk = {
+            'BEKLIYOR': '#6c757d',
+            'ATANDI': '#0d6efd',
+            'SAHADA': '#fd7e14',
+            'TAMAMLANDI': '#198754',
+            'RAPOR_YAZILDI': '#6f42c1',
+            'TESLIM_EDILDI': '#0f5132'
+        };
+
+        const durumText = {
+            'BEKLIYOR': 'Bekliyor',
+            'ATANDI': 'Atandı',
+            'SAHADA': 'Sahada',
+            'TAMAMLANDI': 'Tamamlandı',
+            'RAPOR_YAZILDI': 'Rapor Yazıldı',
+            'TESLIM_EDILDI': 'Teslim Edildi'
+        };
 
         const content = `
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                <div class="info-card">
-                    <h3>📋 İş Emri Bilgileri</h3>
-                    <div class="info-row">
-                        <span class="label">İş Emri No:</span>
-                        <span class="value"><strong>${data.isEmriNo}</strong></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Teklif No:</span>
-                        <span class="value">${data.teklifNo}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Durum:</span>
-                        <span class="value">
-                            <select id="is-emri-durum" class="form-input" style="width: auto;">
-                                <option value="Beklemede" ${data.durum === 'Beklemede' ? 'selected' : ''}>Beklemede</option>
-                                <option value="Devam Ediyor" ${data.durum === 'Devam Ediyor' ? 'selected' : ''}>Devam Ediyor</option>
-                                <option value="Tamamlandı" ${data.durum === 'Tamamlandı' ? 'selected' : ''}>Tamamlandı</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Oluşturma Tarihi:</span>
-                        <span class="value">${formatTarihTR(data.olusturmaTarihi)}</span>
-                    </div>
+            <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>📋 ${isEmri.isEmriNo}</h2>
+                    <p>İş Emri Detayları</p>
                 </div>
+                <button class="btn btn-secondary" onclick="isEmriListeyeDon();">
+                    ← Geri Dön
+                </button>
+            </div>
 
-                <div class="info-card">
-                    <h3>👤 Müşteri Bilgileri</h3>
-                    <div class="info-row">
-                        <span class="label">Ünvan:</span>
-                        <span class="value"><strong>${data.musteri?.unvan || '-'}</strong></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Telefon:</span>
-                        <span class="value">${data.musteri?.telefon || '-'}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">E-posta:</span>
-                        <span class="value">${data.musteri?.email || '-'}</span>
-                    </div>
+            <!-- Üst Bilgi Kartları -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                <div class="info-card" style="padding: 15px;">
+                    <strong>Müşteri</strong><br>
+                    <span style="font-size: 14px;">${isEmri.customer?.unvan || '-'}</span>
+                </div>
+                <div class="info-card" style="padding: 15px;">
+                    <strong>Teklif No</strong><br>
+                    <span style="font-size: 14px;">${isEmri.teklif?.teklifNo || '-'}</span>
+                </div>
+                <div class="info-card" style="padding: 15px;">
+                    <strong>Planlı Tarih</strong><br>
+                    <span style="font-size: 14px;">${isEmri.planliTarih ? formatTarihTR(isEmri.planliTarih) : '-'}</span>
+                </div>
+                <div class="info-card" style="padding: 15px;">
+                    <strong>Durum</strong><br>
+                    <span class="badge" style="background: ${durumRenk[isEmri.durum] || '#6c757d'}; color: white; padding: 4px 8px; border-radius: 4px;">
+                        ${durumText[isEmri.durum] || isEmri.durum}
+                    </span>
+                </div>
+                <div class="info-card" style="padding: 15px;">
+                    <strong>Durum Değiştir</strong><br>
+                    <select class="form-input" style="width: 100%; margin-top: 5px;" onchange="isEmriDurumDegistir(${isEmri.id}, this.value)">
+                        <option value="BEKLIYOR" ${isEmri.durum === 'BEKLIYOR' ? 'selected' : ''}>Bekliyor</option>
+                        <option value="ATANDI" ${isEmri.durum === 'ATANDI' ? 'selected' : ''}>Atandı</option>
+                        <option value="SAHADA" ${isEmri.durum === 'SAHADA' ? 'selected' : ''}>Sahada</option>
+                        <option value="TAMAMLANDI" ${isEmri.durum === 'TAMAMLANDI' ? 'selected' : ''}>Tamamlandı</option>
+                        <option value="RAPOR_YAZILDI" ${isEmri.durum === 'RAPOR_YAZILDI' ? 'selected' : ''}>Rapor Yazıldı</option>
+                        <option value="TESLIM_EDILDI" ${isEmri.durum === 'TESLIM_EDILDI' ? 'selected' : ''}>Teslim Edildi</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="info-card" style="margin-bottom: 20px;">
-                <h3>📦 İş Kalemleri ve Personel Atamaları</h3>
-                <table class="table" style="margin-top: 10px;">
+            <!-- Alt Görevler Tablosu -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>📦 Alt Görevler (${isEmri.altGorevler?.length || 0})</h3>
+                </div>
+                <table class="table">
                     <thead>
                         <tr>
-                            <th style="width: 25%;">Hizmet Adı</th>
-                            <th style="width: 20%;">Açıklama</th>
-                            <th style="width: 8%;">Miktar</th>
-                            <th style="width: 8%;">Birim</th>
-                            <th style="width: 15%;">Durum</th>
-                            <th style="width: 24%;">Atanan Personel</th>
+                            <th>#</th>
+                            <th>Hizmet</th>
+                            <th>Ekipman</th>
+                            <th>Konum</th>
+                            <th>Personel</th>
+                            <th>Durum</th>
+                            <th>Rapor No</th>
+                            <th>İşlem</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${data.kalemler.map((kalem, index) => `
+                        ${isEmri.altGorevler?.map((gorev, index) => `
                             <tr>
-                                <td><strong>${kalem.hizmetAdi}</strong></td>
-                                <td style="font-size: 12px;">${kalem.aciklama || '-'}</td>
-                                <td>${kalem.miktar}</td>
-                                <td>${kalem.birim}</td>
+                                <td>${index + 1}</td>
+                                <td><strong>${gorev.hizmetAdi || '-'}</strong></td>
+                                <td>${gorev.ekipmanAdi || '-'}</td>
+                                <td>${gorev.ekipmanKonum || '-'}</td>
+                                <td>${gorev.personelAdi || '<span style="color:#999;">Atanmadı</span>'}</td>
                                 <td>
-                                    <select
-                                        onchange="updateKalemDurum(${isEmriId}, ${index}, this.value)"
-                                        class="form-input"
-                                        style="width: 100%; padding: 5px; font-size: 12px;">
-                                        <option value="Beklemede" ${(kalem.durum || 'Beklemede') === 'Beklemede' ? 'selected' : ''}>Beklemede</option>
-                                        <option value="Devam Ediyor" ${kalem.durum === 'Devam Ediyor' ? 'selected' : ''}>Devam Ediyor</option>
-                                        <option value="Tamamlandı" ${kalem.durum === 'Tamamlandı' ? 'selected' : ''}>Tamamlandı</option>
-                                    </select>
+                                    <span class="badge" style="background: ${durumRenk[gorev.durum] || '#6c757d'}; color: white; padding: 3px 6px; border-radius: 3px; font-size: 11px;">
+                                        ${durumText[gorev.durum] || gorev.durum}
+                                    </span>
                                 </td>
+                                <td>${gorev.raporNo || '-'}</td>
                                 <td>
-                                    <div style="display: flex; flex-direction: column; gap: 5px;">
-                                        ${renderKalemPersoneller(kalem, index, isEmriId)}
-                                        <button
-                                            onclick="showKalemPersonelModal(${isEmriId}, ${index}, '${kalem.hizmetAdi.replace(/'/g, "\\'")}')"
-                                            class="btn btn-sm btn-primary"
-                                            style="width: 100%; padding: 3px; font-size: 11px;">
-                                            ➕ Personel Ekle
-                                        </button>
-                                    </div>
+                                    <button class="btn btn-sm btn-primary" onclick="altGorevDuzenle(${gorev.id})" title="Düzenle">
+                                        ✏️
+                                    </button>
                                 </td>
                             </tr>
-                        `).join('')}
+                        `).join('') || '<tr><td colspan="8" class="text-center">Alt görev bulunmamaktadır</td></tr>'}
                     </tbody>
                 </table>
             </div>
-
-            <div class="info-card">
-                <h3>📝 Notlar</h3>
-                <textarea id="is-emri-notlar" class="form-input" style="width: 100%; min-height: 100px;">${data.notlar || ''}</textarea>
-            </div>
-
-            <div style="margin-top: 20px; text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
-                <!-- Sertifika Oluştur butonu - Henüz aktif değil -->
-                <!--
-                <button onclick="createSertifikaFromIsEmri(${isEmriId})" class="btn btn-success">
-                    📜 Sertifika Oluştur
-                </button>
-                -->
-                <button onclick="updateIsEmri(${isEmriId})" class="btn btn-primary">
-                    💾 Değişiklikleri Kaydet
-                </button>
-                <button onclick="closeModal()" class="btn btn-secondary">
-                    Kapat
-                </button>
-            </div>
         `;
 
-        const modalHTML = `
+        // Ana içerik alanını güncelle
+        if (mainContent) {
+            mainContent.innerHTML = content;
+        }
+    } catch (error) {
+        console.error('İş emri detay hatası:', error);
+        showToast('Hata: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// İş Emri Durum Değiştir
+async function isEmriDurumDegistir(id, durum) {
+    try {
+        const response = await authenticatedFetch(`/api/is-emirleri/${id}/durum`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ durum })
+        });
+
+        if (response.ok) {
+            showToast('Durum güncellendi', 'success');
+            renderIsEmriDetay(id);
+        } else {
+            const error = await response.json();
+            showToast(error.error || 'Hata oluştu', 'error');
+        }
+    } catch (error) {
+        showToast('Hata: ' + error.message, 'error');
+    }
+}
+
+// Alt Görev Düzenleme Modal
+async function altGorevDuzenle(gorevId) {
+    try {
+        // Personelleri al
+        const persResponse = await authenticatedFetch('/api/personeller');
+        const personeller = await persResponse.json();
+
+        // Alt görevi al
+        const gorevResponse = await authenticatedFetch(`/api/alt-gorevler/${gorevId}`);
+        const gorev = gorevResponse.ok ? await gorevResponse.json() : {};
+
+        const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal" onclick="event.stopPropagation()" style="max-width: 1000px;">
+                <div class="modal" onclick="event.stopPropagation()" style="max-width: 500px;">
                     <div class="modal-header">
-                        <h3>İş Emri Detayları - ${data.isEmriNo}</h3>
+                        <h3>Alt Görev Düzenle</h3>
                         <button class="modal-close" onclick="closeModal()">&times;</button>
                     </div>
                     <div class="modal-body">
-                        ${content}
+                        <div class="form-group">
+                            <label class="form-label">Ekipman Adı</label>
+                            <input type="text" class="form-input" id="agEkipmanAdi" value="${gorev.ekipmanAdi || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Seri No</label>
+                            <input type="text" class="form-input" id="agSeriNo" value="${gorev.ekipmanSeriNo || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Konum</label>
+                            <input type="text" class="form-input" id="agKonum" value="${gorev.ekipmanKonum || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kapasite</label>
+                            <input type="text" class="form-input" id="agKapasite" value="${gorev.ekipmanKapasite || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Personel</label>
+                            <select class="form-input" id="agPersonel">
+                                <option value="">Seçiniz</option>
+                                ${personeller.map(p => `
+                                    <option value="${p.id}" ${gorev.personelId === p.id ? 'selected' : ''}>
+                                        ${p.adSoyad} (${p.kategori})
+                                    </option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Durum</label>
+                            <select class="form-input" id="agDurum">
+                                <option value="BEKLIYOR" ${gorev.durum === 'BEKLIYOR' ? 'selected' : ''}>Bekliyor</option>
+                                <option value="ATANDI" ${gorev.durum === 'ATANDI' ? 'selected' : ''}>Atandı</option>
+                                <option value="SAHADA" ${gorev.durum === 'SAHADA' ? 'selected' : ''}>Sahada</option>
+                                <option value="TAMAMLANDI" ${gorev.durum === 'TAMAMLANDI' ? 'selected' : ''}>Tamamlandı</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rapor No</label>
+                            <input type="text" class="form-input" id="agRaporNo" value="${gorev.raporNo || ''}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">İptal</button>
+                        <button class="btn btn-primary" onclick="altGorevKaydet(${gorevId})">Kaydet</button>
                     </div>
                 </div>
             </div>
         `;
-
-        document.getElementById('modal-container').innerHTML = modalHTML;
+        document.getElementById('modal-container').innerHTML = modalHtml;
     } catch (error) {
-        console.error('İş emri detay yükleme hatası:', error);
-        showToast('İş emri detayları yüklenirken hata oluştu', 'error');
-    } finally {
-        hideLoading();
+        showToast('Hata: ' + error.message, 'error');
+    }
+}
+
+// Alt Görev Kaydet
+async function altGorevKaydet(gorevId) {
+    const personelSelect = document.getElementById('agPersonel');
+    const personelId = personelSelect.value ? parseInt(personelSelect.value) : null;
+    const personelAdi = personelId ? personelSelect.options[personelSelect.selectedIndex].text.split(' (')[0] : null;
+
+    let durum = document.getElementById('agDurum').value;
+
+    // Personel atama mantığı:
+    // - Personel atandıysa ve durum BEKLIYOR ise → ATANDI yap
+    // - Personel kaldırıldıysa → BEKLIYOR yap
+    if (personelId && durum === 'BEKLIYOR') {
+        durum = 'ATANDI';
+    } else if (!personelId && (durum === 'ATANDI' || durum === 'SAHADA')) {
+        durum = 'BEKLIYOR';
+    }
+
+    const data = {
+        ekipmanAdi: document.getElementById('agEkipmanAdi').value,
+        ekipmanSeriNo: document.getElementById('agSeriNo').value,
+        ekipmanKonum: document.getElementById('agKonum').value,
+        ekipmanKapasite: document.getElementById('agKapasite').value,
+        personelId: personelId,
+        personelAdi: personelAdi,
+        durum: durum,
+        raporNo: document.getElementById('agRaporNo').value
+    };
+
+    try {
+        const response = await authenticatedFetch(`/api/alt-gorevler/${gorevId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            closeModal();
+            showToast('Alt görev kaydedildi', 'success');
+            // Detay sayfasını yenile
+            if (currentIsEmriId) {
+                renderIsEmriDetay(currentIsEmriId);
+            }
+        } else {
+            const error = await response.json();
+            showToast(error.error || 'Hata oluştu', 'error');
+        }
+    } catch (error) {
+        showToast('Hata: ' + error.message, 'error');
     }
 }
 
@@ -4167,6 +4489,689 @@ async function sertifikaKaydet() {
     } finally {
         hideLoading();
     }
+}
+
+// ========================================
+// ===================== ÖLÇÜM CİHAZLARI =====================
+
+async function loadOlcumCihazlari() {
+    showLoading();
+    try {
+        const response = await fetch('/api/olcum-cihazlari');
+        const cihazlar = await response.json();
+        renderOlcumCihazlari(cihazlar);
+    } catch (error) {
+        console.error('Ölçüm cihazları yüklenemedi:', error);
+        showToast('Cihazlar yüklenemedi', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function renderOlcumCihazlari(cihazlar) {
+    const bugun = new Date();
+
+    // Kalibrasyon uyarıları
+    let uyarilar = [];
+    try {
+        const uyariResponse = await fetch('/api/olcum-cihazlari-kalibrasyon-uyari');
+        uyarilar = await uyariResponse.json();
+    } catch (e) {
+        console.error('Kalibrasyon uyarıları alınamadı:', e);
+    }
+
+    let html = `
+        <div class="page-header">
+            <h1>🔧 Ölçüm Cihazları</h1>
+            <button class="btn btn-primary" onclick="yeniCihazModal()">+ Yeni Cihaz Ekle</button>
+        </div>
+    `;
+
+    // Kalibrasyon uyarı kutusu
+    if (uyarilar.length > 0) {
+        html += `
+            <div class="alert alert-warning" style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <h4 style="margin: 0 0 10px 0;">⚠️ Kalibrasyon Uyarıları</h4>
+                <ul style="margin: 0; padding-left: 20px;">
+        `;
+        uyarilar.forEach(c => {
+            const gecerlilik = new Date(c.kalibrasyonGecerlilik);
+            const kalanGun = Math.ceil((gecerlilik - bugun) / (1000 * 60 * 60 * 24));
+            const durum = kalanGun < 0 ? '❌ SÜRESİ DOLDU' : '⚠️ ' + kalanGun + ' gün kaldı';
+            html += '<li><strong>' + c.cihazAdi + '</strong> - ' + durum + '</li>';
+        });
+        html += '</ul></div>';
+    }
+
+    // Cihaz tablosu
+    html += `
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Cihaz Adı</th>
+                    <th>Marka/Model</th>
+                    <th>Seri No</th>
+                    <th>Kategori</th>
+                    <th>Kalibrasyon Tarihi</th>
+                    <th>Geçerlilik</th>
+                    <th>Durum</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    if (!cihazlar || cihazlar.length === 0) {
+        html += '<tr><td colspan="8" style="text-align:center;">Henüz cihaz eklenmemiş</td></tr>';
+    } else {
+        cihazlar.forEach(c => {
+            const gecerlilik = c.kalibrasyonGecerlilik ? new Date(c.kalibrasyonGecerlilik) : null;
+            const kalanGun = gecerlilik ? Math.ceil((gecerlilik - bugun) / (1000 * 60 * 60 * 24)) : null;
+
+            let durumBadge = '<span class="badge" style="background:#6c757d">Belirsiz</span>';
+            if (kalanGun !== null) {
+                if (kalanGun < 0) {
+                    durumBadge = '<span class="badge" style="background:#dc3545">Süresi Doldu</span>';
+                } else if (kalanGun <= 30) {
+                    durumBadge = '<span class="badge" style="background:#ffc107;color:#000">' + kalanGun + ' gün</span>';
+                } else {
+                    durumBadge = '<span class="badge" style="background:#198754">Geçerli</span>';
+                }
+            }
+
+            const kategoriMap = {
+                'TOPRAKLAMA': 'Topraklama',
+                'IZOLASYON': 'İzolasyon',
+                'CEVRIM_EMPEDANS': 'Çevrim Empedans',
+                'RCD_TEST': 'RCD Test',
+                'TERMAL_KAMERA': 'Termal Kamera',
+                'MULTIMETRE': 'Multimetre',
+                'PENS_AMPERMETRE': 'Pens Ampermetre',
+                'DIGER': 'Diğer'
+            };
+
+            html += `
+                <tr>
+                    <td><strong>${c.cihazAdi || '-'}</strong></td>
+                    <td>${c.marka || ''} ${c.model || ''}</td>
+                    <td>${c.seriNo || '-'}</td>
+                    <td>${kategoriMap[c.kategori] || c.kategori || '-'}</td>
+                    <td>${c.kalibrasyonTarihi ? new Date(c.kalibrasyonTarihi).toLocaleDateString('tr-TR') : '-'}</td>
+                    <td>${gecerlilik ? gecerlilik.toLocaleDateString('tr-TR') : '-'}</td>
+                    <td>${durumBadge}</td>
+                    <td>
+                        <button class="btn btn-sm" onclick="cihazDuzenleModal(${c.id})" title="Düzenle">✏️</button>
+                        <button class="btn btn-sm btn-danger" onclick="cihazSil(${c.id})" title="Sil">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    html += '</tbody></table>';
+
+    document.getElementById('olcum-cihazlari-content').innerHTML = html;
+}
+
+// Yeni Cihaz Modal
+function yeniCihazModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.id = 'cihazModal';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>Yeni Ölçüm Cihazı Ekle</h2>
+                <span class="close" onclick="closeModal('cihazModal')">&times;</span>
+            </div>
+            <form id="cihazForm" onsubmit="cihazKaydet(event)">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Cihaz Adı *</label>
+                        <input type="text" name="cihazAdi" required placeholder="Topraklama Ölçer">
+                    </div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select name="kategori">
+                            <option value="">Seçiniz</option>
+                            <option value="TOPRAKLAMA">Topraklama</option>
+                            <option value="IZOLASYON">İzolasyon</option>
+                            <option value="CEVRIM_EMPEDANS">Çevrim Empedans</option>
+                            <option value="RCD_TEST">RCD Test</option>
+                            <option value="TERMAL_KAMERA">Termal Kamera</option>
+                            <option value="MULTIMETRE">Multimetre</option>
+                            <option value="PENS_AMPERMETRE">Pens Ampermetre</option>
+                            <option value="DIGER">Diğer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Marka</label>
+                        <input type="text" name="marka" placeholder="Fluke, Megger, Chauvin Arnoux">
+                    </div>
+                    <div class="form-group">
+                        <label>Model</label>
+                        <input type="text" name="model" placeholder="CA 6417">
+                    </div>
+                    <div class="form-group">
+                        <label>Seri No</label>
+                        <input type="text" name="seriNo" placeholder="ABC123456">
+                    </div>
+                    <div class="form-group">
+                        <label>Sertifika No</label>
+                        <input type="text" name="kalibrasyonNo" placeholder="2500290">
+                    </div>
+                    <div class="form-group">
+                        <label>Kalibrasyon Tarihi</label>
+                        <input type="date" name="kalibrasyonTarihi">
+                    </div>
+                    <div class="form-group">
+                        <label>Geçerlilik Tarihi</label>
+                        <input type="date" name="kalibrasyonGecerlilik">
+                    </div>
+                </div>
+                <div style="margin-top: 20px; text-align: right;">
+                    <button type="button" class="btn" onclick="closeModal('cihazModal')">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+}
+
+// Cihaz Kaydet
+async function cihazKaydet(event, id = null) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    const data = {
+        cihazAdi: formData.get('cihazAdi'),
+        kategori: formData.get('kategori') || null,
+        marka: formData.get('marka') || null,
+        model: formData.get('model') || null,
+        seriNo: formData.get('seriNo') || null,
+        kalibrasyonNo: formData.get('kalibrasyonNo') || null,
+        kalibrasyonTarihi: formData.get('kalibrasyonTarihi') ? new Date(formData.get('kalibrasyonTarihi')).toISOString() : null,
+        kalibrasyonGecerlilik: formData.get('kalibrasyonGecerlilik') ? new Date(formData.get('kalibrasyonGecerlilik')).toISOString() : null,
+        isActive: true
+    };
+
+    const url = id ? '/api/olcum-cihazlari/' + id : '/api/olcum-cihazlari';
+    const method = id ? 'PUT' : 'POST';
+
+    try {
+        showLoading();
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            closeModal('cihazModal');
+            showToast(id ? 'Cihaz güncellendi' : 'Cihaz eklendi', 'success');
+            loadOlcumCihazlari();
+        } else {
+            const error = await response.json();
+            showToast('Hata: ' + error.error, 'error');
+        }
+    } catch (error) {
+        console.error('Cihaz kaydetme hatası:', error);
+        showToast('Kaydetme sırasında hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Cihaz Düzenle Modal
+async function cihazDuzenleModal(id) {
+    try {
+        showLoading();
+        const response = await fetch('/api/olcum-cihazlari/' + id);
+        const cihaz = await response.json();
+
+        if (!cihaz) {
+            showToast('Cihaz bulunamadı', 'error');
+            return;
+        }
+
+        yeniCihazModal();
+
+        const form = document.getElementById('cihazForm');
+        document.querySelector('#cihazModal h2').textContent = 'Cihaz Düzenle';
+        form.onsubmit = (e) => cihazKaydet(e, id);
+
+        form.querySelector('[name="cihazAdi"]').value = cihaz.cihazAdi || '';
+        form.querySelector('[name="kategori"]').value = cihaz.kategori || '';
+        form.querySelector('[name="marka"]').value = cihaz.marka || '';
+        form.querySelector('[name="model"]').value = cihaz.model || '';
+        form.querySelector('[name="seriNo"]').value = cihaz.seriNo || '';
+        form.querySelector('[name="kalibrasyonNo"]').value = cihaz.kalibrasyonNo || '';
+
+        if (cihaz.kalibrasyonTarihi) {
+            form.querySelector('[name="kalibrasyonTarihi"]').value = cihaz.kalibrasyonTarihi.split('T')[0];
+        }
+        if (cihaz.kalibrasyonGecerlilik) {
+            form.querySelector('[name="kalibrasyonGecerlilik"]').value = cihaz.kalibrasyonGecerlilik.split('T')[0];
+        }
+    } catch (error) {
+        console.error('Cihaz yüklenemedi:', error);
+        showToast('Cihaz bilgileri alınamadı', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Cihaz Sil
+async function cihazSil(id) {
+    if (!confirm('Bu cihazı silmek istediğinizden emin misiniz?')) return;
+
+    try {
+        showLoading();
+        const response = await fetch('/api/olcum-cihazlari/' + id, { method: 'DELETE' });
+        if (response.ok) {
+            showToast('Cihaz silindi', 'success');
+            loadOlcumCihazlari();
+        } else {
+            showToast('Silme işlemi başarısız', 'error');
+        }
+    } catch (error) {
+        console.error('Cihaz silme hatası:', error);
+        showToast('Silme sırasında hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ========================================
+// GÖREVLERİM SAYFASI (TEKNİKER İÇİN)
+// ========================================
+
+let gorevlerimFilter = 'hepsi';
+
+async function loadGorevlerim() {
+    const personelId = localStorage.getItem('userId');
+    if (!personelId) {
+        document.getElementById('gorevlerim-list').innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666;">
+                <p>Kullanıcı bilgisi bulunamadı. Lütfen tekrar giriş yapın.</p>
+            </div>
+        `;
+        return;
+    }
+
+    try {
+        showLoading();
+        const url = gorevlerimFilter === 'hepsi'
+            ? `${API_BASE}/personel/${personelId}/gorevler`
+            : `${API_BASE}/personel/${personelId}/gorevler?durum=${gorevlerimFilter}`;
+
+        const response = await authenticatedFetch(url);
+        const gorevler = await response.json();
+
+        renderGorevCards(gorevler);
+    } catch (error) {
+        console.error('Görevler yükleme hatası:', error);
+        document.getElementById('gorevlerim-list').innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #dc3545;">
+                <p>Görevler yüklenirken hata oluştu.</p>
+            </div>
+        `;
+    } finally {
+        hideLoading();
+    }
+}
+
+function renderGorevCards(gorevler) {
+    const container = document.getElementById('gorevlerim-list');
+
+    if (!gorevler || gorevler.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666; grid-column: 1 / -1;">
+                <p style="font-size: 48px; margin-bottom: 10px;">📋</p>
+                <p>Henüz size atanmış görev bulunmamaktadır.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const durumRenk = {
+        'BEKLIYOR': { bg: '#6c757d', text: 'Bekliyor' },
+        'ATANDI': { bg: '#0d6efd', text: 'Atandı' },
+        'SAHADA': { bg: '#fd7e14', text: 'Sahada' },
+        'TAMAMLANDI': { bg: '#198754', text: 'Tamamlandı' }
+    };
+
+    container.innerHTML = gorevler.map(gorev => {
+        const durum = durumRenk[gorev.durum] || { bg: '#6c757d', text: gorev.durum };
+        const musteriAdi = gorev.isEmri?.customer?.unvan || '-';
+        const isEmriNo = gorev.isEmri?.isEmriNo || '-';
+        const planliTarih = gorev.isEmri?.planliTarih ? formatTarihTR(gorev.isEmri.planliTarih) : '-';
+
+        return `
+            <div class="gorev-card" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';" onmouseout="this.style.transform=''; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';">
+                <div style="background: ${durum.bg}; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 600;">${gorev.hizmetAdi || 'Görev'}</span>
+                    <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px;">${durum.text}</span>
+                </div>
+                <div style="padding: 16px;">
+                    <div style="margin-bottom: 12px;">
+                        <div style="color: #666; font-size: 12px; margin-bottom: 2px;">Müşteri</div>
+                        <div style="font-weight: 500;">${musteriAdi}</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <div style="color: #666; font-size: 12px; margin-bottom: 2px;">İş Emri No</div>
+                            <div style="font-weight: 500;">${isEmriNo}</div>
+                        </div>
+                        <div>
+                            <div style="color: #666; font-size: 12px; margin-bottom: 2px;">Planlı Tarih</div>
+                            <div style="font-weight: 500;">${planliTarih}</div>
+                        </div>
+                    </div>
+                    ${gorev.ekipmanAdi ? `
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee;">
+                        <div style="color: #666; font-size: 12px; margin-bottom: 2px;">Ekipman</div>
+                        <div style="font-weight: 500;">${gorev.ekipmanAdi}</div>
+                    </div>
+                    ` : ''}
+                </div>
+                <div style="padding: 12px 16px; background: #f8f9fa; border-top: 1px solid #eee; display: flex; gap: 8px;">
+                    ${gorev.durum === 'ATANDI' ? `
+                        <button onclick="gorevDurumDegistir(${gorev.id}, 'SAHADA')" class="btn btn-sm btn-warning" style="flex: 1;">🚀 İşe Başla</button>
+                    ` : ''}
+                    ${gorev.durum === 'SAHADA' ? `
+                        <button onclick="gorevDurumDegistir(${gorev.id}, 'TAMAMLANDI')" class="btn btn-sm btn-success" style="flex: 1;">✅ Tamamla</button>
+                    ` : ''}
+                    <button onclick="gorevDetayGoster(${gorev.id})" class="btn btn-sm btn-info" style="${gorev.durum === 'TAMAMLANDI' ? 'flex: 1;' : ''}">📄 Detay</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function gorevlerimFiltrele(durum) {
+    gorevlerimFilter = durum;
+
+    // Filtre butonlarını güncelle
+    document.querySelectorAll('#page-gorevlerim .filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    loadGorevlerim();
+}
+
+async function gorevDurumDegistir(gorevId, yeniDurum) {
+    try {
+        showLoading();
+        const response = await authenticatedFetch(`${API_BASE}/alt-gorevler/${gorevId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ durum: yeniDurum })
+        });
+
+        if (response.ok) {
+            showToast(`Görev durumu güncellendi: ${yeniDurum}`, 'success');
+            loadGorevlerim();
+        } else {
+            showToast('Durum güncellenemedi', 'error');
+        }
+    } catch (error) {
+        console.error('Durum güncelleme hatası:', error);
+        showToast('Bir hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function gorevDetayGoster(gorevId) {
+    try {
+        const response = await authenticatedFetch(`${API_BASE}/alt-gorevler/${gorevId}`);
+        const gorev = await response.json();
+
+        const modalHtml = `
+            <div class="modal-overlay" onclick="closeModal(event)">
+                <div class="modal" onclick="event.stopPropagation()" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h3>📋 Görev Detayı</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">Hizmet</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.hizmetAdi || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kategori</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.kategori || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ekipman Adı</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanAdi || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Seri No</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanSeriNo || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Konum</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanKonum || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kapasite</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanKapasite || '-'}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Notlar</label>
+                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.notlar || '-'}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Kapat</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('modal-container').innerHTML = modalHtml;
+    } catch (error) {
+        console.error('Görev detay hatası:', error);
+        showToast('Detay yüklenemedi', 'error');
+    }
+}
+
+// ========================================
+// PROFİL FONKSİYONLARI
+// ========================================
+
+async function loadProfilBilgileri() {
+    const loginType = localStorage.getItem('loginType');
+
+    try {
+        let endpoint = loginType === 'tekniker' ? '/auth/personel-profile' : '/auth/profile';
+        const response = await authenticatedFetch(`${API_BASE}${endpoint}`);
+
+        if (!response.ok) {
+            throw new Error('Profil bilgileri alınamadı');
+        }
+
+        const data = await response.json();
+
+        if (loginType === 'tekniker') {
+            // Tekniker profili
+            document.getElementById('profil-name').value = data.adSoyad || '';
+            document.getElementById('profil-email').value = data.email || '';
+            document.getElementById('profil-telefon').value = data.telefon || '';
+            document.getElementById('profil-role').value = data.kategori ? `Tekniker (${data.kategori})` : 'Tekniker';
+        } else {
+            // Admin profili
+            document.getElementById('profil-name').value = data.name || '';
+            document.getElementById('profil-email').value = data.email || '';
+            document.getElementById('profil-telefon').value = data.telefon || '';
+            document.getElementById('profil-role').value = data.role === 'admin' ? 'Yönetici' : 'Kullanıcı';
+        }
+
+        // Bildirim ayarları
+        document.getElementById('email-bildirimleri').checked = data.emailNotifications !== false;
+        document.getElementById('sistem-bildirimleri').checked = data.systemNotifications !== false;
+
+        // Hesap bilgileri
+        document.getElementById('profil-id').textContent = data.id || '-';
+        document.getElementById('profil-son-giris').textContent = data.lastLogin
+            ? new Date(data.lastLogin).toLocaleString('tr-TR')
+            : '-';
+        document.getElementById('profil-kayit-tarihi').textContent = data.createdAt
+            ? new Date(data.createdAt).toLocaleDateString('tr-TR')
+            : '-';
+
+    } catch (error) {
+        console.error('Profil yükleme hatası:', error);
+        showToast('Profil bilgileri yüklenemedi', 'error');
+    }
+}
+
+async function profilKaydet() {
+    const loginType = localStorage.getItem('loginType');
+    const name = document.getElementById('profil-name').value;
+    const email = document.getElementById('profil-email').value;
+    const telefon = document.getElementById('profil-telefon').value;
+
+    if (!name) {
+        showToast('Ad Soyad alanı gerekli', 'warning');
+        return;
+    }
+
+    try {
+        let endpoint = loginType === 'tekniker' ? '/auth/personel-profile' : '/auth/profile';
+        let body = loginType === 'tekniker'
+            ? { adSoyad: name, email, telefon }
+            : { name, email, telefon };
+
+        const response = await authenticatedFetch(`${API_BASE}${endpoint}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Profil güncellenemedi');
+        }
+
+        // localStorage'daki kullanıcı adını güncelle
+        localStorage.setItem('userName', name);
+
+        showToast('Profil bilgileri güncellendi', 'success');
+
+        // Sidebar'daki kullanıcı adını güncelle
+        if (currentUser) {
+            currentUser.name = name;
+        }
+
+    } catch (error) {
+        console.error('Profil kaydetme hatası:', error);
+        showToast(error.message || 'Profil güncellenemedi', 'error');
+    }
+}
+
+async function sifreDegistir() {
+    const loginType = localStorage.getItem('loginType');
+    const currentPassword = document.getElementById('mevcut-sifre').value;
+    const newPassword = document.getElementById('yeni-sifre').value;
+    const confirmPassword = document.getElementById('yeni-sifre-tekrar').value;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        showToast('Tüm şifre alanlarını doldurun', 'warning');
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        showToast('Yeni şifre en az 6 karakter olmalı', 'warning');
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        showToast('Yeni şifreler eşleşmiyor', 'warning');
+        return;
+    }
+
+    try {
+        let endpoint = loginType === 'tekniker' ? '/auth/personel-change-password' : '/auth/change-password';
+
+        const response = await authenticatedFetch(`${API_BASE}${endpoint}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword, newPassword })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Şifre değiştirilemedi');
+        }
+
+        // Formu temizle
+        document.getElementById('mevcut-sifre').value = '';
+        document.getElementById('yeni-sifre').value = '';
+        document.getElementById('yeni-sifre-tekrar').value = '';
+
+        showToast('Şifreniz başarıyla değiştirildi', 'success');
+
+    } catch (error) {
+        console.error('Şifre değiştirme hatası:', error);
+        showToast(error.message || 'Şifre değiştirilemedi', 'error');
+    }
+}
+
+async function bildirimAyarlariKaydet() {
+    const loginType = localStorage.getItem('loginType');
+    const emailNotifications = document.getElementById('email-bildirimleri').checked;
+    const systemNotifications = document.getElementById('sistem-bildirimleri').checked;
+
+    try {
+        let endpoint = loginType === 'tekniker'
+            ? '/auth/personel-notification-settings'
+            : '/auth/notification-settings';
+
+        const response = await authenticatedFetch(`${API_BASE}${endpoint}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emailNotifications, systemNotifications })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Ayarlar güncellenemedi');
+        }
+
+        showToast('Bildirim ayarları güncellendi', 'success');
+
+    } catch (error) {
+        console.error('Bildirim ayarları hatası:', error);
+        showToast(error.message || 'Ayarlar güncellenemedi', 'error');
+    }
+}
+
+// ========================================
+// ÇIKIŞ FONKSİYONU
+// ========================================
+
+function sistemdenCik() {
+    // Tüm localStorage'ı temizle
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userKategori');
+    localStorage.removeItem('loginType');
+
+    // Login sayfasına yönlendir
+    window.location.href = '/login.html';
 }
 
 // ========================================
