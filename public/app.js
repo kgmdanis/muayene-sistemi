@@ -930,7 +930,7 @@ function openTeklifModal(teklif = null, preSelectedMusteriId = null) {
                             <div class="form-group">
                                 <div class="form-check" style="display: flex; align-items: center; gap: 8px;">
                                     <input type="checkbox" id="sahadaOnay" ${teklif && teklif.sahadaOnay ? 'checked' : ''}>
-                                    <label for="sahadaOnay">Sahada onaylandı</label>
+                                    <label for="sahadaOnay">Onay telefon ile alınmıştır</label>
                                 </div>
                             </div>
                         </div>

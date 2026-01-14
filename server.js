@@ -588,7 +588,7 @@ app.get('/api/teklifler/yeni-numara', auth.authMiddleware(), async (req, res) =>
             const sonSira = parseInt(sonTeklif.teklifNo.split('-')[1]);
             sira = sonSira + 1;
         }
-        const yeniNo = `${yil}-${sira.toString().padStart(4, '0')}`;
+        const yeniNo = `${yil}-${sira.toString().padStart(3, '0')}`;
         res.json({ teklifNo: yeniNo });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -641,7 +641,7 @@ app.post('/api/teklifler', auth.authMiddleware(), async (req, res) => {
                 const sonSira = parseInt(sonTeklif.teklifNo.split('-')[1]);
                 sira = sonSira + 1;
             }
-            finalTeklifNo = `${yil}-${sira.toString().padStart(4, '0')}`;
+            finalTeklifNo = `${yil}-${sira.toString().padStart(3, '0')}`;
         }
 
         // Hesaplamalar
