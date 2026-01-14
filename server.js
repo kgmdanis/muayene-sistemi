@@ -5,6 +5,7 @@ const fs = require('fs');
 const multer = require('multer');
 const auth = require('./auth');
 const reportEngine = require('./reports');
+const emailService = require('./emailService');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -89,12 +90,35 @@ app.put('/api/auth/personel-password/:id', auth.authMiddleware(), async (req, re
 
 app.post('/api/auth/forgot-password', async (req, res) => {
     const { email } = req.body;
+    if (!email) {
+        return res.status(400).json({ error: 'E-posta adresi gerekli' });
+    }
+
     const result = await auth.createResetToken(email);
-    if (result.success) {
-        console.log('Şifre sıfırlama kodu:', result.resetToken);
-        res.json({ success: true, message: 'Şifre sıfırlama kodu gönderildi' });
-    } else {
-        res.status(400).json({ error: result.error });
+    if (!result.success) {
+        return res.status(400).json({ error: result.error });
+    }
+
+    // SMTP ayarlarını kontrol et
+    const smtpConfig = {
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.SMTP_PORT) || 465,
+        secure: process.env.SMTP_SECURE === 'true',
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+    };
+
+    // SMTP yapılandırılmamışsa hata ver
+    if (!smtpConfig.user || !smtpConfig.pass) {
+        return res.status(500).json({ error: 'E-posta servisi yapılandırılmamış. Lütfen yönetici ile iletişime geçin.' });
+    }
+
+    try {
+        await emailService.sendPasswordResetEmail(smtpConfig, email, result.resetToken, result.user.name);
+        res.json({ success: true, message: 'Şifre sıfırlama kodu e-posta adresinize gönderildi' });
+    } catch (emailError) {
+        console.error('Email gönderme hatası:', emailError);
+        res.status(500).json({ error: 'E-posta gönderilemedi. Lütfen daha sonra tekrar deneyin.' });
     }
 });
 
@@ -103,6 +127,279 @@ app.post('/api/auth/reset-password', async (req, res) => {
     const result = await auth.resetPassword(email, token, newPassword);
     if (result.success) res.json({ success: true, message: 'Şifre başarıyla değiştirildi' });
     else res.status(400).json({ error: result.error });
+});
+
+// ============ PROFİL API ============
+
+// Kullanıcı profil bilgilerini getir
+app.get('/api/auth/profile', auth.authMiddleware(), async (req, res) => {
+    try {
+        const user = await auth.prisma.user.findUnique({
+            where: { id: req.user.id },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                telefon: true,
+                role: true,
+                emailNotifications: true,
+                systemNotifications: true,
+                lastLogin: true,
+                createdAt: true
+            }
+        });
+        if (!user) {
+            return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+        }
+        res.json(user);
+    } catch (error) {
+        console.error('Profil getirme hatası:', error);
+        res.status(500).json({ error: 'Profil bilgileri alınamadı' });
+    }
+});
+
+// Kullanıcı profil bilgilerini güncelle
+app.put('/api/auth/profile', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { name, email, telefon } = req.body;
+
+        // Email değişiyorsa kontrol et
+        if (email && email !== req.user.email) {
+            const existing = await auth.prisma.user.findUnique({ where: { email } });
+            if (existing) {
+                return res.status(400).json({ error: 'Bu e-posta adresi zaten kullanımda' });
+            }
+        }
+
+        const updatedUser = await auth.prisma.user.update({
+            where: { id: req.user.id },
+            data: {
+                ...(name && { name }),
+                ...(email && { email }),
+                ...(telefon !== undefined && { telefon })
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                telefon: true,
+                role: true
+            }
+        });
+
+        res.json({ success: true, user: updatedUser });
+    } catch (error) {
+        console.error('Profil güncelleme hatası:', error);
+        res.status(500).json({ error: 'Profil güncellenemedi' });
+    }
+});
+
+// Kullanıcı şifre değiştir
+app.put('/api/auth/change-password', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ error: 'Mevcut şifre ve yeni şifre gerekli' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ error: 'Yeni şifre en az 6 karakter olmalı' });
+        }
+
+        // Mevcut kullanıcıyı al
+        const user = await auth.prisma.user.findUnique({
+            where: { id: req.user.id }
+        });
+
+        // Mevcut şifreyi doğrula
+        if (!auth.verifyPassword(currentPassword, user.password)) {
+            return res.status(400).json({ error: 'Mevcut şifre hatalı' });
+        }
+
+        // Yeni şifreyi kaydet
+        await auth.prisma.user.update({
+            where: { id: req.user.id },
+            data: {
+                password: auth.hashPassword(newPassword),
+                plainPassword: newPassword
+            }
+        });
+
+        res.json({ success: true, message: 'Şifre başarıyla değiştirildi' });
+    } catch (error) {
+        console.error('Şifre değiştirme hatası:', error);
+        res.status(500).json({ error: 'Şifre değiştirilemedi' });
+    }
+});
+
+// Bildirim ayarlarını güncelle
+app.put('/api/auth/notification-settings', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { emailNotifications, systemNotifications } = req.body;
+
+        const updatedUser = await auth.prisma.user.update({
+            where: { id: req.user.id },
+            data: {
+                emailNotifications: emailNotifications ?? true,
+                systemNotifications: systemNotifications ?? true
+            },
+            select: {
+                emailNotifications: true,
+                systemNotifications: true
+            }
+        });
+
+        res.json({ success: true, settings: updatedUser });
+    } catch (error) {
+        console.error('Bildirim ayarları güncelleme hatası:', error);
+        res.status(500).json({ error: 'Bildirim ayarları güncellenemedi' });
+    }
+});
+
+// ============ PERSONEL PROFİL API ============
+
+// Personel profil bilgilerini getir
+app.get('/api/auth/personel-profile', auth.authMiddleware(), async (req, res) => {
+    try {
+        // Token'dan personelId'yi al (personel login'den)
+        const token = req.headers['authorization']?.replace('Bearer ', '');
+        const decoded = require('jsonwebtoken').decode(token);
+
+        if (!decoded?.personelId) {
+            return res.status(400).json({ error: 'Personel bilgisi bulunamadı' });
+        }
+
+        const personel = await auth.prisma.personel.findUnique({
+            where: { id: decoded.personelId },
+            select: {
+                id: true,
+                adSoyad: true,
+                unvan: true,
+                telefon: true,
+                email: true,
+                kategori: true,
+                username: true,
+                emailNotifications: true,
+                systemNotifications: true,
+                createdAt: true
+            }
+        });
+
+        if (!personel) {
+            return res.status(404).json({ error: 'Personel bulunamadı' });
+        }
+
+        res.json(personel);
+    } catch (error) {
+        console.error('Personel profil getirme hatası:', error);
+        res.status(500).json({ error: 'Profil bilgileri alınamadı' });
+    }
+});
+
+// Personel profil bilgilerini güncelle
+app.put('/api/auth/personel-profile', auth.authMiddleware(), async (req, res) => {
+    try {
+        const token = req.headers['authorization']?.replace('Bearer ', '');
+        const decoded = require('jsonwebtoken').decode(token);
+
+        if (!decoded?.personelId) {
+            return res.status(400).json({ error: 'Personel bilgisi bulunamadı' });
+        }
+
+        const { adSoyad, telefon, email } = req.body;
+
+        const updatedPersonel = await auth.prisma.personel.update({
+            where: { id: decoded.personelId },
+            data: {
+                ...(adSoyad && { adSoyad }),
+                ...(telefon !== undefined && { telefon }),
+                ...(email !== undefined && { email })
+            },
+            select: {
+                id: true,
+                adSoyad: true,
+                telefon: true,
+                email: true
+            }
+        });
+
+        res.json({ success: true, personel: updatedPersonel });
+    } catch (error) {
+        console.error('Personel profil güncelleme hatası:', error);
+        res.status(500).json({ error: 'Profil güncellenemedi' });
+    }
+});
+
+// Personel şifre değiştir (kendi şifresi)
+app.put('/api/auth/personel-change-password', auth.authMiddleware(), async (req, res) => {
+    try {
+        const token = req.headers['authorization']?.replace('Bearer ', '');
+        const decoded = require('jsonwebtoken').decode(token);
+
+        if (!decoded?.personelId) {
+            return res.status(400).json({ error: 'Personel bilgisi bulunamadı' });
+        }
+
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ error: 'Mevcut şifre ve yeni şifre gerekli' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ error: 'Yeni şifre en az 6 karakter olmalı' });
+        }
+
+        const personel = await auth.prisma.personel.findUnique({
+            where: { id: decoded.personelId }
+        });
+
+        if (!personel.password || !auth.verifyPassword(currentPassword, personel.password)) {
+            return res.status(400).json({ error: 'Mevcut şifre hatalı' });
+        }
+
+        await auth.prisma.personel.update({
+            where: { id: decoded.personelId },
+            data: { password: auth.hashPassword(newPassword) }
+        });
+
+        res.json({ success: true, message: 'Şifre başarıyla değiştirildi' });
+    } catch (error) {
+        console.error('Personel şifre değiştirme hatası:', error);
+        res.status(500).json({ error: 'Şifre değiştirilemedi' });
+    }
+});
+
+// Personel bildirim ayarlarını güncelle
+app.put('/api/auth/personel-notification-settings', auth.authMiddleware(), async (req, res) => {
+    try {
+        const token = req.headers['authorization']?.replace('Bearer ', '');
+        const decoded = require('jsonwebtoken').decode(token);
+
+        if (!decoded?.personelId) {
+            return res.status(400).json({ error: 'Personel bilgisi bulunamadı' });
+        }
+
+        const { emailNotifications, systemNotifications } = req.body;
+
+        const updatedPersonel = await auth.prisma.personel.update({
+            where: { id: decoded.personelId },
+            data: {
+                emailNotifications: emailNotifications ?? true,
+                systemNotifications: systemNotifications ?? true
+            },
+            select: {
+                emailNotifications: true,
+                systemNotifications: true
+            }
+        });
+
+        res.json({ success: true, settings: updatedPersonel });
+    } catch (error) {
+        console.error('Personel bildirim ayarları güncelleme hatası:', error);
+        res.status(500).json({ error: 'Bildirim ayarları güncellenemedi' });
+    }
 });
 
 // ============ KULLANICI API ============
@@ -229,6 +526,36 @@ app.put('/api/hizmetler/:id', auth.authMiddleware('admin'), async (req, res) => 
     }
 });
 
+// Hizmet sil (soft delete - isActive = false)
+app.delete('/api/hizmetler/:id', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        const hizmetId = parseInt(req.params.id);
+
+        // Önce hizmetin kullanımda olup olmadığını kontrol et
+        const kullaniliyor = await auth.prisma.teklifDetay.findFirst({
+            where: { hizmetId: hizmetId }
+        });
+
+        if (kullaniliyor) {
+            // Soft delete - hizmeti pasif yap
+            const hizmet = await auth.prisma.hizmet.update({
+                where: { id: hizmetId },
+                data: { isActive: false }
+            });
+            res.json({ message: 'Hizmet pasif yapıldı (tekliflerde kullanılıyor)', hizmet });
+        } else {
+            // Hiç kullanılmamışsa tamamen sil
+            await auth.prisma.hizmet.delete({
+                where: { id: hizmetId }
+            });
+            res.json({ message: 'Hizmet silindi' });
+        }
+    } catch (error) {
+        console.error('Hizmet silme hatası:', error);
+        res.status(500).json({ error: 'Hizmet silinemedi: ' + error.message });
+    }
+});
+
 // ============ TEKLİF API ============
 
 // Teklif listesi
@@ -295,7 +622,7 @@ app.get('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
 // Teklif oluştur
 app.post('/api/teklifler', auth.authMiddleware(), async (req, res) => {
     try {
-        const { customerId, teklifNo, konu, detaylar, iskontoOran, notlar, onayTelefon, sahadaOnay, gecerlilikGun } = req.body;
+        const { customerId, teklifNo, konu, detaylar, iskontoOran, kdvOrani: girilenKdvOrani, notlar, onayTelefon, sahadaOnay, gecerlilikGun } = req.body;
 
         if (!customerId) {
             return res.status(400).json({ error: 'Müşteri seçilmedi' });
@@ -332,7 +659,7 @@ app.post('/api/teklifler', auth.authMiddleware(), async (req, res) => {
 
         const iskontoTutar = araToplam * (parseFloat(iskontoOran) || 0) / 100;
         const toplamTutar = araToplam - iskontoTutar;
-        const kdvOrani = 20;
+        const kdvOrani = parseInt(girilenKdvOrani) || 20;
         const kdvTutar = toplamTutar * kdvOrani / 100;
         const genelToplam = toplamTutar + kdvTutar;
 
@@ -384,7 +711,7 @@ const teklifDurumMap = {
 app.put('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const { customerId, konu, detaylar, iskontoOran, notlar, onayTelefon, sahadaOnay, durum, gecerlilikGun } = req.body;
+        const { customerId, konu, detaylar, iskontoOran, kdvOrani: girilenKdvOrani, notlar, onayTelefon, sahadaOnay, durum, gecerlilikGun } = req.body;
 
         // Önce mevcut detayları sil
         await auth.prisma.teklifDetay.deleteMany({ where: { teklifId: id } });
@@ -405,7 +732,7 @@ app.put('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
 
         const iskontoTutar = araToplam * (parseFloat(iskontoOran) || 0) / 100;
         const toplamTutar = araToplam - iskontoTutar;
-        const kdvOrani = 20;
+        const kdvOrani = parseInt(girilenKdvOrani) || 20;
         const kdvTutar = toplamTutar * kdvOrani / 100;
         const genelToplam = toplamTutar + kdvTutar;
 
@@ -1509,8 +1836,6 @@ app.get('/api/sertifika-sablonlari', auth.authMiddleware(), async (req, res) => 
 });
 
 // ============ TEKLİF EMAIL GÖNDERME ============
-
-const emailService = require('./emailService');
 
 app.post('/api/teklifler/:id/send-email', auth.authMiddleware('admin'), async (req, res) => {
     try {

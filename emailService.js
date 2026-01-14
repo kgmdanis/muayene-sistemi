@@ -391,6 +391,65 @@ th{background:#1a5f7a;color:white}
 }
 
 /**
+ * Şifre sıfırlama emaili gönder
+ */
+async function sendPasswordResetEmail(smtpConfig, email, resetCode, userName) {
+    const transporter = createTransporter(smtpConfig);
+
+    const htmlContent = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+body{font-family:Arial,sans-serif;line-height:1.6;color:#333;margin:0;padding:0}
+.container{max-width:600px;margin:0 auto;padding:20px}
+.header{background:linear-gradient(135deg,#1a5f7a,#134b61);color:white;padding:30px;text-align:center;border-radius:8px 8px 0 0}
+.header h1{margin:0;font-size:24px}
+.content{background:#ffffff;padding:30px;border:1px solid #e0e0e0}
+.code-box{background:#f5f5f5;border:2px dashed #1a5f7a;padding:20px;text-align:center;margin:25px 0;border-radius:8px}
+.code{font-size:32px;font-weight:bold;color:#1a5f7a;letter-spacing:8px}
+.warning{background:#fff3cd;border:1px solid #ffc107;padding:15px;border-radius:5px;margin:20px 0;font-size:14px}
+.footer{background:#f5f5f5;padding:20px;text-align:center;font-size:12px;color:#666;border-radius:0 0 8px 8px}
+</style></head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Şifre Sıfırlama</h1>
+    </div>
+    <div class="content">
+        <p>Merhaba <strong>${userName || 'Kullanıcı'}</strong>,</p>
+        <p>Hesabınız için şifre sıfırlama talebinde bulundunuz. Aşağıdaki kodu kullanarak yeni şifrenizi belirleyebilirsiniz:</p>
+
+        <div class="code-box">
+            <div class="code">${resetCode}</div>
+            <p style="margin:10px 0 0 0;color:#666;font-size:14px">Doğrulama Kodu</p>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Önemli:</strong> Bu kod <strong>15 dakika</strong> içinde geçerliliğini yitirecektir.
+            Eğer bu talebi siz yapmadıysanız, bu emaili görmezden gelebilirsiniz.
+        </div>
+
+        <p>Güvenliğiniz için şifrenizi kimseyle paylaşmayın.</p>
+        <p>Saygılarımızla,<br><strong>ÖNDER MUAYENE</strong></p>
+    </div>
+    <div class="footer">
+        <p>Bu otomatik bir e-postadır, lütfen yanıtlamayın.</p>
+        <p>© ${new Date().getFullYear()} ÖNDER MUAYENE - Tüm hakları saklıdır.</p>
+    </div>
+</div>
+</body></html>`;
+
+    const mailOptions = {
+        from: `"ÖNDER MUAYENE" <${smtpConfig.user}>`,
+        to: email,
+        subject: 'Şifre Sıfırlama Kodu - ÖNDER MUAYENE',
+        html: htmlContent
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    return { success: true, messageId: result.messageId };
+}
+
+/**
  * Test email gönder
  */
 async function sendTestEmail(smtpConfig, toEmail) {
@@ -410,6 +469,7 @@ module.exports = {
     createTeklifPDFBuffer,
     sendTeklifEmail,
     sendTestEmail,
+    sendPasswordResetEmail,
     formatMoney,
     GENEL_SARTLAR
 };

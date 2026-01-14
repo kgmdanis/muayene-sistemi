@@ -109,13 +109,15 @@ function renderSidebar() {
         { icon: '📄', text: 'Teklifler', page: 'teklifler' },
         { icon: '📋', text: 'İş Emirleri', page: 'is-emirleri' },
         { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' },
+        { icon: '👤', text: 'Profilim', page: 'profil' },
         { icon: '⚙️', text: 'Ayarlar', page: 'ayarlar' }
     ];
 
     // Tekniker menü öğeleri
     const teknikerMenuItems = [
         { icon: '✅', text: 'Görevlerim', page: 'gorevlerim' },
-        { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' }
+        { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' },
+        { icon: '👤', text: 'Profilim', page: 'profil' }
     ];
 
     const menuItems = userRole === 'tekniker' ? teknikerMenuItems : adminMenuItems;
@@ -375,6 +377,8 @@ function navigateToPage(page) {
         loadSertifikaSablonlari();
     } else if (page === 'gorevlerim') {
         loadGorevlerim();
+    } else if (page === 'profil') {
+        loadProfilBilgileri();
     }
 
     console.log(`📄 Sayfa değiştirildi: ${page}`);
@@ -4975,6 +4979,180 @@ async function gorevDetayGoster(gorevId) {
     } catch (error) {
         console.error('Görev detay hatası:', error);
         showToast('Detay yüklenemedi', 'error');
+    }
+}
+
+// ========================================
+// PROFİL FONKSİYONLARI
+// ========================================
+
+async function loadProfilBilgileri() {
+    const loginType = localStorage.getItem('loginType');
+
+    try {
+        let endpoint = loginType === 'tekniker' ? '/auth/personel-profile' : '/auth/profile';
+        const response = await authenticatedFetch(`${API_BASE}${endpoint}`);
+
+        if (!response.ok) {
+            throw new Error('Profil bilgileri alınamadı');
+        }
+
+        const data = await response.json();
+
+        if (loginType === 'tekniker') {
+            // Tekniker profili
+            document.getElementById('profil-name').value = data.adSoyad || '';
+            document.getElementById('profil-email').value = data.email || '';
+            document.getElementById('profil-telefon').value = data.telefon || '';
+            document.getElementById('profil-role').value = data.kategori ? `Tekniker (${data.kategori})` : 'Tekniker';
+        } else {
+            // Admin profili
+            document.getElementById('profil-name').value = data.name || '';
+            document.getElementById('profil-email').value = data.email || '';
+            document.getElementById('profil-telefon').value = data.telefon || '';
+            document.getElementById('profil-role').value = data.role === 'admin' ? 'Yönetici' : 'Kullanıcı';
+        }
+
+        // Bildirim ayarları
+        document.getElementById('email-bildirimleri').checked = data.emailNotifications !== false;
+        document.getElementById('sistem-bildirimleri').checked = data.systemNotifications !== false;
+
+        // Hesap bilgileri
+        document.getElementById('profil-id').textContent = data.id || '-';
+        document.getElementById('profil-son-giris').textContent = data.lastLogin
+            ? new Date(data.lastLogin).toLocaleString('tr-TR')
+            : '-';
+        document.getElementById('profil-kayit-tarihi').textContent = data.createdAt
+            ? new Date(data.createdAt).toLocaleDateString('tr-TR')
+            : '-';
+
+    } catch (error) {
+        console.error('Profil yükleme hatası:', error);
+        showToast('Profil bilgileri yüklenemedi', 'error');
+    }
+}
+
+async function profilKaydet() {
+    const loginType = localStorage.getItem('loginType');
+    const name = document.getElementById('profil-name').value;
+    const email = document.getElementById('profil-email').value;
+    const telefon = document.getElementById('profil-telefon').value;
+
+    if (!name) {
+        showToast('Ad Soyad alanı gerekli', 'warning');
+        return;
+    }
+
+    try {
+        let endpoint = loginType === 'tekniker' ? '/auth/personel-profile' : '/auth/profile';
+        let body = loginType === 'tekniker'
+            ? { adSoyad: name, email, telefon }
+            : { name, email, telefon };
+
+        const response = await authenticatedFetch(`${API_BASE}${endpoint}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Profil güncellenemedi');
+        }
+
+        // localStorage'daki kullanıcı adını güncelle
+        localStorage.setItem('userName', name);
+
+        showToast('Profil bilgileri güncellendi', 'success');
+
+        // Sidebar'daki kullanıcı adını güncelle
+        if (currentUser) {
+            currentUser.name = name;
+        }
+
+    } catch (error) {
+        console.error('Profil kaydetme hatası:', error);
+        showToast(error.message || 'Profil güncellenemedi', 'error');
+    }
+}
+
+async function sifreDegistir() {
+    const loginType = localStorage.getItem('loginType');
+    const currentPassword = document.getElementById('mevcut-sifre').value;
+    const newPassword = document.getElementById('yeni-sifre').value;
+    const confirmPassword = document.getElementById('yeni-sifre-tekrar').value;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        showToast('Tüm şifre alanlarını doldurun', 'warning');
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        showToast('Yeni şifre en az 6 karakter olmalı', 'warning');
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        showToast('Yeni şifreler eşleşmiyor', 'warning');
+        return;
+    }
+
+    try {
+        let endpoint = loginType === 'tekniker' ? '/auth/personel-change-password' : '/auth/change-password';
+
+        const response = await authenticatedFetch(`${API_BASE}${endpoint}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword, newPassword })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Şifre değiştirilemedi');
+        }
+
+        // Formu temizle
+        document.getElementById('mevcut-sifre').value = '';
+        document.getElementById('yeni-sifre').value = '';
+        document.getElementById('yeni-sifre-tekrar').value = '';
+
+        showToast('Şifreniz başarıyla değiştirildi', 'success');
+
+    } catch (error) {
+        console.error('Şifre değiştirme hatası:', error);
+        showToast(error.message || 'Şifre değiştirilemedi', 'error');
+    }
+}
+
+async function bildirimAyarlariKaydet() {
+    const loginType = localStorage.getItem('loginType');
+    const emailNotifications = document.getElementById('email-bildirimleri').checked;
+    const systemNotifications = document.getElementById('sistem-bildirimleri').checked;
+
+    try {
+        let endpoint = loginType === 'tekniker'
+            ? '/auth/personel-notification-settings'
+            : '/auth/notification-settings';
+
+        const response = await authenticatedFetch(`${API_BASE}${endpoint}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emailNotifications, systemNotifications })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Ayarlar güncellenemedi');
+        }
+
+        showToast('Bildirim ayarları güncellendi', 'success');
+
+    } catch (error) {
+        console.error('Bildirim ayarları hatası:', error);
+        showToast(error.message || 'Ayarlar güncellenemedi', 'error');
     }
 }
 

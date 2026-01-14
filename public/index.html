@@ -319,6 +319,96 @@
                 </div>
             </div>
 
+            <!-- Profilim Sayfası -->
+            <div id="page-profil" class="page-content">
+                <div class="page-header" style="background: linear-gradient(135deg, #1a5f7a, #134b61); color: white; padding: 30px; border-radius: 12px; margin-bottom: 25px;">
+                    <div>
+                        <h2 style="margin: 0; font-size: 28px; font-weight: 700; color: white;">Profilim</h2>
+                        <p style="margin: 8px 0 0 0; font-size: 14px; opacity: 0.9; color: white;">Hesap bilgilerinizi ve ayarlarinizi yonetin</p>
+                    </div>
+                </div>
+
+                <div class="settings-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+                    <!-- Kisisel Bilgiler -->
+                    <div class="settings-card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+                        <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #333; border-bottom: 2px solid #1a5f7a; padding-bottom: 10px;">Kisisel Bilgiler</h3>
+                        <form id="profil-form">
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label class="form-label" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Ad Soyad</label>
+                                <input type="text" id="profil-name" class="form-input" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label class="form-label" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">E-posta</label>
+                                <input type="email" id="profil-email" class="form-input" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label class="form-label" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Telefon</label>
+                                <input type="tel" id="profil-telefon" class="form-input" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label class="form-label" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Rol</label>
+                                <input type="text" id="profil-role" class="form-input" disabled style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; background: #f5f5f5;">
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="profilKaydet()" style="width: 100%; padding: 12px; font-weight: 600;">Bilgileri Kaydet</button>
+                        </form>
+                    </div>
+
+                    <!-- Sifre Degistir -->
+                    <div class="settings-card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+                        <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #333; border-bottom: 2px solid #e67e22; padding-bottom: 10px;">Sifre Degistir</h3>
+                        <form id="sifre-form">
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label class="form-label" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Mevcut Sifre</label>
+                                <input type="password" id="mevcut-sifre" class="form-input" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label class="form-label" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Yeni Sifre</label>
+                                <input type="password" id="yeni-sifre" class="form-input" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label class="form-label" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Yeni Sifre (Tekrar)</label>
+                                <input type="password" id="yeni-sifre-tekrar" class="form-input" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            </div>
+                            <button type="button" class="btn btn-warning" onclick="sifreDegistir()" style="width: 100%; padding: 12px; font-weight: 600; background: #e67e22; color: white; border: none; border-radius: 8px; cursor: pointer;">Sifreyi Degistir</button>
+                        </form>
+                    </div>
+
+                    <!-- Bildirim Ayarlari -->
+                    <div class="settings-card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+                        <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #333; border-bottom: 2px solid #27ae60; padding-bottom: 10px;">Bildirim Ayarlari</h3>
+                        <form id="bildirim-form">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 15px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px;">
+                                    <input type="checkbox" id="email-bildirimleri" style="width: 20px; height: 20px; cursor: pointer;">
+                                    <div>
+                                        <strong style="display: block; color: #333;">E-posta Bildirimleri</strong>
+                                        <span style="font-size: 13px; color: #666;">Onemli guncellemeler ve bildirimler e-posta ile gonderilsin</span>
+                                    </div>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                    <input type="checkbox" id="sistem-bildirimleri" style="width: 20px; height: 20px; cursor: pointer;">
+                                    <div>
+                                        <strong style="display: block; color: #333;">Sistem Bildirimleri</strong>
+                                        <span style="font-size: 13px; color: #666;">Uygulama ici bildirimler gosterilsin</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <button type="button" class="btn btn-success" onclick="bildirimAyarlariKaydet()" style="width: 100%; padding: 12px; font-weight: 600; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer;">Ayarlari Kaydet</button>
+                        </form>
+                    </div>
+
+                    <!-- Hesap Bilgileri -->
+                    <div class="settings-card" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+                        <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #333; border-bottom: 2px solid #9b59b6; padding-bottom: 10px;">Hesap Bilgileri</h3>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                            <p style="margin: 0 0 10px 0;"><strong>Son Giris:</strong> <span id="profil-son-giris">-</span></p>
+                            <p style="margin: 0 0 10px 0;"><strong>Hesap Olusturma:</strong> <span id="profil-kayit-tarihi">-</span></p>
+                            <p style="margin: 0;"><strong>Hesap ID:</strong> <span id="profil-id">-</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Ayarlar Sayfası -->
             <div id="page-ayarlar" class="page-content">
                 <div class="page-header">

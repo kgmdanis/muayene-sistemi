@@ -32,21 +32,23 @@ model FirmaAyarlari {
 }
 
 model User {
-  id                Int         @id @default(autoincrement())
-  email             String      @unique
-  password          String
-  plainPassword     String?
-  name              String
-  role              String      @default("tekniker")
-  telefon           String?
-  isActive          Boolean     @default(true)
-  emailVerified     Boolean     @default(false)
-  verificationToken String?
-  resetToken        String?
-  resetTokenExpiry  DateTime?
-  lastLogin         DateTime?
-  lastLoginIP       String?
-  sessionTimeout    Int         @default(30)
+  id                  Int         @id @default(autoincrement())
+  email               String      @unique
+  password            String
+  plainPassword       String?
+  name                String
+  role                String      @default("tekniker")
+  telefon             String?
+  isActive            Boolean     @default(true)
+  emailVerified       Boolean     @default(false)
+  verificationToken   String?
+  resetToken          String?
+  resetTokenExpiry    DateTime?
+  lastLogin           DateTime?
+  lastLoginIP         String?
+  sessionTimeout      Int         @default(30)
+  emailNotifications  Boolean     @default(true)
+  systemNotifications Boolean     @default(true)
   teklifler         Teklif[]
   muayeneler        Muayene[]   @relation("muayeneEden")
   onaylananMuayeneler Muayene[] @relation("onaylayan")
@@ -246,23 +248,26 @@ enum WorkOrderDurum {
 
 // Personel tablosu
 model Personel {
-  id              Int         @id @default(autoincrement())
-  adSoyad         String
-  unvan           String
-  meslek          String?
-  diplomaTarihi   String?
-  diplomaNo       String?
-  ekipnetNo       String?
-  telefon         String?
-  email           String?
-  kategori        String      // Elektriksel, Mekanik, IsHijyeni
-  isActive        Boolean     @default(true)
+  id                  Int         @id @default(autoincrement())
+  adSoyad             String
+  unvan               String
+  meslek              String?
+  diplomaTarihi       String?
+  diplomaNo           String?
+  ekipnetNo           String?
+  telefon             String?
+  email               String?
+  kategori            String      // Elektriksel, Mekanik, IsHijyeni
+  isActive            Boolean     @default(true)
   // Login bilgileri
-  username        String?     @unique
-  password        String?     // hashlenmiş şifre
-  role            String      @default("tekniker") // admin | tekniker
-  createdAt       DateTime    @default(now())
-  altGorevler     AltGorev[]
+  username            String?     @unique
+  password            String?     // hashlenmiş şifre
+  role                String      @default("tekniker") // admin | tekniker
+  // Bildirim ayarları
+  emailNotifications  Boolean     @default(true)
+  systemNotifications Boolean     @default(true)
+  createdAt           DateTime    @default(now())
+  altGorevler         AltGorev[]
 }
 
 // Ana İş Emri (Teklif bazlı)
