@@ -1,0 +1,3873 @@
+{
+  "templates": [
+    {
+      "fileName": "FR7.2.36 Elektrik Topraklama Ölçüm Raporu-1.docx",
+      "tables": [
+        {
+          "index": 1,
+          "rowCount": 8,
+          "fields": [
+            {
+              "label": "Firma Adı",
+              "value": "ASELKON HIDROLIK METAL DEMIR ÇELIK MÜHENDISLIK SANAYI VE TICARET ANONIMSIRKETI Rapor Numarası ET-2025-285-01",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Adresi",
+              "value": "Büyükkayacıkosb Mah. 516 Nolu Sok. Konya Selçuklu No:19/ Rapor Tarihi 23.09.2025",
+              "isEditable": true
+            },
+            {
+              "label": "SGK Sicil Numarası",
+              "value": "22530010112619730422191000 Bir Sonraki Periyodik Kontrol Tarihi 17.09.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Metodu ve Kapsamı",
+              "value": "TS HD 60364-4-41 Alçak Gerilim Elektrik Tesisleri – Bölüm 4: Güvenlik İçin Koruma – Bölüm 41: Elektrik Çarpmasına Karşı KorumaTS HD 60364-6 Alçak Gerilim Elektrik Tesisatları – Bölüm 6: Doğrulamaİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar YönetmeliğiElektrik İç Tesisleri Yönetmeliği",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "rowCount": 11,
+          "fields": [
+            {
+              "label": "Enerji sağlayan kuruluş",
+              "value": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S",
+              "isEditable": true
+            },
+            {
+              "label": "Şebeke gerilimi",
+              "value": "380 Tesise ait proje var mı? Var       Yok Tek hat şeması var mı? Var       Yok",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol nedeni",
+              "value": "Periyodik Kontrol İlk Kontrol Proje bilgileri YENER ADAK ODA NO:33231 KOS ONAY TARİHİ:26.07.23 TOPLAM GÜÇ:65713W",
+              "isEditable": true
+            },
+            {
+              "label": "Yapı cinsi",
+              "value": "Ev Ticari Endüstri Diğer Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi",
+              "isEditable": true
+            },
+            {
+              "label": "Dolaylı dokunmaya karşı koruma önlemi",
+              "value": "Eşpotansiyel topraklama ve beslemenin otomatik kesilmesi (TT, TN, IT)    Koruyucu yalıtma (Sınıf II veya zemin yalıtımı) Koruyucu ayırma (İzolasyon trafosu)   Küçük gerilim &lt;50 V",
+              "isEditable": true
+            },
+            {
+              "label": "Hava durumu ve sıcaklığı",
+              "value": "25 0C Zemin nem durumu KURU",
+              "isEditable": true
+            },
+            {
+              "label": "Tesisatta kapsamlı değişiklik var mı?",
+              "value": "Var         Yok Bir önceki periyodik kontrol etiketi var mı? Var         Yok Pano/Ekipman tanımlaması Yok",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "rowCount": 6,
+          "fields": [
+            {
+              "label": "Cihaz adı",
+              "value": "Chauvin Arnoux",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon tarihi",
+              "value": "14.01.2025",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon geçerlilik tarihi",
+              "value": "14.01.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Seri numarası",
+              "value": "467008 PKH",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon numarası",
+              "value": "2500290",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 5,
+          "rowCount": 3,
+          "fields": [
+            {
+              "label": "Ölçüm ve doğrulama metodu",
+              "value": "Çevrim empedansı 3 Uçlu topraklama Klamp metodu (Çoklu topraklayıcılı)",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "rowCount": 80,
+          "fields": []
+        },
+        {
+          "index": 7,
+          "rowCount": 8,
+          "fields": [
+            {
+              "label": "N=1",
+              "value": "Z.KDP-01 OFİS AC 40 27,6 22,4 Sigorta Kutusu AC 27,6 22,4 NOT-1",
+              "isEditable": true
+            },
+            {
+              "label": "N=2",
+              "value": "Z.KDP-02 OFİS AC 40 28,1 30,6 Sigorta Kutusu AC 28,1 30,6 NOT-1",
+              "isEditable": true
+            },
+            {
+              "label": "N=3",
+              "value": "1.KDP-01 OFİS AC 40 21,0 27,8 Sigorta Kutusu AC 21,0 27,8 NOT-1",
+              "isEditable": true
+            },
+            {
+              "label": "N=4",
+              "value": "1.KDP-01OFİS AC 40 20,7 28,0 Sigorta Kutusu AC 20,7 28,0 NOT-1",
+              "isEditable": true
+            },
+            {
+              "label": "N=5",
+              "value": "DAĞITIM PANOSU YEMEKHANE AC 40 27,7 22,4 Sigorta Kutusu AC 27,7 22,4 NOT-1",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "rowCount": 1,
+          "fields": []
+        },
+        {
+          "index": 9,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 10,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 11,
+          "rowCount": 7,
+          "fields": []
+        }
+      ],
+      "allFields": [
+        {
+          "label": "Firma Adı",
+          "value": "ASELKON HIDROLIK METAL DEMIR ÇELIK MÜHENDISLIK SANAYI VE TICARET ANONIMSIRKETI Rapor Numarası ET-2025-285-01",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Adresi",
+          "value": "Büyükkayacıkosb Mah. 516 Nolu Sok. Konya Selçuklu No:19/ Rapor Tarihi 23.09.2025",
+          "isEditable": true
+        },
+        {
+          "label": "SGK Sicil Numarası",
+          "value": "22530010112619730422191000 Bir Sonraki Periyodik Kontrol Tarihi 17.09.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "value": "TS HD 60364-4-41 Alçak Gerilim Elektrik Tesisleri – Bölüm 4: Güvenlik İçin Koruma – Bölüm 41: Elektrik Çarpmasına Karşı KorumaTS HD 60364-6 Alçak Gerilim Elektrik Tesisatları – Bölüm 6: Doğrulamaİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar YönetmeliğiElektrik İç Tesisleri Yönetmeliği",
+          "isEditable": true
+        },
+        {
+          "label": "Enerji sağlayan kuruluş",
+          "value": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S",
+          "isEditable": true
+        },
+        {
+          "label": "Şebeke gerilimi",
+          "value": "380 Tesise ait proje var mı? Var       Yok Tek hat şeması var mı? Var       Yok",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol nedeni",
+          "value": "Periyodik Kontrol İlk Kontrol Proje bilgileri YENER ADAK ODA NO:33231 KOS ONAY TARİHİ:26.07.23 TOPLAM GÜÇ:65713W",
+          "isEditable": true
+        },
+        {
+          "label": "Yapı cinsi",
+          "value": "Ev Ticari Endüstri Diğer Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi",
+          "isEditable": true
+        },
+        {
+          "label": "Dolaylı dokunmaya karşı koruma önlemi",
+          "value": "Eşpotansiyel topraklama ve beslemenin otomatik kesilmesi (TT, TN, IT)    Koruyucu yalıtma (Sınıf II veya zemin yalıtımı) Koruyucu ayırma (İzolasyon trafosu)   Küçük gerilim &lt;50 V",
+          "isEditable": true
+        },
+        {
+          "label": "Hava durumu ve sıcaklığı",
+          "value": "25 0C Zemin nem durumu KURU",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisatta kapsamlı değişiklik var mı?",
+          "value": "Var         Yok Bir önceki periyodik kontrol etiketi var mı? Var         Yok Pano/Ekipman tanımlaması Yok",
+          "isEditable": true
+        },
+        {
+          "label": "Cihaz adı",
+          "value": "Chauvin Arnoux",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon tarihi",
+          "value": "14.01.2025",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "value": "14.01.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Seri numarası",
+          "value": "467008 PKH",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon numarası",
+          "value": "2500290",
+          "isEditable": true
+        },
+        {
+          "label": "Ölçüm ve doğrulama metodu",
+          "value": "Çevrim empedansı 3 Uçlu topraklama Klamp metodu (Çoklu topraklayıcılı)",
+          "isEditable": true
+        },
+        {
+          "label": "N=1",
+          "value": "Z.KDP-01 OFİS AC 40 27,6 22,4 Sigorta Kutusu AC 27,6 22,4 NOT-1",
+          "isEditable": true
+        },
+        {
+          "label": "N=2",
+          "value": "Z.KDP-02 OFİS AC 40 28,1 30,6 Sigorta Kutusu AC 28,1 30,6 NOT-1",
+          "isEditable": true
+        },
+        {
+          "label": "N=3",
+          "value": "1.KDP-01 OFİS AC 40 21,0 27,8 Sigorta Kutusu AC 21,0 27,8 NOT-1",
+          "isEditable": true
+        },
+        {
+          "label": "N=4",
+          "value": "1.KDP-01OFİS AC 40 20,7 28,0 Sigorta Kutusu AC 20,7 28,0 NOT-1",
+          "isEditable": true
+        },
+        {
+          "label": "N=5",
+          "value": "DAĞITIM PANOSU YEMEKHANE AC 40 27,7 22,4 Sigorta Kutusu AC 27,7 22,4 NOT-1",
+          "isEditable": true
+        }
+      ],
+      "suggestedPlaceholders": {
+        "firma_adı": {
+          "label": "Firma Adı",
+          "placeholder": "{{firma_adı}}",
+          "sampleValue": "ASELKON HIDROLIK METAL DEMIR ÇELIK MÜHENDISLIK SANAYI VE TICARET ANONIMSIRKETI Rapor Numarası ET-2025-285-01"
+        },
+        "periyodik_kontrol_adresi": {
+          "label": "Periyodik Kontrol Adresi",
+          "placeholder": "{{periyodik_kontrol_adresi}}",
+          "sampleValue": "Büyükkayacıkosb Mah. 516 Nolu Sok. Konya Selçuklu No:19/ Rapor Tarihi 23.09.2025"
+        },
+        "sgk_sicil_numarası": {
+          "label": "SGK Sicil Numarası",
+          "placeholder": "{{sgk_sicil_numarası}}",
+          "sampleValue": "22530010112619730422191000 Bir Sonraki Periyodik Kontrol Tarihi 17.09.2026"
+        },
+        "periyodik_kontrol_metodu_ve_kapsamı": {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "placeholder": "{{periyodik_kontrol_metodu_ve_kapsamı}}",
+          "sampleValue": "TS HD 60364-4-41 Alçak Gerilim Elektrik Tesisleri – Bölüm 4: Güvenlik İçin Koruma – Bölüm 41: Elektrik Çarpmasına Karşı KorumaTS HD 60364-6 Alçak Gerilim Elektrik Tesisatları – Bölüm 6: Doğrulamaİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar YönetmeliğiElektrik İç Tesisleri Yönetmeliği"
+        },
+        "enerji_sağlayan_kuruluş": {
+          "label": "Enerji sağlayan kuruluş",
+          "placeholder": "{{enerji_sağlayan_kuruluş}}",
+          "sampleValue": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S"
+        },
+        "şebeke_gerilimi": {
+          "label": "Şebeke gerilimi",
+          "placeholder": "{{şebeke_gerilimi}}",
+          "sampleValue": "380 Tesise ait proje var mı? Var       Yok Tek hat şeması var mı? Var       Yok"
+        },
+        "kontrol_nedeni": {
+          "label": "Kontrol nedeni",
+          "placeholder": "{{kontrol_nedeni}}",
+          "sampleValue": "Periyodik Kontrol İlk Kontrol Proje bilgileri YENER ADAK ODA NO:33231 KOS ONAY TARİHİ:26.07.23 TOPLAM GÜÇ:65713W"
+        },
+        "yapı_cinsi": {
+          "label": "Yapı cinsi",
+          "placeholder": "{{yapı_cinsi}}",
+          "sampleValue": "Ev Ticari Endüstri Diğer Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi"
+        },
+        "dolaylı_dokunmaya_karşı_koruma_önlemi": {
+          "label": "Dolaylı dokunmaya karşı koruma önlemi",
+          "placeholder": "{{dolaylı_dokunmaya_karşı_koruma_önlemi}}",
+          "sampleValue": "Eşpotansiyel topraklama ve beslemenin otomatik kesilmesi (TT, TN, IT)    Koruyucu yalıtma (Sınıf II veya zemin yalıtımı) Koruyucu ayırma (İzolasyon trafosu)   Küçük gerilim &lt;50 V"
+        },
+        "hava_durumu_ve_sıcaklığı": {
+          "label": "Hava durumu ve sıcaklığı",
+          "placeholder": "{{hava_durumu_ve_sıcaklığı}}",
+          "sampleValue": "25 0C Zemin nem durumu KURU"
+        },
+        "tesisatta_kapsamlı_değişiklik_var_mı_": {
+          "label": "Tesisatta kapsamlı değişiklik var mı?",
+          "placeholder": "{{tesisatta_kapsamlı_değişiklik_var_mı_}}",
+          "sampleValue": "Var         Yok Bir önceki periyodik kontrol etiketi var mı? Var         Yok Pano/Ekipman tanımlaması Yok"
+        },
+        "cihaz_adı": {
+          "label": "Cihaz adı",
+          "placeholder": "{{cihaz_adı}}",
+          "sampleValue": "Chauvin Arnoux"
+        },
+        "kalibrasyon_tarihi": {
+          "label": "Kalibrasyon tarihi",
+          "placeholder": "{{kalibrasyon_tarihi}}",
+          "sampleValue": "14.01.2025"
+        },
+        "kalibrasyon_geçerlilik_tarihi": {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "placeholder": "{{kalibrasyon_geçerlilik_tarihi}}",
+          "sampleValue": "14.01.2026"
+        },
+        "seri_numarası": {
+          "label": "Seri numarası",
+          "placeholder": "{{seri_numarası}}",
+          "sampleValue": "467008 PKH"
+        },
+        "kalibrasyon_numarası": {
+          "label": "Kalibrasyon numarası",
+          "placeholder": "{{kalibrasyon_numarası}}",
+          "sampleValue": "2500290"
+        },
+        "ölçüm_ve_doğrulama_metodu": {
+          "label": "Ölçüm ve doğrulama metodu",
+          "placeholder": "{{ölçüm_ve_doğrulama_metodu}}",
+          "sampleValue": "Çevrim empedansı 3 Uçlu topraklama Klamp metodu (Çoklu topraklayıcılı)"
+        },
+        "n_1": {
+          "label": "N=1",
+          "placeholder": "{{n_1}}",
+          "sampleValue": "Z.KDP-01 OFİS AC 40 27,6 22,4 Sigorta Kutusu AC 27,6 22,4 NOT-1"
+        },
+        "n_2": {
+          "label": "N=2",
+          "placeholder": "{{n_2}}",
+          "sampleValue": "Z.KDP-02 OFİS AC 40 28,1 30,6 Sigorta Kutusu AC 28,1 30,6 NOT-1"
+        },
+        "n_3": {
+          "label": "N=3",
+          "placeholder": "{{n_3}}",
+          "sampleValue": "1.KDP-01 OFİS AC 40 21,0 27,8 Sigorta Kutusu AC 21,0 27,8 NOT-1"
+        },
+        "n_4": {
+          "label": "N=4",
+          "placeholder": "{{n_4}}",
+          "sampleValue": "1.KDP-01OFİS AC 40 20,7 28,0 Sigorta Kutusu AC 20,7 28,0 NOT-1"
+        },
+        "n_5": {
+          "label": "N=5",
+          "placeholder": "{{n_5}}",
+          "sampleValue": "DAĞITIM PANOSU YEMEKHANE AC 40 27,7 22,4 Sigorta Kutusu AC 27,7 22,4 NOT-1"
+        }
+      }
+    },
+    {
+      "fileName": "FR7.2.37 Yıldırımdan Korunma Tesisatı Muayene Raporu.docx",
+      "tables": [
+        {
+          "index": 1,
+          "rowCount": 8,
+          "fields": [
+            {
+              "label": "Firma Adı",
+              "value": "MAYA AMBALAJ BASIM VE DIS TICARET LIMITED SIRKETI Rapor Numarası ET-2025-402-03",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Adresi",
+              "value": "ORGANIZE SAN. MH. 14 SK KARAMAN MERKEZ NO:5/0 KARAMAN Rapor Tarihi 29.12.2025",
+              "isEditable": true
+            },
+            {
+              "label": "SGK Sicil Numarası",
+              "value": "21712010110289680700174000 Bir Sonraki Periyodik Kontrol Tarihi 17.12.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Metodu ve Kapsamı",
+              "value": "TS EN 62305-1 Yıldırımdan Korunma-Bölüm-1: Genel KurallarTS EN 62305-2 Yıldırımdan korunma-Bölüm-2: Risk YönetimiTS EN 62305-3 Yıldırımdan Korunma-Bölüm-3: Yapılarda Fiziksel Hasar ve Hayati TehlikeTS EN 62305-4 Yıldırımdan Korunma-Bölüm-4: Yapılarda Bulunan Elektrik ve Elektronik SistemlerTS 622 Yapıların Yıldırımdan Korunması Kurallarıİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar Yönetmeliği Elektrik İç Tesisleri Yönetmeliği",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "rowCount": 13,
+          "fields": [
+            {
+              "label": "Enerji sağlayan kuruluş",
+              "value": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S",
+              "isEditable": true
+            },
+            {
+              "label": "Şebeke gerilimi",
+              "value": "380 Tesise ait proje var mı? Var       Yok Risk analizi var mı? Var       Yok",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol nedeni",
+              "value": "Periyodik Kontrol İlk Kontrol Proje detayları ELİT MİMARLIK MÜHENDİSLİKÜMİT SÖNMEZ ODA SİC.NO:48544CAN BARDAKÇIODA SİC.NO:18403ONAY TARİH:23/06/2022",
+              "isEditable": true
+            },
+            {
+              "label": "Yapı cinsi",
+              "value": "Ev Ticari Endüstri Diğer Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi",
+              "isEditable": true
+            },
+            {
+              "label": "Hava durumu ve sıcaklığı",
+              "value": "25 0C Zemin nem durumu KURU",
+              "isEditable": true
+            },
+            {
+              "label": "Tesisatta kapsamlı değişiklik var mı?",
+              "value": "Var         Yok Bir önceki periyodik kontrol etiketi var mı? Var         Yok Pano/Ekipman tanımlaması Yok",
+              "isEditable": true
+            },
+            {
+              "label": "Yıldırımdan korunma tesisatı tipi",
+              "value": "ESE (Aktif-Radyoaktif) Paratoner   Franklin çubuğu: FRANKLİN Faraday kafesi: FARADAY                Doğal Bileşenler (Betonarme donatı, çelik yapı): DOĞAL Gerilmiş Tel",
+              "isEditable": true
+            },
+            {
+              "label": "Koruma seviyesi (EPS)",
+              "value": "1",
+              "isEditable": true
+            },
+            {
+              "label": "Yapı kullanım amacı, yapıya ait detaylar",
+              "value": "PREFABRİK BETONARME /FABRİKA",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "rowCount": 6,
+          "fields": [
+            {
+              "label": "Cihaz adı",
+              "value": "Chauvin Arnoux",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon tarihi",
+              "value": "14.01.2025",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon geçerlilik tarihi",
+              "value": "14.01.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Seri numarası",
+              "value": "467008 PKH",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon numarası",
+              "value": "2500290",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "rowCount": 38,
+          "fields": [
+            {
+              "label": "Yıldırımdan korunma risk analizi ve kapsama alanı projesi var mı?",
+              "value": "U Yıldırım seviyesine göre montajı yapılmış olan yıldırımdan korunma sistemi için tanımlanan kapsama alanı, binayı kapsıyor mu? U",
+              "isEditable": true
+            },
+            {
+              "label": "Ölçüm ve doğrulama metodu",
+              "value": "Çevrim empedansı 3 Uçlu topraklama Klamp metodu (Çoklu topraklayıcılı",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol Kriteri",
+              "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+              "isEditable": true
+            },
+            {
+              "label": "A. KORUMA BORUSU",
+              "value": "B. İNDİRME İLETKENLERİ",
+              "isEditable": true
+            },
+            {
+              "label": "Koruma borusu tesis edilmiş midir?",
+              "value": "U İndirme iletkenleri 2x50 mm² bakır veya eşdeğer iletken mi? U",
+              "isEditable": true
+            },
+            {
+              "label": "Koruma borusu galvaniz mi?",
+              "value": "U İndirme iletkenleri som bakır veya eşdeğer iletken mi? U",
+              "isEditable": true
+            },
+            {
+              "label": "Koruma borusunda oksitlenme var mı?",
+              "value": "U İndirme iletkenleri tespit kroşeleri kızıl döküm U",
+              "isEditable": true
+            },
+            {
+              "label": "Koruma borusu çapı uygun mudur?",
+              "value": "U İndirme iletkenleri tespit kroşeleri kızıl döküm U",
+              "isEditable": true
+            },
+            {
+              "label": "Koruma borusu duvara kelepçelerle tutturulmuş mudur?",
+              "value": "U İndirme iletkenleri tespit kroşelerinde oksitlenme var mıdır? U",
+              "isEditable": true
+            },
+            {
+              "label": "Koruma borusu ağzı yalıtkan bir madde ile kaplanmış mıdır?",
+              "value": "U İndirme iletkenleri köşe \"S\" yapmakta mıdır? U",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "rowCount": 1,
+          "fields": []
+        },
+        {
+          "index": 6,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 7,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 8,
+          "rowCount": 7,
+          "fields": []
+        }
+      ],
+      "allFields": [
+        {
+          "label": "Firma Adı",
+          "value": "MAYA AMBALAJ BASIM VE DIS TICARET LIMITED SIRKETI Rapor Numarası ET-2025-402-03",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Adresi",
+          "value": "ORGANIZE SAN. MH. 14 SK KARAMAN MERKEZ NO:5/0 KARAMAN Rapor Tarihi 29.12.2025",
+          "isEditable": true
+        },
+        {
+          "label": "SGK Sicil Numarası",
+          "value": "21712010110289680700174000 Bir Sonraki Periyodik Kontrol Tarihi 17.12.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "value": "TS EN 62305-1 Yıldırımdan Korunma-Bölüm-1: Genel KurallarTS EN 62305-2 Yıldırımdan korunma-Bölüm-2: Risk YönetimiTS EN 62305-3 Yıldırımdan Korunma-Bölüm-3: Yapılarda Fiziksel Hasar ve Hayati TehlikeTS EN 62305-4 Yıldırımdan Korunma-Bölüm-4: Yapılarda Bulunan Elektrik ve Elektronik SistemlerTS 622 Yapıların Yıldırımdan Korunması Kurallarıİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar Yönetmeliği Elektrik İç Tesisleri Yönetmeliği",
+          "isEditable": true
+        },
+        {
+          "label": "Enerji sağlayan kuruluş",
+          "value": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S",
+          "isEditable": true
+        },
+        {
+          "label": "Şebeke gerilimi",
+          "value": "380 Tesise ait proje var mı? Var       Yok Risk analizi var mı? Var       Yok",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol nedeni",
+          "value": "Periyodik Kontrol İlk Kontrol Proje detayları ELİT MİMARLIK MÜHENDİSLİKÜMİT SÖNMEZ ODA SİC.NO:48544CAN BARDAKÇIODA SİC.NO:18403ONAY TARİH:23/06/2022",
+          "isEditable": true
+        },
+        {
+          "label": "Yapı cinsi",
+          "value": "Ev Ticari Endüstri Diğer Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi",
+          "isEditable": true
+        },
+        {
+          "label": "Hava durumu ve sıcaklığı",
+          "value": "25 0C Zemin nem durumu KURU",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisatta kapsamlı değişiklik var mı?",
+          "value": "Var         Yok Bir önceki periyodik kontrol etiketi var mı? Var         Yok Pano/Ekipman tanımlaması Yok",
+          "isEditable": true
+        },
+        {
+          "label": "Yıldırımdan korunma tesisatı tipi",
+          "value": "ESE (Aktif-Radyoaktif) Paratoner   Franklin çubuğu: FRANKLİN Faraday kafesi: FARADAY                Doğal Bileşenler (Betonarme donatı, çelik yapı): DOĞAL Gerilmiş Tel",
+          "isEditable": true
+        },
+        {
+          "label": "Koruma seviyesi (EPS)",
+          "value": "1",
+          "isEditable": true
+        },
+        {
+          "label": "Yapı kullanım amacı, yapıya ait detaylar",
+          "value": "PREFABRİK BETONARME /FABRİKA",
+          "isEditable": true
+        },
+        {
+          "label": "Cihaz adı",
+          "value": "Chauvin Arnoux",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon tarihi",
+          "value": "14.01.2025",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "value": "14.01.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Seri numarası",
+          "value": "467008 PKH",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon numarası",
+          "value": "2500290",
+          "isEditable": true
+        },
+        {
+          "label": "Yıldırımdan korunma risk analizi ve kapsama alanı projesi var mı?",
+          "value": "U Yıldırım seviyesine göre montajı yapılmış olan yıldırımdan korunma sistemi için tanımlanan kapsama alanı, binayı kapsıyor mu? U",
+          "isEditable": true
+        },
+        {
+          "label": "Ölçüm ve doğrulama metodu",
+          "value": "Çevrim empedansı 3 Uçlu topraklama Klamp metodu (Çoklu topraklayıcılı",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol Kriteri",
+          "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+          "isEditable": true
+        },
+        {
+          "label": "A. KORUMA BORUSU",
+          "value": "B. İNDİRME İLETKENLERİ",
+          "isEditable": true
+        },
+        {
+          "label": "Koruma borusu tesis edilmiş midir?",
+          "value": "U İndirme iletkenleri 2x50 mm² bakır veya eşdeğer iletken mi? U",
+          "isEditable": true
+        },
+        {
+          "label": "Koruma borusu galvaniz mi?",
+          "value": "U İndirme iletkenleri som bakır veya eşdeğer iletken mi? U",
+          "isEditable": true
+        },
+        {
+          "label": "Koruma borusunda oksitlenme var mı?",
+          "value": "U İndirme iletkenleri tespit kroşeleri kızıl döküm U",
+          "isEditable": true
+        },
+        {
+          "label": "Koruma borusu çapı uygun mudur?",
+          "value": "U İndirme iletkenleri tespit kroşeleri kızıl döküm U",
+          "isEditable": true
+        },
+        {
+          "label": "Koruma borusu duvara kelepçelerle tutturulmuş mudur?",
+          "value": "U İndirme iletkenleri tespit kroşelerinde oksitlenme var mıdır? U",
+          "isEditable": true
+        },
+        {
+          "label": "Koruma borusu ağzı yalıtkan bir madde ile kaplanmış mıdır?",
+          "value": "U İndirme iletkenleri köşe \"S\" yapmakta mıdır? U",
+          "isEditable": true
+        },
+        {
+          "label": "Koruma borusu içindeki iletkenler PVC boru/hortum içinde midir?",
+          "value": "U İndirme iletkenleri tespit elemanları arası mesafe ortalama 0,5-0,7 m U",
+          "isEditable": true
+        },
+        {
+          "label": "Koruma borusu &gt;250 cm",
+          "value": "U Gerilmiş tel ise her bir tel ucu için indirme iletkeni kullanılmış mı? U",
+          "isEditable": true
+        },
+        {
+          "label": "C. MUAYENE KLEMENSİ",
+          "value": "D. ÇATI/TESİS ÜSTÜ",
+          "isEditable": true
+        },
+        {
+          "label": "Muayene klemensi tesisi",
+          "value": "U Çatı direği boyu ve çapı uygun mu? (Boy: 6-6,5 m Çap; 2”) U",
+          "isEditable": true
+        },
+        {
+          "label": "Muayene klemensi oksitlenmeye karşı koruma alınmış mıdır?",
+          "value": "U Çatı direği üzerinde iletken tespit elemanları bulunmakta mıdır? U",
+          "isEditable": true
+        },
+        {
+          "label": "Muayene klemensi zeminden 270 cm yukarıda mıdır?",
+          "value": "U Çatı direği çatı üzerine sağlam tutturulmuş mudur? U",
+          "isEditable": true
+        },
+        {
+          "label": "Muayene klemensi ile koruma borusu arası mesafe 20 cm midir?",
+          "value": "U İniş iletkenleri çatı direğine uygun olarak irtibatlandırılmış mıdır? U",
+          "isEditable": true
+        },
+        {
+          "label": "İndirme iletkenleri topraklama elektrotlarına uygun bir şekilde tutturulmuş mudur?",
+          "value": "U Topraklama hattı tesis edilmiş midir? Bina topraklaması ile eşpotansiyel midir? U",
+          "isEditable": true
+        },
+        {
+          "label": "İndirme iletkenleri koruma borusundan sonra zemin üzerinde midir?",
+          "value": "U Topraklama tesisi direnci 10 Ω'dan küçük müdür? U",
+          "isEditable": true
+        },
+        {
+          "label": "İndirme iletkenlerinde sürekliliğin sağlandığı görülüyor mu? (Hayır ise ölçüm sonucu kaç Ω dur ?)",
+          "value": "6,84 AG parafudru (DKD) kullanılmış ise, koordineli olarak kullanılmış mı? Kullanılmamışsa ana pano ve diğer tali panoları besleyen kablolar ekranlı mı? U",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol Kriteri",
+          "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+          "isEditable": true
+        },
+        {
+          "label": "Ağ iletkenlerinin kesitleri standarta uygun mudur?",
+          "value": "U Yatay yakalama sistemi (ağ) için yeterli sayıda indiricilere bağlantı var mı? (en az 20 m’de 1 indirici) U",
+          "isEditable": true
+        },
+        {
+          "label": "Ağ risk analizinde belirlenen genişlikte midir?",
+          "value": "U İndirme iletkenleri standarta uygun kesitte som bakır veya eşdeğer iletken mi? U",
+          "isEditable": true
+        },
+        {
+          "label": "Ağ’da varsa düşey yakalama çubukları uygun mudur?",
+          "value": "U Doğal indirici metal yapılar kullanılmıyorsa indirme iletkenleri tespit kroşeleri kızıl döküm U",
+          "isEditable": true
+        },
+        {
+          "label": "Ana dağıtım panosunda uygun parafudr tesis edilmiş mi?",
+          "value": "UG Parafudr tipi UG",
+          "isEditable": true
+        }
+      ],
+      "suggestedPlaceholders": {
+        "firma_adı": {
+          "label": "Firma Adı",
+          "placeholder": "{{firma_adı}}",
+          "sampleValue": "MAYA AMBALAJ BASIM VE DIS TICARET LIMITED SIRKETI Rapor Numarası ET-2025-402-03"
+        },
+        "periyodik_kontrol_adresi": {
+          "label": "Periyodik Kontrol Adresi",
+          "placeholder": "{{periyodik_kontrol_adresi}}",
+          "sampleValue": "ORGANIZE SAN. MH. 14 SK KARAMAN MERKEZ NO:5/0 KARAMAN Rapor Tarihi 29.12.2025"
+        },
+        "sgk_sicil_numarası": {
+          "label": "SGK Sicil Numarası",
+          "placeholder": "{{sgk_sicil_numarası}}",
+          "sampleValue": "21712010110289680700174000 Bir Sonraki Periyodik Kontrol Tarihi 17.12.2026"
+        },
+        "periyodik_kontrol_metodu_ve_kapsamı": {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "placeholder": "{{periyodik_kontrol_metodu_ve_kapsamı}}",
+          "sampleValue": "TS EN 62305-1 Yıldırımdan Korunma-Bölüm-1: Genel KurallarTS EN 62305-2 Yıldırımdan korunma-Bölüm-2: Risk YönetimiTS EN 62305-3 Yıldırımdan Korunma-Bölüm-3: Yapılarda Fiziksel Hasar ve Hayati TehlikeTS EN 62305-4 Yıldırımdan Korunma-Bölüm-4: Yapılarda Bulunan Elektrik ve Elektronik SistemlerTS 622 Yapıların Yıldırımdan Korunması Kurallarıİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar Yönetmeliği Elektrik İç Tesisleri Yönetmeliği"
+        },
+        "enerji_sağlayan_kuruluş": {
+          "label": "Enerji sağlayan kuruluş",
+          "placeholder": "{{enerji_sağlayan_kuruluş}}",
+          "sampleValue": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S"
+        },
+        "şebeke_gerilimi": {
+          "label": "Şebeke gerilimi",
+          "placeholder": "{{şebeke_gerilimi}}",
+          "sampleValue": "380 Tesise ait proje var mı? Var       Yok Risk analizi var mı? Var       Yok"
+        },
+        "kontrol_nedeni": {
+          "label": "Kontrol nedeni",
+          "placeholder": "{{kontrol_nedeni}}",
+          "sampleValue": "Periyodik Kontrol İlk Kontrol Proje detayları ELİT MİMARLIK MÜHENDİSLİKÜMİT SÖNMEZ ODA SİC.NO:48544CAN BARDAKÇIODA SİC.NO:18403ONAY TARİH:23/06/2022"
+        },
+        "yapı_cinsi": {
+          "label": "Yapı cinsi",
+          "placeholder": "{{yapı_cinsi}}",
+          "sampleValue": "Ev Ticari Endüstri Diğer Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi"
+        },
+        "hava_durumu_ve_sıcaklığı": {
+          "label": "Hava durumu ve sıcaklığı",
+          "placeholder": "{{hava_durumu_ve_sıcaklığı}}",
+          "sampleValue": "25 0C Zemin nem durumu KURU"
+        },
+        "tesisatta_kapsamlı_değişiklik_var_mı_": {
+          "label": "Tesisatta kapsamlı değişiklik var mı?",
+          "placeholder": "{{tesisatta_kapsamlı_değişiklik_var_mı_}}",
+          "sampleValue": "Var         Yok Bir önceki periyodik kontrol etiketi var mı? Var         Yok Pano/Ekipman tanımlaması Yok"
+        },
+        "yıldırımdan_korunma_tesisatı_tipi": {
+          "label": "Yıldırımdan korunma tesisatı tipi",
+          "placeholder": "{{yıldırımdan_korunma_tesisatı_tipi}}",
+          "sampleValue": "ESE (Aktif-Radyoaktif) Paratoner   Franklin çubuğu: FRANKLİN Faraday kafesi: FARADAY                Doğal Bileşenler (Betonarme donatı, çelik yapı): DOĞAL Gerilmiş Tel"
+        },
+        "koruma_seviyesi_eps_": {
+          "label": "Koruma seviyesi (EPS)",
+          "placeholder": "{{koruma_seviyesi_eps_}}",
+          "sampleValue": "1"
+        },
+        "yapı_kullanım_amacı_yapıya_ait_detaylar": {
+          "label": "Yapı kullanım amacı, yapıya ait detaylar",
+          "placeholder": "{{yapı_kullanım_amacı_yapıya_ait_detaylar}}",
+          "sampleValue": "PREFABRİK BETONARME /FABRİKA"
+        },
+        "cihaz_adı": {
+          "label": "Cihaz adı",
+          "placeholder": "{{cihaz_adı}}",
+          "sampleValue": "Chauvin Arnoux"
+        },
+        "kalibrasyon_tarihi": {
+          "label": "Kalibrasyon tarihi",
+          "placeholder": "{{kalibrasyon_tarihi}}",
+          "sampleValue": "14.01.2025"
+        },
+        "kalibrasyon_geçerlilik_tarihi": {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "placeholder": "{{kalibrasyon_geçerlilik_tarihi}}",
+          "sampleValue": "14.01.2026"
+        },
+        "seri_numarası": {
+          "label": "Seri numarası",
+          "placeholder": "{{seri_numarası}}",
+          "sampleValue": "467008 PKH"
+        },
+        "kalibrasyon_numarası": {
+          "label": "Kalibrasyon numarası",
+          "placeholder": "{{kalibrasyon_numarası}}",
+          "sampleValue": "2500290"
+        },
+        "yıldırımdan_korunma_risk_analizi_ve_kapsama_alanı_projesi_var_mı_": {
+          "label": "Yıldırımdan korunma risk analizi ve kapsama alanı projesi var mı?",
+          "placeholder": "{{yıldırımdan_korunma_risk_analizi_ve_kapsama_alanı_projesi_var_mı_}}",
+          "sampleValue": "U Yıldırım seviyesine göre montajı yapılmış olan yıldırımdan korunma sistemi için tanımlanan kapsama alanı, binayı kapsıyor mu? U"
+        },
+        "ölçüm_ve_doğrulama_metodu": {
+          "label": "Ölçüm ve doğrulama metodu",
+          "placeholder": "{{ölçüm_ve_doğrulama_metodu}}",
+          "sampleValue": "Çevrim empedansı 3 Uçlu topraklama Klamp metodu (Çoklu topraklayıcılı"
+        },
+        "kontrol_kriteri": {
+          "label": "Kontrol Kriteri",
+          "placeholder": "{{kontrol_kriteri}}",
+          "sampleValue": "Değerlendirme Kontrol Kriteri Değerlendirme"
+        },
+        "a_koruma_borusu": {
+          "label": "A. KORUMA BORUSU",
+          "placeholder": "{{a_koruma_borusu}}",
+          "sampleValue": "B. İNDİRME İLETKENLERİ"
+        },
+        "koruma_borusu_tesis_edilmiş_midir_": {
+          "label": "Koruma borusu tesis edilmiş midir?",
+          "placeholder": "{{koruma_borusu_tesis_edilmiş_midir_}}",
+          "sampleValue": "U İndirme iletkenleri 2x50 mm² bakır veya eşdeğer iletken mi? U"
+        },
+        "koruma_borusu_galvaniz_mi_": {
+          "label": "Koruma borusu galvaniz mi?",
+          "placeholder": "{{koruma_borusu_galvaniz_mi_}}",
+          "sampleValue": "U İndirme iletkenleri som bakır veya eşdeğer iletken mi? U"
+        },
+        "koruma_borusunda_oksitlenme_var_mı_": {
+          "label": "Koruma borusunda oksitlenme var mı?",
+          "placeholder": "{{koruma_borusunda_oksitlenme_var_mı_}}",
+          "sampleValue": "U İndirme iletkenleri tespit kroşeleri kızıl döküm U"
+        },
+        "koruma_borusu_çapı_uygun_mudur_": {
+          "label": "Koruma borusu çapı uygun mudur?",
+          "placeholder": "{{koruma_borusu_çapı_uygun_mudur_}}",
+          "sampleValue": "U İndirme iletkenleri tespit kroşeleri kızıl döküm U"
+        },
+        "koruma_borusu_duvara_kelepçelerle_tutturulmuş_mudur_": {
+          "label": "Koruma borusu duvara kelepçelerle tutturulmuş mudur?",
+          "placeholder": "{{koruma_borusu_duvara_kelepçelerle_tutturulmuş_mudur_}}",
+          "sampleValue": "U İndirme iletkenleri tespit kroşelerinde oksitlenme var mıdır? U"
+        },
+        "koruma_borusu_ağzı_yalıtkan_bir_madde_ile_kaplanmış_mıdır_": {
+          "label": "Koruma borusu ağzı yalıtkan bir madde ile kaplanmış mıdır?",
+          "placeholder": "{{koruma_borusu_ağzı_yalıtkan_bir_madde_ile_kaplanmış_mıdır_}}",
+          "sampleValue": "U İndirme iletkenleri köşe \"S\" yapmakta mıdır? U"
+        },
+        "koruma_borusu_içindeki_iletkenler_pvc_boru_hortum_içinde_midir_": {
+          "label": "Koruma borusu içindeki iletkenler PVC boru/hortum içinde midir?",
+          "placeholder": "{{koruma_borusu_içindeki_iletkenler_pvc_boru_hortum_içinde_midir_}}",
+          "sampleValue": "U İndirme iletkenleri tespit elemanları arası mesafe ortalama 0,5-0,7 m U"
+        },
+        "koruma_borusu_gt_250_cm": {
+          "label": "Koruma borusu &gt;250 cm",
+          "placeholder": "{{koruma_borusu_gt_250_cm}}",
+          "sampleValue": "U Gerilmiş tel ise her bir tel ucu için indirme iletkeni kullanılmış mı? U"
+        },
+        "c_muayene_klemensi̇": {
+          "label": "C. MUAYENE KLEMENSİ",
+          "placeholder": "{{c_muayene_klemensi̇}}",
+          "sampleValue": "D. ÇATI/TESİS ÜSTÜ"
+        },
+        "muayene_klemensi_tesisi": {
+          "label": "Muayene klemensi tesisi",
+          "placeholder": "{{muayene_klemensi_tesisi}}",
+          "sampleValue": "U Çatı direği boyu ve çapı uygun mu? (Boy: 6-6,5 m Çap; 2”) U"
+        },
+        "muayene_klemensi_oksitlenmeye_karşı_koruma_alınmış_mıdır_": {
+          "label": "Muayene klemensi oksitlenmeye karşı koruma alınmış mıdır?",
+          "placeholder": "{{muayene_klemensi_oksitlenmeye_karşı_koruma_alınmış_mıdır_}}",
+          "sampleValue": "U Çatı direği üzerinde iletken tespit elemanları bulunmakta mıdır? U"
+        },
+        "muayene_klemensi_zeminden_270_cm_yukarıda_mıdır_": {
+          "label": "Muayene klemensi zeminden 270 cm yukarıda mıdır?",
+          "placeholder": "{{muayene_klemensi_zeminden_270_cm_yukarıda_mıdır_}}",
+          "sampleValue": "U Çatı direği çatı üzerine sağlam tutturulmuş mudur? U"
+        },
+        "muayene_klemensi_ile_koruma_borusu_arası_mesafe_20_cm_midir_": {
+          "label": "Muayene klemensi ile koruma borusu arası mesafe 20 cm midir?",
+          "placeholder": "{{muayene_klemensi_ile_koruma_borusu_arası_mesafe_20_cm_midir_}}",
+          "sampleValue": "U İniş iletkenleri çatı direğine uygun olarak irtibatlandırılmış mıdır? U"
+        },
+        "i̇ndirme_iletkenleri_topraklama_elektrotlarına_uygun_bir_şekilde_tutturulmuş_mudur_": {
+          "label": "İndirme iletkenleri topraklama elektrotlarına uygun bir şekilde tutturulmuş mudur?",
+          "placeholder": "{{i̇ndirme_iletkenleri_topraklama_elektrotlarına_uygun_bir_şekilde_tutturulmuş_mudur_}}",
+          "sampleValue": "U Topraklama hattı tesis edilmiş midir? Bina topraklaması ile eşpotansiyel midir? U"
+        },
+        "i̇ndirme_iletkenleri_koruma_borusundan_sonra_zemin_üzerinde_midir_": {
+          "label": "İndirme iletkenleri koruma borusundan sonra zemin üzerinde midir?",
+          "placeholder": "{{i̇ndirme_iletkenleri_koruma_borusundan_sonra_zemin_üzerinde_midir_}}",
+          "sampleValue": "U Topraklama tesisi direnci 10 Ω'dan küçük müdür? U"
+        },
+        "i̇ndirme_iletkenlerinde_sürekliliğin_sağlandığı_görülüyor_mu_hayır_ise_ölçüm_sonucu_kaç_dur_": {
+          "label": "İndirme iletkenlerinde sürekliliğin sağlandığı görülüyor mu? (Hayır ise ölçüm sonucu kaç Ω dur ?)",
+          "placeholder": "{{i̇ndirme_iletkenlerinde_sürekliliğin_sağlandığı_görülüyor_mu_hayır_ise_ölçüm_sonucu_kaç_dur_}}",
+          "sampleValue": "6,84 AG parafudru (DKD) kullanılmış ise, koordineli olarak kullanılmış mı? Kullanılmamışsa ana pano ve diğer tali panoları besleyen kablolar ekranlı mı? U"
+        },
+        "ağ_iletkenlerinin_kesitleri_standarta_uygun_mudur_": {
+          "label": "Ağ iletkenlerinin kesitleri standarta uygun mudur?",
+          "placeholder": "{{ağ_iletkenlerinin_kesitleri_standarta_uygun_mudur_}}",
+          "sampleValue": "U Yatay yakalama sistemi (ağ) için yeterli sayıda indiricilere bağlantı var mı? (en az 20 m’de 1 indirici) U"
+        },
+        "ağ_risk_analizinde_belirlenen_genişlikte_midir_": {
+          "label": "Ağ risk analizinde belirlenen genişlikte midir?",
+          "placeholder": "{{ağ_risk_analizinde_belirlenen_genişlikte_midir_}}",
+          "sampleValue": "U İndirme iletkenleri standarta uygun kesitte som bakır veya eşdeğer iletken mi? U"
+        },
+        "ağ_da_varsa_düşey_yakalama_çubukları_uygun_mudur_": {
+          "label": "Ağ’da varsa düşey yakalama çubukları uygun mudur?",
+          "placeholder": "{{ağ_da_varsa_düşey_yakalama_çubukları_uygun_mudur_}}",
+          "sampleValue": "U Doğal indirici metal yapılar kullanılmıyorsa indirme iletkenleri tespit kroşeleri kızıl döküm U"
+        },
+        "ana_dağıtım_panosunda_uygun_parafudr_tesis_edilmiş_mi_": {
+          "label": "Ana dağıtım panosunda uygun parafudr tesis edilmiş mi?",
+          "placeholder": "{{ana_dağıtım_panosunda_uygun_parafudr_tesis_edilmiş_mi_}}",
+          "sampleValue": "UG Parafudr tipi UG"
+        }
+      }
+    },
+    {
+      "fileName": "FR7.2.38 Jenaratör Muayene ve Ölçüm Raporu.docx",
+      "tables": [
+        {
+          "index": 1,
+          "rowCount": 8,
+          "fields": [
+            {
+              "label": "Firma Adı",
+              "value": "Rapor Numarası ET-2025-",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Adresi",
+              "value": "Rapor Tarihi",
+              "isEditable": true
+            },
+            {
+              "label": "SGK Sicil Numarası",
+              "value": "Bir Sonraki Periyodik Kontrol Tarihi",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Metodu ve Kapsamı",
+              "value": "*İş Ekipmanlarının Kullanımında Sağlık Ve Güvenlik Şartları Yönetmeliği*21/8/2001 Tarihli Ve 24500 Sayılı Resmî Gazete’de Yayımlanan Elektrik Tesislerinde Topraklamalar Yönetmeliği,*30/11/2000 Tarihli Ve 24246 Sayılı Resmî Gazete‘de Yayımlanan Elektrik Kuvvetli Akım Tesisleri Yönetmeliği*4/11/1984 Tarihli Ve 18565 Sayılı Resmî Gazete’de Yayımlanan Elektrik İç Tesisleri Yönetmeliği*TS EN IEC 60079-0 Patlayıcı ortamlar - Bölüm 0: Donanım - Genel kurallar*TS EN IEC 61439 alçak gerilim anahtarlama düzeni ve kontrol düzeni panoları standartları*TS HD 60364-4-41 Alçak gerilim elektrik tesisleri - bölüm 4 - 41: Güvenlik için koruma - Elektrik çarpmasına karşı koruma*TS HD 60364-5-534 Alçak gerilim elektrik tesisleri - Bölüm 5 - 53: Elektriksel teçhizatın seçilmesi ve montajı - Ayırma, anahtarlama ve kontrol - *Kısım 534:Aşırı gerilimlere karşı koruma düzenleri*TS HD 60364-6 Alçak gerilim elektrik tesisleri - Bölüm 6: Doğrulama.*TS ISO 8528-1 Pistonlu içten yanmalı motorla tahrik edilen alternatif akım jeneratör grupları - Bölüm 1: Uygulama, beyan değerleri ve performans*02.09.1998 tarih ve 19917 Resmi Gazete’de yayımlanarak yürürlüğe giren “Elektrik Enerjisi İmdat Gruplari ve Otoprodüktör Tesisleri Ruhsat Yönetmeliği”*İller Bankası Sabit Tip Dizel Alternatör Grubu Malzeme ve Montaj Teknik Şartnamesi",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "rowCount": 10,
+          "fields": [
+            {
+              "label": "Enerji sağlayan kuruluş",
+              "value": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S",
+              "isEditable": true
+            },
+            {
+              "label": "Şebeke gerilimi",
+              "value": "400/230",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol nedeni",
+              "value": "Periyodik Kontrol İlk Kontrol Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi",
+              "isEditable": true
+            },
+            {
+              "label": "Tesise Ait Elektrik Projesi Var Mı?",
+              "value": "VAR YOK",
+              "isEditable": true
+            },
+            {
+              "label": "Yapı cinsi",
+              "value": "Ev Ticari Endüstri Diğer Ekipmanın kullanım amacı ELEKTRİK ÜRETİM Son kontrol tarihi 21.11.2025",
+              "isEditable": true
+            },
+            {
+              "label": "Marka",
+              "value": "Motor Gücü (kw)",
+              "isEditable": true
+            },
+            {
+              "label": "Model/Tipi",
+              "value": "Kapasite (kVA)",
+              "isEditable": true
+            },
+            {
+              "label": "Seri no.",
+              "value": "İmalat yılı",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "rowCount": 6,
+          "fields": [
+            {
+              "label": "Cihaz adı",
+              "value": "Chauvin Arnoux",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon tarihi",
+              "value": "14.01.2025",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon geçerlilik tarihi",
+              "value": "14.01.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Seri numarası",
+              "value": "467008 PKH",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon numarası",
+              "value": "2500290",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "rowCount": 15,
+          "fields": [
+            {
+              "label": "Sıra",
+              "value": "GENEL KONTROLLER Uygunluk Notu",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "rowCount": 1,
+          "fields": []
+        },
+        {
+          "index": 6,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 7,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 8,
+          "rowCount": 7,
+          "fields": []
+        }
+      ],
+      "allFields": [
+        {
+          "label": "Firma Adı",
+          "value": "Rapor Numarası ET-2025-",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Adresi",
+          "value": "Rapor Tarihi",
+          "isEditable": true
+        },
+        {
+          "label": "SGK Sicil Numarası",
+          "value": "Bir Sonraki Periyodik Kontrol Tarihi",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "value": "*İş Ekipmanlarının Kullanımında Sağlık Ve Güvenlik Şartları Yönetmeliği*21/8/2001 Tarihli Ve 24500 Sayılı Resmî Gazete’de Yayımlanan Elektrik Tesislerinde Topraklamalar Yönetmeliği,*30/11/2000 Tarihli Ve 24246 Sayılı Resmî Gazete‘de Yayımlanan Elektrik Kuvvetli Akım Tesisleri Yönetmeliği*4/11/1984 Tarihli Ve 18565 Sayılı Resmî Gazete’de Yayımlanan Elektrik İç Tesisleri Yönetmeliği*TS EN IEC 60079-0 Patlayıcı ortamlar - Bölüm 0: Donanım - Genel kurallar*TS EN IEC 61439 alçak gerilim anahtarlama düzeni ve kontrol düzeni panoları standartları*TS HD 60364-4-41 Alçak gerilim elektrik tesisleri - bölüm 4 - 41: Güvenlik için koruma - Elektrik çarpmasına karşı koruma*TS HD 60364-5-534 Alçak gerilim elektrik tesisleri - Bölüm 5 - 53: Elektriksel teçhizatın seçilmesi ve montajı - Ayırma, anahtarlama ve kontrol - *Kısım 534:Aşırı gerilimlere karşı koruma düzenleri*TS HD 60364-6 Alçak gerilim elektrik tesisleri - Bölüm 6: Doğrulama.*TS ISO 8528-1 Pistonlu içten yanmalı motorla tahrik edilen alternatif akım jeneratör grupları - Bölüm 1: Uygulama, beyan değerleri ve performans*02.09.1998 tarih ve 19917 Resmi Gazete’de yayımlanarak yürürlüğe giren “Elektrik Enerjisi İmdat Gruplari ve Otoprodüktör Tesisleri Ruhsat Yönetmeliği”*İller Bankası Sabit Tip Dizel Alternatör Grubu Malzeme ve Montaj Teknik Şartnamesi",
+          "isEditable": true
+        },
+        {
+          "label": "Enerji sağlayan kuruluş",
+          "value": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S",
+          "isEditable": true
+        },
+        {
+          "label": "Şebeke gerilimi",
+          "value": "400/230",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol nedeni",
+          "value": "Periyodik Kontrol İlk Kontrol Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi",
+          "isEditable": true
+        },
+        {
+          "label": "Tesise Ait Elektrik Projesi Var Mı?",
+          "value": "VAR YOK",
+          "isEditable": true
+        },
+        {
+          "label": "Yapı cinsi",
+          "value": "Ev Ticari Endüstri Diğer Ekipmanın kullanım amacı ELEKTRİK ÜRETİM Son kontrol tarihi 21.11.2025",
+          "isEditable": true
+        },
+        {
+          "label": "Marka",
+          "value": "Motor Gücü (kw)",
+          "isEditable": true
+        },
+        {
+          "label": "Model/Tipi",
+          "value": "Kapasite (kVA)",
+          "isEditable": true
+        },
+        {
+          "label": "Seri no.",
+          "value": "İmalat yılı",
+          "isEditable": true
+        },
+        {
+          "label": "Cihaz adı",
+          "value": "Chauvin Arnoux",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon tarihi",
+          "value": "14.01.2025",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "value": "14.01.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Seri numarası",
+          "value": "467008 PKH",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon numarası",
+          "value": "2500290",
+          "isEditable": true
+        },
+        {
+          "label": "Sıra",
+          "value": "GENEL KONTROLLER Uygunluk Notu",
+          "isEditable": true
+        }
+      ],
+      "suggestedPlaceholders": {
+        "firma_adı": {
+          "label": "Firma Adı",
+          "placeholder": "{{firma_adı}}",
+          "sampleValue": "Rapor Numarası ET-2025-"
+        },
+        "periyodik_kontrol_adresi": {
+          "label": "Periyodik Kontrol Adresi",
+          "placeholder": "{{periyodik_kontrol_adresi}}",
+          "sampleValue": "Rapor Tarihi"
+        },
+        "sgk_sicil_numarası": {
+          "label": "SGK Sicil Numarası",
+          "placeholder": "{{sgk_sicil_numarası}}",
+          "sampleValue": "Bir Sonraki Periyodik Kontrol Tarihi"
+        },
+        "periyodik_kontrol_metodu_ve_kapsamı": {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "placeholder": "{{periyodik_kontrol_metodu_ve_kapsamı}}",
+          "sampleValue": "*İş Ekipmanlarının Kullanımında Sağlık Ve Güvenlik Şartları Yönetmeliği*21/8/2001 Tarihli Ve 24500 Sayılı Resmî Gazete’de Yayımlanan Elektrik Tesislerinde Topraklamalar Yönetmeliği,*30/11/2000 Tarihli Ve 24246 Sayılı Resmî Gazete‘de Yayımlanan Elektrik Kuvvetli Akım Tesisleri Yönetmeliği*4/11/1984 Tarihli Ve 18565 Sayılı Resmî Gazete’de Yayımlanan Elektrik İç Tesisleri Yönetmeliği*TS EN IEC 60079-0 Patlayıcı ortamlar - Bölüm 0: Donanım - Genel kurallar*TS EN IEC 61439 alçak gerilim anahtarlama düzeni ve kontrol düzeni panoları standartları*TS HD 60364-4-41 Alçak gerilim elektrik tesisleri - bölüm 4 - 41: Güvenlik için koruma - Elektrik çarpmasına karşı koruma*TS HD 60364-5-534 Alçak gerilim elektrik tesisleri - Bölüm 5 - 53: Elektriksel teçhizatın seçilmesi ve montajı - Ayırma, anahtarlama ve kontrol - *Kısım 534:Aşırı gerilimlere karşı koruma düzenleri*TS HD 60364-6 Alçak gerilim elektrik tesisleri - Bölüm 6: Doğrulama.*TS ISO 8528-1 Pistonlu içten yanmalı motorla tahrik edilen alternatif akım jeneratör grupları - Bölüm 1: Uygulama, beyan değerleri ve performans*02.09.1998 tarih ve 19917 Resmi Gazete’de yayımlanarak yürürlüğe giren “Elektrik Enerjisi İmdat Gruplari ve Otoprodüktör Tesisleri Ruhsat Yönetmeliği”*İller Bankası Sabit Tip Dizel Alternatör Grubu Malzeme ve Montaj Teknik Şartnamesi"
+        },
+        "enerji_sağlayan_kuruluş": {
+          "label": "Enerji sağlayan kuruluş",
+          "placeholder": "{{enerji_sağlayan_kuruluş}}",
+          "sampleValue": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S"
+        },
+        "şebeke_gerilimi": {
+          "label": "Şebeke gerilimi",
+          "placeholder": "{{şebeke_gerilimi}}",
+          "sampleValue": "400/230"
+        },
+        "kontrol_nedeni": {
+          "label": "Kontrol nedeni",
+          "placeholder": "{{kontrol_nedeni}}",
+          "sampleValue": "Periyodik Kontrol İlk Kontrol Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi"
+        },
+        "tesise_ait_elektrik_projesi_var_mı_": {
+          "label": "Tesise Ait Elektrik Projesi Var Mı?",
+          "placeholder": "{{tesise_ait_elektrik_projesi_var_mı_}}",
+          "sampleValue": "VAR YOK"
+        },
+        "yapı_cinsi": {
+          "label": "Yapı cinsi",
+          "placeholder": "{{yapı_cinsi}}",
+          "sampleValue": "Ev Ticari Endüstri Diğer Ekipmanın kullanım amacı ELEKTRİK ÜRETİM Son kontrol tarihi 21.11.2025"
+        },
+        "marka": {
+          "label": "Marka",
+          "placeholder": "{{marka}}",
+          "sampleValue": "Motor Gücü (kw)"
+        },
+        "model_tipi": {
+          "label": "Model/Tipi",
+          "placeholder": "{{model_tipi}}",
+          "sampleValue": "Kapasite (kVA)"
+        },
+        "seri_no_": {
+          "label": "Seri no.",
+          "placeholder": "{{seri_no_}}",
+          "sampleValue": "İmalat yılı"
+        },
+        "cihaz_adı": {
+          "label": "Cihaz adı",
+          "placeholder": "{{cihaz_adı}}",
+          "sampleValue": "Chauvin Arnoux"
+        },
+        "kalibrasyon_tarihi": {
+          "label": "Kalibrasyon tarihi",
+          "placeholder": "{{kalibrasyon_tarihi}}",
+          "sampleValue": "14.01.2025"
+        },
+        "kalibrasyon_geçerlilik_tarihi": {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "placeholder": "{{kalibrasyon_geçerlilik_tarihi}}",
+          "sampleValue": "14.01.2026"
+        },
+        "seri_numarası": {
+          "label": "Seri numarası",
+          "placeholder": "{{seri_numarası}}",
+          "sampleValue": "467008 PKH"
+        },
+        "kalibrasyon_numarası": {
+          "label": "Kalibrasyon numarası",
+          "placeholder": "{{kalibrasyon_numarası}}",
+          "sampleValue": "2500290"
+        },
+        "sıra": {
+          "label": "Sıra",
+          "placeholder": "{{sıra}}",
+          "sampleValue": "GENEL KONTROLLER Uygunluk Notu"
+        }
+      }
+    },
+    {
+      "fileName": "FR7.2.40 Elektrik İç Tesisat Ölçüm Raporu-2 (2).docx",
+      "tables": [
+        {
+          "index": 1,
+          "rowCount": 8,
+          "fields": [
+            {
+              "label": "Firma Adı",
+              "value": "MAYA AMBALAJ BASIM VE DIS TICARET LIMITED SIRKETI Rapor Numarası ET-2025-402-02",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Adresi",
+              "value": "ORGANIZE SAN. MH. 14 SK KARAMAN MERKEZ NO:5/0 KARAMAN Rapor Tarihi 29.12.2025",
+              "isEditable": true
+            },
+            {
+              "label": "SGK Sicil Numarası",
+              "value": "21712010110289680700174000 Bir Sonraki Periyodik Kontrol Tarihi 17.12.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Metodu ve Kapsamı",
+              "value": "TS HD 60364-4-41 Alçak Gerilim Elektrik Tesisleri – Bölüm 4: Güvenlik İçin Koruma – Bölüm 41: Elektrik Çarpmasına Karşı KorumaTS HD 60364-6 Alçak Gerilim Elektrik Tesisatları – Bölüm 6: Doğrulamaİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar YönetmeliğiElektrik İç Tesisleri Yönetmeliği",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "rowCount": 17,
+          "fields": [
+            {
+              "label": "Enerji sağlayan kuruluş",
+              "value": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S",
+              "isEditable": true
+            },
+            {
+              "label": "Şebeke gerilimi",
+              "value": "380 Tesise ait proje var mı? Var       Yok Tek hat şeması var mı? Var       Yok",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol nedeni",
+              "value": "Periyodik Kontrol İlk Kontrol Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi",
+              "isEditable": true
+            },
+            {
+              "label": "Yapı cinsi",
+              "value": "Ev Ticari Endüstri Diğer Ekipmanın kullanım amacı FABRİKA Son kontrol tarihi 26.12.2025",
+              "isEditable": true
+            },
+            {
+              "label": "Faz iletkenlerinin sayısı ve tipi",
+              "value": "AA 1 faz, 2 tel 1 faz, 3 tel 2 faz, 3 tel 3 faz, 3 tel 3 faz, 4 tel DA 2 kutup 3 kutup Diğer Temel topraklama direnci (Ω) 0,73",
+              "isEditable": true
+            },
+            {
+              "label": "Besleme kaynağı karakteristikleri",
+              "value": "Nominal gerilim , U/Uo(1) 0.4/0.23  kV (1. Fazdan alınan değer) Nominal frekans, f (1) 50Hz Hata Akımı Olasılığı, IF(1) …5,89…kA Dış çevrim empedansı ZE  0,039   Ω TT-TN-S Şebeke için ana RCD anma akımı 1000",
+              "isEditable": true
+            },
+            {
+              "label": "Ana kesici karakteristikleri",
+              "value": "Tip TMŞNominal Akım 1000 TT-TNS Şebeke için ana RCD test akımı (mA) ve süresi (ms) 300/500",
+              "isEditable": true
+            },
+            {
+              "label": "Tesisatta kapsamlı değişiklik var mı? (&gt;%20)",
+              "value": "Var       Yok",
+              "isEditable": true
+            },
+            {
+              "label": "Tesisatta aşırı gerilim koruma cihazları (DKD/SPD) kullanılmış mı?",
+              "value": "Evet       Hayır",
+              "isEditable": true
+            },
+            {
+              "label": "Tespit edilen bilgiler(Doğrudan dokunmaya karşı koruma önlemleri)",
+              "value": "Gerilim altındaki bölümlerin yalıtılması (iç kapak veya pleksi koruma)  Mahfaza (IPXY, Pano kilidi, tehlike işareti vb.) Engel El ulaşma uzaklığı dışına yerleştirme İlave koruma 30 mA RCD (5xI için 40 ms açma zamanı); devre kesicisi &lt;32 A devreler için (TS HD 60364-4-41)",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "rowCount": 6,
+          "fields": [
+            {
+              "label": "Cihaz adı",
+              "value": "UTİ165A",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon tarihi",
+              "value": "04.09.2025",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon geçerlilik tarihi",
+              "value": "04.09.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Seri numarası",
+              "value": "C212048686",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon numarası",
+              "value": "512501",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "rowCount": 6,
+          "fields": [
+            {
+              "label": "Cihaz adı",
+              "value": "Chauvin Arnoux",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon tarihi",
+              "value": "14.01.2025",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon geçerlilik tarihi",
+              "value": "14.01.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Seri numarası",
+              "value": "467008 PKH",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon numarası",
+              "value": "2500290",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "rowCount": 26,
+          "fields": [
+            {
+              "label": "Pano Adı/Ekipman Tanımlaması",
+              "value": "GES ANA DAĞITIM PANO",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol Kriteri",
+              "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+              "isEditable": true
+            },
+            {
+              "label": "Kablo şebeke tarafı",
+              "value": "U Kablo donanım tarafı U",
+              "isEditable": true
+            },
+            {
+              "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+              "value": "U Dış darbelere karşı koruma önlemi U",
+              "isEditable": true
+            },
+            {
+              "label": "Elektrik panosu etrafında yabancı malzemeler",
+              "value": "U Zemin izolasyonu U",
+              "isEditable": true
+            },
+            {
+              "label": "Topraklama iletkeni",
+              "value": "U Ana potansiyel dengeleme iletkeni U",
+              "isEditable": true
+            },
+            {
+              "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+              "value": "U Pano kapak bağlantısı kontrolü 6 mm2 U",
+              "isEditable": true
+            },
+            {
+              "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+              "value": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U",
+              "isEditable": true
+            },
+            {
+              "label": "Güvenlik devre ayrılması",
+              "value": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U",
+              "isEditable": true
+            },
+            {
+              "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+              "value": "U Koruma cihaz ve terminal etiket U",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "rowCount": 26,
+          "fields": [
+            {
+              "label": "Pano Adı/Ekipman Tanımlaması",
+              "value": "1.ÜRETİM HATTI MAKİNE PANO",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol Kriteri",
+              "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+              "isEditable": true
+            },
+            {
+              "label": "Kablo şebeke tarafı",
+              "value": "U Kablo donanım tarafı U",
+              "isEditable": true
+            },
+            {
+              "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+              "value": "U Dış darbelere karşı koruma önlemi U",
+              "isEditable": true
+            },
+            {
+              "label": "Elektrik panosu etrafında yabancı malzemeler",
+              "value": "U Zemin izolasyonu U",
+              "isEditable": true
+            },
+            {
+              "label": "Topraklama iletkeni",
+              "value": "U Ana potansiyel dengeleme iletkeni U",
+              "isEditable": true
+            },
+            {
+              "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+              "value": "U Pano kapak bağlantısı kontrolü 6 mm2 U",
+              "isEditable": true
+            },
+            {
+              "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+              "value": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U",
+              "isEditable": true
+            },
+            {
+              "label": "Güvenlik devre ayrılması",
+              "value": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U",
+              "isEditable": true
+            },
+            {
+              "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+              "value": "U Koruma cihaz ve terminal etiket U",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "rowCount": 26,
+          "fields": [
+            {
+              "label": "Pano Adı/Ekipman Tanımlaması",
+              "value": "2.ÜRETİM HATTI MAKİNE PANO",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol Kriteri",
+              "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+              "isEditable": true
+            },
+            {
+              "label": "Kablo şebeke tarafı",
+              "value": "U Kablo donanım tarafı U",
+              "isEditable": true
+            },
+            {
+              "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+              "value": "U Dış darbelere karşı koruma önlemi U",
+              "isEditable": true
+            },
+            {
+              "label": "Elektrik panosu etrafında yabancı malzemeler",
+              "value": "U Zemin izolasyonu U",
+              "isEditable": true
+            },
+            {
+              "label": "Topraklama iletkeni",
+              "value": "U Ana potansiyel dengeleme iletkeni U",
+              "isEditable": true
+            },
+            {
+              "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+              "value": "U Pano kapak bağlantısı kontrolü 6 mm2 U",
+              "isEditable": true
+            },
+            {
+              "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+              "value": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U",
+              "isEditable": true
+            },
+            {
+              "label": "Güvenlik devre ayrılması",
+              "value": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U",
+              "isEditable": true
+            },
+            {
+              "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+              "value": "U Koruma cihaz ve terminal etiket U",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "rowCount": 26,
+          "fields": [
+            {
+              "label": "Pano Adı/Ekipman Tanımlaması",
+              "value": "3.ÜRETİM HATTI MAKİNE PANO",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol Kriteri",
+              "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+              "isEditable": true
+            },
+            {
+              "label": "Kablo şebeke tarafı",
+              "value": "U Kablo donanım tarafı U",
+              "isEditable": true
+            },
+            {
+              "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+              "value": "U Dış darbelere karşı koruma önlemi U",
+              "isEditable": true
+            },
+            {
+              "label": "Elektrik panosu etrafında yabancı malzemeler",
+              "value": "U Zemin izolasyonu U",
+              "isEditable": true
+            },
+            {
+              "label": "Topraklama iletkeni",
+              "value": "U Ana potansiyel dengeleme iletkeni U",
+              "isEditable": true
+            },
+            {
+              "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+              "value": "U Pano kapak bağlantısı kontrolü 6 mm2 U",
+              "isEditable": true
+            },
+            {
+              "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+              "value": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U",
+              "isEditable": true
+            },
+            {
+              "label": "Güvenlik devre ayrılması",
+              "value": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U",
+              "isEditable": true
+            },
+            {
+              "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+              "value": "U Koruma cihaz ve terminal etiket U",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "rowCount": 26,
+          "fields": [
+            {
+              "label": "Pano Adı/Ekipman Tanımlaması",
+              "value": "HAMURHANE MAKİNE PANO",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol Kriteri",
+              "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+              "isEditable": true
+            },
+            {
+              "label": "Kablo şebeke tarafı",
+              "value": "U Kablo donanım tarafı U",
+              "isEditable": true
+            },
+            {
+              "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+              "value": "U Dış darbelere karşı koruma önlemi U",
+              "isEditable": true
+            },
+            {
+              "label": "Elektrik panosu etrafında yabancı malzemeler",
+              "value": "U Zemin izolasyonu U",
+              "isEditable": true
+            },
+            {
+              "label": "Topraklama iletkeni",
+              "value": "U Ana potansiyel dengeleme iletkeni U",
+              "isEditable": true
+            },
+            {
+              "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+              "value": "U Pano kapak bağlantısı kontrolü 6 mm2 U",
+              "isEditable": true
+            },
+            {
+              "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+              "value": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U",
+              "isEditable": true
+            },
+            {
+              "label": "Güvenlik devre ayrılması",
+              "value": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U",
+              "isEditable": true
+            },
+            {
+              "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+              "value": "U Koruma cihaz ve terminal etiket U",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "rowCount": 8,
+          "fields": [
+            {
+              "label": "Ölçüm ve doğrulama metodu",
+              "value": "Üç Uçlu Karşılaştırma       Çevrim Empedansı       Klamp Yöntemi",
+              "isEditable": true
+            },
+            {
+              "label": "Pano (Ekipman) Adı-Etiketi veya Kodu",
+              "value": "(boş)",
+              "isEditable": false
+            },
+            {
+              "label": "Panodan ölçülen faztoprakçevrim empedansı(Zx) (Ω)",
+              "value": "0,82 Gerilimler F-F(V) : 380 Aşırı gerilim koruma (DKD) tipi -",
+              "isEditable": true
+            },
+            {
+              "label": "Panodan ölçülen faz-nötrçevrim empedansı (ZLN)(Ω)",
+              "value": "0,046 Hesaplanan 3fazlı kısa devreakımı (kA) 10,9 Aşırı gerilim koruma(DKD) dayanma akımı(kA) -",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 11,
+          "rowCount": 12,
+          "fields": [
+            {
+              "label": "No.",
+              "value": "Pano/Tablo numarası-Linye Adı-Etiketi Aşırı Akım Koruma Cihazının İletkenin RCD Testi Sonuç(Not)",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 12,
+          "rowCount": 4,
+          "fields": [
+            {
+              "label": "No.",
+              "value": "Potansiyel dengeleme yapılan ilgilibölüm Potansiyeldengelemeiletkeni kesiti(mm²) Potansiyeldengeleme iletkenisüreklilik(Ω) Varsa tamamlayıcıpotansiyeldengeleme iletkenikesiti(mm²) Tamamlayıcıpotansiyeldengelemesüreklilik(Ω) Sonuç(Not)",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 13,
+          "rowCount": 7,
+          "fields": []
+        },
+        {
+          "index": 14,
+          "rowCount": 1,
+          "fields": []
+        },
+        {
+          "index": 15,
+          "rowCount": 1,
+          "fields": []
+        },
+        {
+          "index": 16,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 17,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 18,
+          "rowCount": 7,
+          "fields": []
+        }
+      ],
+      "allFields": [
+        {
+          "label": "Firma Adı",
+          "value": "MAYA AMBALAJ BASIM VE DIS TICARET LIMITED SIRKETI Rapor Numarası ET-2025-402-02",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Adresi",
+          "value": "ORGANIZE SAN. MH. 14 SK KARAMAN MERKEZ NO:5/0 KARAMAN Rapor Tarihi 29.12.2025",
+          "isEditable": true
+        },
+        {
+          "label": "SGK Sicil Numarası",
+          "value": "21712010110289680700174000 Bir Sonraki Periyodik Kontrol Tarihi 17.12.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "value": "TS HD 60364-4-41 Alçak Gerilim Elektrik Tesisleri – Bölüm 4: Güvenlik İçin Koruma – Bölüm 41: Elektrik Çarpmasına Karşı KorumaTS HD 60364-6 Alçak Gerilim Elektrik Tesisatları – Bölüm 6: Doğrulamaİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar YönetmeliğiElektrik İç Tesisleri Yönetmeliği",
+          "isEditable": true
+        },
+        {
+          "label": "Enerji sağlayan kuruluş",
+          "value": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S",
+          "isEditable": true
+        },
+        {
+          "label": "Şebeke gerilimi",
+          "value": "380 Tesise ait proje var mı? Var       Yok Tek hat şeması var mı? Var       Yok",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol nedeni",
+          "value": "Periyodik Kontrol İlk Kontrol Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi",
+          "isEditable": true
+        },
+        {
+          "label": "Yapı cinsi",
+          "value": "Ev Ticari Endüstri Diğer Ekipmanın kullanım amacı FABRİKA Son kontrol tarihi 26.12.2025",
+          "isEditable": true
+        },
+        {
+          "label": "Faz iletkenlerinin sayısı ve tipi",
+          "value": "AA 1 faz, 2 tel 1 faz, 3 tel 2 faz, 3 tel 3 faz, 3 tel 3 faz, 4 tel DA 2 kutup 3 kutup Diğer Temel topraklama direnci (Ω) 0,73",
+          "isEditable": true
+        },
+        {
+          "label": "Besleme kaynağı karakteristikleri",
+          "value": "Nominal gerilim , U/Uo(1) 0.4/0.23  kV (1. Fazdan alınan değer) Nominal frekans, f (1) 50Hz Hata Akımı Olasılığı, IF(1) …5,89…kA Dış çevrim empedansı ZE  0,039   Ω TT-TN-S Şebeke için ana RCD anma akımı 1000",
+          "isEditable": true
+        },
+        {
+          "label": "Ana kesici karakteristikleri",
+          "value": "Tip TMŞNominal Akım 1000 TT-TNS Şebeke için ana RCD test akımı (mA) ve süresi (ms) 300/500",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisatta kapsamlı değişiklik var mı? (&gt;%20)",
+          "value": "Var       Yok",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisatta aşırı gerilim koruma cihazları (DKD/SPD) kullanılmış mı?",
+          "value": "Evet       Hayır",
+          "isEditable": true
+        },
+        {
+          "label": "Tespit edilen bilgiler(Doğrudan dokunmaya karşı koruma önlemleri)",
+          "value": "Gerilim altındaki bölümlerin yalıtılması (iç kapak veya pleksi koruma)  Mahfaza (IPXY, Pano kilidi, tehlike işareti vb.) Engel El ulaşma uzaklığı dışına yerleştirme İlave koruma 30 mA RCD (5xI için 40 ms açma zamanı); devre kesicisi &lt;32 A devreler için (TS HD 60364-4-41)",
+          "isEditable": true
+        },
+        {
+          "label": "Bir önceki periyodik kontrol etiketi var mı?",
+          "value": "Var       Yok",
+          "isEditable": true
+        },
+        {
+          "label": "Cihaz adı",
+          "value": "UTİ165A",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon tarihi",
+          "value": "04.09.2025",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "value": "04.09.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Seri numarası",
+          "value": "C212048686",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon numarası",
+          "value": "512501",
+          "isEditable": true
+        },
+        {
+          "label": "Cihaz adı",
+          "value": "Chauvin Arnoux",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon tarihi",
+          "value": "14.01.2025",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "value": "14.01.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Seri numarası",
+          "value": "467008 PKH",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon numarası",
+          "value": "2500290",
+          "isEditable": true
+        },
+        {
+          "label": "Pano Adı/Ekipman Tanımlaması",
+          "value": "GES ANA DAĞITIM PANO",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol Kriteri",
+          "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+          "isEditable": true
+        },
+        {
+          "label": "Kablo şebeke tarafı",
+          "value": "U Kablo donanım tarafı U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+          "value": "U Dış darbelere karşı koruma önlemi U",
+          "isEditable": true
+        },
+        {
+          "label": "Elektrik panosu etrafında yabancı malzemeler",
+          "value": "U Zemin izolasyonu U",
+          "isEditable": true
+        },
+        {
+          "label": "Topraklama iletkeni",
+          "value": "U Ana potansiyel dengeleme iletkeni U",
+          "isEditable": true
+        },
+        {
+          "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+          "value": "U Pano kapak bağlantısı kontrolü 6 mm2 U",
+          "isEditable": true
+        },
+        {
+          "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+          "value": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U",
+          "isEditable": true
+        },
+        {
+          "label": "Güvenlik devre ayrılması",
+          "value": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U",
+          "isEditable": true
+        },
+        {
+          "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+          "value": "U Koruma cihaz ve terminal etiket U",
+          "isEditable": true
+        },
+        {
+          "label": "Tehlike işaretleri ve diğer uyarı işaretleri",
+          "value": "U",
+          "isEditable": true
+        },
+        {
+          "label": "Kablo yollarının uygunluğu ve mekanik koruma",
+          "value": "U Kablo renk kodları Nötr: Mavi Toprak: Sarı/ Yeşil U",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisat yöntemi",
+          "value": "U Yangın engeli, uygun kilitleme ve sıcaklık etkisinekarşı koruma U",
+          "isEditable": true
+        },
+        {
+          "label": "Fotoğraf tarihi",
+          "value": "- Kontak gevşekliği ısınması U",
+          "isEditable": true
+        },
+        {
+          "label": "Fotoğraf no.",
+          "value": "- Aşırı yük ısınması PVC kablolar için &gt;70 derece U",
+          "isEditable": true
+        },
+        {
+          "label": "Ekipman yakınında elektriksel ekipman yangın söndürmetertibatı",
+          "value": "U Ekipman temizlik/bakım durumu U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano içi ve bağlantılarının korozyon kontrolü",
+          "value": "U Ekipman içi veya yakınında acil durum aydınlatmatertibatı U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano Adı/Ekipman Tanımlaması",
+          "value": "1.ÜRETİM HATTI MAKİNE PANO",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol Kriteri",
+          "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+          "isEditable": true
+        },
+        {
+          "label": "Kablo şebeke tarafı",
+          "value": "U Kablo donanım tarafı U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+          "value": "U Dış darbelere karşı koruma önlemi U",
+          "isEditable": true
+        },
+        {
+          "label": "Elektrik panosu etrafında yabancı malzemeler",
+          "value": "U Zemin izolasyonu U",
+          "isEditable": true
+        },
+        {
+          "label": "Topraklama iletkeni",
+          "value": "U Ana potansiyel dengeleme iletkeni U",
+          "isEditable": true
+        },
+        {
+          "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+          "value": "U Pano kapak bağlantısı kontrolü 6 mm2 U",
+          "isEditable": true
+        },
+        {
+          "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+          "value": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U",
+          "isEditable": true
+        },
+        {
+          "label": "Güvenlik devre ayrılması",
+          "value": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U",
+          "isEditable": true
+        },
+        {
+          "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+          "value": "U Koruma cihaz ve terminal etiket U",
+          "isEditable": true
+        },
+        {
+          "label": "Tehlike işaretleri ve diğer uyarı işaretleri",
+          "value": "U",
+          "isEditable": true
+        },
+        {
+          "label": "Kablo yollarının uygunluğu ve mekanik koruma",
+          "value": "U Kablo renk kodları Nötr: Mavi Toprak: Sarı/ Yeşil U",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisat yöntemi",
+          "value": "U Yangın engeli, uygun kilitleme ve sıcaklık etkisinekarşı koruma U",
+          "isEditable": true
+        },
+        {
+          "label": "Fotoğraf tarihi",
+          "value": "- Kontak gevşekliği ısınması U",
+          "isEditable": true
+        },
+        {
+          "label": "Fotoğraf no.",
+          "value": "- Aşırı yük ısınması PVC kablolar için &gt;70 derece U",
+          "isEditable": true
+        },
+        {
+          "label": "Ekipman yakınında elektriksel ekipman yangın söndürmetertibatı",
+          "value": "U Ekipman temizlik/bakım durumu U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano içi ve bağlantılarının korozyon kontrolü",
+          "value": "U Ekipman içi veya yakınında acil durum aydınlatmatertibatı U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano Adı/Ekipman Tanımlaması",
+          "value": "2.ÜRETİM HATTI MAKİNE PANO",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol Kriteri",
+          "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+          "isEditable": true
+        },
+        {
+          "label": "Kablo şebeke tarafı",
+          "value": "U Kablo donanım tarafı U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+          "value": "U Dış darbelere karşı koruma önlemi U",
+          "isEditable": true
+        },
+        {
+          "label": "Elektrik panosu etrafında yabancı malzemeler",
+          "value": "U Zemin izolasyonu U",
+          "isEditable": true
+        },
+        {
+          "label": "Topraklama iletkeni",
+          "value": "U Ana potansiyel dengeleme iletkeni U",
+          "isEditable": true
+        },
+        {
+          "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+          "value": "U Pano kapak bağlantısı kontrolü 6 mm2 U",
+          "isEditable": true
+        },
+        {
+          "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+          "value": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U",
+          "isEditable": true
+        },
+        {
+          "label": "Güvenlik devre ayrılması",
+          "value": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U",
+          "isEditable": true
+        },
+        {
+          "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+          "value": "U Koruma cihaz ve terminal etiket U",
+          "isEditable": true
+        },
+        {
+          "label": "Tehlike işaretleri ve diğer uyarı işaretleri",
+          "value": "U",
+          "isEditable": true
+        },
+        {
+          "label": "Kablo yollarının uygunluğu ve mekanik koruma",
+          "value": "U Kablo renk kodları Nötr: Mavi Toprak: Sarı/ Yeşil U",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisat yöntemi",
+          "value": "U Yangın engeli, uygun kilitleme ve sıcaklık etkisinekarşı koruma U",
+          "isEditable": true
+        },
+        {
+          "label": "Fotoğraf tarihi",
+          "value": "- Kontak gevşekliği ısınması U",
+          "isEditable": true
+        },
+        {
+          "label": "Fotoğraf no.",
+          "value": "- Aşırı yük ısınması PVC kablolar için &gt;70 derece U",
+          "isEditable": true
+        },
+        {
+          "label": "Ekipman yakınında elektriksel ekipman yangın söndürmetertibatı",
+          "value": "U Ekipman temizlik/bakım durumu U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano içi ve bağlantılarının korozyon kontrolü",
+          "value": "U Ekipman içi veya yakınında acil durum aydınlatmatertibatı U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano Adı/Ekipman Tanımlaması",
+          "value": "3.ÜRETİM HATTI MAKİNE PANO",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol Kriteri",
+          "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+          "isEditable": true
+        },
+        {
+          "label": "Kablo şebeke tarafı",
+          "value": "U Kablo donanım tarafı U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+          "value": "U Dış darbelere karşı koruma önlemi U",
+          "isEditable": true
+        },
+        {
+          "label": "Elektrik panosu etrafında yabancı malzemeler",
+          "value": "U Zemin izolasyonu U",
+          "isEditable": true
+        },
+        {
+          "label": "Topraklama iletkeni",
+          "value": "U Ana potansiyel dengeleme iletkeni U",
+          "isEditable": true
+        },
+        {
+          "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+          "value": "U Pano kapak bağlantısı kontrolü 6 mm2 U",
+          "isEditable": true
+        },
+        {
+          "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+          "value": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U",
+          "isEditable": true
+        },
+        {
+          "label": "Güvenlik devre ayrılması",
+          "value": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U",
+          "isEditable": true
+        },
+        {
+          "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+          "value": "U Koruma cihaz ve terminal etiket U",
+          "isEditable": true
+        },
+        {
+          "label": "Tehlike işaretleri ve diğer uyarı işaretleri",
+          "value": "U",
+          "isEditable": true
+        },
+        {
+          "label": "Kablo yollarının uygunluğu ve mekanik koruma",
+          "value": "U Kablo renk kodları Nötr: Mavi Toprak: Sarı/ Yeşil U",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisat yöntemi",
+          "value": "U Yangın engeli, uygun kilitleme ve sıcaklık etkisinekarşı koruma U",
+          "isEditable": true
+        },
+        {
+          "label": "Fotoğraf tarihi",
+          "value": "- Kontak gevşekliği ısınması U",
+          "isEditable": true
+        },
+        {
+          "label": "Fotoğraf no.",
+          "value": "- Aşırı yük ısınması PVC kablolar için &gt;70 derece U",
+          "isEditable": true
+        },
+        {
+          "label": "Ekipman yakınında elektriksel ekipman yangın söndürmetertibatı",
+          "value": "U Ekipman temizlik/bakım durumu U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano içi ve bağlantılarının korozyon kontrolü",
+          "value": "U Ekipman içi veya yakınında acil durum aydınlatmatertibatı U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano Adı/Ekipman Tanımlaması",
+          "value": "HAMURHANE MAKİNE PANO",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol Kriteri",
+          "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+          "isEditable": true
+        },
+        {
+          "label": "Kablo şebeke tarafı",
+          "value": "U Kablo donanım tarafı U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+          "value": "U Dış darbelere karşı koruma önlemi U",
+          "isEditable": true
+        },
+        {
+          "label": "Elektrik panosu etrafında yabancı malzemeler",
+          "value": "U Zemin izolasyonu U",
+          "isEditable": true
+        },
+        {
+          "label": "Topraklama iletkeni",
+          "value": "U Ana potansiyel dengeleme iletkeni U",
+          "isEditable": true
+        },
+        {
+          "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+          "value": "U Pano kapak bağlantısı kontrolü 6 mm2 U",
+          "isEditable": true
+        },
+        {
+          "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+          "value": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U",
+          "isEditable": true
+        },
+        {
+          "label": "Güvenlik devre ayrılması",
+          "value": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U",
+          "isEditable": true
+        },
+        {
+          "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+          "value": "U Koruma cihaz ve terminal etiket U",
+          "isEditable": true
+        },
+        {
+          "label": "Tehlike işaretleri ve diğer uyarı işaretleri",
+          "value": "U",
+          "isEditable": true
+        },
+        {
+          "label": "Kablo yollarının uygunluğu ve mekanik koruma",
+          "value": "U Kablo renk kodları Nötr: Mavi Toprak: Sarı/ Yeşil U",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisat yöntemi",
+          "value": "U Yangın engeli, uygun kilitleme ve sıcaklık etkisinekarşı koruma U",
+          "isEditable": true
+        },
+        {
+          "label": "Fotoğraf tarihi",
+          "value": "- Kontak gevşekliği ısınması U",
+          "isEditable": true
+        },
+        {
+          "label": "Fotoğraf no.",
+          "value": "- Aşırı yük ısınması PVC kablolar için &gt;70 derece U",
+          "isEditable": true
+        },
+        {
+          "label": "Ekipman yakınında elektriksel ekipman yangın söndürmetertibatı",
+          "value": "U Ekipman temizlik/bakım durumu U",
+          "isEditable": true
+        },
+        {
+          "label": "Pano içi ve bağlantılarının korozyon kontrolü",
+          "value": "U Ekipman içi veya yakınında acil durum aydınlatmatertibatı U",
+          "isEditable": true
+        },
+        {
+          "label": "Ölçüm ve doğrulama metodu",
+          "value": "Üç Uçlu Karşılaştırma       Çevrim Empedansı       Klamp Yöntemi",
+          "isEditable": true
+        },
+        {
+          "label": "Pano (Ekipman) Adı-Etiketi veya Kodu",
+          "value": "(boş)",
+          "isEditable": false
+        },
+        {
+          "label": "Panodan ölçülen faztoprakçevrim empedansı(Zx) (Ω)",
+          "value": "0,82 Gerilimler F-F(V) : 380 Aşırı gerilim koruma (DKD) tipi -",
+          "isEditable": true
+        },
+        {
+          "label": "Panodan ölçülen faz-nötrçevrim empedansı (ZLN)(Ω)",
+          "value": "0,046 Hesaplanan 3fazlı kısa devreakımı (kA) 10,9 Aşırı gerilim koruma(DKD) dayanma akımı(kA) -",
+          "isEditable": true
+        },
+        {
+          "label": "No.",
+          "value": "Pano/Tablo numarası-Linye Adı-Etiketi Aşırı Akım Koruma Cihazının İletkenin RCD Testi Sonuç(Not)",
+          "isEditable": true
+        },
+        {
+          "label": "No.",
+          "value": "Potansiyel dengeleme yapılan ilgilibölüm Potansiyeldengelemeiletkeni kesiti(mm²) Potansiyeldengeleme iletkenisüreklilik(Ω) Varsa tamamlayıcıpotansiyeldengeleme iletkenikesiti(mm²) Tamamlayıcıpotansiyeldengelemesüreklilik(Ω) Sonuç(Not)",
+          "isEditable": true
+        }
+      ],
+      "suggestedPlaceholders": {
+        "firma_adı": {
+          "label": "Firma Adı",
+          "placeholder": "{{firma_adı}}",
+          "sampleValue": "MAYA AMBALAJ BASIM VE DIS TICARET LIMITED SIRKETI Rapor Numarası ET-2025-402-02"
+        },
+        "periyodik_kontrol_adresi": {
+          "label": "Periyodik Kontrol Adresi",
+          "placeholder": "{{periyodik_kontrol_adresi}}",
+          "sampleValue": "ORGANIZE SAN. MH. 14 SK KARAMAN MERKEZ NO:5/0 KARAMAN Rapor Tarihi 29.12.2025"
+        },
+        "sgk_sicil_numarası": {
+          "label": "SGK Sicil Numarası",
+          "placeholder": "{{sgk_sicil_numarası}}",
+          "sampleValue": "21712010110289680700174000 Bir Sonraki Periyodik Kontrol Tarihi 17.12.2026"
+        },
+        "periyodik_kontrol_metodu_ve_kapsamı": {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "placeholder": "{{periyodik_kontrol_metodu_ve_kapsamı}}",
+          "sampleValue": "TS HD 60364-4-41 Alçak Gerilim Elektrik Tesisleri – Bölüm 4: Güvenlik İçin Koruma – Bölüm 41: Elektrik Çarpmasına Karşı KorumaTS HD 60364-6 Alçak Gerilim Elektrik Tesisatları – Bölüm 6: Doğrulamaİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar YönetmeliğiElektrik İç Tesisleri Yönetmeliği"
+        },
+        "enerji_sağlayan_kuruluş": {
+          "label": "Enerji sağlayan kuruluş",
+          "placeholder": "{{enerji_sağlayan_kuruluş}}",
+          "sampleValue": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S"
+        },
+        "şebeke_gerilimi": {
+          "label": "Şebeke gerilimi",
+          "placeholder": "{{şebeke_gerilimi}}",
+          "sampleValue": "380 Tesise ait proje var mı? Var       Yok Tek hat şeması var mı? Var       Yok"
+        },
+        "kontrol_nedeni": {
+          "label": "Kontrol nedeni",
+          "placeholder": "{{kontrol_nedeni}}",
+          "sampleValue": "Periyodik Kontrol İlk Kontrol Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi"
+        },
+        "yapı_cinsi": {
+          "label": "Yapı cinsi",
+          "placeholder": "{{yapı_cinsi}}",
+          "sampleValue": "Ev Ticari Endüstri Diğer Ekipmanın kullanım amacı FABRİKA Son kontrol tarihi 26.12.2025"
+        },
+        "faz_iletkenlerinin_sayısı_ve_tipi": {
+          "label": "Faz iletkenlerinin sayısı ve tipi",
+          "placeholder": "{{faz_iletkenlerinin_sayısı_ve_tipi}}",
+          "sampleValue": "AA 1 faz, 2 tel 1 faz, 3 tel 2 faz, 3 tel 3 faz, 3 tel 3 faz, 4 tel DA 2 kutup 3 kutup Diğer Temel topraklama direnci (Ω) 0,73"
+        },
+        "besleme_kaynağı_karakteristikleri": {
+          "label": "Besleme kaynağı karakteristikleri",
+          "placeholder": "{{besleme_kaynağı_karakteristikleri}}",
+          "sampleValue": "Nominal gerilim , U/Uo(1) 0.4/0.23  kV (1. Fazdan alınan değer) Nominal frekans, f (1) 50Hz Hata Akımı Olasılığı, IF(1) …5,89…kA Dış çevrim empedansı ZE  0,039   Ω TT-TN-S Şebeke için ana RCD anma akımı 1000"
+        },
+        "ana_kesici_karakteristikleri": {
+          "label": "Ana kesici karakteristikleri",
+          "placeholder": "{{ana_kesici_karakteristikleri}}",
+          "sampleValue": "Tip TMŞNominal Akım 1000 TT-TNS Şebeke için ana RCD test akımı (mA) ve süresi (ms) 300/500"
+        },
+        "tesisatta_kapsamlı_değişiklik_var_mı_gt_20_": {
+          "label": "Tesisatta kapsamlı değişiklik var mı? (&gt;%20)",
+          "placeholder": "{{tesisatta_kapsamlı_değişiklik_var_mı_gt_20_}}",
+          "sampleValue": "Var       Yok"
+        },
+        "tesisatta_aşırı_gerilim_koruma_cihazları_dkd_spd_kullanılmış_mı_": {
+          "label": "Tesisatta aşırı gerilim koruma cihazları (DKD/SPD) kullanılmış mı?",
+          "placeholder": "{{tesisatta_aşırı_gerilim_koruma_cihazları_dkd_spd_kullanılmış_mı_}}",
+          "sampleValue": "Evet       Hayır"
+        },
+        "tespit_edilen_bilgiler_doğrudan_dokunmaya_karşı_koruma_önlemleri_": {
+          "label": "Tespit edilen bilgiler(Doğrudan dokunmaya karşı koruma önlemleri)",
+          "placeholder": "{{tespit_edilen_bilgiler_doğrudan_dokunmaya_karşı_koruma_önlemleri_}}",
+          "sampleValue": "Gerilim altındaki bölümlerin yalıtılması (iç kapak veya pleksi koruma)  Mahfaza (IPXY, Pano kilidi, tehlike işareti vb.) Engel El ulaşma uzaklığı dışına yerleştirme İlave koruma 30 mA RCD (5xI için 40 ms açma zamanı); devre kesicisi &lt;32 A devreler için (TS HD 60364-4-41)"
+        },
+        "bir_önceki_periyodik_kontrol_etiketi_var_mı_": {
+          "label": "Bir önceki periyodik kontrol etiketi var mı?",
+          "placeholder": "{{bir_önceki_periyodik_kontrol_etiketi_var_mı_}}",
+          "sampleValue": "Var       Yok"
+        },
+        "cihaz_adı": {
+          "label": "Cihaz adı",
+          "placeholder": "{{cihaz_adı}}",
+          "sampleValue": "Chauvin Arnoux"
+        },
+        "kalibrasyon_tarihi": {
+          "label": "Kalibrasyon tarihi",
+          "placeholder": "{{kalibrasyon_tarihi}}",
+          "sampleValue": "14.01.2025"
+        },
+        "kalibrasyon_geçerlilik_tarihi": {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "placeholder": "{{kalibrasyon_geçerlilik_tarihi}}",
+          "sampleValue": "14.01.2026"
+        },
+        "seri_numarası": {
+          "label": "Seri numarası",
+          "placeholder": "{{seri_numarası}}",
+          "sampleValue": "467008 PKH"
+        },
+        "kalibrasyon_numarası": {
+          "label": "Kalibrasyon numarası",
+          "placeholder": "{{kalibrasyon_numarası}}",
+          "sampleValue": "2500290"
+        },
+        "pano_adı_ekipman_tanımlaması": {
+          "label": "Pano Adı/Ekipman Tanımlaması",
+          "placeholder": "{{pano_adı_ekipman_tanımlaması}}",
+          "sampleValue": "HAMURHANE MAKİNE PANO"
+        },
+        "kontrol_kriteri": {
+          "label": "Kontrol Kriteri",
+          "placeholder": "{{kontrol_kriteri}}",
+          "sampleValue": "Değerlendirme Kontrol Kriteri Değerlendirme"
+        },
+        "kablo_şebeke_tarafı": {
+          "label": "Kablo şebeke tarafı",
+          "placeholder": "{{kablo_şebeke_tarafı}}",
+          "sampleValue": "U Kablo donanım tarafı U"
+        },
+        "pano_sabitlenmesi_depreme_dayanıklılık_": {
+          "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+          "placeholder": "{{pano_sabitlenmesi_depreme_dayanıklılık_}}",
+          "sampleValue": "U Dış darbelere karşı koruma önlemi U"
+        },
+        "elektrik_panosu_etrafında_yabancı_malzemeler": {
+          "label": "Elektrik panosu etrafında yabancı malzemeler",
+          "placeholder": "{{elektrik_panosu_etrafında_yabancı_malzemeler}}",
+          "sampleValue": "U Zemin izolasyonu U"
+        },
+        "topraklama_iletkeni": {
+          "label": "Topraklama iletkeni",
+          "placeholder": "{{topraklama_iletkeni}}",
+          "sampleValue": "U Ana potansiyel dengeleme iletkeni U"
+        },
+        "ek_potansiyel_dengeleme_i̇letkeni_tamamlayıcı_pot_den_": {
+          "label": "Ek Potansiyel dengeleme İletkeni (Tamamlayıcı pot.den)",
+          "placeholder": "{{ek_potansiyel_dengeleme_i̇letkeni_tamamlayıcı_pot_den_}}",
+          "sampleValue": "U Pano kapak bağlantısı kontrolü 6 mm2 U"
+        },
+        "elektriksel_olmayan_tesislere_yaklaşma_ve_diğer_etkilerinkontrolü": {
+          "label": "Elektriksel olmayan tesislere yaklaşma ve diğer etkilerinkontrolü",
+          "placeholder": "{{elektriksel_olmayan_tesislere_yaklaşma_ve_diğer_etkilerinkontrolü}}",
+          "sampleValue": "U Bant I ve Bant II ayrılması, Bant II yalıtımı U"
+        },
+        "güvenlik_devre_ayrılması": {
+          "label": "Güvenlik devre ayrılması",
+          "placeholder": "{{güvenlik_devre_ayrılması}}",
+          "sampleValue": "U Pano iç kapak, faza erişim engeli veya pleksi koruma U"
+        },
+        "şemalar_talimatlar_devre_çizimleri_ve_kısa_bilgiler": {
+          "label": "Şemalar, talimatlar, devre çizimleri ve kısa bilgiler",
+          "placeholder": "{{şemalar_talimatlar_devre_çizimleri_ve_kısa_bilgiler}}",
+          "sampleValue": "U Koruma cihaz ve terminal etiket U"
+        },
+        "tehlike_işaretleri_ve_diğer_uyarı_işaretleri": {
+          "label": "Tehlike işaretleri ve diğer uyarı işaretleri",
+          "placeholder": "{{tehlike_işaretleri_ve_diğer_uyarı_işaretleri}}",
+          "sampleValue": "U"
+        },
+        "kablo_yollarının_uygunluğu_ve_mekanik_koruma": {
+          "label": "Kablo yollarının uygunluğu ve mekanik koruma",
+          "placeholder": "{{kablo_yollarının_uygunluğu_ve_mekanik_koruma}}",
+          "sampleValue": "U Kablo renk kodları Nötr: Mavi Toprak: Sarı/ Yeşil U"
+        },
+        "tesisat_yöntemi": {
+          "label": "Tesisat yöntemi",
+          "placeholder": "{{tesisat_yöntemi}}",
+          "sampleValue": "U Yangın engeli, uygun kilitleme ve sıcaklık etkisinekarşı koruma U"
+        },
+        "fotoğraf_tarihi": {
+          "label": "Fotoğraf tarihi",
+          "placeholder": "{{fotoğraf_tarihi}}",
+          "sampleValue": "- Kontak gevşekliği ısınması U"
+        },
+        "fotoğraf_no_": {
+          "label": "Fotoğraf no.",
+          "placeholder": "{{fotoğraf_no_}}",
+          "sampleValue": "- Aşırı yük ısınması PVC kablolar için &gt;70 derece U"
+        },
+        "ekipman_yakınında_elektriksel_ekipman_yangın_söndürmetertibatı": {
+          "label": "Ekipman yakınında elektriksel ekipman yangın söndürmetertibatı",
+          "placeholder": "{{ekipman_yakınında_elektriksel_ekipman_yangın_söndürmetertibatı}}",
+          "sampleValue": "U Ekipman temizlik/bakım durumu U"
+        },
+        "pano_içi_ve_bağlantılarının_korozyon_kontrolü": {
+          "label": "Pano içi ve bağlantılarının korozyon kontrolü",
+          "placeholder": "{{pano_içi_ve_bağlantılarının_korozyon_kontrolü}}",
+          "sampleValue": "U Ekipman içi veya yakınında acil durum aydınlatmatertibatı U"
+        },
+        "ölçüm_ve_doğrulama_metodu": {
+          "label": "Ölçüm ve doğrulama metodu",
+          "placeholder": "{{ölçüm_ve_doğrulama_metodu}}",
+          "sampleValue": "Üç Uçlu Karşılaştırma       Çevrim Empedansı       Klamp Yöntemi"
+        },
+        "panodan_ölçülen_faztoprakçevrim_empedansı_zx_": {
+          "label": "Panodan ölçülen faztoprakçevrim empedansı(Zx) (Ω)",
+          "placeholder": "{{panodan_ölçülen_faztoprakçevrim_empedansı_zx_}}",
+          "sampleValue": "0,82 Gerilimler F-F(V) : 380 Aşırı gerilim koruma (DKD) tipi -"
+        },
+        "panodan_ölçülen_faz_nötrçevrim_empedansı_zln_": {
+          "label": "Panodan ölçülen faz-nötrçevrim empedansı (ZLN)(Ω)",
+          "placeholder": "{{panodan_ölçülen_faz_nötrçevrim_empedansı_zln_}}",
+          "sampleValue": "0,046 Hesaplanan 3fazlı kısa devreakımı (kA) 10,9 Aşırı gerilim koruma(DKD) dayanma akımı(kA) -"
+        },
+        "no_": {
+          "label": "No.",
+          "placeholder": "{{no_}}",
+          "sampleValue": "Potansiyel dengeleme yapılan ilgilibölüm Potansiyeldengelemeiletkeni kesiti(mm²) Potansiyeldengeleme iletkenisüreklilik(Ω) Varsa tamamlayıcıpotansiyeldengeleme iletkenikesiti(mm²) Tamamlayıcıpotansiyeldengelemesüreklilik(Ω) Sonuç(Not)"
+        }
+      }
+    },
+    {
+      "fileName": "FR7.2.49 Yangın Algılama Sistemi Muayene ve Ölçüm Raporu-1.docx",
+      "tables": [
+        {
+          "index": 1,
+          "rowCount": 8,
+          "fields": [
+            {
+              "label": "Firma Adı",
+              "value": "AKSA SILAH INSAAT METAL SANAYI TICARET LIMITED SIRKETI Rapor Numarası ET-2025-378-03",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Adresi",
+              "value": "BAYAVSAR MAH. 41956 KONYA BEYSEHIR NO:6/0 KONYA Rapor Tarihi 02.12.2025",
+              "isEditable": true
+            },
+            {
+              "label": "SGK Sicil Numarası",
+              "value": "22540010111776200420331000 Bir Sonraki Periyodik Kontrol Tarihi 19.11.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Metodu ve Kapsamı",
+              "value": "TS HD 60364-4-41 Alçak Gerilim Elektrik Tesisleri – Bölüm 4: Güvenlik İçin Koruma – Bölüm 41: Elektrik Çarpmasına Karşı KorumaTS HD 60364-6 Alçak Gerilim Elektrik Tesisatları – Bölüm 6: Doğrulamaİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar YönetmeliğiElektrik İç Tesisleri Yönetmeliği",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "rowCount": 15,
+          "fields": [
+            {
+              "label": "Yangın algılama sistemi",
+              "value": "Otomatik     Manuel Şebeke tipi Işıklı    Sesli      Işık+Sesli       Anons      Diğer",
+              "isEditable": true
+            },
+            {
+              "label": "Sistem çalışma tipi",
+              "value": "Adresli Konvansiyonel Proje onay kurumu 3H MÜHENDİSLİK HAYRÜNNÜSA KÜÇÜKDİP.ODA NO:2232040010/87392",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol nedeni",
+              "value": "Periyodik Kontrol İlk Kontrol Proje onay tarih ve sayısı 2025",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol paneli marka/model",
+              "value": "HONEYWELL İlk kontrol/devreye alma tarihi 2025 Son kontrol tarihi 25.11.2025",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol paneli seri no./imal yılı",
+              "value": "714-001-227/22.09.23 Kontrol paneli çalışma gerilimi 220/24 Algılama ekipmanları Duman (optik) dedektörü Isı dedektörü İhbar butonu",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol paneli yeri",
+              "value": "GÜVENLİK BİNASI Uyarı ekipmanları Siren   Flaşör",
+              "isEditable": true
+            },
+            {
+              "label": "Söndürme ekipmanları",
+              "value": "Otomatik söndürme   KKT Özellikli yangın tüpleri   CO⁰ Özellikli yangın tüpleri   Hidrantlar-Yangın dolapları",
+              "isEditable": true
+            },
+            {
+              "label": "Tesisatta kapsamlı değişiklik var mı?",
+              "value": "Var                    Yok                  Belirlenemedi Bir önceki periyodik kontrol etiketi var mı? Var           Yok",
+              "isEditable": true
+            },
+            {
+              "label": "Bina kullanma sınıfı",
+              "value": "Konut                                          Endüstriyel yapı Toplanma amaçlı bina             Konaklama amaçlı bina Depolama amaçlı tesis            Kurumsal bina Yüksek tehlikeli bina                Büro binası Karışık kullanım amaçlı bina   Ticari Bina tehlike sınıfı Düşük tehlike Orta tehlike Yüksek tehlike",
+              "isEditable": true
+            },
+            {
+              "label": "Bina toplam kullanım alanı (m²)",
+              "value": "2200 Kat sayısı 2 Bina yüksekliği/Yapı yüksekliği (m) 10,5",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "rowCount": 1,
+          "fields": []
+        },
+        {
+          "index": 4,
+          "rowCount": 6,
+          "fields": [
+            {
+              "label": "Cihaz adı",
+              "value": "(boş)",
+              "isEditable": false
+            },
+            {
+              "label": "Kalibrasyon tarihi",
+              "value": "(boş)",
+              "isEditable": false
+            },
+            {
+              "label": "Kalibrasyon geçerlilik tarihi",
+              "value": "(boş)",
+              "isEditable": false
+            },
+            {
+              "label": "Seri numarası",
+              "value": "(boş)",
+              "isEditable": false
+            },
+            {
+              "label": "Kalibrasyon numarası",
+              "value": "(boş)",
+              "isEditable": false
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "rowCount": 41,
+          "fields": [
+            {
+              "label": "Kontrol Kriteri",
+              "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+              "isEditable": true
+            },
+            {
+              "label": "Yetkili ve eğitimli personel var mı?",
+              "value": "U Acil durum anons sistemi mevcudiyeti U",
+              "isEditable": true
+            },
+            {
+              "label": "Yangın güvenliği sorumluları belirlenmiş mi?",
+              "value": "U Bakım/servis kayıtları tutuluyor mu? U",
+              "isEditable": true
+            },
+            {
+              "label": "Yangın alarm panelinin durumu (ekran-tuşlar-LED’ler)",
+              "value": "U Sistem kütüğü belgesi var mı? U",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol paneli ve varsa tekrarlayıcı panellerin yerleşimdurumu",
+              "value": "U Kullanma talimatı var mı? U",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol paneli sürekli izlenebilir durumda mı?",
+              "value": "U Akü kapasitesi, gerilimi ve fiziki durumu U",
+              "isEditable": true
+            },
+            {
+              "label": "Dedektör ve/veya buton adreslemesi veya yerleşimharitası var mı?",
+              "value": "U Dedektörlerin çalışma ortamına uyumu ve yeterliolması U",
+              "isEditable": true
+            },
+            {
+              "label": "Çevrimlerde kısa devre ve açık devre koruması",
+              "value": "U Yangın alarm ve uyarı kablolarının uygunluğu U",
+              "isEditable": true
+            },
+            {
+              "label": "Güvenlik devre ayrılması (Bant-I, Bant-II’denayırma/yalıtım)",
+              "value": "U",
+              "isEditable": true
+            },
+            {
+              "label": "Acil durum aydınlatma armatürleri uygunluğu",
+              "value": "U Acil durum aydınlatma sistemi varlığı, yeterliliğipanelönü (lux değeri TS EN 12464’e göre) U",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "rowCount": 1,
+          "fields": []
+        },
+        {
+          "index": 7,
+          "rowCount": 1,
+          "fields": []
+        },
+        {
+          "index": 8,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 9,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 10,
+          "rowCount": 7,
+          "fields": []
+        }
+      ],
+      "allFields": [
+        {
+          "label": "Firma Adı",
+          "value": "AKSA SILAH INSAAT METAL SANAYI TICARET LIMITED SIRKETI Rapor Numarası ET-2025-378-03",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Adresi",
+          "value": "BAYAVSAR MAH. 41956 KONYA BEYSEHIR NO:6/0 KONYA Rapor Tarihi 02.12.2025",
+          "isEditable": true
+        },
+        {
+          "label": "SGK Sicil Numarası",
+          "value": "22540010111776200420331000 Bir Sonraki Periyodik Kontrol Tarihi 19.11.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "value": "TS HD 60364-4-41 Alçak Gerilim Elektrik Tesisleri – Bölüm 4: Güvenlik İçin Koruma – Bölüm 41: Elektrik Çarpmasına Karşı KorumaTS HD 60364-6 Alçak Gerilim Elektrik Tesisatları – Bölüm 6: Doğrulamaİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar YönetmeliğiElektrik İç Tesisleri Yönetmeliği",
+          "isEditable": true
+        },
+        {
+          "label": "Yangın algılama sistemi",
+          "value": "Otomatik     Manuel Şebeke tipi Işıklı    Sesli      Işık+Sesli       Anons      Diğer",
+          "isEditable": true
+        },
+        {
+          "label": "Sistem çalışma tipi",
+          "value": "Adresli Konvansiyonel Proje onay kurumu 3H MÜHENDİSLİK HAYRÜNNÜSA KÜÇÜKDİP.ODA NO:2232040010/87392",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol nedeni",
+          "value": "Periyodik Kontrol İlk Kontrol Proje onay tarih ve sayısı 2025",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol paneli marka/model",
+          "value": "HONEYWELL İlk kontrol/devreye alma tarihi 2025 Son kontrol tarihi 25.11.2025",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol paneli seri no./imal yılı",
+          "value": "714-001-227/22.09.23 Kontrol paneli çalışma gerilimi 220/24 Algılama ekipmanları Duman (optik) dedektörü Isı dedektörü İhbar butonu",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol paneli yeri",
+          "value": "GÜVENLİK BİNASI Uyarı ekipmanları Siren   Flaşör",
+          "isEditable": true
+        },
+        {
+          "label": "Söndürme ekipmanları",
+          "value": "Otomatik söndürme   KKT Özellikli yangın tüpleri   CO⁰ Özellikli yangın tüpleri   Hidrantlar-Yangın dolapları",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisatta kapsamlı değişiklik var mı?",
+          "value": "Var                    Yok                  Belirlenemedi Bir önceki periyodik kontrol etiketi var mı? Var           Yok",
+          "isEditable": true
+        },
+        {
+          "label": "Bina kullanma sınıfı",
+          "value": "Konut                                          Endüstriyel yapı Toplanma amaçlı bina             Konaklama amaçlı bina Depolama amaçlı tesis            Kurumsal bina Yüksek tehlikeli bina                Büro binası Karışık kullanım amaçlı bina   Ticari Bina tehlike sınıfı Düşük tehlike Orta tehlike Yüksek tehlike",
+          "isEditable": true
+        },
+        {
+          "label": "Bina toplam kullanım alanı (m²)",
+          "value": "2200 Kat sayısı 2 Bina yüksekliği/Yapı yüksekliği (m) 10,5",
+          "isEditable": true
+        },
+        {
+          "label": "Yapı kullanma izin tarihi",
+          "value": "2024 Bölüm sayısı 6 Varsa diğer tespitler YOK",
+          "isEditable": true
+        },
+        {
+          "label": "Cihaz adı",
+          "value": "(boş)",
+          "isEditable": false
+        },
+        {
+          "label": "Kalibrasyon tarihi",
+          "value": "(boş)",
+          "isEditable": false
+        },
+        {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "value": "(boş)",
+          "isEditable": false
+        },
+        {
+          "label": "Seri numarası",
+          "value": "(boş)",
+          "isEditable": false
+        },
+        {
+          "label": "Kalibrasyon numarası",
+          "value": "(boş)",
+          "isEditable": false
+        },
+        {
+          "label": "Kontrol Kriteri",
+          "value": "Değerlendirme Kontrol Kriteri Değerlendirme",
+          "isEditable": true
+        },
+        {
+          "label": "Yetkili ve eğitimli personel var mı?",
+          "value": "U Acil durum anons sistemi mevcudiyeti U",
+          "isEditable": true
+        },
+        {
+          "label": "Yangın güvenliği sorumluları belirlenmiş mi?",
+          "value": "U Bakım/servis kayıtları tutuluyor mu? U",
+          "isEditable": true
+        },
+        {
+          "label": "Yangın alarm panelinin durumu (ekran-tuşlar-LED’ler)",
+          "value": "U Sistem kütüğü belgesi var mı? U",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol paneli ve varsa tekrarlayıcı panellerin yerleşimdurumu",
+          "value": "U Kullanma talimatı var mı? U",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol paneli sürekli izlenebilir durumda mı?",
+          "value": "U Akü kapasitesi, gerilimi ve fiziki durumu U",
+          "isEditable": true
+        },
+        {
+          "label": "Dedektör ve/veya buton adreslemesi veya yerleşimharitası var mı?",
+          "value": "U Dedektörlerin çalışma ortamına uyumu ve yeterliolması U",
+          "isEditable": true
+        },
+        {
+          "label": "Çevrimlerde kısa devre ve açık devre koruması",
+          "value": "U Yangın alarm ve uyarı kablolarının uygunluğu U",
+          "isEditable": true
+        },
+        {
+          "label": "Güvenlik devre ayrılması (Bant-I, Bant-II’denayırma/yalıtım)",
+          "value": "U",
+          "isEditable": true
+        },
+        {
+          "label": "Acil durum aydınlatma armatürleri uygunluğu",
+          "value": "U Acil durum aydınlatma sistemi varlığı, yeterliliğipanelönü (lux değeri TS EN 12464’e göre) U",
+          "isEditable": true
+        },
+        {
+          "label": "Acil durum aydınlatma sistemi varlığı, yeterliliği-diğergerekli alanlar",
+          "value": "U Acil çıkış hollerinde acil durum yönlendirmeişaretleri varlığı, yeterliliği U",
+          "isEditable": true
+        },
+        {
+          "label": "Kaçış yollarında acil durum yönlendirme işaretleri varlığı,yeterliliği",
+          "value": "U Acil durum aydınlatma ünitelerinin aydınlatmasürelerinin uygunluğu U",
+          "isEditable": true
+        },
+        {
+          "label": "Acil durum aydınlatma ünitelerinin aydınlatmaseviyelerinin uygunluğu",
+          "value": "U Acil durum aydınlatması ve yönlendirmesi elektrikkesildiğinde otomatik devreye girmesi U",
+          "isEditable": true
+        },
+        {
+          "label": "Yangın alarm sisteminin diğer otomatik söndürmesistemleri ile entegre olma durumu",
+          "value": "U Yangın söndürme sistemi akış anahtarları, hatkesme vanaları, yangın pompaları çalışmafonksiyonları konum bilgisi izlenebilirliği U",
+          "isEditable": true
+        },
+        {
+          "label": "Yangın algılama ve uyarı sisteminin bina otomasyonsistemi ile bağlantı ve haberleşme kontrolü",
+          "value": "U Yangın anında asansör kuyuları ve yangın merdivenikovaları basınçlandırma sistemi kontrolleri U",
+          "isEditable": true
+        },
+        {
+          "label": "Asansörlerin yangın anında davranışları kontrolü",
+          "value": "U Yangın bölme kapıları elektromanyetik tutucularıkontrolü U",
+          "isEditable": true
+        },
+        {
+          "label": "Geçiş kontrol sistemleri uygunluğu (döner kapı, turnike,acil çıkış kapıları)",
+          "value": "U",
+          "isEditable": true
+        },
+        {
+          "label": "Tanım/Kod",
+          "value": "Bölüm Adı/Tanımı Ekipman adı/Adedi Değerlendirme",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 1",
+          "value": "TALAŞLI İMALAT/ÜRETİM HATTI Optik duman dedektörü/25 U U U U U U U",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 1",
+          "value": "TALAŞLI İMALAT/ÜRETİM HATTI Isı dedektörü/0 UG UG UG UG UG UG UG",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 1",
+          "value": "TALAŞLI İMALAT/ÜRETİM HATTI Yangın Alarm butonu/6 U U U U U U U",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 1",
+          "value": "TALAŞLI İMALAT/ÜRETİM HATTI Siren/6 U U U U U U U",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 1",
+          "value": "TALAŞLI İMALAT/ÜRETİM HATTI Flaşör (ışıklı ve sesli)/6 U U U U U U U",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 1",
+          "value": "TALAŞLI İMALAT/ÜRETİM HATTI Kontrol Paneli/1 U U U U U U U",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 2",
+          "value": "K.SIKI DEPO/MONTAJ/ANA DEPO/ARGE Optik duman dedektörü/18 U U U U U U U",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 2",
+          "value": "K.SIKI DEPO/MONTAJ/ANA DEPO/ARGE Isı dedektörü/ UG UG UG UG UG UG UG",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 2",
+          "value": "K.SIKI DEPO/MONTAJ/ANA DEPO/ARGE Yangın Alarm butonu/7 U U U U U U U",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 2",
+          "value": "K.SIKI DEPO/MONTAJ/ANA DEPO/ARGE Siren/9 U U U U U U U",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 2",
+          "value": "K.SIKI DEPO/MONTAJ/ANA DEPO/ARGE Flaşör (ışıklı ve sesli)/9 U U U U U U U",
+          "isEditable": true
+        },
+        {
+          "label": "Loop 2",
+          "value": "K.SIKI DEPO/MONTAJ/ANA DEPO/ARGE Diğer U U U U U U U",
+          "isEditable": true
+        }
+      ],
+      "suggestedPlaceholders": {
+        "firma_adı": {
+          "label": "Firma Adı",
+          "placeholder": "{{firma_adı}}",
+          "sampleValue": "AKSA SILAH INSAAT METAL SANAYI TICARET LIMITED SIRKETI Rapor Numarası ET-2025-378-03"
+        },
+        "periyodik_kontrol_adresi": {
+          "label": "Periyodik Kontrol Adresi",
+          "placeholder": "{{periyodik_kontrol_adresi}}",
+          "sampleValue": "BAYAVSAR MAH. 41956 KONYA BEYSEHIR NO:6/0 KONYA Rapor Tarihi 02.12.2025"
+        },
+        "sgk_sicil_numarası": {
+          "label": "SGK Sicil Numarası",
+          "placeholder": "{{sgk_sicil_numarası}}",
+          "sampleValue": "22540010111776200420331000 Bir Sonraki Periyodik Kontrol Tarihi 19.11.2026"
+        },
+        "periyodik_kontrol_metodu_ve_kapsamı": {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "placeholder": "{{periyodik_kontrol_metodu_ve_kapsamı}}",
+          "sampleValue": "TS HD 60364-4-41 Alçak Gerilim Elektrik Tesisleri – Bölüm 4: Güvenlik İçin Koruma – Bölüm 41: Elektrik Çarpmasına Karşı KorumaTS HD 60364-6 Alçak Gerilim Elektrik Tesisatları – Bölüm 6: Doğrulamaİş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları YönetmeliğiElektrik Tesislerinde Topraklamalar YönetmeliğiElektrik İç Tesisleri Yönetmeliği"
+        },
+        "yangın_algılama_sistemi": {
+          "label": "Yangın algılama sistemi",
+          "placeholder": "{{yangın_algılama_sistemi}}",
+          "sampleValue": "Otomatik     Manuel Şebeke tipi Işıklı    Sesli      Işık+Sesli       Anons      Diğer"
+        },
+        "sistem_çalışma_tipi": {
+          "label": "Sistem çalışma tipi",
+          "placeholder": "{{sistem_çalışma_tipi}}",
+          "sampleValue": "Adresli Konvansiyonel Proje onay kurumu 3H MÜHENDİSLİK HAYRÜNNÜSA KÜÇÜKDİP.ODA NO:2232040010/87392"
+        },
+        "kontrol_nedeni": {
+          "label": "Kontrol nedeni",
+          "placeholder": "{{kontrol_nedeni}}",
+          "sampleValue": "Periyodik Kontrol İlk Kontrol Proje onay tarih ve sayısı 2025"
+        },
+        "kontrol_paneli_marka_model": {
+          "label": "Kontrol paneli marka/model",
+          "placeholder": "{{kontrol_paneli_marka_model}}",
+          "sampleValue": "HONEYWELL İlk kontrol/devreye alma tarihi 2025 Son kontrol tarihi 25.11.2025"
+        },
+        "kontrol_paneli_seri_no_imal_yılı": {
+          "label": "Kontrol paneli seri no./imal yılı",
+          "placeholder": "{{kontrol_paneli_seri_no_imal_yılı}}",
+          "sampleValue": "714-001-227/22.09.23 Kontrol paneli çalışma gerilimi 220/24 Algılama ekipmanları Duman (optik) dedektörü Isı dedektörü İhbar butonu"
+        },
+        "kontrol_paneli_yeri": {
+          "label": "Kontrol paneli yeri",
+          "placeholder": "{{kontrol_paneli_yeri}}",
+          "sampleValue": "GÜVENLİK BİNASI Uyarı ekipmanları Siren   Flaşör"
+        },
+        "söndürme_ekipmanları": {
+          "label": "Söndürme ekipmanları",
+          "placeholder": "{{söndürme_ekipmanları}}",
+          "sampleValue": "Otomatik söndürme   KKT Özellikli yangın tüpleri   CO⁰ Özellikli yangın tüpleri   Hidrantlar-Yangın dolapları"
+        },
+        "tesisatta_kapsamlı_değişiklik_var_mı_": {
+          "label": "Tesisatta kapsamlı değişiklik var mı?",
+          "placeholder": "{{tesisatta_kapsamlı_değişiklik_var_mı_}}",
+          "sampleValue": "Var                    Yok                  Belirlenemedi Bir önceki periyodik kontrol etiketi var mı? Var           Yok"
+        },
+        "bina_kullanma_sınıfı": {
+          "label": "Bina kullanma sınıfı",
+          "placeholder": "{{bina_kullanma_sınıfı}}",
+          "sampleValue": "Konut                                          Endüstriyel yapı Toplanma amaçlı bina             Konaklama amaçlı bina Depolama amaçlı tesis            Kurumsal bina Yüksek tehlikeli bina                Büro binası Karışık kullanım amaçlı bina   Ticari Bina tehlike sınıfı Düşük tehlike Orta tehlike Yüksek tehlike"
+        },
+        "bina_toplam_kullanım_alanı_m_": {
+          "label": "Bina toplam kullanım alanı (m²)",
+          "placeholder": "{{bina_toplam_kullanım_alanı_m_}}",
+          "sampleValue": "2200 Kat sayısı 2 Bina yüksekliği/Yapı yüksekliği (m) 10,5"
+        },
+        "yapı_kullanma_izin_tarihi": {
+          "label": "Yapı kullanma izin tarihi",
+          "placeholder": "{{yapı_kullanma_izin_tarihi}}",
+          "sampleValue": "2024 Bölüm sayısı 6 Varsa diğer tespitler YOK"
+        },
+        "kontrol_kriteri": {
+          "label": "Kontrol Kriteri",
+          "placeholder": "{{kontrol_kriteri}}",
+          "sampleValue": "Değerlendirme Kontrol Kriteri Değerlendirme"
+        },
+        "yetkili_ve_eğitimli_personel_var_mı_": {
+          "label": "Yetkili ve eğitimli personel var mı?",
+          "placeholder": "{{yetkili_ve_eğitimli_personel_var_mı_}}",
+          "sampleValue": "U Acil durum anons sistemi mevcudiyeti U"
+        },
+        "yangın_güvenliği_sorumluları_belirlenmiş_mi_": {
+          "label": "Yangın güvenliği sorumluları belirlenmiş mi?",
+          "placeholder": "{{yangın_güvenliği_sorumluları_belirlenmiş_mi_}}",
+          "sampleValue": "U Bakım/servis kayıtları tutuluyor mu? U"
+        },
+        "yangın_alarm_panelinin_durumu_ekran_tuşlar_led_ler_": {
+          "label": "Yangın alarm panelinin durumu (ekran-tuşlar-LED’ler)",
+          "placeholder": "{{yangın_alarm_panelinin_durumu_ekran_tuşlar_led_ler_}}",
+          "sampleValue": "U Sistem kütüğü belgesi var mı? U"
+        },
+        "kontrol_paneli_ve_varsa_tekrarlayıcı_panellerin_yerleşimdurumu": {
+          "label": "Kontrol paneli ve varsa tekrarlayıcı panellerin yerleşimdurumu",
+          "placeholder": "{{kontrol_paneli_ve_varsa_tekrarlayıcı_panellerin_yerleşimdurumu}}",
+          "sampleValue": "U Kullanma talimatı var mı? U"
+        },
+        "kontrol_paneli_sürekli_izlenebilir_durumda_mı_": {
+          "label": "Kontrol paneli sürekli izlenebilir durumda mı?",
+          "placeholder": "{{kontrol_paneli_sürekli_izlenebilir_durumda_mı_}}",
+          "sampleValue": "U Akü kapasitesi, gerilimi ve fiziki durumu U"
+        },
+        "dedektör_ve_veya_buton_adreslemesi_veya_yerleşimharitası_var_mı_": {
+          "label": "Dedektör ve/veya buton adreslemesi veya yerleşimharitası var mı?",
+          "placeholder": "{{dedektör_ve_veya_buton_adreslemesi_veya_yerleşimharitası_var_mı_}}",
+          "sampleValue": "U Dedektörlerin çalışma ortamına uyumu ve yeterliolması U"
+        },
+        "çevrimlerde_kısa_devre_ve_açık_devre_koruması": {
+          "label": "Çevrimlerde kısa devre ve açık devre koruması",
+          "placeholder": "{{çevrimlerde_kısa_devre_ve_açık_devre_koruması}}",
+          "sampleValue": "U Yangın alarm ve uyarı kablolarının uygunluğu U"
+        },
+        "güvenlik_devre_ayrılması_bant_i_bant_ii_denayırma_yalıtım_": {
+          "label": "Güvenlik devre ayrılması (Bant-I, Bant-II’denayırma/yalıtım)",
+          "placeholder": "{{güvenlik_devre_ayrılması_bant_i_bant_ii_denayırma_yalıtım_}}",
+          "sampleValue": "U"
+        },
+        "acil_durum_aydınlatma_armatürleri_uygunluğu": {
+          "label": "Acil durum aydınlatma armatürleri uygunluğu",
+          "placeholder": "{{acil_durum_aydınlatma_armatürleri_uygunluğu}}",
+          "sampleValue": "U Acil durum aydınlatma sistemi varlığı, yeterliliğipanelönü (lux değeri TS EN 12464’e göre) U"
+        },
+        "acil_durum_aydınlatma_sistemi_varlığı_yeterliliği_diğergerekli_alanlar": {
+          "label": "Acil durum aydınlatma sistemi varlığı, yeterliliği-diğergerekli alanlar",
+          "placeholder": "{{acil_durum_aydınlatma_sistemi_varlığı_yeterliliği_diğergerekli_alanlar}}",
+          "sampleValue": "U Acil çıkış hollerinde acil durum yönlendirmeişaretleri varlığı, yeterliliği U"
+        },
+        "kaçış_yollarında_acil_durum_yönlendirme_işaretleri_varlığı_yeterliliği": {
+          "label": "Kaçış yollarında acil durum yönlendirme işaretleri varlığı,yeterliliği",
+          "placeholder": "{{kaçış_yollarında_acil_durum_yönlendirme_işaretleri_varlığı_yeterliliği}}",
+          "sampleValue": "U Acil durum aydınlatma ünitelerinin aydınlatmasürelerinin uygunluğu U"
+        },
+        "acil_durum_aydınlatma_ünitelerinin_aydınlatmaseviyelerinin_uygunluğu": {
+          "label": "Acil durum aydınlatma ünitelerinin aydınlatmaseviyelerinin uygunluğu",
+          "placeholder": "{{acil_durum_aydınlatma_ünitelerinin_aydınlatmaseviyelerinin_uygunluğu}}",
+          "sampleValue": "U Acil durum aydınlatması ve yönlendirmesi elektrikkesildiğinde otomatik devreye girmesi U"
+        },
+        "yangın_alarm_sisteminin_diğer_otomatik_söndürmesistemleri_ile_entegre_olma_durumu": {
+          "label": "Yangın alarm sisteminin diğer otomatik söndürmesistemleri ile entegre olma durumu",
+          "placeholder": "{{yangın_alarm_sisteminin_diğer_otomatik_söndürmesistemleri_ile_entegre_olma_durumu}}",
+          "sampleValue": "U Yangın söndürme sistemi akış anahtarları, hatkesme vanaları, yangın pompaları çalışmafonksiyonları konum bilgisi izlenebilirliği U"
+        },
+        "yangın_algılama_ve_uyarı_sisteminin_bina_otomasyonsistemi_ile_bağlantı_ve_haberleşme_kontrolü": {
+          "label": "Yangın algılama ve uyarı sisteminin bina otomasyonsistemi ile bağlantı ve haberleşme kontrolü",
+          "placeholder": "{{yangın_algılama_ve_uyarı_sisteminin_bina_otomasyonsistemi_ile_bağlantı_ve_haberleşme_kontrolü}}",
+          "sampleValue": "U Yangın anında asansör kuyuları ve yangın merdivenikovaları basınçlandırma sistemi kontrolleri U"
+        },
+        "asansörlerin_yangın_anında_davranışları_kontrolü": {
+          "label": "Asansörlerin yangın anında davranışları kontrolü",
+          "placeholder": "{{asansörlerin_yangın_anında_davranışları_kontrolü}}",
+          "sampleValue": "U Yangın bölme kapıları elektromanyetik tutucularıkontrolü U"
+        },
+        "geçiş_kontrol_sistemleri_uygunluğu_döner_kapı_turnike_acil_çıkış_kapıları_": {
+          "label": "Geçiş kontrol sistemleri uygunluğu (döner kapı, turnike,acil çıkış kapıları)",
+          "placeholder": "{{geçiş_kontrol_sistemleri_uygunluğu_döner_kapı_turnike_acil_çıkış_kapıları_}}",
+          "sampleValue": "U"
+        },
+        "tanım_kod": {
+          "label": "Tanım/Kod",
+          "placeholder": "{{tanım_kod}}",
+          "sampleValue": "Bölüm Adı/Tanımı Ekipman adı/Adedi Değerlendirme"
+        },
+        "loop_1": {
+          "label": "Loop 1",
+          "placeholder": "{{loop_1}}",
+          "sampleValue": "TALAŞLI İMALAT/ÜRETİM HATTI Kontrol Paneli/1 U U U U U U U"
+        },
+        "loop_2": {
+          "label": "Loop 2",
+          "placeholder": "{{loop_2}}",
+          "sampleValue": "K.SIKI DEPO/MONTAJ/ANA DEPO/ARGE Diğer U U U U U U U"
+        }
+      }
+    },
+    {
+      "fileName": "FR7.2.73 Transformatör 1-36 kV Gözle Kontrol ve Topraklama Periyodik Kontrol Raporu.docx",
+      "tables": [
+        {
+          "index": 1,
+          "rowCount": 8,
+          "fields": [
+            {
+              "label": "Firma Adı",
+              "value": "MAYA AMBALAJ BASIM VE DIS TICARET LIMITED SIRKETI Rapor Numarası ET-2025-402-04",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Adresi",
+              "value": "ORGANIZE SAN. MH. 14 SK KARAMAN MERKEZ NO:5/0 KARAMAN Rapor Tarihi 29.12.2025",
+              "isEditable": true
+            },
+            {
+              "label": "SGK Sicil Numarası",
+              "value": "21712010110289680700174000 Bir Sonraki Periyodik Kontrol Tarihi 17.12.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Periyodik Kontrol Metodu ve Kapsamı",
+              "value": "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği,Elektrik Tesislerinde Topraklamalar Yönetmeliği,Elektrik Kuvvetli Akım Tesisleri Yönetmeliği.",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "rowCount": 15,
+          "fields": [
+            {
+              "label": "Enerji sağlayan kuruluş",
+              "value": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S",
+              "isEditable": true
+            },
+            {
+              "label": "Şebeke gerilimi",
+              "value": "380 Tesise ait proje var mı? Var       Yok Tek hat şeması var mı? Var       Yok",
+              "isEditable": true
+            },
+            {
+              "label": "Kontrol nedeni",
+              "value": "Periyodik Kontrol İlk Kontrol Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi",
+              "isEditable": true
+            },
+            {
+              "label": "Yapı cinsi",
+              "value": "Ev Ticari Endüstri Diğer Ekipmanın kullanım amacı FABRİKA Son kontrol tarihi 17.12.2025",
+              "isEditable": true
+            },
+            {
+              "label": "Kurulum şekli",
+              "value": "Direk     Beton Köşk     Bina    Bina İçi    Bina Altı     Sac Köşk",
+              "isEditable": true
+            },
+            {
+              "label": "Güç (kVA)",
+              "value": "1000 Gerilim Primer/Sekonder (kV) 33,0/0,4/0,23 İmalat yılı 12/2021",
+              "isEditable": true
+            },
+            {
+              "label": "Seri no.",
+              "value": "A16499 Bağlantı grubu DYN11    DYN5 Hücre bilgileri: Açık tipMMMH-HavaMMMH-Gaz",
+              "isEditable": true
+            },
+            {
+              "label": "Tipi",
+              "value": "Kuru          Hermetik        Genleşme Depolu",
+              "isEditable": true
+            },
+            {
+              "label": "Hava durumu ve sıcaklığı",
+              "value": "25 OC Zemin nem durumu KURU",
+              "isEditable": true
+            },
+            {
+              "label": "Tesisatta kapsamlı değişiklik var mı?",
+              "value": "Var             Yok",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "rowCount": 6,
+          "fields": [
+            {
+              "label": "Cihaz adı",
+              "value": "Chauvin Arnoux",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon tarihi",
+              "value": "14.01.2025",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon geçerlilik tarihi",
+              "value": "14.01.2026",
+              "isEditable": true
+            },
+            {
+              "label": "Seri numarası",
+              "value": "467008 PKH",
+              "isEditable": true
+            },
+            {
+              "label": "Kalibrasyon numarası",
+              "value": "2500290",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "rowCount": 34,
+          "fields": [
+            {
+              "label": "Sıra",
+              "value": "GENEL KONTROLLER Uygunluk Notu",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "rowCount": 17,
+          "fields": [
+            {
+              "label": "Sıra",
+              "value": "TRAFO ANAHTARLAMALI HÜCRE KONTROLLERİ Uygunluk Notu",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "rowCount": 12,
+          "fields": [
+            {
+              "label": "Sıra",
+              "value": "TRAFO BÖLÜMÜ Uygunluk Notu",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "rowCount": 5,
+          "fields": [
+            {
+              "label": "Sıra",
+              "value": "İŞ GÜVENLİĞİ VE KORUYUCU MALZEMELERİN KONTROLÜ Uygunluk Notu",
+              "isEditable": true
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "rowCount": 8,
+          "fields": [
+            {
+              "label": "Sıra",
+              "value": "TRAFO İŞLETME VE KORUMA TOPRAKLAMALARI Uygunluk Notu",
+              "isEditable": true
+            },
+            {
+              "label": "1- Trafo işletme topraklaması ve koruma topraklaması ayrıksa",
+              "value": "(boş)",
+              "isEditable": false
+            },
+            {
+              "label": "Trafo İşletme Topraklaması Rb=……Ω",
+              "value": "(boş)",
+              "isEditable": false
+            },
+            {
+              "label": "2- Trafo işletme topraklaması ve koruma topraklaması birleşikse",
+              "value": "(boş)",
+              "isEditable": false
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "rowCount": 1,
+          "fields": []
+        },
+        {
+          "index": 10,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 11,
+          "rowCount": 2,
+          "fields": []
+        },
+        {
+          "index": 12,
+          "rowCount": 7,
+          "fields": []
+        }
+      ],
+      "allFields": [
+        {
+          "label": "Firma Adı",
+          "value": "MAYA AMBALAJ BASIM VE DIS TICARET LIMITED SIRKETI Rapor Numarası ET-2025-402-04",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Adresi",
+          "value": "ORGANIZE SAN. MH. 14 SK KARAMAN MERKEZ NO:5/0 KARAMAN Rapor Tarihi 29.12.2025",
+          "isEditable": true
+        },
+        {
+          "label": "SGK Sicil Numarası",
+          "value": "21712010110289680700174000 Bir Sonraki Periyodik Kontrol Tarihi 17.12.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "value": "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği,Elektrik Tesislerinde Topraklamalar Yönetmeliği,Elektrik Kuvvetli Akım Tesisleri Yönetmeliği.",
+          "isEditable": true
+        },
+        {
+          "label": "Enerji sağlayan kuruluş",
+          "value": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S",
+          "isEditable": true
+        },
+        {
+          "label": "Şebeke gerilimi",
+          "value": "380 Tesise ait proje var mı? Var       Yok Tek hat şeması var mı? Var       Yok",
+          "isEditable": true
+        },
+        {
+          "label": "Kontrol nedeni",
+          "value": "Periyodik Kontrol İlk Kontrol Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi",
+          "isEditable": true
+        },
+        {
+          "label": "Yapı cinsi",
+          "value": "Ev Ticari Endüstri Diğer Ekipmanın kullanım amacı FABRİKA Son kontrol tarihi 17.12.2025",
+          "isEditable": true
+        },
+        {
+          "label": "Kurulum şekli",
+          "value": "Direk     Beton Köşk     Bina    Bina İçi    Bina Altı     Sac Köşk",
+          "isEditable": true
+        },
+        {
+          "label": "Güç (kVA)",
+          "value": "1000 Gerilim Primer/Sekonder (kV) 33,0/0,4/0,23 İmalat yılı 12/2021",
+          "isEditable": true
+        },
+        {
+          "label": "Seri no.",
+          "value": "A16499 Bağlantı grubu DYN11    DYN5 Hücre bilgileri: Açık tipMMMH-HavaMMMH-Gaz",
+          "isEditable": true
+        },
+        {
+          "label": "Tipi",
+          "value": "Kuru          Hermetik        Genleşme Depolu",
+          "isEditable": true
+        },
+        {
+          "label": "Hava durumu ve sıcaklığı",
+          "value": "25 OC Zemin nem durumu KURU",
+          "isEditable": true
+        },
+        {
+          "label": "Tesisatta kapsamlı değişiklik var mı?",
+          "value": "Var             Yok",
+          "isEditable": true
+        },
+        {
+          "label": "Yüksek gerilim şebeke tipi:",
+          "value": "Yıldız noktası, değeri düşük bir empedans üzerinden topraklanmış şebeke Yıldız noktası yalıtılmış şebeke   Toprak teması kompanze edilmiş (rezonans topraklı) şebeke",
+          "isEditable": true
+        },
+        {
+          "label": "Yetkilendirilmiş YG işletme sorumlusu ve onay bilgileri",
+          "value": "ELEKTRİK-ELEKTRONİK MÜH.ODA SİC.NO:86687",
+          "isEditable": true
+        },
+        {
+          "label": "Cihaz adı",
+          "value": "Chauvin Arnoux",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon tarihi",
+          "value": "14.01.2025",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "value": "14.01.2026",
+          "isEditable": true
+        },
+        {
+          "label": "Seri numarası",
+          "value": "467008 PKH",
+          "isEditable": true
+        },
+        {
+          "label": "Kalibrasyon numarası",
+          "value": "2500290",
+          "isEditable": true
+        },
+        {
+          "label": "Sıra",
+          "value": "GENEL KONTROLLER Uygunluk Notu",
+          "isEditable": true
+        },
+        {
+          "label": "Sıra",
+          "value": "TRAFO ANAHTARLAMALI HÜCRE KONTROLLERİ Uygunluk Notu",
+          "isEditable": true
+        },
+        {
+          "label": "Sıra",
+          "value": "TRAFO BÖLÜMÜ Uygunluk Notu",
+          "isEditable": true
+        },
+        {
+          "label": "Sıra",
+          "value": "İŞ GÜVENLİĞİ VE KORUYUCU MALZEMELERİN KONTROLÜ Uygunluk Notu",
+          "isEditable": true
+        },
+        {
+          "label": "Sıra",
+          "value": "TRAFO İŞLETME VE KORUMA TOPRAKLAMALARI Uygunluk Notu",
+          "isEditable": true
+        },
+        {
+          "label": "1- Trafo işletme topraklaması ve koruma topraklaması ayrıksa",
+          "value": "(boş)",
+          "isEditable": false
+        },
+        {
+          "label": "Trafo İşletme Topraklaması Rb=……Ω",
+          "value": "(boş)",
+          "isEditable": false
+        },
+        {
+          "label": "2- Trafo işletme topraklaması ve koruma topraklaması birleşikse",
+          "value": "(boş)",
+          "isEditable": false
+        }
+      ],
+      "suggestedPlaceholders": {
+        "firma_adı": {
+          "label": "Firma Adı",
+          "placeholder": "{{firma_adı}}",
+          "sampleValue": "MAYA AMBALAJ BASIM VE DIS TICARET LIMITED SIRKETI Rapor Numarası ET-2025-402-04"
+        },
+        "periyodik_kontrol_adresi": {
+          "label": "Periyodik Kontrol Adresi",
+          "placeholder": "{{periyodik_kontrol_adresi}}",
+          "sampleValue": "ORGANIZE SAN. MH. 14 SK KARAMAN MERKEZ NO:5/0 KARAMAN Rapor Tarihi 29.12.2025"
+        },
+        "sgk_sicil_numarası": {
+          "label": "SGK Sicil Numarası",
+          "placeholder": "{{sgk_sicil_numarası}}",
+          "sampleValue": "21712010110289680700174000 Bir Sonraki Periyodik Kontrol Tarihi 17.12.2026"
+        },
+        "periyodik_kontrol_metodu_ve_kapsamı": {
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "placeholder": "{{periyodik_kontrol_metodu_ve_kapsamı}}",
+          "sampleValue": "İş Ekipmanlarının Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği,Elektrik Tesislerinde Topraklamalar Yönetmeliği,Elektrik Kuvvetli Akım Tesisleri Yönetmeliği."
+        },
+        "enerji_sağlayan_kuruluş": {
+          "label": "Enerji sağlayan kuruluş",
+          "placeholder": "{{enerji_sağlayan_kuruluş}}",
+          "sampleValue": "MEDAŞ Şebeke tipi TT          IT         TN                                     TN-CS          TN-C          TN-S"
+        },
+        "şebeke_gerilimi": {
+          "label": "Şebeke gerilimi",
+          "placeholder": "{{şebeke_gerilimi}}",
+          "sampleValue": "380 Tesise ait proje var mı? Var       Yok Tek hat şeması var mı? Var       Yok"
+        },
+        "kontrol_nedeni": {
+          "label": "Kontrol nedeni",
+          "placeholder": "{{kontrol_nedeni}}",
+          "sampleValue": "Periyodik Kontrol İlk Kontrol Topraklayıcı tipi Ring                 Yüzeysel               Temel Derin               Belirlenemedi"
+        },
+        "yapı_cinsi": {
+          "label": "Yapı cinsi",
+          "placeholder": "{{yapı_cinsi}}",
+          "sampleValue": "Ev Ticari Endüstri Diğer Ekipmanın kullanım amacı FABRİKA Son kontrol tarihi 17.12.2025"
+        },
+        "kurulum_şekli": {
+          "label": "Kurulum şekli",
+          "placeholder": "{{kurulum_şekli}}",
+          "sampleValue": "Direk     Beton Köşk     Bina    Bina İçi    Bina Altı     Sac Köşk"
+        },
+        "güç_kva_": {
+          "label": "Güç (kVA)",
+          "placeholder": "{{güç_kva_}}",
+          "sampleValue": "1000 Gerilim Primer/Sekonder (kV) 33,0/0,4/0,23 İmalat yılı 12/2021"
+        },
+        "seri_no_": {
+          "label": "Seri no.",
+          "placeholder": "{{seri_no_}}",
+          "sampleValue": "A16499 Bağlantı grubu DYN11    DYN5 Hücre bilgileri: Açık tipMMMH-HavaMMMH-Gaz"
+        },
+        "tipi": {
+          "label": "Tipi",
+          "placeholder": "{{tipi}}",
+          "sampleValue": "Kuru          Hermetik        Genleşme Depolu"
+        },
+        "hava_durumu_ve_sıcaklığı": {
+          "label": "Hava durumu ve sıcaklığı",
+          "placeholder": "{{hava_durumu_ve_sıcaklığı}}",
+          "sampleValue": "25 OC Zemin nem durumu KURU"
+        },
+        "tesisatta_kapsamlı_değişiklik_var_mı_": {
+          "label": "Tesisatta kapsamlı değişiklik var mı?",
+          "placeholder": "{{tesisatta_kapsamlı_değişiklik_var_mı_}}",
+          "sampleValue": "Var             Yok"
+        },
+        "yüksek_gerilim_şebeke_tipi_": {
+          "label": "Yüksek gerilim şebeke tipi:",
+          "placeholder": "{{yüksek_gerilim_şebeke_tipi_}}",
+          "sampleValue": "Yıldız noktası, değeri düşük bir empedans üzerinden topraklanmış şebeke Yıldız noktası yalıtılmış şebeke   Toprak teması kompanze edilmiş (rezonans topraklı) şebeke"
+        },
+        "yetkilendirilmiş_yg_işletme_sorumlusu_ve_onay_bilgileri": {
+          "label": "Yetkilendirilmiş YG işletme sorumlusu ve onay bilgileri",
+          "placeholder": "{{yetkilendirilmiş_yg_işletme_sorumlusu_ve_onay_bilgileri}}",
+          "sampleValue": "ELEKTRİK-ELEKTRONİK MÜH.ODA SİC.NO:86687"
+        },
+        "cihaz_adı": {
+          "label": "Cihaz adı",
+          "placeholder": "{{cihaz_adı}}",
+          "sampleValue": "Chauvin Arnoux"
+        },
+        "kalibrasyon_tarihi": {
+          "label": "Kalibrasyon tarihi",
+          "placeholder": "{{kalibrasyon_tarihi}}",
+          "sampleValue": "14.01.2025"
+        },
+        "kalibrasyon_geçerlilik_tarihi": {
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "placeholder": "{{kalibrasyon_geçerlilik_tarihi}}",
+          "sampleValue": "14.01.2026"
+        },
+        "seri_numarası": {
+          "label": "Seri numarası",
+          "placeholder": "{{seri_numarası}}",
+          "sampleValue": "467008 PKH"
+        },
+        "kalibrasyon_numarası": {
+          "label": "Kalibrasyon numarası",
+          "placeholder": "{{kalibrasyon_numarası}}",
+          "sampleValue": "2500290"
+        },
+        "sıra": {
+          "label": "Sıra",
+          "placeholder": "{{sıra}}",
+          "sampleValue": "TRAFO İŞLETME VE KORUMA TOPRAKLAMALARI Uygunluk Notu"
+        }
+      }
+    }
+  ],
+  "commonFields": [
+    {
+      "label": "Kontrol Kriteri",
+      "count": 8
+    },
+    {
+      "label": "Cihaz adı",
+      "count": 7
+    },
+    {
+      "label": "Kalibrasyon tarihi",
+      "count": 7
+    },
+    {
+      "label": "Kalibrasyon geçerlilik tarihi",
+      "count": 7
+    },
+    {
+      "label": "Seri numarası",
+      "count": 7
+    },
+    {
+      "label": "Kalibrasyon numarası",
+      "count": 7
+    },
+    {
+      "label": "Firma Adı",
+      "count": 6
+    },
+    {
+      "label": "Periyodik Kontrol Adresi",
+      "count": 6
+    },
+    {
+      "label": "SGK Sicil Numarası",
+      "count": 6
+    },
+    {
+      "label": "Periyodik Kontrol Metodu ve Kapsamı",
+      "count": 6
+    },
+    {
+      "label": "Kontrol nedeni",
+      "count": 6
+    },
+    {
+      "label": "Sıra",
+      "count": 6
+    },
+    {
+      "label": "Loop 1",
+      "count": 6
+    },
+    {
+      "label": "Loop 2",
+      "count": 6
+    },
+    {
+      "label": "Enerji sağlayan kuruluş",
+      "count": 5
+    },
+    {
+      "label": "Şebeke gerilimi",
+      "count": 5
+    },
+    {
+      "label": "Yapı cinsi",
+      "count": 5
+    },
+    {
+      "label": "Pano Adı/Ekipman Tanımlaması",
+      "count": 5
+    },
+    {
+      "label": "Kablo şebeke tarafı",
+      "count": 5
+    },
+    {
+      "label": "Pano sabitlenmesi (Depreme dayanıklılık)",
+      "count": 5
+    }
+  ],
+  "suggestedSchema": {
+    "firmaAdi": {
+      "type": "string",
+      "label": "Firma Adı",
+      "required": true
+    },
+    "raporNumarasi": {
+      "type": "string",
+      "label": "Rapor Numarası",
+      "required": true
+    },
+    "raporTarihi": {
+      "type": "date",
+      "label": "Rapor Tarihi",
+      "required": true
+    },
+    "kontrolAdresi": {
+      "type": "string",
+      "label": "Periyodik Kontrol Adresi",
+      "required": true
+    },
+    "isgKatipId": {
+      "type": "string",
+      "label": "İSG-KATİP Sözleşme ID"
+    },
+    "sgkSicilNo": {
+      "type": "string",
+      "label": "SGK Sicil No"
+    },
+    "baslamaTarihi": {
+      "type": "datetime",
+      "label": "Kontrol Başlangıç Tarihi ve Saati"
+    },
+    "bitisTarihi": {
+      "type": "datetime",
+      "label": "Kontrol Bitiş Tarihi ve Saati"
+    },
+    "muayeneEden": {
+      "type": "string",
+      "label": "Muayene Eden"
+    },
+    "kontrolSonucu": {
+      "type": "enum",
+      "label": "Kontrol Sonucu",
+      "options": [
+        "UYGUN",
+        "UYGUN DEĞİL",
+        "ŞARTLI UYGUN"
+      ]
+    }
+  }
+}

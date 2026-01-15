@@ -108,6 +108,7 @@ function renderSidebar() {
         { icon: '👥', text: 'Müşteriler', page: 'musteriler' },
         { icon: '📄', text: 'Teklifler', page: 'teklifler' },
         { icon: '📋', text: 'İş Emirleri', page: 'is-emirleri' },
+        { icon: '📝', text: 'Şablonlar', page: 'sablonlar' },
         { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' },
         { icon: '👤', text: 'Profilim', page: 'profil' },
         { icon: '⚙️', text: 'Ayarlar', page: 'ayarlar' }
@@ -379,6 +380,8 @@ function navigateToPage(page) {
         loadGorevlerim();
     } else if (page === 'profil') {
         loadProfilBilgileri();
+    } else if (page === 'sablonlar') {
+        loadSablonlar();
     }
 
     console.log(`📄 Sayfa değiştirildi: ${page}`);
@@ -5174,6 +5177,436 @@ function sistemdenCik() {
     window.location.href = '/login.html';
 }
 
+// ========================================
+
+// ========================================
+// ŞABLON YÖNETİMİ FONKSİYONLARI
+// ========================================
+
+let sablonlar = [];
+let sablonKategorileri = [];
+let aktifSablonKategori = '';
+
+async function loadSablonlar() {
+    try {
+        showLoading();
+        const [sablonlarRes, kategorilerRes] = await Promise.all([
+            authenticatedFetch('/api/sablonlar'),
+            authenticatedFetch('/api/sablon-kategorileri')
+        ]);
+
+        sablonlar = await sablonlarRes.json();
+        sablonKategorileri = await kategorilerRes.json();
+
+        renderSablonKategoriler();
+        renderSablonTable();
+        hideLoading();
+    } catch (error) {
+        console.error('Şablon yükleme hatası:', error);
+        hideLoading();
+        showToast('Şablonlar yüklenirken hata oluştu', 'error');
+    }
+}
+
+function renderSablonKategoriler() {
+    const container = document.getElementById('sablon-kategori-buttons');
+    if (!container) return;
+
+    container.innerHTML = sablonKategorileri.map(k => `
+        <button class="filter-btn ${aktifSablonKategori === k.kategori ? 'active' : ''}"
+                onclick="sablonKategoriFiltre('${k.kategori}')"
+                data-kategori="${k.kategori}">
+            ${k.kategori} (${k.adet})
+        </button>
+    `).join('');
+}
+
+function sablonKategoriFiltre(kategori) {
+    aktifSablonKategori = kategori;
+
+    // Aktif buton stilini güncelle
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.kategori === kategori) {
+            btn.classList.add('active');
+        }
+    });
+
+    // Tabloyu yeniden render et
+    renderSablonTable();
+}
+
+function renderSablonTable() {
+    const tbody = document.getElementById('sablon-table-body');
+    if (!tbody) return;
+
+    // Kategoriye göre filtrele
+    let filtrelenmis = sablonlar;
+    if (aktifSablonKategori) {
+        filtrelenmis = sablonlar.filter(s => s.kategori === aktifSablonKategori);
+    }
+
+    if (filtrelenmis.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Şablon bulunamadı</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = filtrelenmis.map(sablon => `
+        <tr>
+            <td><strong>${sablon.kod}</strong></td>
+            <td>${sablon.ad}</td>
+            <td><span class="badge badge-info">${sablon.kategori}</span></td>
+            <td>${sablon.tabloSayisi || 0}</td>
+            <td>${formatBytes(sablon.dosyaBoyutu || 0)}</td>
+            <td>
+                <span class="badge ${sablon.aktif ? 'badge-success' : 'badge-secondary'}">
+                    ${sablon.aktif ? 'Aktif' : 'Pasif'}
+                </span>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-info" onclick="sablonAnaliz(${sablon.id})" title="Analiz">🔍</button>
+                    <button class="btn btn-sm btn-primary" onclick="raporOlusturModal(${sablon.id})" title="Rapor Oluştur">📄</button>
+                    <button class="btn btn-sm btn-secondary" onclick="sablonDuzenle(${sablon.id})" title="Düzenle">✏️</button>
+                    <button class="btn btn-sm btn-danger" onclick="sablonSil(${sablon.id})" title="Sil">🗑️</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+// Yeni şablon yükle modal
+function yeniSablonModal() {
+    document.getElementById('sablon-yukle-modal').style.display = 'block';
+    document.getElementById('sablon-yukle-form').reset();
+}
+
+function closeSablonYukleModal() {
+    document.getElementById('sablon-yukle-modal').style.display = 'none';
+}
+
+// Şablon yükle form submit
+document.addEventListener('DOMContentLoaded', function() {
+    const sablonForm = document.getElementById('sablon-yukle-form');
+    if (sablonForm) {
+        sablonForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('kod', document.getElementById('sablon-kod').value);
+            formData.append('ad', document.getElementById('sablon-ad').value);
+            formData.append('kategori', document.getElementById('sablon-kategori').value);
+            formData.append('dosya', document.getElementById('sablon-dosya').files[0]);
+
+            try {
+                showLoading();
+                const response = await fetch('/api/sablonlar/yukle', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+                hideLoading();
+
+                if (result.success) {
+                    showToast('Şablon başarıyla yüklendi', 'success');
+                    closeSablonYukleModal();
+                    loadSablonlar();
+                } else {
+                    showToast(result.error || 'Şablon yüklenemedi', 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                console.error('Şablon yükleme hatası:', error);
+                showToast('Şablon yüklenirken hata oluştu', 'error');
+            }
+        });
+    }
+});
+
+// Şablonları tara
+async function sablonlariTara() {
+    if (!confirm('Templates klasöründeki tüm şablonlar taranacak ve veritabanına eklenecek. Devam etmek istiyor musunuz?')) {
+        return;
+    }
+
+    try {
+        showLoading();
+        const response = await authenticatedFetch('/api/sablonlar/tara', {
+            method: 'POST'
+        });
+
+        const result = await response.json();
+        hideLoading();
+
+        if (result.success) {
+            showToast(`${result.ozet.eklenen} şablon eklendi, ${result.ozet.atlanan} atlandı`, 'success');
+            loadSablonlar();
+        } else {
+            showToast(result.error || 'Tarama başarısız', 'error');
+        }
+    } catch (error) {
+        hideLoading();
+        console.error('Şablon tarama hatası:', error);
+        showToast('Şablonlar taranırken hata oluştu', 'error');
+    }
+}
+
+// Şablon analiz
+async function sablonAnaliz(sablonId) {
+    const modal = document.getElementById('sablon-analiz-modal');
+    const content = document.getElementById('sablon-analiz-content');
+
+    modal.style.display = 'block';
+    content.innerHTML = '<p class="text-center">Analiz ediliyor...</p>';
+
+    try {
+        const response = await authenticatedFetch(`/api/sablonlar/${sablonId}/analiz`);
+        const result = await response.json();
+
+        if (result.error) {
+            content.innerHTML = `<p class="text-danger">${result.error}</p>`;
+            return;
+        }
+
+        let tablesHtml = '';
+        if (result.analiz.tables && result.analiz.tables.length > 0) {
+            tablesHtml = result.analiz.tables.slice(0, 3).map((table, idx) => `
+                <div style="margin-bottom: 15px;">
+                    <h4>Tablo ${table.index}</h4>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                        ${table.rows.slice(0, 5).map(row => `
+                            <tr>
+                                ${row.map(cell => `<td style="border: 1px solid #ddd; padding: 5px;">${cell || '-'}</td>`).join('')}
+                            </tr>
+                        `).join('')}
+                    </table>
+                </div>
+            `).join('');
+        }
+
+        content.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h3>Genel Bilgiler</h3>
+                    <p><strong>Kod:</strong> ${result.sablon.kod}</p>
+                    <p><strong>Ad:</strong> ${result.sablon.ad}</p>
+                    <p><strong>Tablo Sayısı:</strong> ${result.analiz.tabloSayisi}</p>
+
+                    <h3>Placeholder'lar</h3>
+                    ${result.analiz.placeholders.length > 0 ?
+                        `<ul>${result.analiz.placeholders.map(p => `<li><code>{{${p}}}</code></li>`).join('')}</ul>` :
+                        '<p class="text-muted">Placeholder bulunamadı</p>'
+                    }
+                </div>
+                <div>
+                    <h3>Tablo Önizlemesi</h3>
+                    ${tablesHtml || '<p class="text-muted">Tablo bulunamadı</p>'}
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <h3>İçerik Önizleme</h3>
+                <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; max-height: 200px; overflow-y: auto; font-size: 12px;">
+                    ${result.analiz.textOnizleme || 'İçerik yok'}
+                </div>
+            </div>
+        `;
+
+    } catch (error) {
+        console.error('Şablon analiz hatası:', error);
+        content.innerHTML = '<p class="text-danger">Analiz yapılırken hata oluştu</p>';
+    }
+}
+
+function closeSablonAnalizModal() {
+    document.getElementById('sablon-analiz-modal').style.display = 'none';
+}
+
+// Rapor oluştur modal
+async function raporOlusturModal(sablonId) {
+    const modal = document.getElementById('rapor-olustur-modal');
+    const baslik = document.getElementById('rapor-modal-baslik');
+    const alanlarContainer = document.getElementById('rapor-form-alanlari');
+    const musteriSelect = document.getElementById('rapor-musteri');
+
+    document.getElementById('rapor-sablon-id').value = sablonId;
+    modal.style.display = 'block';
+
+    // Şablon bilgisini al
+    const sablon = sablonlar.find(s => s.id === sablonId);
+    if (sablon) {
+        baslik.textContent = `Rapor Oluştur: ${sablon.ad}`;
+    }
+
+    // Müşteri listesini doldur
+    musteriSelect.innerHTML = '<option value="">Seçiniz</option>';
+    if (musteriler && musteriler.length > 0) {
+        musteriler.forEach(m => {
+            musteriSelect.innerHTML += `<option value="${m.id}">${m.unvan}</option>`;
+        });
+    }
+
+    // Varsayılan form alanları
+    const varsayilanAlanlar = [
+        { key: 'firma_adi', label: 'Firma Adı', type: 'text', required: true },
+        { key: 'rapor_tarihi', label: 'Rapor Tarihi', type: 'date', required: true },
+        { key: 'kontrol_adresi', label: 'Periyodik Kontrol Adresi', type: 'textarea' },
+        { key: 'sgk_sicil_no', label: 'SGK Sicil Numarası', type: 'text' },
+        { key: 'isg_katip_id', label: 'İSG-KATİP Sözleşme ID', type: 'text' },
+        { key: 'kontrol_baslangic', label: 'Kontrol Başlangıç Tarihi ve Saati', type: 'datetime-local' },
+        { key: 'kontrol_bitis', label: 'Kontrol Bitiş Tarihi ve Saati', type: 'datetime-local' },
+        { key: 'sonraki_kontrol', label: 'Bir Sonraki Periyodik Kontrol Tarihi', type: 'date' },
+        { key: 'muayene_eden', label: 'Muayene Eden', type: 'text' },
+        { key: 'kontrol_sonucu', label: 'Kontrol Sonucu', type: 'select', options: ['UYGUN', 'UYGUN DEĞİL', 'ŞARTLI UYGUN'] }
+    ];
+
+    alanlarContainer.innerHTML = varsayilanAlanlar.map(alan => {
+        if (alan.type === 'textarea') {
+            return `
+                <div class="form-group">
+                    <label class="form-label">${alan.label}${alan.required ? ' *' : ''}</label>
+                    <textarea class="form-input" name="${alan.key}" rows="2" ${alan.required ? 'required' : ''}></textarea>
+                </div>
+            `;
+        } else if (alan.type === 'select') {
+            return `
+                <div class="form-group">
+                    <label class="form-label">${alan.label}${alan.required ? ' *' : ''}</label>
+                    <select class="form-input" name="${alan.key}" ${alan.required ? 'required' : ''}>
+                        ${alan.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                    </select>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="form-group">
+                    <label class="form-label">${alan.label}${alan.required ? ' *' : ''}</label>
+                    <input type="${alan.type}" class="form-input" name="${alan.key}" ${alan.required ? 'required' : ''}>
+                </div>
+            `;
+        }
+    }).join('');
+}
+
+function closeRaporOlusturModal() {
+    document.getElementById('rapor-olustur-modal').style.display = 'none';
+}
+
+// Rapor oluştur form submit
+document.addEventListener('DOMContentLoaded', function() {
+    const raporForm = document.getElementById('rapor-olustur-form');
+    if (raporForm) {
+        raporForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const sablonId = document.getElementById('rapor-sablon-id').value;
+            const customerId = document.getElementById('rapor-musteri').value;
+
+            // Form verilerini topla
+            const formData = new FormData(raporForm);
+            const formVerileri = {};
+            for (const [key, value] of formData.entries()) {
+                if (key !== 'rapor-sablon-id' && key !== 'rapor-musteri') {
+                    formVerileri[key] = value;
+                }
+            }
+
+            try {
+                showLoading();
+                const response = await authenticatedFetch(`/api/sablonlar/${sablonId}/rapor-uret`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        formVerileri,
+                        customerId: customerId || null
+                    })
+                });
+
+                const result = await response.json();
+                hideLoading();
+
+                if (result.success) {
+                    showToast(`Rapor oluşturuldu: ${result.rapor.raporNo}`, 'success');
+                    closeRaporOlusturModal();
+
+                    // Raporu indir
+                    if (result.downloadUrl) {
+                        window.open(result.downloadUrl, '_blank');
+                    }
+                } else {
+                    showToast(result.error || 'Rapor oluşturulamadı', 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                console.error('Rapor oluşturma hatası:', error);
+                showToast('Rapor oluşturulurken hata oluştu', 'error');
+            }
+        });
+    }
+});
+
+// Şablon düzenle
+async function sablonDuzenle(sablonId) {
+    const sablon = sablonlar.find(s => s.id === sablonId);
+    if (!sablon) return;
+
+    const yeniAd = prompt('Şablon adını düzenleyin:', sablon.ad);
+    if (!yeniAd || yeniAd === sablon.ad) return;
+
+    try {
+        const response = await authenticatedFetch(`/api/sablonlar/${sablonId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ad: yeniAd })
+        });
+
+        if (response.ok) {
+            showToast('Şablon güncellendi', 'success');
+            loadSablonlar();
+        } else {
+            showToast('Şablon güncellenemedi', 'error');
+        }
+    } catch (error) {
+        console.error('Şablon güncelleme hatası:', error);
+        showToast('Hata oluştu', 'error');
+    }
+}
+
+// Şablon sil
+async function sablonSil(sablonId) {
+    const sablon = sablonlar.find(s => s.id === sablonId);
+    if (!confirm(`"${sablon?.ad}" şablonunu silmek istediğinizden emin misiniz?`)) return;
+
+    try {
+        const response = await authenticatedFetch(`/api/sablonlar/${sablonId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            showToast('Şablon silindi', 'success');
+            loadSablonlar();
+        } else {
+            showToast('Şablon silinemedi', 'error');
+        }
+    } catch (error) {
+        console.error('Şablon silme hatası:', error);
+        showToast('Hata oluştu', 'error');
+    }
+}
+
+// ========================================
+// UYGULAMA BAŞLATMA
 // ========================================
 
 console.log(`

@@ -319,6 +319,143 @@
                 </div>
             </div>
 
+            <!-- Şablon Yönetimi Sayfası -->
+            <div id="page-sablonlar" class="page-content">
+                <div class="page-header" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div>
+                        <h2 style="margin: 0; font-size: 28px; font-weight: 700;">Şablon Yönetimi</h2>
+                        <p style="margin: 8px 0 0 0; font-size: 14px; opacity: 0.9;">Word şablonlarını yönetin ve raporlar oluşturun</p>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);" onclick="sablonlariTara()">🔍 Şablonları Tara</button>
+                        <button class="btn" style="background: white; color: #11998e;" onclick="yeniSablonModal()">➕ Şablon Yükle</button>
+                    </div>
+                </div>
+
+                <!-- Kategori Filtreleri -->
+                <div class="filter-bar" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="filter-btn active" onclick="sablonKategoriFiltre('')" data-kategori="">Tümü</button>
+                    <div id="sablon-kategori-buttons">
+                        <!-- Dinamik olarak doldurulacak -->
+                    </div>
+                </div>
+
+                <!-- Şablon Listesi -->
+                <div class="table-container">
+                    <table id="sablon-table">
+                        <thead>
+                            <tr>
+                                <th>Kod</th>
+                                <th>Şablon Adı</th>
+                                <th>Kategori</th>
+                                <th>Tablo Sayısı</th>
+                                <th>Boyut</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sablon-table-body">
+                            <tr>
+                                <td colspan="7" class="text-center">Yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Şablon Yükle Modal -->
+            <div id="sablon-yukle-modal" class="modal">
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h2>Yeni Şablon Yükle</h2>
+                        <span class="close" onclick="closeSablonYukleModal()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form id="sablon-yukle-form">
+                            <div class="form-group">
+                                <label class="form-label">Şablon Kodu *</label>
+                                <input type="text" id="sablon-kod" class="form-input" placeholder="FR7.2.36" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Şablon Adı *</label>
+                                <input type="text" id="sablon-ad" class="form-input" placeholder="Elektrik Topraklama Ölçüm Raporu" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Kategori *</label>
+                                <select id="sablon-kategori" class="form-input" required>
+                                    <option value="">Seçiniz</option>
+                                    <option value="Elektrik">Elektrik</option>
+                                    <option value="Basınçlı Kap">Basınçlı Kap</option>
+                                    <option value="Kaldırma ve İletme">Kaldırma ve İletme</option>
+                                    <option value="İş Makinesi">İş Makinesi</option>
+                                    <option value="Yangın">Yangın</option>
+                                    <option value="Tesisat">Tesisat</option>
+                                    <option value="Diğer">Diğer</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Açıklama</label>
+                                <textarea id="sablon-aciklama" class="form-input" rows="3" placeholder="Şablon hakkında açıklama..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Word Dosyası (.docx) *</label>
+                                <input type="file" id="sablon-dosya" class="form-input" accept=".docx" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="closeSablonYukleModal()">İptal</button>
+                                <button type="submit" class="btn btn-primary">Yükle</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Şablon Analiz Modal -->
+            <div id="sablon-analiz-modal" class="modal">
+                <div class="modal-content" style="max-width: 900px; max-height: 80vh; overflow-y: auto;">
+                    <div class="modal-header">
+                        <h2>Şablon Analizi</h2>
+                        <span class="close" onclick="closeSablonAnalizModal()">&times;</span>
+                    </div>
+                    <div class="modal-body" id="sablon-analiz-content">
+                        <p class="text-center">Yükleniyor...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rapor Oluştur Modal -->
+            <div id="rapor-olustur-modal" class="modal">
+                <div class="modal-content" style="max-width: 800px; max-height: 85vh; overflow-y: auto;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white;">
+                        <h2 id="rapor-modal-baslik">Rapor Oluştur</h2>
+                        <span class="close" onclick="closeRaporOlusturModal()" style="color: white;">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form id="rapor-olustur-form">
+                            <input type="hidden" id="rapor-sablon-id">
+
+                            <!-- Müşteri Seçimi -->
+                            <div class="form-group">
+                                <label class="form-label">Müşteri (Opsiyonel)</label>
+                                <select id="rapor-musteri" class="form-input">
+                                    <option value="">Seçiniz</option>
+                                </select>
+                            </div>
+
+                            <!-- Dinamik Form Alanları -->
+                            <div id="rapor-form-alanlari">
+                                <!-- Şablona göre dinamik olarak doldurulacak -->
+                            </div>
+
+                            <div class="form-actions" style="margin-top: 20px;">
+                                <button type="button" class="btn btn-secondary" onclick="closeRaporOlusturModal()">İptal</button>
+                                <button type="submit" class="btn btn-primary" style="background: #11998e;">Rapor Oluştur</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <!-- Profilim Sayfası -->
             <div id="page-profil" class="page-content">
                 <div class="page-header" style="background: linear-gradient(135deg, #1a5f7a, #134b61); color: white; padding: 30px; border-radius: 12px; margin-bottom: 25px;">

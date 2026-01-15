@@ -2179,6 +2179,518 @@ app.get('/api/olcum-cihazlari/kategori/:kategori', async (req, res) => {
     }
 });
 
+// ============ ŞABLON YÖNETİMİ API ============
+
+const PizZip = require('pizzip');
+const Docxtemplater = require('docxtemplater');
+
+// Şablon listesi
+app.get('/api/sablonlar', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { kategori, aktif } = req.query;
+        const where = {};
+
+        if (kategori) where.kategori = kategori;
+        if (aktif !== undefined) where.aktif = aktif === 'true';
+
+        const sablonlar = await auth.prisma.sablon.findMany({
+            where,
+            orderBy: [{ kategori: 'asc' }, { sira: 'asc' }, { ad: 'asc' }]
+        });
+        res.json(sablonlar);
+    } catch (error) {
+        console.error('Şablon listesi hatası:', error);
+        res.status(500).json({ error: 'Şablonlar alınamadı' });
+    }
+});
+
+// Tek şablon getir
+app.get('/api/sablonlar/:id', auth.authMiddleware(), async (req, res) => {
+    try {
+        const sablon = await auth.prisma.sablon.findUnique({
+            where: { id: parseInt(req.params.id) }
+        });
+        if (!sablon) {
+            return res.status(404).json({ error: 'Şablon bulunamadı' });
+        }
+        res.json(sablon);
+    } catch (error) {
+        console.error('Şablon getirme hatası:', error);
+        res.status(500).json({ error: 'Şablon alınamadı' });
+    }
+});
+
+// Şablon kategorileri
+app.get('/api/sablon-kategorileri', auth.authMiddleware(), async (req, res) => {
+    try {
+        const kategoriler = await auth.prisma.sablon.groupBy({
+            by: ['kategori'],
+            _count: { id: true },
+            orderBy: { kategori: 'asc' }
+        });
+        res.json(kategoriler.map(k => ({
+            kategori: k.kategori,
+            adet: k._count.id
+        })));
+    } catch (error) {
+        console.error('Kategori listesi hatası:', error);
+        res.status(500).json({ error: 'Kategoriler alınamadı' });
+    }
+});
+
+// Yeni şablon ekle
+app.post('/api/sablonlar', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        const { kod, ad, aciklama, kategori, dosyaYolu, dosyaAdi, dosyaBoyutu, tabloSayisi, alanlar, aktif } = req.body;
+
+        // Kod benzersiz olmalı
+        const mevcut = await auth.prisma.sablon.findUnique({ where: { kod } });
+        if (mevcut) {
+            return res.status(400).json({ error: 'Bu kod zaten kullanılıyor' });
+        }
+
+        const sablon = await auth.prisma.sablon.create({
+            data: {
+                kod,
+                ad,
+                aciklama,
+                kategori,
+                dosyaYolu,
+                dosyaAdi: dosyaAdi || kod + '.docx',
+                dosyaBoyutu: dosyaBoyutu || 0,
+                tabloSayisi: tabloSayisi || 0,
+                alanlar: alanlar || {},
+                aktif: aktif !== false
+            }
+        });
+        res.json(sablon);
+    } catch (error) {
+        console.error('Şablon ekleme hatası:', error);
+        res.status(500).json({ error: 'Şablon eklenemedi: ' + error.message });
+    }
+});
+
+// Şablon güncelle
+app.put('/api/sablonlar/:id', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        const { kod, ad, aciklama, kategori, dosyaYolu, alanlar, varsayilanDeger, aktif, sira } = req.body;
+
+        const sablon = await auth.prisma.sablon.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                ...(kod && { kod }),
+                ...(ad && { ad }),
+                ...(aciklama !== undefined && { aciklama }),
+                ...(kategori && { kategori }),
+                ...(dosyaYolu && { dosyaYolu }),
+                ...(alanlar && { alanlar }),
+                ...(varsayilanDeger && { varsayilanDeger }),
+                ...(aktif !== undefined && { aktif }),
+                ...(sira !== undefined && { sira })
+            }
+        });
+        res.json(sablon);
+    } catch (error) {
+        console.error('Şablon güncelleme hatası:', error);
+        res.status(500).json({ error: 'Şablon güncellenemedi' });
+    }
+});
+
+// Şablon sil
+app.delete('/api/sablonlar/:id', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        await auth.prisma.sablon.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Şablon silme hatası:', error);
+        res.status(500).json({ error: 'Şablon silinemedi' });
+    }
+});
+
+// Şablon dosyası yükle (Word)
+const sablonStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const kategori = req.body.kategori || 'genel';
+        const uploadDir = path.join(__dirname, 'templates', kategori);
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        // Orijinal dosya adını koru
+        cb(null, file.originalname);
+    }
+});
+const sablonUpload = multer({
+    storage: sablonStorage,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+            cb(null, true);
+        } else {
+            cb(new Error('Sadece .docx dosyaları yüklenebilir'), false);
+        }
+    }
+});
+
+app.post('/api/sablonlar/yukle', auth.authMiddleware('admin'), sablonUpload.single('dosya'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'Dosya yüklenmedi' });
+        }
+
+        const { kategori, kod, ad } = req.body;
+        const dosyaYolu = path.join('templates', kategori || 'genel', req.file.filename);
+
+        // Word dosyasını analiz et
+        const content = fs.readFileSync(req.file.path);
+        const zip = new PizZip(content);
+        const documentXml = zip.file('word/document.xml');
+
+        let tabloSayisi = 0;
+        let alanlar = {};
+
+        if (documentXml) {
+            const xmlContent = documentXml.asText();
+            const tableMatches = xmlContent.match(/<w:tbl>/g) || [];
+            tabloSayisi = tableMatches.length;
+
+            // Placeholder'ları bul
+            const textMatches = xmlContent.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) || [];
+            const fullText = textMatches.map(m => m.replace(/<w:t[^>]*>/, '').replace(/<\/w:t>/, '')).join('');
+            const placeholderMatches = fullText.match(/\{\{([^}]+)\}\}/g) || [];
+            placeholderMatches.forEach(p => {
+                const key = p.replace(/\{\{|\}\}/g, '').trim();
+                alanlar[key] = { label: key, type: 'text' };
+            });
+        }
+
+        // Veritabanına kaydet
+        const sablon = await auth.prisma.sablon.create({
+            data: {
+                kod: kod || req.file.filename.replace('.docx', ''),
+                ad: ad || req.file.filename.replace('.docx', ''),
+                kategori: kategori || 'Genel',
+                dosyaYolu,
+                dosyaAdi: req.file.filename,
+                dosyaBoyutu: req.file.size,
+                tabloSayisi,
+                alanlar
+            }
+        });
+
+        res.json({
+            success: true,
+            sablon,
+            message: 'Şablon başarıyla yüklendi'
+        });
+
+    } catch (error) {
+        console.error('Şablon yükleme hatası:', error);
+        res.status(500).json({ error: 'Şablon yüklenemedi: ' + error.message });
+    }
+});
+
+// Şablon alanlarını analiz et
+app.get('/api/sablonlar/:id/analiz', auth.authMiddleware(), async (req, res) => {
+    try {
+        const sablon = await auth.prisma.sablon.findUnique({
+            where: { id: parseInt(req.params.id) }
+        });
+
+        if (!sablon) {
+            return res.status(404).json({ error: 'Şablon bulunamadı' });
+        }
+
+        const dosyaYolu = path.join(__dirname, sablon.dosyaYolu);
+        if (!fs.existsSync(dosyaYolu)) {
+            return res.status(404).json({ error: 'Şablon dosyası bulunamadı' });
+        }
+
+        const content = fs.readFileSync(dosyaYolu);
+        const zip = new PizZip(content);
+        const documentXml = zip.file('word/document.xml');
+
+        if (!documentXml) {
+            return res.status(400).json({ error: 'Geçersiz Word dosyası' });
+        }
+
+        const xmlContent = documentXml.asText();
+
+        // Tablo yapısını analiz et
+        const tables = [];
+        const tableMatches = xmlContent.match(/<w:tbl>[\s\S]*?<\/w:tbl>/g) || [];
+
+        tableMatches.forEach((tableXml, index) => {
+            const rows = [];
+            const rowMatches = tableXml.match(/<w:tr[^>]*>[\s\S]*?<\/w:tr>/g) || [];
+
+            rowMatches.forEach(rowXml => {
+                const cells = [];
+                const cellMatches = rowXml.match(/<w:tc[^>]*>[\s\S]*?<\/w:tc>/g) || [];
+
+                cellMatches.forEach(cellXml => {
+                    const textMatches = cellXml.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) || [];
+                    const cellText = textMatches.map(m => m.replace(/<w:t[^>]*>/, '').replace(/<\/w:t>/, '')).join('');
+                    cells.push(cellText.trim());
+                });
+
+                if (cells.some(c => c.length > 0)) {
+                    rows.push(cells);
+                }
+            });
+
+            tables.push({ index: index + 1, rows: rows.slice(0, 10) }); // İlk 10 satır
+        });
+
+        // Placeholder'ları bul
+        const textMatches = xmlContent.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) || [];
+        const fullText = textMatches.map(m => m.replace(/<w:t[^>]*>/, '').replace(/<\/w:t>/, '')).join('');
+        const placeholders = [];
+        const regex = /\{\{([^}]+)\}\}/g;
+        let match;
+        while ((match = regex.exec(fullText)) !== null) {
+            placeholders.push(match[1].trim());
+        }
+
+        res.json({
+            sablon: {
+                id: sablon.id,
+                kod: sablon.kod,
+                ad: sablon.ad
+            },
+            analiz: {
+                tabloSayisi: tables.length,
+                tables,
+                placeholders: [...new Set(placeholders)],
+                textOnizleme: fullText.substring(0, 1000)
+            }
+        });
+
+    } catch (error) {
+        console.error('Şablon analiz hatası:', error);
+        res.status(500).json({ error: 'Şablon analiz edilemedi: ' + error.message });
+    }
+});
+
+// Şablondan rapor üret
+app.post('/api/sablonlar/:id/rapor-uret', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { formVerileri, customerId, isEmriId, altGorevId } = req.body;
+
+        const sablon = await auth.prisma.sablon.findUnique({
+            where: { id: parseInt(req.params.id) }
+        });
+
+        if (!sablon) {
+            return res.status(404).json({ error: 'Şablon bulunamadı' });
+        }
+
+        const dosyaYolu = path.join(__dirname, sablon.dosyaYolu);
+        if (!fs.existsSync(dosyaYolu)) {
+            return res.status(404).json({ error: 'Şablon dosyası bulunamadı' });
+        }
+
+        // Word şablonunu oku
+        const content = fs.readFileSync(dosyaYolu, 'binary');
+        const zip = new PizZip(content);
+
+        // Docxtemplater ile doldur
+        const doc = new Docxtemplater(zip, {
+            paragraphLoop: true,
+            linebreaks: true,
+            delimiters: { start: '{{', end: '}}' }
+        });
+
+        // Verileri doldur
+        doc.render(formVerileri || {});
+
+        // Yeni Word dosyasını oluştur
+        const buf = doc.getZip().generate({ type: 'nodebuffer' });
+
+        // Rapor numarası oluştur
+        const year = new Date().getFullYear();
+        const count = await auth.prisma.uretilenRapor.count({
+            where: { sablonId: sablon.id }
+        });
+        const raporNo = `${sablon.kod}-${year}-${String(count + 1).padStart(4, '0')}`;
+
+        // Dosyayı kaydet
+        const raporlarDir = path.join(__dirname, 'storage', 'raporlar', String(year));
+        if (!fs.existsSync(raporlarDir)) {
+            fs.mkdirSync(raporlarDir, { recursive: true });
+        }
+
+        const wordDosyasi = path.join(raporlarDir, `${raporNo}.docx`);
+        fs.writeFileSync(wordDosyasi, buf);
+
+        // Veritabanına kaydet
+        const rapor = await auth.prisma.uretilenRapor.create({
+            data: {
+                raporNo,
+                sablonId: sablon.id,
+                customerId: customerId ? parseInt(customerId) : null,
+                isEmriId: isEmriId ? parseInt(isEmriId) : null,
+                altGorevId: altGorevId ? parseInt(altGorevId) : null,
+                formVerileri: formVerileri || {},
+                olusturanId: req.user?.id || null,
+                wordDosyasi: `storage/raporlar/${year}/${raporNo}.docx`
+            }
+        });
+
+        res.json({
+            success: true,
+            rapor,
+            downloadUrl: `/api/raporlar/${rapor.id}/indir`
+        });
+
+    } catch (error) {
+        console.error('Rapor üretme hatası:', error);
+        res.status(500).json({ error: 'Rapor üretilemedi: ' + error.message });
+    }
+});
+
+// Üretilen raporları listele
+app.get('/api/uretilen-raporlar', auth.authMiddleware(), async (req, res) => {
+    try {
+        const { sablonId, customerId, limit = 50 } = req.query;
+        const where = {};
+
+        if (sablonId) where.sablonId = parseInt(sablonId);
+        if (customerId) where.customerId = parseInt(customerId);
+
+        const raporlar = await auth.prisma.uretilenRapor.findMany({
+            where,
+            include: {
+                sablon: { select: { kod: true, ad: true, kategori: true } }
+            },
+            orderBy: { createdAt: 'desc' },
+            take: parseInt(limit)
+        });
+
+        res.json(raporlar);
+    } catch (error) {
+        console.error('Rapor listesi hatası:', error);
+        res.status(500).json({ error: 'Raporlar alınamadı' });
+    }
+});
+
+// Rapor indir
+app.get('/api/raporlar/:id/indir', auth.authMiddleware(), async (req, res) => {
+    try {
+        const rapor = await auth.prisma.uretilenRapor.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: { sablon: true }
+        });
+
+        if (!rapor) {
+            return res.status(404).json({ error: 'Rapor bulunamadı' });
+        }
+
+        const dosyaYolu = path.join(__dirname, rapor.wordDosyasi);
+        if (!fs.existsSync(dosyaYolu)) {
+            return res.status(404).json({ error: 'Rapor dosyası bulunamadı' });
+        }
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        res.setHeader('Content-Disposition', `attachment; filename="${rapor.raporNo}.docx"`);
+        res.sendFile(dosyaYolu);
+
+    } catch (error) {
+        console.error('Rapor indirme hatası:', error);
+        res.status(500).json({ error: 'Rapor indirilemedi' });
+    }
+});
+
+// Mevcut şablonları tara ve veritabanına ekle
+app.post('/api/sablonlar/tara', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        const templatesDir = path.join(__dirname, 'templates');
+        const sonuclar = { eklenen: [], atlanan: [], hatalar: [] };
+
+        // Kategori klasörlerini tara
+        const kategoriler = fs.readdirSync(templatesDir).filter(f => {
+            return fs.statSync(path.join(templatesDir, f)).isDirectory();
+        });
+
+        for (const kategori of kategoriler) {
+            const kategoriDir = path.join(templatesDir, kategori);
+            const dosyalar = fs.readdirSync(kategoriDir).filter(f => f.endsWith('.docx'));
+
+            for (const dosya of dosyalar) {
+                try {
+                    // Kod çıkar (FR7.2.36 gibi)
+                    const kodMatch = dosya.match(/^(FR[\d.]+)/);
+                    const kod = kodMatch ? kodMatch[1] : dosya.replace('.docx', '');
+
+                    // Zaten var mı kontrol et
+                    const mevcut = await auth.prisma.sablon.findUnique({ where: { kod } });
+                    if (mevcut) {
+                        sonuclar.atlanan.push({ dosya, sebep: 'Zaten mevcut' });
+                        continue;
+                    }
+
+                    // Dosyayı analiz et
+                    const dosyaYolu = path.join(kategoriDir, dosya);
+                    const content = fs.readFileSync(dosyaYolu);
+                    const stats = fs.statSync(dosyaYolu);
+                    const zip = new PizZip(content);
+                    const documentXml = zip.file('word/document.xml');
+
+                    let tabloSayisi = 0;
+                    if (documentXml) {
+                        const xmlContent = documentXml.asText();
+                        tabloSayisi = (xmlContent.match(/<w:tbl>/g) || []).length;
+                    }
+
+                    // Ad oluştur
+                    const ad = dosya
+                        .replace(/^FR[\d.]+\s*/, '')
+                        .replace(/\.docx$/i, '')
+                        .replace(/\s*-\s*\d+$/, '')
+                        .replace(/\s*\(\d+\)$/, '')
+                        .trim();
+
+                    // Veritabanına ekle
+                    const sablon = await auth.prisma.sablon.create({
+                        data: {
+                            kod,
+                            ad: ad || kod,
+                            kategori: kategori.charAt(0).toUpperCase() + kategori.slice(1),
+                            dosyaYolu: `templates/${kategori}/${dosya}`,
+                            dosyaAdi: dosya,
+                            dosyaBoyutu: stats.size,
+                            tabloSayisi,
+                            alanlar: {}
+                        }
+                    });
+
+                    sonuclar.eklenen.push({ id: sablon.id, kod, ad: sablon.ad });
+
+                } catch (err) {
+                    sonuclar.hatalar.push({ dosya, hata: err.message });
+                }
+            }
+        }
+
+        res.json({
+            success: true,
+            ozet: {
+                eklenen: sonuclar.eklenen.length,
+                atlanan: sonuclar.atlanan.length,
+                hata: sonuclar.hatalar.length
+            },
+            detay: sonuclar
+        });
+
+    } catch (error) {
+        console.error('Şablon tarama hatası:', error);
+        res.status(500).json({ error: 'Şablonlar taranamadı: ' + error.message });
+    }
+});
+
 // ============ STATIK SAYFALAR ============
 
 app.get('/login', (req, res) => {

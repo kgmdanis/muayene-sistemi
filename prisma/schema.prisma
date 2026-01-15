@@ -353,3 +353,57 @@ enum WorkOrderDurum {
   TAMAMLANDI
   IPTAL
 }
+
+// ============ ŞABLON YÖNETİMİ ============
+
+model Sablon {
+  id              Int            @id @default(autoincrement())
+  kod             String         @unique // FR7.2.36 gibi
+  ad              String         // Elektrik Topraklama Ölçüm Raporu
+  aciklama        String?        // Şablon açıklaması
+  kategori        String         // Elektrik, Basınçlı Kap, vb.
+  dosyaYolu       String         // templates/elektrik/FR7.2.36.docx
+  dosyaAdi        String         // Orijinal dosya adı
+  dosyaBoyutu     Int            @default(0) // Byte cinsinden
+  tabloSayisi     Int            @default(0) // Word'deki tablo sayısı
+  alanlar         Json?          // Şablondaki form alanları (JSON)
+  varsayilanDeger Json?          // Varsayılan değerler (JSON)
+  aktif           Boolean        @default(true)
+  sira            Int            @default(0) // Sıralama
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  raporlar        UretilenRapor[]
+}
+
+model SablonAlan {
+  id              Int      @id @default(autoincrement())
+  sablonKod       String   // Şablon kodu referansı
+  alanAdi         String   // firma_adi, rapor_tarihi vb.
+  alanEtiketi     String   // "Firma Adı", "Rapor Tarihi" vb.
+  alanTipi        String   @default("text") // text, date, number, select, textarea
+  zorunlu         Boolean  @default(false)
+  varsayilanDeger String?
+  secenekler      Json?    // Select için seçenekler
+  sira            Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  @@unique([sablonKod, alanAdi])
+}
+
+model UretilenRapor {
+  id              Int       @id @default(autoincrement())
+  raporNo         String    @unique // ET-2025-001-01
+  sablonId        Int
+  customerId      Int?
+  isEmriId        Int?
+  altGorevId      Int?
+  formVerileri    Json      // Doldurulmuş form verileri
+  sonuc           String?   // UYGUN, UYGUN_DEGIL, SARTLI_UYGUN
+  wordDosyasi     String?   // Üretilen Word dosyasının yolu
+  pdfDosyasi      String?   // Üretilen PDF dosyasının yolu
+  olusturanId     Int?
+  olusturmaTarihi DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  sablon          Sablon    @relation(fields: [sablonId], references: [id])
+}
