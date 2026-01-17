@@ -243,21 +243,35 @@ Akredite kapsamında yapılan ölçümler, İŞ HİJYENİ (ORTAM ÖLÇÜMÜ) par
         if (y > 700) { doc.addPage(); y = 40; }
 
         const totX = tableLeft + pageWidth - 180;
-        doc.rect(totX, y, 180, 55).stroke();
+        const iskontoVar = parseFloat(teklif.iskontoTutar) > 0;
+        const boxHeight = iskontoVar ? 55 : 40; // İskonto varsa daha yüksek kutu
 
+        doc.rect(totX, y, 180, boxHeight).stroke();
+
+        let satir = 0;
         doc.fontSize(9).font(useFontBold).fillColor('#000');
-        doc.text('ARA TOPLAM:', totX + 10, y + 8);
-        doc.font(useFont).text(formatMoney(teklif.toplamTutar) + ' TL', totX + 95, y + 8, { width: 75, align: 'right' });
 
-        doc.font(useFontBold).text('KDV (%' + teklif.kdvOrani + '):', totX + 10, y + 22);
-        doc.font(useFont).text(formatMoney(teklif.kdvTutar) + ' TL', totX + 95, y + 22, { width: 75, align: 'right' });
+        // ARA TOPLAM (hizmetlerin toplamı)
+        doc.text('ARA TOPLAM:', totX + 10, y + 8 + (satir * 14));
+        doc.font(useFont).text(formatMoney(teklif.araToplam) + ' TL', totX + 95, y + 8 + (satir * 14), { width: 75, align: 'right' });
+        satir++;
 
-        doc.rect(totX, y + 35, 180, 20).fillAndStroke('#1a5f7a', '#000');
+        // İSKONTO (varsa)
+        if (iskontoVar) {
+            doc.font(useFontBold).fillColor('#dc3545').text('İSKONTO (%' + teklif.iskontoOran + '):', totX + 10, y + 8 + (satir * 14));
+            doc.font(useFont).text('-' + formatMoney(teklif.iskontoTutar) + ' TL', totX + 95, y + 8 + (satir * 14), { width: 75, align: 'right' });
+            satir++;
+            doc.fillColor('#000');
+        }
+
+        // GENEL TOPLAM (KDV hariç tutar + "+KDV" yazısı)
+        const genelToplamY = y + boxHeight - 20;
+        doc.rect(totX, genelToplamY, 180, 20).fillAndStroke('#1a5f7a', '#000');
         doc.fontSize(10).font(useFontBold).fillColor('#fff');
-        doc.text('GENEL TOPLAM:', totX + 10, y + 40);
-        doc.text(formatMoney(teklif.genelToplam) + ' TL', totX + 95, y + 40, { width: 75, align: 'right' });
+        doc.text('GENEL TOPLAM:', totX + 10, genelToplamY + 5);
+        doc.text(formatMoney(teklif.toplamTutar) + ' TL +KDV', totX + 75, genelToplamY + 5, { width: 95, align: 'right' });
 
-        y += 70;
+        y += boxHeight + 15;
 
         // SÖZLEŞME ONAYI
         if (y > 680) { doc.addPage(); y = 40; }
@@ -272,6 +286,13 @@ Akredite kapsamında yapılan ölçümler, İŞ HİJYENİ (ORTAM ÖLÇÜMÜ) par
         doc.fontSize(8).font(useFontBold);
         doc.text('FİRMA ONAYI (KAŞE / İMZA)', tableLeft + 10, y + 28);
         doc.text((teklif.tenant?.name || 'ÖNDER MUAYENE') + ' ONAYI', tableLeft + half + 10, y + 28);
+
+        // ONAY TELEFON İLE ALINMIŞTIR yazısı (sahadaOnay true ise)
+        if (teklif.sahadaOnay) {
+            doc.fontSize(9).font(useFontBold).fillColor('#dc3545');
+            doc.text('☑ ONAY TELEFON İLE ALINMIŞTIR', tableLeft + 10, y + 45);
+            doc.fillColor('#000');
+        }
 
         // İmza (varsa)
         const imzaPath = path.join(__dirname, 'public', 'images', 'imza.png');

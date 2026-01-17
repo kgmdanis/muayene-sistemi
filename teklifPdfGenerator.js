@@ -17,7 +17,7 @@ const FIRMA = {
     iban: 'TR80 0001 0025 2894 1001 5650 01'
 };
 
-// 20 Madde - Genel ve Ticari Şartlar
+// 21 Madde - Genel ve Ticari Şartlar
 const SARTLAR = [
     'Ölçüm / Numune alma işleminin gerçekleştirileceği alan ile ilgili, çalışma alanının iş sağlığı ve güvenliği kurallarına uygun olarak hazırlanması, numune alınacak bacanın bünyesinde numune alma deliğinin açılmasından ve numune alma noktasına yetişmek için gerekli olan iş ekipmanının standartlara ve mevzuata uygun olması tarafınızca karşılanacaktır.',
     'Ölçüm / Numune Alma noktasının ve/veya platformun hazır olmaması nedeniyle ölçüm / numune alma işleminin gerçekleştirilememesi halinde sorumluluk tarafınıza ait olacaktır.',
@@ -38,7 +38,8 @@ const SARTLAR = [
     'Bu anlaşma kapsamındaki her türlü ihtilaf durumunda Konya Mahkemeleri yetkilidir.',
     'Onay için Teklifin son sayfasını onaylayarak firma yetkililerimize iletebilirsiniz. Tel: 0332 300 00 20',
     'Hazırlanacak raporlarda karar kuralı kesinlikle yer almayacaktır.',
-    'Banka Hesap Bilgilerimiz: Önder Muayene Test ve Ölçüm - Ziraat Bankası / Buğday Pazarı / Konya / TR80 0001 0025 2894 1001 5650 01'
+    'Banka Hesap Bilgilerimiz: Önder Muayene Test ve Ölçüm - Ziraat Bankası / Buğday Pazarı / Konya / TR80 0001 0025 2894 1001 5650 01',
+    'Fiyatlara KDV dahil değildir.'
 ];
 
 // Para formatı
@@ -69,7 +70,8 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
         try {
             const doc = new PDFDocument({
                 size: 'A4',
-                margins: { top: 40, bottom: 40, left: 40, right: 40 }
+                margins: { top: 40, bottom: 40, left: 40, right: 40 },
+                bufferPages: true
             });
 
             const buffers = [];
@@ -112,7 +114,7 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
 
             // TÜRKAK Logo - Sağ üst
             if (fs.existsSync(turkakPath)) {
-                doc.image(turkakPath, 480, 25, { width: 70 });
+                doc.image(turkakPath, 490, 25, { width: 50 });
             }
 
             // Firma bilgileri - Sağ üst
@@ -291,38 +293,44 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
             }
 
             y += 15;
-            const toplamX = 380;
+            const toplamX = 280;
+            const boxWidth = 275;
 
-            // Ara toplam hesapla
-            let araToplam = 0;
-            detaylar.forEach(d => {
-                araToplam += (d.miktar || 0) * (parseFloat(d.birimFiyat) || 0);
-            });
-
+            // Değerleri veritabanından al
+            const araToplam = parseFloat(teklif.araToplam) || 0;
+            const iskontoOran = parseFloat(teklif.iskontoOran) || 0;
             const iskontoTutar = parseFloat(teklif.iskontoTutar) || 0;
-            const toplam = araToplam - iskontoTutar;
-            const kdvTutar = toplam * 0.20;
-            const genelToplam = toplam + kdvTutar;
+            const kdvOrani = teklif.kdvOrani || 20;
+            const toplamTutar = parseFloat(teklif.toplamTutar) || (araToplam - iskontoTutar);
 
-            doc.fontSize(9).font(fontBold).fillColor('black');
+            doc.fontSize(10).font(fontBold).fillColor('black');
 
             // Ara Toplam
-            doc.rect(toplamX, y, 175, 18).stroke();
-            doc.text('ARA TOPLAM:', toplamX + 5, y + 4);
-            doc.text(formatPara(araToplam) + ' TL', toplamX + 85, y + 4, { width: 85, align: 'right' });
-            y += 18;
+            doc.rect(toplamX, y, boxWidth, 22).stroke();
+            doc.text('ARA TOPLAM:', toplamX + 10, y + 6);
+            doc.text(formatPara(araToplam) + ' TL', toplamX + 130, y + 6, { width: 135, align: 'right' });
+            y += 22;
 
-            // KDV
-            doc.rect(toplamX, y, 175, 18).stroke();
-            doc.text('KDV (%20):', toplamX + 5, y + 4);
-            doc.text(formatPara(kdvTutar) + ' TL', toplamX + 85, y + 4, { width: 85, align: 'right' });
-            y += 18;
+            // İskonto (varsa)
+            if (iskontoTutar > 0) {
+                doc.rect(toplamX, y, boxWidth, 22).stroke();
+                doc.fillColor('#dc3545').text('İSKONTO (%' + iskontoOran + '):', toplamX + 10, y + 6);
+                doc.text('-' + formatPara(iskontoTutar) + ' TL', toplamX + 130, y + 6, { width: 135, align: 'right' });
+                y += 22;
+                doc.fillColor('black');
+            }
+
+            // KDV Oranı
+            doc.rect(toplamX, y, boxWidth, 22).stroke();
+            doc.fillColor('black').text('KDV ORANI:', toplamX + 10, y + 6);
+            doc.text('%' + kdvOrani, toplamX + 130, y + 6, { width: 135, align: 'right' });
+            y += 22;
 
             // Genel Toplam (sarı arka plan)
-            doc.rect(toplamX, y, 175, 22).fillAndStroke('#ffff00', 'black');
-            doc.fillColor('black').fontSize(10).font(fontBold);
-            doc.text('GENEL TOPLAM:', toplamX + 5, y + 5);
-            doc.text(formatPara(genelToplam) + ' TL', toplamX + 75, y + 5, { width: 95, align: 'right' });
+            doc.rect(toplamX, y, boxWidth, 26).fillAndStroke('#ffff00', 'black');
+            doc.fillColor('black').fontSize(11).font(fontBold);
+            doc.text('GENEL TOPLAM:', toplamX + 10, y + 7);
+            doc.text(formatPara(toplamTutar) + ' TL +KDV', toplamX + 130, y + 7, { width: 135, align: 'right' });
 
             // ==================== SON SAYFA - ŞARTLAR + ONAY (SABİT) ====================
             doc.addPage();
@@ -384,10 +392,20 @@ async function teklifPdfOlustur(teklif, tumKategoriler = []) {
 
             y += 70;
 
-            // SAHADA ONAY
-            doc.fontSize(9).font(fontBold).fillColor('red');
-            const checkSahada = teklif.sahadaOnay ? '☑' : '☐';
-            doc.text(checkSahada + ' SAHADA ONAYLANDI.', 40, y);
+            // ONAY TELEFON İLE ALINMIŞTIR (sahadaOnay true ise göster)
+            if (teklif.sahadaOnay) {
+                doc.fontSize(10).font(fontBold).fillColor('red');
+                doc.text('☑ ONAY TELEFON İLE ALINMIŞTIR', 40, y);
+            }
+
+            // Her sayfanın sol alt köşesine form numarası ekle
+            const range = doc.bufferedPageRange();
+            for (let i = range.start; i < range.start + range.count; i++) {
+                doc.switchToPage(i);
+                doc.fontSize(8).font(fontNormal).fillColor('#666');
+                doc.text('FRM.01/Rev10/08.01.2026', 40, 810, { lineBreak: false });
+            }
+            doc.flushPages();
 
             doc.end();
 

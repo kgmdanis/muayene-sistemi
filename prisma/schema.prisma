@@ -7,28 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Tek firma ayarları - ÖNDER MUAYENE
 model FirmaAyarlari {
-  id              Int        @id @default(1)
-  name            String     @default("ÖNDER MUAYENE")
-  yetkili         String?
-  yetkiliUnvan    String?
-  logo            String?
-  adres           String?
-  telefon         String?
-  email           String?
-  vergiNo         String?
-  vergiDairesi    String?
-  bankaAdi        String?
-  bankaSube       String?
-  iban            String?
-  mahkemeYeri     String?
-  genelSartlar    String?    @db.Text
-  teklifUstYazi   String?    @db.Text
-  muhur           String?
-  imza            String?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  id            Int      @id @default(1)
+  name          String   @default("ÖNDER MUAYENE")
+  yetkili       String?
+  yetkiliUnvan  String?
+  logo          String?
+  adres         String?
+  telefon       String?
+  email         String?
+  vergiNo       String?
+  vergiDairesi  String?
+  bankaAdi      String?
+  bankaSube     String?
+  iban          String?
+  mahkemeYeri   String?
+  genelSartlar  String?
+  teklifUstYazi String?
+  muhur         String?
+  imza          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model User {
@@ -47,28 +46,28 @@ model User {
   lastLogin           DateTime?
   lastLoginIP         String?
   sessionTimeout      Int         @default(30)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
   emailNotifications  Boolean     @default(true)
   systemNotifications Boolean     @default(true)
-  teklifler         Teklif[]
-  muayeneler        Muayene[]   @relation("muayeneEden")
-  onaylananMuayeneler Muayene[] @relation("onaylayan")
-  olusturanMuayeneler Muayene[] @relation("olusturanMuayene")
-  loginLogs         LoginLog[]
-  atananWorkOrders  WorkOrder[] @relation("atananWorkOrder")
+  olcumler            FieldData[] @relation("olcumYapan")
+  loginLogs           LoginLog[]
+  olusturanMuayeneler Muayene[]   @relation("olusturanMuayene")
+  muayeneler          Muayene[]   @relation("muayeneEden")
+  onaylananMuayeneler Muayene[]   @relation("onaylayan")
+  teklifler           Teklif[]
+  atananWorkOrders    WorkOrder[] @relation("atananWorkOrder")
   olusturanWorkOrders WorkOrder[] @relation("olusturanWorkOrder")
-  olcumler          FieldData[] @relation("olcumYapan")
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
 }
 
 model LoginLog {
   id        Int      @id @default(autoincrement())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
   ip        String
   userAgent String?
   basarili  Boolean
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Customer {
@@ -81,80 +80,255 @@ model Customer {
   email        String?
   yetkili      String?
   notlar       String?
-  teklifler    Teklif[]
-  muayeneler   Muayene[]
-  workOrders   WorkOrder[]
-  isEmirleri   IsEmri[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  isEmirleri   IsEmri[]
+  muayeneler   Muayene[]
+  teklifler    Teklif[]
+  workOrders   WorkOrder[]
 }
 
-// ============ TEKLİF MODÜLÜ ============
-
 model Kategori {
-  id        Int       @id @default(autoincrement())
-  ad        String    @unique
-  sira      Int       @default(0)
+  id        Int      @id @default(autoincrement())
+  ad        String   @unique
+  sira      Int      @default(0)
+  createdAt DateTime @default(now())
   hizmetler Hizmet[]
-  createdAt DateTime  @default(now())
 }
 
 model Hizmet {
-  id                 Int             @id @default(autoincrement())
-  kod                String          @unique
+  id                 Int           @id @default(autoincrement())
+  kod                String        @unique
   ad                 String
-  metodKapsam        String?         // Metod/Kapsam/Açıklama
-  standartYonetmelik String?         // Standart / Yönetmelik
-  birim              String          @default("Adet")
-  birimFiyat         Decimal         @db.Decimal(10, 2) @default(0)
+  metodKapsam        String?
+  standartYonetmelik String?
+  birim              String        @default("Adet")
+  birimFiyat         Decimal       @default(0) @db.Decimal(10, 2)
   kategoriId         Int
-  kategori           Kategori        @relation(fields: [kategoriId], references: [id])
-  sira               Int             @default(0)
-  akpireditasyon     Boolean         @default(false)  // TÜRKAK akrediteli mi
-  isActive           Boolean         @default(true)
-  teklifDetaylari    TeklifDetay[]
+  sira               Int           @default(0)
+  akpireditasyon     Boolean       @default(false)
+  isActive           Boolean       @default(true)
+  createdAt          DateTime      @default(now())
   altGorevler        AltGorev[]
-  createdAt          DateTime        @default(now())
+  kategori           Kategori      @relation(fields: [kategoriId], references: [id])
+  teklifDetaylari    TeklifDetay[]
 }
 
 model Teklif {
-  id             Int            @id @default(autoincrement())
-  teklifNo       String         @unique
-  teklifTarihi   DateTime       @default(now())
-  gecerlilikGun  Int            @default(30)
-  customerId     Int
-  customer       Customer       @relation(fields: [customerId], references: [id])
-  konu           String         @default("PERİYODİK KONTROL VE İŞ HİJYENİ ÖLÇÜM FİYAT TEKLİFİ")
-  durum          TeklifDurum    @default(TASLAK)
-  araToplam      Decimal        @db.Decimal(12, 2) @default(0)
-  iskontoOran    Decimal        @db.Decimal(5, 2) @default(0)
-  iskontoTutar   Decimal        @db.Decimal(12, 2) @default(0)
-  toplamTutar    Decimal        @db.Decimal(12, 2) @default(0)
-  kdvOrani       Int            @default(20)
-  kdvTutar       Decimal        @db.Decimal(12, 2) @default(0)
-  genelToplam    Decimal        @db.Decimal(12, 2) @default(0)
-  notlar         String?
-  onayTelefon    Boolean        @default(false)
-  sahadaOnay     Boolean        @default(false)
-  olusturanId    Int
-  olusturan      User           @relation(fields: [olusturanId], references: [id])
-  detaylar       TeklifDetay[]
-  muayeneler     Muayene[]
-  workOrders     WorkOrder[]
-  isEmirleri     IsEmri[]
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id            Int           @id @default(autoincrement())
+  teklifNo      String        @unique
+  teklifTarihi  DateTime      @default(now())
+  gecerlilikGun Int           @default(30)
+  customerId    Int
+  konu          String        @default("PERİYODİK KONTROL VE İŞ HİJYENİ ÖLÇÜM FİYAT TEKLİFİ")
+  durum         TeklifDurum   @default(TASLAK)
+  araToplam     Decimal       @default(0) @db.Decimal(12, 2)
+  iskontoOran   Decimal       @default(0) @db.Decimal(5, 2)
+  iskontoTutar  Decimal       @default(0) @db.Decimal(12, 2)
+  toplamTutar   Decimal       @default(0) @db.Decimal(12, 2)
+  kdvOrani      Int           @default(20)
+  kdvTutar      Decimal       @default(0) @db.Decimal(12, 2)
+  genelToplam   Decimal       @default(0) @db.Decimal(12, 2)
+  notlar        String?
+  onayTelefon   Boolean       @default(false)
+  sahadaOnay    Boolean       @default(false)
+  olusturanId   Int
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  isEmirleri    IsEmri[]
+  muayeneler    Muayene[]
+  customer      Customer      @relation(fields: [customerId], references: [id])
+  olusturan     User          @relation(fields: [olusturanId], references: [id])
+  detaylar      TeklifDetay[]
+  workOrders    WorkOrder[]
 }
 
 model TeklifDetay {
-  id          Int      @id @default(autoincrement())
-  teklifId    Int
-  teklif      Teklif   @relation(fields: [teklifId], references: [id], onDelete: Cascade)
-  hizmetId    Int
-  hizmet      Hizmet   @relation(fields: [hizmetId], references: [id])
-  miktar      Int      @default(0)
-  birimFiyat  Decimal  @db.Decimal(10, 2)
-  tutar       Decimal  @db.Decimal(12, 2) @default(0)
+  id         Int     @id @default(autoincrement())
+  teklifId   Int
+  hizmetId   Int
+  miktar     Int     @default(0)
+  birimFiyat Decimal @db.Decimal(10, 2)
+  tutar      Decimal @default(0) @db.Decimal(12, 2)
+  hizmet     Hizmet  @relation(fields: [hizmetId], references: [id])
+  teklif     Teklif  @relation(fields: [teklifId], references: [id], onDelete: Cascade)
+}
+
+model Muayene {
+  id               Int          @id @default(autoincrement())
+  muayeneNo        String       @unique
+  teklifId         Int?
+  customerId       Int
+  muayeneTarihi    DateTime
+  muayeneYeri      String
+  muayeneEkipman   String
+  muayeneSonucu    MuayeneSonuc @default(BEKLEMEDE)
+  sertifikaNo      String?
+  sertifikaTarihi  DateTime?
+  gecerlilikSuresi Int          @default(12)
+  raporDosya       String?
+  notlar           String?
+  muayeneEdenId    Int
+  onaylayanId      Int?
+  createdBy        Int
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  olusturan        User         @relation("olusturanMuayene", fields: [createdBy], references: [id])
+  customer         Customer     @relation(fields: [customerId], references: [id])
+  muayeneEden      User         @relation("muayeneEden", fields: [muayeneEdenId], references: [id])
+  onaylayan        User?        @relation("onaylayan", fields: [onaylayanId], references: [id])
+  teklif           Teklif?      @relation(fields: [teklifId], references: [id])
+}
+
+model WorkOrder {
+  id              Int            @id @default(autoincrement())
+  workOrderNo     String         @unique
+  teklifId        Int?
+  customerId      Int
+  durum           WorkOrderDurum @default(BEKLEMEDE)
+  planliTarih     DateTime?
+  tamamlanmaTarih DateTime?
+  atananUserId    Int?
+  createdBy       Int
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  fieldData       FieldData[]
+  atanan          User?          @relation("atananWorkOrder", fields: [atananUserId], references: [id])
+  olusturan       User           @relation("olusturanWorkOrder", fields: [createdBy], references: [id])
+  customer        Customer       @relation(fields: [customerId], references: [id])
+  teklif          Teklif?        @relation(fields: [teklifId], references: [id])
+}
+
+model FieldData {
+  id           Int       @id @default(autoincrement())
+  workOrderId  Int
+  reportType   String
+  formData     Json
+  sonuc        String?
+  pdfPath      String?
+  olcumTarihi  DateTime  @default(now())
+  olcumYapanId Int
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  olcumYapan   User      @relation("olcumYapan", fields: [olcumYapanId], references: [id])
+  workOrder    WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+}
+
+model Personel {
+  id                  Int        @id @default(autoincrement())
+  adSoyad             String
+  unvan               String
+  meslek              String?
+  diplomaTarihi       String?
+  diplomaNo           String?
+  ekipnetNo           String?
+  telefon             String?
+  email               String?
+  kategori            String
+  isActive            Boolean    @default(true)
+  createdAt           DateTime   @default(now())
+  password            String?
+  role                String     @default("tekniker")
+  username            String?    @unique
+  emailNotifications  Boolean    @default(true)
+  systemNotifications Boolean    @default(true)
+  altGorevler         AltGorev[]
+}
+
+model IsEmri {
+  id              Int               @id @default(autoincrement())
+  isEmriNo        String            @unique
+  teklifId        Int
+  customerId      Int
+  planliTarih     DateTime?
+  baslangicTarihi DateTime?
+  bitisTarihi     DateTime?
+  durum           String            @default("BEKLIYOR")
+  notlar          String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  altGorevler     AltGorev[]
+  customer        Customer          @relation(fields: [customerId], references: [id])
+  teklif          Teklif            @relation(fields: [teklifId], references: [id])
+  firmaBilgi      IsEmriFirmaBilgi?
+}
+
+model AltGorev {
+  id                 Int               @id @default(autoincrement())
+  isEmriId           Int
+  hizmetId           Int
+  hizmetAdi          String
+  kategori           String
+  siraNo             Int               @default(1)
+  ekipmanAdi         String?
+  ekipmanSeriNo      String?
+  ekipmanKonum       String?
+  ekipmanKapasite    String?
+  ekipmanPlaka       String?
+  durum              String            @default("BEKLIYOR")
+  personelId         Int?
+  personelAdi        String?
+  tamamlanmaTarihi   DateTime?
+  raporNo            String?
+  notlar             String?
+  sahaFormu          String?
+  createdAt          DateTime          @default(now())
+  hizmet             Hizmet            @relation(fields: [hizmetId], references: [id])
+  isEmri             IsEmri            @relation(fields: [isEmriId], references: [id], onDelete: Cascade)
+  personel           Personel?         @relation(fields: [personelId], references: [id])
+  topraklamaOlcumler TopraklamaOlcum[]
+}
+
+model IsEmriFirmaBilgi {
+  id              Int       @id @default(autoincrement())
+  isEmriId        Int       @unique
+  sgkSicilNo      String?
+  isgKatipId      String?
+  enerjiKurulusu  String?
+  basvuruNo       String?
+  makineOperatoru String?
+  kaynak          String?
+  ortamNemi       String?
+  ortamSicaklik   String?
+  olcumYapanAdi   String?
+  olcumTarihi     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  isEmri          IsEmri    @relation(fields: [isEmriId], references: [id], onDelete: Cascade)
+}
+
+model OlcumCihazi {
+  id                    Int               @id @default(autoincrement())
+  marka                 String?
+  model                 String?
+  seriNo                String?
+  olcumAraligi          String?
+  hassasiyet            String?
+  kategori              String?
+  isActive              Boolean           @default(true)
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  cihazAdi              String
+  kalibrasyonNo         String?
+  kalibrasyonTarihi     DateTime?
+  kalibrasyonGecerlilik DateTime?
+  topraklamaOlcumler    TopraklamaOlcum[]
+}
+
+model TopraklamaOlcum {
+  id           Int          @id @default(autoincrement())
+  altGorevId   Int
+  siraNo       Int          @default(1)
+  olcumNoktasi String?
+  olcumDegeri  Decimal?     @db.Decimal(10, 4)
+  birim        String       @default("Ω")
+  sinirDeger   Decimal?     @db.Decimal(10, 4)
+  sonuc        String?
+  cihazId      Int?
+  notlar       String?
+  createdAt    DateTime     @default(now())
+  altGorev     AltGorev     @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
+  cihaz        OlcumCihazi? @relation(fields: [cihazId], references: [id])
 }
 
 enum TeklifDurum {
@@ -165,75 +339,11 @@ enum TeklifDurum {
   IPTAL
 }
 
-// ============ MUAYENE MODÜLÜ ============
-
-model Muayene {
-  id               Int            @id @default(autoincrement())
-  muayeneNo        String         @unique
-  teklifId         Int?
-  teklif           Teklif?        @relation(fields: [teklifId], references: [id])
-  customerId       Int
-  customer         Customer       @relation(fields: [customerId], references: [id])
-  muayeneTarihi    DateTime
-  muayeneYeri      String
-  muayeneEkipman   String
-  muayeneSonucu    MuayeneSonuc   @default(BEKLEMEDE)
-  sertifikaNo      String?
-  sertifikaTarihi  DateTime?
-  gecerlilikSuresi Int            @default(12)
-  raporDosya       String?
-  notlar           String?
-  muayeneEdenId    Int
-  muayeneEden      User           @relation("muayeneEden", fields: [muayeneEdenId], references: [id])
-  onaylayanId      Int?
-  onaylayan        User?          @relation("onaylayan", fields: [onaylayanId], references: [id])
-  createdBy        Int
-  olusturan        User           @relation("olusturanMuayene", fields: [createdBy], references: [id])
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-}
-
 enum MuayeneSonuc {
   BEKLEMEDE
   UYGUN
   UYGUN_DEGIL
   SARTLI_UYGUN
-}
-
-// ============ RAPOR MOTORU ============
-
-model WorkOrder {
-  id              Int             @id @default(autoincrement())
-  workOrderNo     String          @unique
-  teklifId        Int?
-  teklif          Teklif?         @relation(fields: [teklifId], references: [id])
-  customerId      Int
-  customer        Customer        @relation(fields: [customerId], references: [id])
-  durum           WorkOrderDurum  @default(BEKLEMEDE)
-  planliTarih     DateTime?
-  tamamlanmaTarih DateTime?
-  atananUserId    Int?
-  atanan          User?           @relation("atananWorkOrder", fields: [atananUserId], references: [id])
-  fieldData       FieldData[]
-  createdBy       Int
-  olusturan       User            @relation("olusturanWorkOrder", fields: [createdBy], references: [id])
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-}
-
-model FieldData {
-  id           Int       @id @default(autoincrement())
-  workOrderId  Int
-  workOrder    WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
-  reportType   String    // "ET", "MEKANIK"
-  formData     Json      // Saha formundan gelen tüm veriler
-  sonuc        String?   // "UYGUN", "UYGUN_DEGIL"
-  pdfPath      String?
-  olcumTarihi  DateTime  @default(now())
-  olcumYapanId Int
-  olcumYapan   User      @relation("olcumYapan", fields: [olcumYapanId], references: [id])
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
 }
 
 enum WorkOrderDurum {
@@ -242,133 +352,4 @@ enum WorkOrderDurum {
   SAHADA
   TAMAMLANDI
   IPTAL
-}
-
-// ============ PERSONEL VE İŞ EMRİ MODÜLÜ ============
-
-// Personel tablosu
-model Personel {
-  id                  Int         @id @default(autoincrement())
-  adSoyad             String
-  unvan               String
-  meslek              String?
-  diplomaTarihi       String?
-  diplomaNo           String?
-  ekipnetNo           String?
-  telefon             String?
-  email               String?
-  kategori            String      // Elektriksel, Mekanik, IsHijyeni
-  isActive            Boolean     @default(true)
-  // Login bilgileri
-  username            String?     @unique
-  password            String?     // hashlenmiş şifre
-  role                String      @default("tekniker") // admin | tekniker
-  // Bildirim ayarları
-  emailNotifications  Boolean     @default(true)
-  systemNotifications Boolean     @default(true)
-  createdAt           DateTime    @default(now())
-  altGorevler         AltGorev[]
-}
-
-// Ana İş Emri (Teklif bazlı)
-model IsEmri {
-  id              Int           @id @default(autoincrement())
-  isEmriNo        String        @unique
-  teklifId        Int
-  teklif          Teklif        @relation(fields: [teklifId], references: [id])
-  customerId      Int
-  customer        Customer      @relation(fields: [customerId], references: [id])
-  planliTarih     DateTime?
-  baslangicTarihi DateTime?
-  bitisTarihi     DateTime?
-  durum           String        @default("BEKLIYOR")
-  notlar          String?
-  altGorevler     AltGorev[]
-  firmaBilgi      IsEmriFirmaBilgi?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-}
-
-// Alt Görev (Her ekipman/ölçüm noktası için)
-model AltGorev {
-  id                  Int         @id @default(autoincrement())
-  isEmriId            Int
-  isEmri              IsEmri      @relation(fields: [isEmriId], references: [id], onDelete: Cascade)
-  hizmetId            Int
-  hizmet              Hizmet      @relation(fields: [hizmetId], references: [id])
-  hizmetAdi           String
-  kategori            String
-  siraNo              Int         @default(1)
-  ekipmanAdi          String?
-  ekipmanSeriNo       String?
-  ekipmanKonum        String?
-  ekipmanKapasite     String?
-  ekipmanPlaka        String?
-  durum               String      @default("BEKLIYOR")
-  personelId          Int?
-  personel            Personel?   @relation(fields: [personelId], references: [id])
-  personelAdi         String?
-  tamamlanmaTarihi    DateTime?
-  raporNo             String?
-  notlar              String?
-  sahaFormu           String?     @db.Text
-  topraklamaOlcumler  TopraklamaOlcum[]
-  createdAt           DateTime    @default(now())
-}
-
-// ============ RAPOR SİSTEMİ ============
-
-// İş Emri Firma Bilgileri (saha formu için ek bilgiler)
-model IsEmriFirmaBilgi {
-  id                    Int       @id @default(autoincrement())
-  isEmriId              Int       @unique
-  isEmri                IsEmri    @relation(fields: [isEmriId], references: [id], onDelete: Cascade)
-  sgkSicilNo            String?
-  isgKatipId            String?
-  enerjiKurulusu        String?
-  basvuruNo             String?
-  makineOperatoru       String?
-  kaynak                String?   // KAYNAKLI / KAYNAKSIZ
-  ortamNemi             String?
-  ortamSicaklik         String?
-  olcumYapanAdi         String?
-  olcumTarihi           DateTime?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-}
-
-// Ölçüm Cihazları
-model OlcumCihazi {
-  id                    Int       @id @default(autoincrement())
-  cihazAdi              String
-  marka                 String?
-  model                 String?
-  seriNo                String?
-  olcumAraligi          String?   // örn: "0-2000 Ohm"
-  hassasiyet            String?   // örn: "±0.5%"
-  kalibrasyonTarihi     DateTime?
-  kalibrasyonGecerlilik DateTime? // Geçerlilik bitiş tarihi
-  kalibrasyonNo         String?   // Sertifika/Kalibrasyon No
-  kategori              String?   // TOPRAKLAMA, IZOLASYON, SICAKLIK, NEM vb.
-  isActive              Boolean   @default(true)
-  topraklamaOlcumler    TopraklamaOlcum[]
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-}
-
-// Topraklama Ölçüm Kayıtları
-model TopraklamaOlcum {
-  id                    Int          @id @default(autoincrement())
-  altGorevId            Int
-  altGorev              AltGorev     @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
-  siraNo                Int          @default(1)
-  olcumNoktasi          String?      // örn: "Ana Topraklama", "Panel 1"
-  olcumDegeri           Decimal?     @db.Decimal(10, 4) // Ohm değeri
-  birim                 String       @default("Ω")
-  sinirDeger            Decimal?     @db.Decimal(10, 4) // Kabul sınırı
-  sonuc                 String?      // UYGUN / UYGUN_DEGIL
-  cihazId               Int?
-  cihaz                 OlcumCihazi? @relation(fields: [cihazId], references: [id])
-  notlar                String?
-  createdAt             DateTime     @default(now())
 }
