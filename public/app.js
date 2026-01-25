@@ -3410,6 +3410,9 @@ async function renderIsEmriDetay(id) {
                                 </td>
                                 <td>${gorev.raporNo || '-'}</td>
                                 <td>
+                                    <button class="btn btn-sm btn-success" onclick="olcumYap(${gorev.id}, '${gorev.hizmetAdi}')" title="Ölçüm Yap">
+                                        📊 Ölçüm
+                                    </button>
                                     <button class="btn btn-sm btn-primary" onclick="altGorevDuzenle(${gorev.id})" title="Düzenle">
                                         ✏️
                                     </button>
@@ -3451,6 +3454,86 @@ async function isEmriDurumDegistir(id, durum) {
         }
     } catch (error) {
         showToast('Hata: ' + error.message, 'error');
+    }
+}
+
+// ============ ÖLÇÜM ŞABLON SİSTEMİ ============
+
+// Ölçüm Yap - Şablon seçme modalını aç
+async function olcumYap(altGorevId, hizmetAdi) {
+    try {
+        // Şablonları yükle
+        const response = await authenticatedFetch('/api/word-templates');
+        const templates = await response.json();
+
+        const modalHtml = `
+            <div class="modal-overlay" onclick="closeModal(event)">
+                <div class="modal" onclick="event.stopPropagation()" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3>📊 Ölçüm Şablonu Seç</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="margin-bottom: 15px;"><strong>Hizmet:</strong> ${hizmetAdi}</p>
+
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Ölçüm Türü Seçin:</label>
+                            <div style="display: grid; gap: 10px;">
+                                <button class="btn btn-outline" onclick="olcumFormuAc(${altGorevId}, 'elektrik-topraklama')" style="text-align: left; padding: 15px; border: 2px solid #ddd; background: white; cursor: pointer;">
+                                    <strong>⚡ Elektrik Topraklama Ölçümü</strong><br>
+                                    <small style="color: #666;">FR7.2.36 - Topraklama direnci, hat empedansı, RCD testi</small>
+                                </button>
+                                <button class="btn btn-outline" style="text-align: left; padding: 15px; border: 2px solid #eee; background: #f9f9f9; color: #999; cursor: not-allowed;" disabled>
+                                    <strong>🌩️ Yıldırımdan Korunma</strong><br>
+                                    <small>FR7.2.37 - Yakında eklenecek</small>
+                                </button>
+                                <button class="btn btn-outline" style="text-align: left; padding: 15px; border: 2px solid #eee; background: #f9f9f9; color: #999; cursor: not-allowed;" disabled>
+                                    <strong>🔋 Jeneratör Muayene</strong><br>
+                                    <small>FR7.2.38 - Yakında eklenecek</small>
+                                </button>
+                                <button class="btn btn-outline" style="text-align: left; padding: 15px; border: 2px solid #eee; background: #f9f9f9; color: #999; cursor: not-allowed;" disabled>
+                                    <strong>🔌 İç Tesisat Ölçümü</strong><br>
+                                    <small>FR7.2.40 - Yakında eklenecek</small>
+                                </button>
+                            </div>
+                        </div>
+
+                        <hr style="margin: 20px 0;">
+
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Mevcut Word Şablonları (${templates.length}):</label>
+                            <div style="max-height: 150px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px; background: #f9f9f9;">
+                                ${templates.map(t => `
+                                    <div style="padding: 8px; border-bottom: 1px solid #eee; background: white; margin-bottom: 5px; border-radius: 4px;">
+                                        📄 ${t.name}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Kapat</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modal-container').innerHTML = modalHtml;
+    } catch (error) {
+        console.error('Şablon yükleme hatası:', error);
+        showToast('Şablonlar yüklenemedi', 'error');
+    }
+}
+
+// Ölçüm Formunu Aç
+function olcumFormuAc(altGorevId, formTipi) {
+    closeModal();
+
+    if (formTipi === 'elektrik-topraklama') {
+        // Yeni sekmede aç ve altGorevId'yi parametre olarak gönder
+        window.open(`/forms/elektrik-topraklama-form.html?altGorevId=${altGorevId}`, '_blank');
+    } else {
+        showToast('Bu ölçüm formu henüz hazır değil', 'warning');
     }
 }
 
