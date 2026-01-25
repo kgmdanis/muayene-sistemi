@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FR7.2.36 Elektrik Topraklama Ölçüm Raporu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+        
+        .header { background: linear-gradient(135deg, #1a5d3a 0%, #2e7d52 100%); color: white; padding: 16px 24px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .header h1 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .header-status { display: flex; align-items: center; gap: 16px; font-size: 13px; }
+        .status-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .btn-new { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .btn-new:hover { background: rgba(255,255,255,0.3); }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; overflow: hidden; }
+        .card-header { background: #f8f9fa; padding: 16px 20px; font-weight: 600; font-size: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .card-header:hover { background: #f0f0f0; }
+        .card-header .badge { background: #1a5d3a; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; }
+        .card-body { padding: 20px; }
+        .card-body.collapsed { display: none; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-weight: 500; margin-bottom: 8px; color: #333; font-size: 14px; }
+        .form-control { width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .form-control:focus { outline: none; border-color: #1a5d3a; box-shadow: 0 0 0 3px rgba(26, 93, 58, 0.1); }
+        .form-control:disabled { background: #f5f5f5; color: #666; }
+        .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 14px; }
+        .checkbox-item:hover { background: #e8f5e9; border-color: #4caf50; }
+        .checkbox-item input { width: 18px; height: 18px; accent-color: #1a5d3a; cursor: pointer; }
+        .checkbox-item:has(input:checked) { background: #e8f5e9; border-color: #1a5d3a; }
+        .checkbox-item:has(input:checked) span { color: #1a5d3a; font-weight: 600; }
+        
+        .table-container { overflow-x: auto; margin-top: 16px; }
+        .olcum-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .olcum-table th { background: #1a5d3a; color: white; padding: 12px 8px; text-align: center; font-weight: 500; white-space: nowrap; }
+        .olcum-table th.group-header { background: #2e7d52; }
+        .olcum-table td { padding: 8px; border: 1px solid #e0e0e0; text-align: center; }
+        .olcum-table tbody tr:hover { background: #f8f9fa; }
+        .olcum-table input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 13px; }
+        .olcum-table input:focus { outline: none; border-color: #1a5d3a; }
+        .olcum-table select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+        .sonuc-uygun { background: #e8f5e9; color: #2e7d32; font-weight: 600; }
+        .sonuc-uygunsuz { background: #ffebee; color: #c62828; font-weight: 600; }
+        .btn-delete { background: #ff5252; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 16px; }
+        .btn-delete:hover { background: #ff1744; }
+        .btn-add-row { display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #f0f0f0; border: 2px dashed #ccc; border-radius: 8px; cursor: pointer; font-size: 14px; color: #666; margin-top: 16px; width: 100%; justify-content: center; }
+        .btn-add-row:hover { background: #e8f5e9; border-color: #1a5d3a; color: #1a5d3a; }
+        
+        /* RCD Selektivite Tablosu */
+        .rcd-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .rcd-table th { background: #ff9800; color: white; padding: 10px 6px; text-align: center; font-weight: 500; }
+        .rcd-table td { padding: 6px; border: 1px solid #e0e0e0; text-align: center; }
+        .rcd-table input { width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 12px; }
+        
+        .kusur-list { display: flex; flex-direction: column; gap: 10px; }
+        .kusur-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; cursor: pointer; }
+        .kusur-item:hover, .kusur-item:has(input:checked) { background: #fff3e0; border-color: #ff9800; }
+        .kusur-item input { width: 20px; height: 20px; accent-color: #ff9800; }
+        
+        .sonuc-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+        .sonuc-btn { padding: 32px; border: 2px solid #e0e0e0; border-radius: 12px; text-align: center; cursor: pointer; background: white; }
+        .sonuc-btn.uygun:hover, .sonuc-btn.uygun.active { border-color: #4caf50; background: #e8f5e9; }
+        .sonuc-btn.uygunsuz:hover, .sonuc-btn.uygunsuz.active { border-color: #f44336; background: #ffebee; }
+        .sonuc-btn .icon { font-size: 48px; margin-bottom: 12px; }
+        .sonuc-btn h3 { font-size: 18px; }
+        
+        .not-list { display: flex; flex-direction: column; gap: 8px; }
+        .not-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; cursor: pointer; }
+        .not-item:hover, .not-item:has(input:checked) { background: #e3f2fd; border-color: #2196f3; }
+        .not-item input { margin-top: 2px; width: 18px; height: 18px; accent-color: #2196f3; }
+        .not-item strong { color: #1565c0; }
+        
+        .footer-buttons { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px 24px; display: flex; gap: 16px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 100; }
+        .footer-buttons .btn { flex: 1; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-save { background: #f5f5f5; color: #333; }
+        .btn-save:hover { background: #e0e0e0; }
+        .btn-submit { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); color: white; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4); }
+        .btn-word { background: linear-gradient(135deg, #1a5d3a 0%, #2e7d52 100%); color: white; }
+        .btn-word:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(26, 93, 58, 0.4); }
+        .footer-spacer { height: 100px; }
+        
+        @media (max-width: 768px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } .checkbox-group { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ FR7.2.36 Elektrik Topraklama Ölçüm Raporu</h1>
+        <div class="header-status">
+            <span class="status-dot"></span>
+            <span>Çevrimiçi</span>
+            <span id="saveStatus">Kaydedilmedi</span>
+            <button class="btn-new" onclick="yeniRapor()">Yeni Rapor</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- İş Emri -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('isEmriSection')"><span>📋 İş Emri & Görev Seçimi</span><span>▲</span></div>
+            <div class="card-body" id="isEmriSection">
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">İş Emri</label><select id="isEmriSelect" class="form-control" onchange="isEmriSecildi()"><option value="">İş Emri Seçin...</option></select></div>
+                    <div class="form-group"><label class="form-label">Alt Görev</label><select id="altGorevSelect" class="form-control"><option value="">Önce İş Emri Seçin...</option></select></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Firma Bilgileri -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('firmaSection')"><span>🏢 Firma Bilgileri</span><span class="badge">Otomatik</span></div>
+            <div class="card-body" id="firmaSection">
+                <div class="form-group"><label class="form-label">Firma Adı</label><input type="text" id="firmaAdi" class="form-control" disabled></div>
+                <div class="form-group"><label class="form-label">Adres</label><input type="text" id="firmaAdres" class="form-control" disabled></div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">SGK Sicil No</label><input type="text" id="sgkSicilNo" class="form-control" placeholder="SGK Sicil No girin"></div>
+                    <div class="form-group"><label class="form-label">İSG-KATİP No</label><input type="text" id="isgKatipNo" class="form-control" placeholder="İSG-KATİP No girin"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarih -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('tarihSection')"><span>📅 Tarih & Ortam Bilgileri</span><span>▲</span></div>
+            <div class="card-body" id="tarihSection">
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Başlangıç Tarihi</label><input type="date" id="baslangicTarihi" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Bitiş Tarihi</label><input type="date" id="bitisTarihi" class="form-control"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2.1 ETİKET VE DETAY BİLGİLERİ -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('etiketSection')"><span>🏷️ 2.1 Etiket ve Detay Bilgileri</span><span class="badge">6 Checkbox + 7 Yazı Alanı</span></div>
+            <div class="card-body" id="etiketSection">
+                
+                <!-- YAZI: Enerji Sağlayan Kuruluş -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Enerji Sağlayan Kuruluş</label>
+                        <input type="text" id="enerjiSaglayan" class="form-control" value="MEDAŞ">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Şebeke Gerilimi (V)</label>
+                        <input type="text" id="sebekeGerilimi" class="form-control" value="380">
+                    </div>
+                </div>
+
+                <!-- CHECKBOX 1: Şebeke (Sistem) Tipi (6 adet) -->
+                <div class="form-group">
+                    <label class="form-label">Şebeke (Sistem) Tipi</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="sistemTipi" value="TT"><span>TT</span></label>
+                        <label class="checkbox-item"><input type="radio" name="sistemTipi" value="IT"><span>IT</span></label>
+                        <label class="checkbox-item"><input type="radio" name="sistemTipi" value="TN" checked><span>TN</span></label>
+                        <label class="checkbox-item"><input type="radio" name="sistemTipi" value="TN-CS"><span>TN-C-S</span></label>
+                        <label class="checkbox-item"><input type="radio" name="sistemTipi" value="TN-C"><span>TN-C</span></label>
+                        <label class="checkbox-item"><input type="radio" name="sistemTipi" value="TN-S"><span>TN-S</span></label>
+                    </div>
+                </div>
+
+                <!-- CHECKBOX 2: Tesise Ait Proje (2 adet) -->
+                <div class="form-group">
+                    <label class="form-label">Tesise Ait Proje Var mı?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="projeVar" value="true" checked><span>Var</span></label>
+                        <label class="checkbox-item"><input type="radio" name="projeVar" value="false"><span>Yok</span></label>
+                    </div>
+                </div>
+
+                <!-- CHECKBOX 3: Tek Hat Şeması (2 adet) -->
+                <div class="form-group">
+                    <label class="form-label">Tek Hat Şeması Var mı?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="tekHatSemasiVar" value="true" checked><span>Var</span></label>
+                        <label class="checkbox-item"><input type="radio" name="tekHatSemasiVar" value="false"><span>Yok</span></label>
+                    </div>
+                </div>
+
+                <!-- CHECKBOX 4: Kontrol Nedeni (2 adet) -->
+                <div class="form-group">
+                    <label class="form-label">Kontrol Nedeni</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="kontrolNedeni" value="periyodik" checked><span>Periyodik Kontrol</span></label>
+                        <label class="checkbox-item"><input type="radio" name="kontrolNedeni" value="ilk"><span>İlk Kontrol</span></label>
+                    </div>
+                </div>
+
+                <!-- YAZI: Proje Bilgileri -->
+                <div class="form-group">
+                    <label class="form-label">Proje Bilgileri</label>
+                    <input type="text" id="projeBilgileri" class="form-control" placeholder="Örn: ODA NO: A-101, BLOK: B">
+                </div>
+
+                <!-- CHECKBOX 5: Yapı Cinsi (4 adet) -->
+                <div class="form-group">
+                    <label class="form-label">Yapı Cinsi</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="yapiEv"><span>Ev</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="yapiTicari"><span>Ticari</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="yapiEndustri" checked><span>Endüstri</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="yapiDiger"><span>Diğer</span></label>
+                    </div>
+                </div>
+
+                <!-- CHECKBOX 6: Topraklayıcı Tipi (5 adet) -->
+                <div class="form-group">
+                    <label class="form-label">Topraklayıcı Tipi</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="toprakRing"><span>Ring</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="toprakYuzeysel"><span>Yüzeysel</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="toprakTemel" checked><span>Temel</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="toprakDerin"><span>Derin</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="toprakBelirlenemedi"><span>Belirlenemedi</span></label>
+                    </div>
+                </div>
+
+                <!-- YAZI: Ekipmanın Kullanım Amacı -->
+                <div class="form-group">
+                    <label class="form-label">Ekipmanın Kullanım Amacı</label>
+                    <input type="text" id="ekipmanKullanimAmaci" class="form-control" value="FABRİKA" placeholder="Fabrika, Ofis, Depo, Konut vs.">
+                </div>
+
+                <!-- YAZI: Son Kontrol Tarihi -->
+                <div class="form-group">
+                    <label class="form-label">Son Kontrol Tarihi</label>
+                    <input type="text" id="sonKontrolTarihi" class="form-control" value="-" placeholder="Bilinmiyorsa - yazın">
+                </div>
+
+                <!-- CHECKBOX 7: Koruma Önlemi (4 adet) -->
+                <div class="form-group">
+                    <label class="form-label">Dolaylı Dokunmaya Karşı Koruma Önlemi</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="korumaEspotansiyel" checked><span>Eşpotansiyel Topraklama (TT, TN, IT)</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="korumaYalitma"><span>Koruyucu Yalıtma (Sınıf II)</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="korumaAyirma"><span>Koruyucu Ayırma (İzolasyon trafosu)</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="korumaKucukGerilim"><span>Küçük Gerilim (&lt;50V)</span></label>
+                    </div>
+                </div>
+
+                <!-- YAZI: Hava Durumu ve Sıcaklığı -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Hava Durumu ve Sıcaklığı</label>
+                        <input type="text" id="havaDurumu" class="form-control" value="Açık, 25°C" placeholder="Örn: Açık, 25°C">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Zemin Nem Durumu</label>
+                        <input type="text" id="zeminNem" class="form-control" value="Kuru" placeholder="Kuru, Nemli, Islak">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2.2 TESPİT EDİLEN BİLGİLER -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('tespitSection')"><span>🔍 2.2 Tespit Edilen Bilgiler</span><span class="badge">2 Checkbox + 1 Yazı Alanı</span></div>
+            <div class="card-body" id="tespitSection">
+                
+                <!-- CHECKBOX 8: Tesisatta Kapsamlı Değişiklik (2 adet) -->
+                <div class="form-group">
+                    <label class="form-label">Tesisatta Kapsamlı Değişiklik Var mı?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="kapsamliDegisiklik" value="true"><span>Var</span></label>
+                        <label class="checkbox-item"><input type="radio" name="kapsamliDegisiklik" value="false" checked><span>Yok</span></label>
+                    </div>
+                </div>
+
+                <!-- CHECKBOX 9: Önceki Kontrol Etiketi (2 adet) -->
+                <div class="form-group">
+                    <label class="form-label">Bir Önceki Periyodik Kontrol Etiketi Var mı?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="oncekiKontrolEtiketi" value="true" checked><span>Var</span></label>
+                        <label class="checkbox-item"><input type="radio" name="oncekiKontrolEtiketi" value="false"><span>Yok</span></label>
+                    </div>
+                </div>
+
+                <!-- YAZI: Pano/Ekipman Tanımlaması -->
+                <div class="form-group">
+                    <label class="form-label">Pano/Ekipman Tanımlaması</label>
+                    <input type="text" id="panoTanimi" class="form-control" value="Ana Pano" placeholder="Ana Pano, Tali Pano, vs.">
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. KONTROL KRİTERLERİ - ÖLÇÜM METODU -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('metodSection')"><span>📏 5. Ölçüm Metodu</span><span class="badge">3 Checkbox</span></div>
+            <div class="card-body" id="metodSection">
+                
+                <!-- CHECKBOX 10: Ölçüm Metodu (3 adet) -->
+                <div class="form-group">
+                    <label class="form-label">Ölçüm ve Doğrulama Metodu</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="olcumCevrimEmpedansi" checked><span>Çevrim Empedansı</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="olcum3UcluTopraklama"><span>3 Uçlu Topraklama</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="olcumKlamp"><span>Klamp Metodu (Çoklu topraklayıcılı)</span></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5.1 ÖLÇÜM TABLOSU -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('olcumSection')"><span>📊 5.1 Ölçüm Tablosu</span><span class="badge" id="olcumSayisi">0 Ölçüm</span></div>
+            <div class="card-body" id="olcumSection">
+                <div class="table-container">
+                    <table class="olcum-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">No</th>
+                                <th rowspan="2">Ölçüm Noktası / Etiketi</th>
+                                <th colspan="2">Koruma Elemanı</th>
+                                <th colspan="4" class="group-header">Ölçüm Değerleri</th>
+                                <th colspan="3" class="group-header">RCD Bilgileri</th>
+                                <th rowspan="2">Sonuç</th>
+                                <th rowspan="2">Sil</th>
+                            </tr>
+                            <tr>
+                                <th>In (A)</th>
+                                <th>Tip</th>
+                                <th>Ia (A)</th>
+                                <th>Zx/Rx (Ω)</th>
+                                <th>Zs/RA (Ω)</th>
+                                <th>Ik (A)</th>
+                                <th>IΔn (mA)</th>
+                                <th>IΔ (mA)</th>
+                                <th>TΔ (ms)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="olcumTableBody"></tbody>
+                    </table>
+                </div>
+                <button class="btn-add-row" onclick="yeniOlcumSatiri()">+ Yeni Ölçüm Satırı Ekle</button>
+            </div>
+        </div>
+
+        <!-- 5.2 RCD SELEKTİVİTE KONTROLÜ -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('rcdSection')"><span>⚡ 5.2 RCD Selektivite Kontrolü</span><span class="badge" id="rcdSayisi">0 Kayıt</span></div>
+            <div class="card-body" id="rcdSection">
+                <div class="table-container">
+                    <table class="rcd-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">No</th>
+                                <th rowspan="2">Önceki Pano Adı</th>
+                                <th colspan="4" style="background:#e65100;">Önceki Pano RCD Bilgileri</th>
+                                <th rowspan="2">Son Pano Adı</th>
+                                <th colspan="3" style="background:#e65100;">Son Pano RCD Bilgileri</th>
+                                <th rowspan="2">Sonuç</th>
+                                <th rowspan="2">Sil</th>
+                            </tr>
+                            <tr>
+                                <th>RCD Tipi</th>
+                                <th>In (A)</th>
+                                <th>IΔn (mA)</th>
+                                <th>Gecikme (ms)</th>
+                                <th>RCD Tipi</th>
+                                <th>IΔn (mA)</th>
+                                <th>TΔ (ms)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rcdTableBody"></tbody>
+                    </table>
+                </div>
+                <button class="btn-add-row" onclick="yeniRcdSatiri()">+ Yeni RCD Selektivite Satırı Ekle</button>
+            </div>
+        </div>
+
+        <!-- 6. KUSUR AÇIKLAMALARI -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('kusurSection')"><span>⚠️ 6. Kusur Açıklamaları</span><span>▲</span></div>
+            <div class="card-body" id="kusurSection">
+                <label class="form-label">Tespit Edilen Kusurlar</label>
+                <div class="kusur-list">
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="topraklama_direnci"><span>Topraklama direnci yüksek (*)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="hat_empedansi"><span>Hat empedansı yüksek (*)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="rcd_sure"><span>RCD çalışma süresi aşıldı (*)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="topraklama_yok"><span>Topraklama bağlantısı yok (**)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="pano_kopru"><span>Pano gövde-kapak köprüsü yok (**)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="notr_toprak"><span>Nötr-toprak birleşikliği tespit edildi (**)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="rcd_yok"><span>RCD yok veya arızalı (**)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="pen_kopru"><span>PEN köprüsü dışında PE-N birleştirilmiş (**)</span></label>
+                </div>
+                <p style="margin-top:10px;font-size:12px;color:#666;">(*) Hafif kusur, (**) Ağır kusur</p>
+                <div class="form-group" style="margin-top:20px">
+                    <label class="form-label">Ek Kusur Açıklaması</label>
+                    <textarea id="kusurAciklama" class="form-control" rows="3" placeholder="Varsa ek kusur açıklamaları..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. NOTLAR -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('notlarSection')"><span>📝 7. Notlar</span><span>▲</span></div>
+            <div class="card-body" id="notlarSection">
+                <div class="form-group">
+                    <label class="form-label">Ek Notlar</label>
+                    <textarea id="notlar" class="form-control" rows="3" placeholder="Varsa ek açıklamalar..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. SONUÇ VE KANAAT -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('sonucSection')"><span>✅ 8. Sonuç ve Kanaat</span><span>▲</span></div>
+            <div class="card-body" id="sonucSection">
+                <div class="sonuc-group">
+                    <div class="sonuc-btn uygun active" onclick="setSonuc(this,'UYGUN')"><div class="icon">✅</div><h3>UYGUN</h3></div>
+                    <div class="sonuc-btn uygunsuz" onclick="setSonuc(this,'UYGUN_DEGIL')"><div class="icon">❌</div><h3>UYGUN DEĞİL</h3></div>
+                </div>
+                <input type="hidden" id="genelSonuc" value="UYGUN">
+                <label class="form-label">Uygunluk Notu Seçin:</label>
+                <div class="not-list">
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-1" checked><span><strong>Not-1:</strong> Uygun.</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-2"><span><strong>Not-2:</strong> Güvenlik şartı sağlanamadığından uygun değildir. (Ağır kusur)</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-3"><span><strong>Not-3:</strong> Topraklama bağlantısı yok kontrol edilmelidir. (Ağır kusur)</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-4"><span><strong>Not-4:</strong> Artık akım anahtarı kullanıldığı ve faal olduğu için uygundur.</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-5"><span><strong>Not-5:</strong> TT/TN şebekede 32A'e kadar priz tesisatlarında 30mA RCD kullanımı zorunludur. (Ağır kusur)</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-6"><span><strong>Not-6:</strong> 32A üzerindeki devrelerde doğal kaçak akım tahkiki yapılmadığından yetersizdir. (Ağır kusur)</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-7"><span><strong>Not-7:</strong> RCD gecikmeli tip (selektif) olmadığından yetersizdir.</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-8"><span><strong>Not-8:</strong> Nötr-toprak gerilimi yüksek olduğundan ölçüm yapılamamıştır. (Ağır kusur)</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-9"><span><strong>Not-9:</strong> PEN köprüsü dışında PE ve N iletkenlerinin birleştirilmesi uygun değildir. (Ağır kusur)</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-10"><span><strong>Not-10:</strong> Priz üzerinde Nötr-Toprak birleşikliği tespit edildi. (Ağır kusur)</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-11"><span><strong>Not-11:</strong> Pano gövde–kapak köprüsü olmadığından yetersizdir. (Ağır kusur)</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="footer-spacer"></div>
+    </div>
+
+    <div class="footer-buttons">
+        <button class="btn btn-save" onclick="kaydet()">📄 Kaydet</button>
+        <button class="btn btn-submit" onclick="gonder()">📤 Gönder</button>
+        <button class="btn btn-word" onclick="wordOlustur()">📝 Word</button>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentRaporId = null, olcumSayac = 0, rcdSayac = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('baslangicTarihi').value = today;
+            document.getElementById('bitisTarihi').value = today;
+            isEmriListesiYukle();
+            for (let i = 0; i < 3; i++) yeniOlcumSatiri();
+        });
+
+        function toggleSection(id) { document.getElementById(id).classList.toggle('collapsed'); }
+
+        function setSonuc(el, sonuc) {
+            document.getElementById('genelSonuc').value = sonuc;
+            document.querySelectorAll('.sonuc-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // 5.1 ÖLÇÜM TABLOSU - YENİ SATIR
+        function yeniOlcumSatiri() {
+            olcumSayac++;
+            const tr = document.createElement('tr');
+            tr.id = `olcum-${olcumSayac}`;
+            tr.innerHTML = `
+                <td>${olcumSayac}</td>
+                <td><input type="text" value="Pano-${olcumSayac} / Q${olcumSayac}" style="min-width:150px;"></td>
+                <td><input type="number" value="16" onchange="hesaplamaYap()"></td>
+                <td><select onchange="hesaplamaYap()"><option value="B">B</option><option value="C" selected>C</option><option value="D">D</option></select></td>
+                <td class="ia">-</td>
+                <td><input type="number" step="0.01" value="0.5" onchange="hesaplamaYap()"></td>
+                <td class="zsra">-</td>
+                <td class="ik">-</td>
+                <td><input type="number" value="30"></td>
+                <td><input type="number" value="30"></td>
+                <td><input type="number" value="25"></td>
+                <td class="sonuc">-</td>
+                <td><button class="btn-delete" onclick="this.closest('tr').remove();updateOlcumSayisi()">×</button></td>
+            `;
+            document.getElementById('olcumTableBody').appendChild(tr);
+            updateOlcumSayisi();
+            hesaplamaYap();
+        }
+
+        // 5.2 RCD SELEKTİVİTE TABLOSU - YENİ SATIR
+        function yeniRcdSatiri() {
+            rcdSayac++;
+            const tr = document.createElement('tr');
+            tr.id = `rcd-${rcdSayac}`;
+            tr.innerHTML = `
+                <td>${rcdSayac}</td>
+                <td><input type="text" value="Ana Pano" style="min-width:100px;"></td>
+                <td><select><option value="AC">AC</option><option value="A">A</option><option value="B">B</option><option value="S" selected>S (Selektif)</option></select></td>
+                <td><input type="number" value="63"></td>
+                <td><input type="number" value="300"></td>
+                <td><input type="number" value="60"></td>
+                <td><input type="text" value="Tali Pano-${rcdSayac}" style="min-width:100px;"></td>
+                <td><select><option value="AC" selected>AC</option><option value="A">A</option><option value="B">B></select></td>
+                <td><input type="number" value="30"></td>
+                <td><input type="number" value="25"></td>
+                <td class="sonuc sonuc-uygun">UYGUN</td>
+                <td><button class="btn-delete" onclick="this.closest('tr').remove();updateRcdSayisi()">×</button></td>
+            `;
+            document.getElementById('rcdTableBody').appendChild(tr);
+            updateRcdSayisi();
+        }
+
+        function updateOlcumSayisi() { document.getElementById('olcumSayisi').textContent = document.querySelectorAll('#olcumTableBody tr').length + ' Ölçüm'; }
+        function updateRcdSayisi() { document.getElementById('rcdSayisi').textContent = document.querySelectorAll('#rcdTableBody tr').length + ' Kayıt'; }
+
+        // Sistem tipi değiştiğinde hesaplamayı güncelle
+        document.querySelectorAll('input[name="sistemTipi"]').forEach(radio => {
+            radio.addEventListener('change', hesaplamaYap);
+        });
+
+        function hesaplamaYap() {
+            const sistemTipi = document.querySelector('input[name="sistemTipi"]:checked')?.value || 'TN';
+            const isTT = sistemTipi === 'TT';
+            
+            document.querySelectorAll('#olcumTableBody tr').forEach(row => {
+                const inputs = row.querySelectorAll('input, select');
+                const inA = parseFloat(inputs[1]?.value) || 0;
+                const tip = inputs[2]?.value || 'C';
+                const zx = parseFloat(inputs[3]?.value) || 0;
+                
+                let ia = tip === 'B' ? inA * 5 : tip === 'C' ? inA * 10 : inA * 20;
+                let zsra = ia > 0 ? (isTT ? 50 / ia : 230 / ia) : 0;
+                let ik = zx > 0 ? 230 / zx : 0;
+                const sonuc = (zx > 0 && zsra > 0 && zx <= zsra) ? 'UYGUN' : 'UYGUN DEĞİL';
+                
+                row.querySelector('.ia').textContent = ia > 0 ? ia.toFixed(0) : '-';
+                row.querySelector('.zsra').textContent = zsra > 0 ? zsra.toFixed(3) : '-';
+                row.querySelector('.ik').textContent = ik > 0 ? ik.toFixed(0) : '-';
+                
+                const sonucEl = row.querySelector('.sonuc');
+                sonucEl.textContent = sonuc;
+                sonucEl.className = 'sonuc ' + (sonuc === 'UYGUN' ? 'sonuc-uygun' : 'sonuc-uygunsuz');
+            });
+        }
+
+        // TÜM VERİLERİ TOPLAYAN FONKSİYON - WORD'E GÖNDERİLECEK
+        function getAllFormData() {
+            return {
+                // ===== CHECKBOX DEĞERLERİ (32 adet) =====
+                // 1. Sistem Tipi (6 seçenek)
+                sistemTipi: document.querySelector('input[name="sistemTipi"]:checked')?.value || 'TN',
+                
+                // 2. Tesise Ait Proje (2 seçenek)
+                projeVar: document.querySelector('input[name="projeVar"]:checked')?.value === 'true',
+                
+                // 3. Tek Hat Şeması (2 seçenek)
+                tekHatSemasiVar: document.querySelector('input[name="tekHatSemasiVar"]:checked')?.value === 'true',
+                
+                // 4. Kontrol Nedeni (2 seçenek)
+                kontrolNedeni: document.querySelector('input[name="kontrolNedeni"]:checked')?.value || 'periyodik',
+                
+                // 5. Yapı Cinsi (4 seçenek)
+                yapiEv: document.querySelector('input[name="yapiEv"]')?.checked || false,
+                yapiTicari: document.querySelector('input[name="yapiTicari"]')?.checked || false,
+                yapiEndustri: document.querySelector('input[name="yapiEndustri"]')?.checked || false,
+                yapiDiger: document.querySelector('input[name="yapiDiger"]')?.checked || false,
+                
+                // 6. Topraklayıcı Tipi (5 seçenek)
+                toprakRing: document.querySelector('input[name="toprakRing"]')?.checked || false,
+                toprakYuzeysel: document.querySelector('input[name="toprakYuzeysel"]')?.checked || false,
+                toprakTemel: document.querySelector('input[name="toprakTemel"]')?.checked || false,
+                toprakDerin: document.querySelector('input[name="toprakDerin"]')?.checked || false,
+                toprakBelirlenemedi: document.querySelector('input[name="toprakBelirlenemedi"]')?.checked || false,
+                
+                // 7. Koruma Önlemi (4 seçenek)
+                korumaEspotansiyel: document.querySelector('input[name="korumaEspotansiyel"]')?.checked || false,
+                korumaYalitma: document.querySelector('input[name="korumaYalitma"]')?.checked || false,
+                korumaAyirma: document.querySelector('input[name="korumaAyirma"]')?.checked || false,
+                korumaKucukGerilim: document.querySelector('input[name="korumaKucukGerilim"]')?.checked || false,
+                
+                // 8. Kapsamlı Değişiklik (2 seçenek)
+                kapsamliDegisiklik: document.querySelector('input[name="kapsamliDegisiklik"]:checked')?.value === 'true',
+                
+                // 9. Önceki Kontrol Etiketi (2 seçenek)
+                oncekiKontrolEtiketi: document.querySelector('input[name="oncekiKontrolEtiketi"]:checked')?.value === 'true',
+                
+                // 10. Ölçüm Metodu (3 seçenek)
+                olcumCevrimEmpedansi: document.querySelector('input[name="olcumCevrimEmpedansi"]')?.checked || false,
+                olcum3UcluTopraklama: document.querySelector('input[name="olcum3UcluTopraklama"]')?.checked || false,
+                olcumKlamp: document.querySelector('input[name="olcumKlamp"]')?.checked || false,
+                
+                // ===== YAZI ALANLARI (7 adet) =====
+                enerjiSaglayan: document.getElementById('enerjiSaglayan')?.value || 'MEDAŞ',
+                sebekeGerilimi: document.getElementById('sebekeGerilimi')?.value || '380',
+                projeBilgileri: document.getElementById('projeBilgileri')?.value || '',
+                ekipmanKullanimAmaci: document.getElementById('ekipmanKullanimAmaci')?.value || 'FABRİKA',
+                sonKontrolTarihi: document.getElementById('sonKontrolTarihi')?.value || '-',
+                havaDurumu: document.getElementById('havaDurumu')?.value || '',
+                zeminNem: document.getElementById('zeminNem')?.value || '',
+                panoTanimi: document.getElementById('panoTanimi')?.value || '-',
+                
+                // ===== 5.1 ÖLÇÜM TABLOSU =====
+                olcumler: getOlcumTablosuVerileri(),
+                
+                // ===== 5.2 RCD SELEKTİVİTE TABLOSU =====
+                rcdSelektivite: getRcdTablosuVerileri(),
+                
+                // ===== KUSURLAR VE SONUÇ =====
+                kusurlar: Array.from(document.querySelectorAll('input[name="kusur"]:checked')).map(cb => cb.value),
+                kusurAciklama: document.getElementById('kusurAciklama')?.value || '',
+                notlar: document.getElementById('notlar')?.value || '',
+                uygunlukNotu: document.querySelector('input[name="uygunlukNotu"]:checked')?.value || 'Not-1',
+                genelSonuc: document.getElementById('genelSonuc')?.value || 'UYGUN'
+            };
+        }
+
+        // 5.1 Ölçüm Tablosu Verilerini Topla
+        function getOlcumTablosuVerileri() {
+            const rows = document.querySelectorAll('#olcumTableBody tr');
+            return Array.from(rows).map((row, idx) => {
+                const inputs = row.querySelectorAll('input, select');
+                return {
+                    no: idx + 1,
+                    olcumNoktasi: inputs[0]?.value || '',
+                    inA: inputs[1]?.value || '',
+                    tip: inputs[2]?.value || 'C',
+                    ia: row.querySelector('.ia')?.textContent || '-',
+                    zxRx: inputs[3]?.value || '',
+                    zsRa: row.querySelector('.zsra')?.textContent || '-',
+                    ik: row.querySelector('.ik')?.textContent || '-',
+                    rcdIdn: inputs[4]?.value || '',
+                    rcdId: inputs[5]?.value || '',
+                    rcdTd: inputs[6]?.value || '',
+                    sonuc: row.querySelector('.sonuc')?.textContent || '-'
+                };
+            });
+        }
+
+        // 5.2 RCD Selektivite Tablosu Verilerini Topla
+        function getRcdTablosuVerileri() {
+            const rows = document.querySelectorAll('#rcdTableBody tr');
+            return Array.from(rows).map((row, idx) => {
+                const inputs = row.querySelectorAll('input, select');
+                return {
+                    no: idx + 1,
+                    oncekiPanoAdi: inputs[0]?.value || '',
+                    oncekiRcdTipi: inputs[1]?.value || '',
+                    oncekiIn: inputs[2]?.value || '',
+                    oncekiIdn: inputs[3]?.value || '',
+                    oncekiGecikme: inputs[4]?.value || '',
+                    sonPanoAdi: inputs[5]?.value || '',
+                    sonRcdTipi: inputs[6]?.value || '',
+                    sonIdn: inputs[7]?.value || '',
+                    sonTd: inputs[8]?.value || '',
+                    sonuc: row.querySelector('.sonuc')?.textContent || '-'
+                };
+            });
+        }
+
+        async function isEmriListesiYukle() {
+            try {
+                const res = await fetch(`${API_BASE}/is-emirleri`);
+                const data = await res.json();
+                const sel = document.getElementById('isEmriSelect');
+                sel.innerHTML = '<option value="">İş Emri Seçin...</option>';
+                data.forEach(ie => { sel.innerHTML += `<option value="${ie.id}">${ie.isEmriNo} - ${ie.customer?.unvan || ''}</option>`; });
+            } catch (e) { console.error(e); }
+        }
+
+        async function isEmriSecildi() {
+            const id = document.getElementById('isEmriSelect').value;
+            if (!id) return;
+            try {
+                const res = await fetch(`${API_BASE}/is-emirleri/${id}`);
+                const ie = await res.json();
+                document.getElementById('firmaAdi').value = ie.customer?.unvan || '';
+                document.getElementById('firmaAdres').value = ie.customer?.adres || '';
+                const sel = document.getElementById('altGorevSelect');
+                sel.innerHTML = '<option value="">Alt Görev Seçin...</option>';
+                (ie.altGorevler || []).forEach(g => { sel.innerHTML += `<option value="${g.id}">${g.siraNo}. ${g.hizmetAdi}</option>`; });
+            } catch (e) { console.error(e); }
+        }
+
+        function kaydet() { alert('Kaydetme işlemi yapılacak...'); }
+        function gonder() { alert('Gönderme işlemi yapılacak...'); }
+
+        async function wordOlustur() {
+            if (!currentRaporId) currentRaporId = 1;
+            try {
+                const formData = getAllFormData();
+                
+                const res = await fetch(`${API_BASE}/elektrik-topraklama-raporu/${currentRaporId}/word`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ...formData,
+                        tekniker: { 
+                            adSoyad: 'AHMET MAVUŞ', 
+                            unvan: 'Elektriksel Ölçümler Sorumlusu', 
+                            meslek: 'Elektrik Teknikeri', 
+                            diplomaTarihi: '2004-09-15', 
+                            diplomaNo: '0454050027', 
+                            ekipnetNo: 'K19020540' 
+                        }
+                    })
+                });
+                
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Elektrik_Topraklama_${currentRaporId}.docx`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                } else { 
+                    const e = await res.json(); 
+                    alert('Hata: ' + (e.message || 'Word oluşturulamadı')); 
+                }
+            } catch (e) { 
+                alert('Hata: ' + e.message); 
+            }
+        }
+
+        function yeniRapor() { 
+            if (confirm('Yeni rapor oluşturmak istediğinize emin misiniz?')) location.reload(); 
+        }
+    </script>
+</body>
+</html>
