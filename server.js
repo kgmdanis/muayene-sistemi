@@ -6,6 +6,7 @@ const multer = require('multer');
 const auth = require('./auth');
 const reportEngine = require('./reports');
 const emailService = require('./emailService');
+const wordTemplateService = require('./wordTemplateService');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -2178,6 +2179,474 @@ app.get('/api/olcum-cihazlari/kategori/:kategori', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// ============ ELEKTRİK TOPRAKLAMA RAPORU API ============
+
+// Rapor oluştur
+app.post('/api/elektrik-topraklama-raporu', async (req, res) => {
+    try {
+        const { altGorevId, baslangicTarihi, bitisTarihi, ...data } = req.body;
+
+        // Tarih dönüşümü (YYYY-MM-DD -> ISO DateTime)
+        const convertDate = (dateStr) => {
+            if (!dateStr) return null;
+            return new Date(dateStr + 'T00:00:00.000Z');
+        };
+
+        // Rapor numarası oluştur
+        const yil = new Date().getFullYear().toString().slice(-2);
+        const sonRapor = await auth.prisma.elektrikTopraklamaRaporu.findFirst({
+            where: { raporNo: { startsWith: `ETR-${yil}-` } },
+            orderBy: { raporNo: 'desc' }
+        });
+
+        let sira = 1;
+        if (sonRapor) {
+            const sonSira = parseInt(sonRapor.raporNo.split('-')[2]);
+            sira = sonSira + 1;
+        }
+        const raporNo = `ETR-${yil}-${sira.toString().padStart(4, '0')}`;
+
+        const rapor = await auth.prisma.elektrikTopraklamaRaporu.create({
+            data: {
+                raporNo,
+                altGorevId: parseInt(altGorevId),
+                baslangicTarihi: convertDate(baslangicTarihi),
+                bitisTarihi: convertDate(bitisTarihi),
+                ...data
+            },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                },
+                ekipmanBilgi: true,
+                detayliOlcumler: true,
+                rcdSecicilik: true
+            }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Elektrik topraklama raporu oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor getir (ID ile)
+app.get('/api/elektrik-topraklama-raporu/:id', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.elektrikTopraklamaRaporu.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                },
+                topraklamaCihaz: true,
+                devreCihaz: true,
+                rcdCihaz: true,
+                ekipmanBilgi: true,
+                detayliOlcumler: { orderBy: { siraNo: 'asc' } },
+                rcdSecicilik: { orderBy: { siraNo: 'asc' } }
+            }
+        });
+
+        if (!rapor) {
+            return res.status(404).json({ error: 'Rapor bulunamadı' });
+        }
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Elektrik topraklama raporu getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Alt görev için rapor getir
+app.get('/api/elektrik-topraklama-raporu/alt-gorev/:altGorevId', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.elektrikTopraklamaRaporu.findFirst({
+            where: { altGorevId: parseInt(req.params.altGorevId) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                },
+                topraklamaCihaz: true,
+                devreCihaz: true,
+                rcdCihaz: true,
+                ekipmanBilgi: true,
+                detayliOlcumler: { orderBy: { siraNo: 'asc' } },
+                rcdSecicilik: { orderBy: { siraNo: 'asc' } }
+            }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Elektrik topraklama raporu getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor güncelle
+app.put('/api/elektrik-topraklama-raporu/:id', async (req, res) => {
+    try {
+        const { ekipmanBilgi, detayliOlcumler, rcdSecicilik, baslangicTarihi, bitisTarihi, ...raporData } = req.body;
+
+        // Tarih dönüşümü
+        const convertDate = (dateStr) => {
+            if (!dateStr) return null;
+            if (dateStr instanceof Date) return dateStr;
+            if (dateStr.includes('T')) return new Date(dateStr); // Zaten ISO format
+            return new Date(dateStr + 'T00:00:00.000Z');
+        };
+
+        // Ana raporu güncelle
+        const rapor = await auth.prisma.elektrikTopraklamaRaporu.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                ...raporData,
+                baslangicTarihi: convertDate(baslangicTarihi),
+                bitisTarihi: convertDate(bitisTarihi)
+            }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Elektrik topraklama raporu güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Ekipman bilgisi kaydet/güncelle
+app.post('/api/elektrik-topraklama-raporu/:raporId/ekipman-bilgi', async (req, res) => {
+    try {
+        const raporId = parseInt(req.params.raporId);
+
+        const ekipmanBilgi = await auth.prisma.topraklamaEkipmanBilgi.upsert({
+            where: { raporId },
+            update: req.body,
+            create: {
+                raporId,
+                ...req.body
+            }
+        });
+
+        res.json(ekipmanBilgi);
+    } catch (error) {
+        console.error('Ekipman bilgisi kaydetme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Detaylı ölçüm ekle
+app.post('/api/elektrik-topraklama-raporu/:raporId/olcum', async (req, res) => {
+    try {
+        const raporId = parseInt(req.params.raporId);
+        const { anmaAkimi, sigortaTipi, zx, ...data } = req.body;
+
+        // Formül hesaplamaları
+        let ia = null, zs = null, ra = null, ik = null;
+
+        if (anmaAkimi && sigortaTipi) {
+            const In = parseFloat(anmaAkimi);
+            // Ia hesapla: B=In×5, C=In×10, D=In×20
+            if (sigortaTipi === 'B') ia = In * 5;
+            else if (sigortaTipi === 'C') ia = In * 10;
+            else if (sigortaTipi === 'D') ia = In * 20;
+
+            if (ia) {
+                // Zs = 230 / Ia (TN sistemi için)
+                zs = 230 / ia;
+                // RA = 50 / Ia (TT sistemi için)
+                ra = 50 / ia;
+            }
+        }
+
+        if (zx) {
+            // Ik = 230 / Zx
+            ik = 230 / parseFloat(zx);
+        }
+
+        // Sıra no hesapla
+        const sonOlcum = await auth.prisma.topraklamaDetayliOlcum.findFirst({
+            where: { raporId },
+            orderBy: { siraNo: 'desc' }
+        });
+        const siraNo = sonOlcum ? sonOlcum.siraNo + 1 : 1;
+
+        // Sonuç hesapla
+        let sonuc = null;
+        if (zx && zs) {
+            sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
+        }
+
+        // Sadece geçerli alanları al
+        const { tabloAdi, panoAdi, salterAdi, rcdVarMi, rcdIAn, rcdSure, aciklama } = data;
+
+        const olcum = await auth.prisma.topraklamaDetayliOlcum.create({
+            data: {
+                raporId,
+                siraNo,
+                anmaAkimi: anmaAkimi ? parseFloat(anmaAkimi) : null,
+                sigortaTipi,
+                ia,
+                zs,
+                ra,
+                zx: zx ? parseFloat(zx) : null,
+                ik,
+                sonuc,
+                tabloAdi: tabloAdi || null,
+                panoAdi: panoAdi || null,
+                salterAdi: salterAdi || null,
+                rcdVarMi: rcdVarMi === true || rcdVarMi === 'true',
+                rcdIAn: rcdIAn ? parseFloat(rcdIAn) : null,
+                rcdSure: rcdSure ? parseFloat(rcdSure) : null,
+                aciklama: aciklama || null
+            }
+        });
+
+        res.json(olcum);
+    } catch (error) {
+        console.error('Detaylı ölçüm ekleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Detaylı ölçüm güncelle
+app.put('/api/elektrik-topraklama-olcum/:id', async (req, res) => {
+    try {
+        const { anmaAkimi, sigortaTipi, zx, ...data } = req.body;
+
+        // Formül hesaplamaları
+        let ia = null, zs = null, ra = null, ik = null;
+
+        if (anmaAkimi && sigortaTipi) {
+            const In = parseFloat(anmaAkimi);
+            if (sigortaTipi === 'B') ia = In * 5;
+            else if (sigortaTipi === 'C') ia = In * 10;
+            else if (sigortaTipi === 'D') ia = In * 20;
+
+            if (ia) {
+                zs = 230 / ia;
+                ra = 50 / ia;
+            }
+        }
+
+        if (zx) {
+            ik = 230 / parseFloat(zx);
+        }
+
+        let sonuc = null;
+        if (zx && zs) {
+            sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
+        }
+
+        // Sadece geçerli alanları al
+        const { tabloAdi, panoAdi, salterAdi, rcdVarMi, rcdIAn, rcdSure, aciklama } = data;
+
+        const olcum = await auth.prisma.topraklamaDetayliOlcum.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                anmaAkimi: anmaAkimi ? parseFloat(anmaAkimi) : null,
+                sigortaTipi,
+                ia,
+                zs,
+                ra,
+                zx: zx ? parseFloat(zx) : null,
+                ik,
+                sonuc,
+                tabloAdi: tabloAdi || null,
+                panoAdi: panoAdi || null,
+                salterAdi: salterAdi || null,
+                rcdVarMi: rcdVarMi === true || rcdVarMi === 'true',
+                rcdIAn: rcdIAn ? parseFloat(rcdIAn) : null,
+                rcdSure: rcdSure ? parseFloat(rcdSure) : null,
+                aciklama: aciklama || null
+            }
+        });
+
+        res.json(olcum);
+    } catch (error) {
+        console.error('Detaylı ölçüm güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Detaylı ölçüm sil
+app.delete('/api/elektrik-topraklama-olcum/:id', async (req, res) => {
+    try {
+        await auth.prisma.topraklamaDetayliOlcum.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Detaylı ölçüm silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// RCD seçicilik ekle
+app.post('/api/elektrik-topraklama-raporu/:raporId/rcd-secicilik', async (req, res) => {
+    try {
+        const raporId = parseInt(req.params.raporId);
+
+        const sonRcd = await auth.prisma.rCDSecicilik.findFirst({
+            where: { raporId },
+            orderBy: { siraNo: 'desc' }
+        });
+        const siraNo = sonRcd ? sonRcd.siraNo + 1 : 1;
+
+        const rcd = await auth.prisma.rCDSecicilik.create({
+            data: {
+                raporId,
+                siraNo,
+                ...req.body
+            }
+        });
+
+        res.json(rcd);
+    } catch (error) {
+        console.error('RCD seçicilik ekleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// RCD seçicilik sil
+app.delete('/api/rcd-secicilik/:id', async (req, res) => {
+    try {
+        await auth.prisma.rCDSecicilik.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('RCD seçicilik silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor sil
+app.delete('/api/elektrik-topraklama-raporu/:id', async (req, res) => {
+    try {
+        await auth.prisma.elektrikTopraklamaRaporu.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Elektrik topraklama raporu silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ WORD ŞABLON API ============
+
+// Şablonları listele
+app.get('/api/word-templates', (req, res) => {
+    try {
+        const templates = wordTemplateService.listTemplates();
+        res.json(templates);
+    } catch (error) {
+        console.error('Şablon listeleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Şablon placeholder'larını analiz et
+app.get('/api/word-templates/:filename/analyze', (req, res) => {
+    try {
+        const analysis = wordTemplateService.analyzeTemplate(req.params.filename);
+        res.json(analysis);
+    } catch (error) {
+        console.error('Şablon analiz hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Elektrik Topraklama Raporu için Word dosyası oluştur
+app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
+    try {
+        const { uygunlukNotu, kusurlar, kusurAciklama, notlar, tekniker } = req.body;
+
+        // Raporu getir
+        const rapor = await auth.prisma.elektrikTopraklamaRaporu.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                },
+                topraklamaCihaz: true,
+                devreCihaz: true,
+                rcdCihaz: true,
+                ekipmanBilgi: true,
+                detayliOlcumler: { orderBy: { siraNo: 'asc' } },
+                rcdSecicilik: { orderBy: { siraNo: 'asc' } }
+            }
+        });
+
+        if (!rapor) {
+            return res.status(404).json({ error: 'Rapor bulunamadı' });
+        }
+
+        // Şablon tabanlı Word oluştur (find/replace)
+        const elektrikWordService = require('./services/elektrikTopraklamaWordService');
+
+        const isEmri = rapor.altGorev?.isEmri;
+        const olcumler = rapor.detayliOlcumler || [];
+
+        const options = {
+            uygunlukNotu,
+            kusurlar,
+            kusurAciklama,
+            notlar,
+            tekniker: tekniker || {}
+        };
+
+        const wordBuffer = await elektrikWordService.generateElektrikTopraklamaWord(
+            rapor,
+            isEmri,
+            olcumler,
+            options
+        );
+
+        // Dosya adı
+        const filename = `${rapor.raporNo || 'Rapor'}_${Date.now()}.docx`;
+
+        // Response olarak Word dosyasını gönder
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(wordBuffer);
+
+    } catch (error) {
+        console.error('Word dosyası oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Oluşturulan raporları indirme
+app.use('/output', express.static(path.join(__dirname, 'output')));
 
 // ============ STATIK SAYFALAR ============
 

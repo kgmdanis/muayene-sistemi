@@ -254,29 +254,30 @@ model IsEmri {
 }
 
 model AltGorev {
-  id                 Int               @id @default(autoincrement())
-  isEmriId           Int
-  hizmetId           Int
-  hizmetAdi          String
-  kategori           String
-  siraNo             Int               @default(1)
-  ekipmanAdi         String?
-  ekipmanSeriNo      String?
-  ekipmanKonum       String?
-  ekipmanKapasite    String?
-  ekipmanPlaka       String?
-  durum              String            @default("BEKLIYOR")
-  personelId         Int?
-  personelAdi        String?
-  tamamlanmaTarihi   DateTime?
-  raporNo            String?
-  notlar             String?
-  sahaFormu          String?
-  createdAt          DateTime          @default(now())
-  hizmet             Hizmet            @relation(fields: [hizmetId], references: [id])
-  isEmri             IsEmri            @relation(fields: [isEmriId], references: [id], onDelete: Cascade)
-  personel           Personel?         @relation(fields: [personelId], references: [id])
-  topraklamaOlcumler TopraklamaOlcum[]
+  id                       Int                        @id @default(autoincrement())
+  isEmriId                 Int
+  hizmetId                 Int
+  hizmetAdi                String
+  kategori                 String
+  siraNo                   Int                        @default(1)
+  ekipmanAdi               String?
+  ekipmanSeriNo            String?
+  ekipmanKonum             String?
+  ekipmanKapasite          String?
+  ekipmanPlaka             String?
+  durum                    String                     @default("BEKLIYOR")
+  personelId               Int?
+  personelAdi              String?
+  tamamlanmaTarihi         DateTime?
+  raporNo                  String?
+  notlar                   String?
+  sahaFormu                String?
+  createdAt                DateTime                   @default(now())
+  hizmet                   Hizmet                     @relation(fields: [hizmetId], references: [id])
+  isEmri                   IsEmri                     @relation(fields: [isEmriId], references: [id], onDelete: Cascade)
+  personel                 Personel?                  @relation(fields: [personelId], references: [id])
+  topraklamaOlcumler       TopraklamaOlcum[]
+  elektrikTopraklamaRaporu ElektrikTopraklamaRaporu[]
 }
 
 model IsEmriFirmaBilgi {
@@ -298,21 +299,24 @@ model IsEmriFirmaBilgi {
 }
 
 model OlcumCihazi {
-  id                    Int               @id @default(autoincrement())
+  id                    Int                        @id @default(autoincrement())
   marka                 String?
   model                 String?
   seriNo                String?
   olcumAraligi          String?
   hassasiyet            String?
   kategori              String?
-  isActive              Boolean           @default(true)
-  createdAt             DateTime          @default(now())
-  updatedAt             DateTime          @updatedAt
+  isActive              Boolean                    @default(true)
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
   cihazAdi              String
   kalibrasyonNo         String?
   kalibrasyonTarihi     DateTime?
   kalibrasyonGecerlilik DateTime?
   topraklamaOlcumler    TopraklamaOlcum[]
+  topraklamaRaporlari   ElektrikTopraklamaRaporu[] @relation("TopraklamaCihaz")
+  devreRaporlari        ElektrikTopraklamaRaporu[] @relation("DevreCihaz")
+  rcdRaporlari          ElektrikTopraklamaRaporu[] @relation("RCDCihaz")
 }
 
 model TopraklamaOlcum {
@@ -329,6 +333,157 @@ model TopraklamaOlcum {
   createdAt    DateTime     @default(now())
   altGorev     AltGorev     @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
   cihaz        OlcumCihazi? @relation(fields: [cihazId], references: [id])
+}
+
+// =============================================
+// ELEKTRİK TOPRAKLAMA RAPORU MODELLERİ
+// FR7.2.36 Elektrik Topraklama Ölçüm Raporu
+// =============================================
+
+model ElektrikTopraklamaRaporu {
+  id                    Int                        @id @default(autoincrement())
+  raporNo               String                     @unique
+  altGorevId            Int
+
+  // Firma Bilgileri - otomatik gelecek (Customer'dan)
+  sgkSicilNo            String?
+  isgKatipNo            String?
+
+  // Tarihler - sahada seçilecek
+  baslangicTarihi       DateTime?
+  bitisTarihi           DateTime?
+
+  // Ortam Koşulları
+  ortamSicaklik         String?
+  ortamNem              String?
+
+  // Sistem Tipi (TN veya TT)
+  sistemTipi            String                     @default("TN")
+
+  // Ölçüm Cihazları (sabit)
+  topraklamaCihazId     Int?
+  devreCihazId          Int?
+  rcdCihazId            Int?
+
+  // Genel Sonuç
+  genelSonuc            String?
+  aciklama              String?
+
+  // Meta
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+
+  // İlişkiler
+  altGorev              AltGorev                   @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
+  topraklamaCihaz       OlcumCihazi?               @relation("TopraklamaCihaz", fields: [topraklamaCihazId], references: [id])
+  devreCihaz            OlcumCihazi?               @relation("DevreCihaz", fields: [devreCihazId], references: [id])
+  rcdCihaz              OlcumCihazi?               @relation("RCDCihaz", fields: [rcdCihazId], references: [id])
+  ekipmanBilgi          TopraklamaEkipmanBilgi?
+  detayliOlcumler       TopraklamaDetayliOlcum[]
+  rcdSecicilik          RCDSecicilik[]
+}
+
+// Ekipman Bilgileri - Checkbox alanları
+model TopraklamaEkipmanBilgi {
+  id                    Int                        @id @default(autoincrement())
+  raporId               Int                        @unique
+
+  // Sigortanın Koruduğu Devre Türü (çoklu seçim)
+  devreMotor            Boolean                    @default(false)
+  devreAydinlatma       Boolean                    @default(false)
+  devrePriz             Boolean                    @default(false)
+  devreDiger            Boolean                    @default(false)
+  devreDigerAciklama    String?
+
+  // Sigorta Tipi (çoklu seçim)
+  sigortaTipB           Boolean                    @default(false)
+  sigortaTipC           Boolean                    @default(false)
+  sigortaTipD           Boolean                    @default(false)
+
+  // Güç Aralığı (çoklu seçim)
+  guc05_1kW             Boolean                    @default(false)
+  guc1_5kW              Boolean                    @default(false)
+  guc5_10kW             Boolean                    @default(false)
+  guc10_20kW            Boolean                    @default(false)
+  guc20_50kW            Boolean                    @default(false)
+  guc50kWUstu           Boolean                    @default(false)
+
+  // RCD Durumu
+  rcdVar                Boolean                    @default(false)
+  rcdYok                Boolean                    @default(false)
+
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+
+  rapor                 ElektrikTopraklamaRaporu   @relation(fields: [raporId], references: [id], onDelete: Cascade)
+}
+
+// Detaylı Ölçüm Tablosu - her satır bir ölçüm
+model TopraklamaDetayliOlcum {
+  id                    Int                        @id @default(autoincrement())
+  raporId               Int
+  siraNo                Int                        @default(1)
+
+  // Konum Bilgileri
+  tabloAdi              String?
+  panoAdi               String?
+  salterAdi             String?
+
+  // Sigorta Bilgileri
+  anmaAkimi             Decimal?                   @db.Decimal(10, 2)  // In (A)
+  sigortaTipi           String?                    // B, C veya D
+
+  // Hesaplanan Değerler (Formüller)
+  // Ia = Sigorta uygunsuzluk sınırı akımı
+  // B tipi: In × 5, C tipi: In × 10, D tipi: In × 20
+  ia                    Decimal?                   @db.Decimal(10, 2)
+
+  // Zs = Sınır hat empedansı (TN sistemi için) = 230 / Ia
+  zs                    Decimal?                   @db.Decimal(10, 4)
+
+  // RA = Sınır toprak direnci (TT sistemi için) = 50 / Ia
+  ra                    Decimal?                   @db.Decimal(10, 4)
+
+  // Ölçülen Değer
+  zx                    Decimal?                   @db.Decimal(10, 4)  // Ölçülen empedans/direnç (Ω)
+
+  // Ik = Hesaplanan arıza akımı = 230 / Zx
+  ik                    Decimal?                   @db.Decimal(10, 2)
+
+  // RCD Bilgileri
+  rcdVarMi              Boolean                    @default(false)
+  rcdIAn                Decimal?                   @db.Decimal(10, 2)  // RCD anma kaçak akımı (mA)
+  rcdSure               Decimal?                   @db.Decimal(10, 2)  // RCD açma süresi (ms)
+
+  // Sonuç
+  sonuc                 String?                    // UYGUN veya UYGUN_DEGIL
+  aciklama              String?
+
+  createdAt             DateTime                   @default(now())
+
+  rapor                 ElektrikTopraklamaRaporu   @relation(fields: [raporId], references: [id], onDelete: Cascade)
+}
+
+// RCD Seçicilik Tablosu
+model RCDSecicilik {
+  id                    Int                        @id @default(autoincrement())
+  raporId               Int
+  siraNo                Int                        @default(1)
+
+  // RCD Bilgileri
+  rcdKonumu             String?                    // Ana Pano, Tali Pano vs
+  rcdTipi               String?                    // A, AC, B vs
+  rcdIAn                Decimal?                   @db.Decimal(10, 2)  // Anma kaçak akımı (mA)
+  rcdAcmaSuresi         Decimal?                   @db.Decimal(10, 2)  // ms
+
+  // Seçicilik Durumu
+  ustRcdId              Int?                       // Üst seviye RCD referansı
+  secicilikSaglandi     Boolean                    @default(false)
+
+  aciklama              String?
+  createdAt             DateTime                   @default(now())
+
+  rapor                 ElektrikTopraklamaRaporu   @relation(fields: [raporId], references: [id], onDelete: Cascade)
 }
 
 enum TeklifDurum {
