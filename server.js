@@ -2321,6 +2321,12 @@ app.post('/api/elektrik-topraklama-raporu', async (req, res) => {
             }
         });
 
+        // Alt görevin raporNo alanını güncelle
+        await auth.prisma.altGorev.update({
+            where: { id: parseInt(altGorevId) },
+            data: { raporNo }
+        });
+
         res.json(rapor);
     } catch (error) {
         console.error('Elektrik topraklama raporu oluşturma hatası:', error);
@@ -2715,6 +2721,12 @@ app.post('/api/kompresor-raporu', async (req, res) => {
                     }
                 }
             }
+        });
+
+        // Alt görevin raporNo alanını güncelle
+        await auth.prisma.altGorev.update({
+            where: { id: parseInt(altGorevId) },
+            data: { raporNo }
         });
 
         res.json(rapor);
