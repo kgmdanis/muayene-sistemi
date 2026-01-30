@@ -108,6 +108,7 @@ function renderSidebar() {
         { icon: '👥', text: 'Müşteriler', page: 'musteriler' },
         { icon: '📄', text: 'Teklifler', page: 'teklifler' },
         { icon: '📋', text: 'İş Emirleri', page: 'is-emirleri' },
+        { icon: '📊', text: 'Raporlar', page: 'raporlar' },
         { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' },
         { icon: '👤', text: 'Profilim', page: 'profil' },
         { icon: '⚙️', text: 'Ayarlar', page: 'ayarlar' }
@@ -116,6 +117,7 @@ function renderSidebar() {
     // Tekniker menü öğeleri
     const teknikerMenuItems = [
         { icon: '✅', text: 'Görevlerim', page: 'gorevlerim' },
+        { icon: '📊', text: 'Raporlar', page: 'raporlar' },
         { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' },
         { icon: '👤', text: 'Profilim', page: 'profil' }
     ];
@@ -377,6 +379,8 @@ function navigateToPage(page) {
         loadSertifikaSablonlari();
     } else if (page === 'gorevlerim') {
         loadGorevlerim();
+    } else if (page === 'raporlar') {
+        raporlariYukle();
     } else if (page === 'profil') {
         loadProfilBilgileri();
     }
@@ -3377,6 +3381,15 @@ async function renderIsEmriDetay(id) {
                 </div>
             </div>
 
+            <!-- İSG-KATİP Sözleşme ID -->
+            <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+                <label style="font-weight: 600; margin-bottom: 8px; display: block;">📋 İSG-KATİP Sözleşme ID</label>
+                <input type="text" id="isgKatipIdInput" class="form-input" style="max-width: 400px;"
+                    placeholder="İSG-KATİP Sözleşme ID giriniz..."
+                    value="${isEmri.firmaBilgi?.isgKatipId || ''}"
+                    onblur="saveIsgKatipId(${isEmri.id}, this.value)">
+            </div>
+
             <!-- Alt Görevler Tablosu -->
             <div class="table-container">
                 <div class="table-header">
@@ -3457,6 +3470,26 @@ async function isEmriDurumDegistir(id, durum) {
     }
 }
 
+// İSG-KATİP Sözleşme ID Kaydet
+async function saveIsgKatipId(isEmriId, value) {
+    try {
+        const response = await authenticatedFetch(`/api/is-emirleri/${isEmriId}/firma-bilgi`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ isgKatipId: value.trim() })
+        });
+
+        if (response.ok) {
+            showToast('İSG-KATİP Sözleşme ID kaydedildi', 'success');
+        } else {
+            const error = await response.json();
+            showToast(error.error || 'Kaydetme hatası', 'error');
+        }
+    } catch (error) {
+        showToast('Hata: ' + error.message, 'error');
+    }
+}
+
 // ============ ÖLÇÜM ŞABLON SİSTEMİ ============
 
 // Ölçüm Yap - Şablon seçme modalını aç
@@ -3482,6 +3515,10 @@ async function olcumYap(altGorevId, hizmetAdi) {
                                 <button class="btn btn-outline" onclick="olcumFormuAc(${altGorevId}, 'elektrik-topraklama')" style="text-align: left; padding: 15px; border: 2px solid #ddd; background: white; cursor: pointer;">
                                     <strong>⚡ Elektrik Topraklama Ölçümü</strong><br>
                                     <small style="color: #666;">FR7.2.36 - Topraklama direnci, hat empedansı, RCD testi</small>
+                                </button>
+                                <button class="btn btn-outline" onclick="olcumFormuAc(${altGorevId}, 'kompresor')" style="text-align: left; padding: 15px; border: 2px solid #ddd; background: white; cursor: pointer;">
+                                    <strong>🔧 Kompresör Muayene</strong><br>
+                                    <small style="color: #666;">FR7.2.21 - Kompresör muayene ve ölçüm raporu</small>
                                 </button>
                                 <button class="btn btn-outline" style="text-align: left; padding: 15px; border: 2px solid #eee; background: #f9f9f9; color: #999; cursor: not-allowed;" disabled>
                                     <strong>🌩️ Yıldırımdan Korunma</strong><br>
@@ -3530,8 +3567,9 @@ function olcumFormuAc(altGorevId, formTipi) {
     closeModal();
 
     if (formTipi === 'elektrik-topraklama') {
-        // Yeni sekmede aç ve altGorevId'yi parametre olarak gönder
-        window.open(`/forms/elektrik-topraklama-form.html?altGorevId=${altGorevId}`, '_blank');
+        window.open(`/forms/elektrik-topraklama-form-v2.html?altGorevId=${altGorevId}`, '_blank');
+    } else if (formTipi === 'kompresor') {
+        window.open(`/forms/kompresor-form.html?altGorevId=${altGorevId}`, '_blank');
     } else {
         showToast('Bu ölçüm formu henüz hazır değil', 'warning');
     }
@@ -5238,6 +5276,210 @@ async function bildirimAyarlariKaydet() {
         showToast(error.message || 'Ayarlar güncellenemedi', 'error');
     }
 }
+
+// ===================== RAPORLAR MODÜLÜ =====================
+
+let tumRaporlar = [];
+let filtrelenmisRaporlar = [];
+
+// Raporları yükle
+async function raporlariYukle() {
+    try {
+        const userRole = localStorage.getItem('userRole') || 'admin';
+        const userKategori = localStorage.getItem('userKategori') || '';
+
+        // API'den raporları getir
+        let url = `${API_BASE}/raporlar?role=${userRole}`;
+        if (userRole === 'tekniker' && userKategori) {
+            url += `&kategori=${encodeURIComponent(userKategori)}`;
+        }
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Raporlar yüklenemedi');
+
+        tumRaporlar = await res.json();
+        filtrelenmisRaporlar = [...tumRaporlar];
+
+        // Filtreleri uygula
+        raporFiltrele();
+    } catch (error) {
+        console.error('Rapor yükleme hatası:', error);
+        showToast('Raporlar yüklenirken hata oluştu', 'error');
+        raporTablosuGuncelle([]);
+    }
+}
+
+// Rapor ara
+function raporAra() {
+    raporFiltrele();
+}
+
+// Rapor filtrele
+function raporFiltrele() {
+    const aramaMetni = document.getElementById('rapor-arama')?.value?.toLowerCase() || '';
+    const tipFiltre = document.getElementById('rapor-tipi-filtre')?.value || '';
+    const durumFiltre = document.getElementById('rapor-durum-filtre')?.value || '';
+
+    filtrelenmisRaporlar = tumRaporlar.filter(rapor => {
+        // Arama filtresi
+        const aramaUygun = !aramaMetni ||
+            rapor.raporNo?.toLowerCase().includes(aramaMetni) ||
+            rapor.firmaAdi?.toLowerCase().includes(aramaMetni) ||
+            rapor.isEmriNo?.toLowerCase().includes(aramaMetni);
+
+        // Tip filtresi
+        const tipUygun = !tipFiltre || rapor.raporTipi?.toLowerCase().includes(tipFiltre.replace('-', ' '));
+
+        // Durum filtresi
+        const durumUygun = !durumFiltre || rapor.durum === durumFiltre;
+
+        return aramaUygun && tipUygun && durumUygun;
+    });
+
+    raporTablosuGuncelle(filtrelenmisRaporlar);
+}
+
+// Rapor tablosunu güncelle
+function raporTablosuGuncelle(raporlar) {
+    const tbody = document.getElementById('rapor-table-body');
+    if (!tbody) return;
+
+    if (raporlar.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" style="padding: 60px; text-align: center; color: #666;">
+                    <div style="font-size: 64px; margin-bottom: 15px;">📋</div>
+                    <h3 style="margin: 0 0 10px 0; color: #333;">Henüz rapor bulunmuyor</h3>
+                    <p style="margin: 0; color: #888;">İş emirlerinden ölçüm yaparak rapor oluşturabilirsiniz.</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = raporlar.map(rapor => {
+        const tarih = rapor.tarih ? new Date(rapor.tarih).toLocaleDateString('tr-TR') : '-';
+        const sonucClass = rapor.sonuc === 'UYGUN' ? 'color: #27ae60; background: #e8f5e9;' :
+            rapor.sonuc === 'UYGUN DEĞİL' ? 'color: #e74c3c; background: #ffebee;' : 'color: #666;';
+        const durumClass = rapor.durum === 'Tamamlandı' ? 'background: #27ae60;' : 'background: #f39c12;';
+        const tipIcon = (rapor.raporTipi || '').toLowerCase().includes('kompres') ? '🔧' : '⚡';
+        const tipEscaped = (rapor.raporTipi || '').replace(/'/g, "\\'");
+
+        return `
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px; font-weight: 600; color: #1a5d3a;">${rapor.raporNo || '-'}</td>
+                <td style="padding: 15px;">
+                    <span style="display: inline-flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 18px;">${tipIcon}</span>
+                        ${rapor.raporTipi || '-'}
+                    </span>
+                </td>
+                <td style="padding: 15px;">${rapor.firmaAdi || '-'}</td>
+                <td style="padding: 15px;">${tarih}</td>
+                <td style="padding: 15px; text-align: center;">
+                    <span style="padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; ${sonucClass}">
+                        ${rapor.sonuc || '-'}
+                    </span>
+                </td>
+                <td style="padding: 15px; text-align: center;">
+                    <span style="padding: 5px 12px; border-radius: 20px; font-size: 12px; color: white; ${durumClass}">
+                        ${rapor.durum || '-'}
+                    </span>
+                </td>
+                <td style="padding: 15px; text-align: center;">
+                    <div style="display: flex; gap: 8px; justify-content: center;">
+                        <button onclick="raporDuzenle(${rapor.id}, ${rapor.altGorevId}, '${tipEscaped}')" class="btn btn-sm" style="padding: 8px 12px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;" title="Düzenle">
+                            ✏️ Düzenle
+                        </button>
+                        <button onclick="raporWordIndir(${rapor.id}, '${tipEscaped}')" class="btn btn-sm" style="padding: 8px 12px; background: #1a5d3a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;" title="Word İndir">
+                            📥 Word
+                        </button>
+                        <button onclick="raporSil(${rapor.id}, '${tipEscaped}')" class="btn btn-sm" style="padding: 8px 12px; background: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;" title="Sil">
+                            🗑️
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Rapor düzenle
+function raporDuzenle(raporId, altGorevId, raporTipi) {
+    const tip = (raporTipi || '').toLowerCase();
+    if (tip.includes('kompres')) {
+        window.open(`/forms/kompresor-form.html?altGorevId=${altGorevId}`, '_blank');
+    } else {
+        window.open(`/forms/elektrik-topraklama-form-v2.html?altGorevId=${altGorevId}`, '_blank');
+    }
+}
+
+// Rapor Word indir
+async function raporWordIndir(raporId, raporTipi) {
+    try {
+        showToast('Word dosyası hazırlanıyor...', 'info');
+
+        const isKompresor = (raporTipi || '').toLowerCase().includes('kompres');
+        const apiPath = isKompresor ? 'kompresor-raporu' : 'elektrik-topraklama-raporu';
+        const res = await fetch(`${API_BASE}/${apiPath}/${raporId}/word`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                tekniker: {
+                    adSoyad: 'AHMET MAVUŞ',
+                    unvan: isKompresor ? 'Mekanik Kontrol Sorumlusu' : 'Elektriksel Ölçümler Sorumlusu',
+                    meslek: isKompresor ? 'Makine Teknikeri' : 'Elektrik Teknikeri',
+                    diplomaTarihi: '2004-09-15',
+                    diplomaNo: '0454050027',
+                    ekipnetNo: 'K19020540'
+                }
+            })
+        });
+
+        if (res.ok) {
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const dosyaAdi = isKompresor ? 'Kompresor_Muayene_Raporu' : 'Elektrik_Topraklama_Raporu';
+            a.download = `${dosyaAdi}_${raporId}.docx`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Word dosyası indirildi!', 'success');
+        } else {
+            const err = await res.json();
+            showToast('Hata: ' + (err.error || 'Word oluşturulamadı'), 'error');
+        }
+    } catch (error) {
+        console.error('Word indirme hatası:', error);
+        showToast('Word indirme hatası: ' + error.message, 'error');
+    }
+}
+
+// Rapor sil
+async function raporSil(raporId, raporTipi) {
+    if (!confirm('Bu raporu silmek istediğinize emin misiniz?\nBu işlem geri alınamaz!')) return;
+
+    try {
+        const apiPath = (raporTipi || '').toLowerCase().includes('kompres') ? 'kompresor-raporu' : 'elektrik-topraklama-raporu';
+        const res = await fetch(`${API_BASE}/${apiPath}/${raporId}`, {
+            method: 'DELETE'
+        });
+
+        if (res.ok) {
+            showToast('Rapor silindi', 'success');
+            raporlariYukle();
+        } else {
+            const err = await res.json();
+            showToast('Silme hatası: ' + (err.error || 'Bilinmeyen hata'), 'error');
+        }
+    } catch (error) {
+        console.error('Rapor silme hatası:', error);
+        showToast('Silme hatası: ' + error.message, 'error');
+    }
+}
+
+// ===================== RAPORLAR MODÜLÜ SONU =====================
 
 // ========================================
 // ÇIKIŞ FONKSİYONU

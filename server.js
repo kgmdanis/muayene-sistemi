@@ -1465,7 +1465,8 @@ app.get('/api/is-emirleri/:id', auth.authMiddleware(), async (req, res) => {
                 altGorevler: {
                     include: { personel: true, hizmet: true },
                     orderBy: [{ kategori: 'asc' }, { siraNo: 'asc' }]
-                }
+                },
+                firmaBilgi: true
             }
         });
 
@@ -2187,18 +2188,21 @@ app.get('/api/raporlar', async (req, res) => {
     try {
         const { kategori, role } = req.query;
 
-        // Elektrik topraklama raporlarını getir
         const where = {};
+        const whereKompresor = {};
 
         // Tekniker ise sadece kendi kategorisindeki raporları göster
         if (role === 'tekniker' && kategori) {
-            // Kategori filtrelemesi için alt görev hizmet adına bak
             where.altGorev = {
+                hizmetAdi: { contains: kategori, mode: 'insensitive' }
+            };
+            whereKompresor.altGorev = {
                 hizmetAdi: { contains: kategori, mode: 'insensitive' }
             };
         }
 
-        const raporlar = await auth.prisma.elektrikTopraklamaRaporu.findMany({
+        // Elektrik topraklama raporları
+        const elektrikRaporlar = await auth.prisma.elektrikTopraklamaRaporu.findMany({
             where,
             include: {
                 altGorev: {
@@ -2212,8 +2216,23 @@ app.get('/api/raporlar', async (req, res) => {
             orderBy: { createdAt: 'desc' }
         });
 
-        // Rapor listesini formatla
-        const formattedRaporlar = raporlar.map(r => ({
+        // Kompresör raporları
+        const kompresorRaporlar = await auth.prisma.kompresorRaporu.findMany({
+            where: whereKompresor,
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        // Rapor listelerini formatla ve birleştir
+        const formattedElektrik = elektrikRaporlar.map(r => ({
             id: r.id,
             raporNo: r.raporNo,
             raporTipi: 'Elektrik Topraklama',
@@ -2226,6 +2245,23 @@ app.get('/api/raporlar', async (req, res) => {
             altGorevId: r.altGorevId,
             isEmriNo: r.altGorev?.isEmri?.isEmriNo || '-'
         }));
+
+        const formattedKompresor = kompresorRaporlar.map(r => ({
+            id: r.id,
+            raporNo: r.raporNo,
+            raporTipi: 'Kompresör',
+            firmaAdi: r.altGorev?.isEmri?.customer?.unvan || '-',
+            tarih: r.createdAt,
+            baslangicTarihi: r.baslangicTarihi,
+            bitisTarihi: r.bitisTarihi,
+            sonuc: r.genelSonuc || '-',
+            durum: r.genelSonuc ? 'Tamamlandı' : 'Taslak',
+            altGorevId: r.altGorevId,
+            isEmriNo: r.altGorev?.isEmri?.isEmriNo || '-'
+        }));
+
+        const formattedRaporlar = [...formattedElektrik, ...formattedKompresor]
+            .sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
 
         res.json(formattedRaporlar);
     } catch (error) {
@@ -2680,6 +2716,32 @@ app.post('/api/kompresor-raporu', async (req, res) => {
     }
 });
 
+// Alt görev için kompresör raporu getir (`:id` den ÖNCE tanımlanmalı)
+app.get('/api/kompresor-raporu/alt-gorev/:altGorevId', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.kompresorRaporu.findFirst({
+            where: { altGorevId: parseInt(req.params.altGorevId) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Kompresör raporu getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Kompresör raporu getir (ID ile)
 app.get('/api/kompresor-raporu/:id', async (req, res) => {
     try {
@@ -2702,32 +2764,6 @@ app.get('/api/kompresor-raporu/:id', async (req, res) => {
         if (!rapor) {
             return res.status(404).json({ error: 'Rapor bulunamadı' });
         }
-
-        res.json(rapor);
-    } catch (error) {
-        console.error('Kompresör raporu getirme hatası:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Alt görev için kompresör raporu getir
-app.get('/api/kompresor-raporu/alt-gorev/:altGorevId', async (req, res) => {
-    try {
-        const rapor = await auth.prisma.kompresorRaporu.findFirst({
-            where: { altGorevId: parseInt(req.params.altGorevId) },
-            include: {
-                altGorev: {
-                    include: {
-                        isEmri: {
-                            include: {
-                                customer: true,
-                                firmaBilgi: true
-                            }
-                        }
-                    }
-                }
-            }
-        });
 
         res.json(rapor);
     } catch (error) {
