@@ -278,6 +278,7 @@ model AltGorev {
   personel                 Personel?                  @relation(fields: [personelId], references: [id])
   topraklamaOlcumler       TopraklamaOlcum[]
   elektrikTopraklamaRaporu ElektrikTopraklamaRaporu[]
+  kompresorRaporlari       KompresorRaporu[]
 }
 
 model IsEmriFirmaBilgi {
@@ -499,6 +500,66 @@ enum MuayeneSonuc {
   UYGUN
   UYGUN_DEGIL
   SARTLI_UYGUN
+}
+
+// =============================================
+// KOMPRESÖR MUAYENE RAPORU MODELİ
+// FR7.2.21 Kompresör Muayene ve Ölçüm Raporu
+// =============================================
+
+model KompresorRaporu {
+  id                    Int      @id @default(autoincrement())
+  raporNo               String   @unique
+  altGorevId            Int
+
+  // Firma/Rapor üst bilgileri
+  bolumu                String?
+  kontrolTarihi         String?
+  raporTarihi           String?
+  sonrakiKontrolTarihi  String?
+  sgkSicilNo            String?
+  isgKatipNo            String?
+
+  // Tarihler
+  baslangicTarihi       DateTime?
+  bitisTarihi           DateTime?
+
+  // Ekipman Bilgileri
+  markasi               String?
+  tip                   String?
+  seriNo                String?
+  imalatYili            String?
+  maksBasinc            String?
+  durmaBasinci          String?
+  tekrarCalismaBasinci  String?
+
+  // Kontrol Soruları (10 adet) - Uygun/Uygun Değil
+  soru1ArizaKarti       String?  // Arıza kartı var mı?
+  soru2TseCe            String?  // TSE/CE işareti var mı?
+  soru3YagToz           String?  // Yağ/toz var mı?
+  soru4BasincAyar       String?  // Basınç ayar otomatiği çalışıyor mu?
+  soru5KayisKasnak      String?  // Kayış-kasnak koruyucu sacı var mı?
+  soru6ElektrikMotor    String?  // Elektrik motoru bağlantılarında gevşeklik var mı?
+  soru7VanaHortum       String?  // Vana/hortum kaçağı var mı?
+  soru8HavaFiltresi     String?  // Hava filtresi temiz mi?
+  soru9YanginSondurucu  String?  // Yangın söndürücü uygun mu?
+  soru10UyariTalimat    String?  // Uyarı ve kullanma talimatı uygun mu?
+
+  // Kusur Açıklamaları
+  kusurAciklama         String?
+
+  // Notlar
+  notlar                String?
+
+  // Sonuç
+  genelSonuc            String?
+
+  // Meta
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // İlişkiler
+  altGorev              AltGorev @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
 }
 
 enum WorkOrderDurum {

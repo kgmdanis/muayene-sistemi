@@ -1465,7 +1465,8 @@ app.get('/api/is-emirleri/:id', auth.authMiddleware(), async (req, res) => {
                 altGorevler: {
                     include: { personel: true, hizmet: true },
                     orderBy: [{ kategori: 'asc' }, { siraNo: 'asc' }]
-                }
+                },
+                firmaBilgi: true
             }
         });
 
@@ -2182,6 +2183,93 @@ app.get('/api/olcum-cihazlari/kategori/:kategori', async (req, res) => {
 
 // ============ ELEKTRİK TOPRAKLAMA RAPORU API ============
 
+// TÜM RAPORLARI LİSTELE (Admin: hepsi, Tekniker: kendi kategorisi)
+app.get('/api/raporlar', async (req, res) => {
+    try {
+        const { kategori, role } = req.query;
+
+        const where = {};
+        const whereKompresor = {};
+
+        // Tekniker ise sadece kendi kategorisindeki raporları göster
+        if (role === 'tekniker' && kategori) {
+            where.altGorev = {
+                hizmetAdi: { contains: kategori, mode: 'insensitive' }
+            };
+            whereKompresor.altGorev = {
+                hizmetAdi: { contains: kategori, mode: 'insensitive' }
+            };
+        }
+
+        // Elektrik topraklama raporları
+        const elektrikRaporlar = await auth.prisma.elektrikTopraklamaRaporu.findMany({
+            where,
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        // Kompresör raporları
+        const kompresorRaporlar = await auth.prisma.kompresorRaporu.findMany({
+            where: whereKompresor,
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        // Rapor listelerini formatla ve birleştir
+        const formattedElektrik = elektrikRaporlar.map(r => ({
+            id: r.id,
+            raporNo: r.raporNo,
+            raporTipi: 'Elektrik Topraklama',
+            firmaAdi: r.altGorev?.isEmri?.customer?.unvan || '-',
+            tarih: r.createdAt,
+            baslangicTarihi: r.baslangicTarihi,
+            bitisTarihi: r.bitisTarihi,
+            sonuc: r.genelSonuc || '-',
+            durum: r.genelSonuc ? 'Tamamlandı' : 'Taslak',
+            altGorevId: r.altGorevId,
+            isEmriNo: r.altGorev?.isEmri?.isEmriNo || '-'
+        }));
+
+        const formattedKompresor = kompresorRaporlar.map(r => ({
+            id: r.id,
+            raporNo: r.raporNo,
+            raporTipi: 'Kompresör',
+            firmaAdi: r.altGorev?.isEmri?.customer?.unvan || '-',
+            tarih: r.createdAt,
+            baslangicTarihi: r.baslangicTarihi,
+            bitisTarihi: r.bitisTarihi,
+            sonuc: r.genelSonuc || '-',
+            durum: r.genelSonuc ? 'Tamamlandı' : 'Taslak',
+            altGorevId: r.altGorevId,
+            isEmriNo: r.altGorev?.isEmri?.isEmriNo || '-'
+        }));
+
+        const formattedRaporlar = [...formattedElektrik, ...formattedKompresor]
+            .sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
+
+        res.json(formattedRaporlar);
+    } catch (error) {
+        console.error('Rapor listesi hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Rapor oluştur
 app.post('/api/elektrik-topraklama-raporu', async (req, res) => {
     try {
@@ -2193,19 +2281,23 @@ app.post('/api/elektrik-topraklama-raporu', async (req, res) => {
             return new Date(dateStr + 'T00:00:00.000Z');
         };
 
-        // Rapor numarası oluştur
-        const yil = new Date().getFullYear().toString().slice(-2);
-        const sonRapor = await auth.prisma.elektrikTopraklamaRaporu.findFirst({
-            where: { raporNo: { startsWith: `ETR-${yil}-` } },
+        // Rapor numarası: ET-{TeklifNo}-{sıra}
+        const altGorev = await auth.prisma.altGorev.findUnique({
+            where: { id: parseInt(altGorevId) },
+            include: { isEmri: { include: { teklif: true } } }
+        });
+        const teklifNo = altGorev?.isEmri?.teklif?.teklifNo || new Date().getFullYear().toString();
+        const prefix = `ET-${teklifNo}`;
+        const mevcutRaporlar = await auth.prisma.elektrikTopraklamaRaporu.findMany({
+            where: { raporNo: { startsWith: prefix } },
             orderBy: { raporNo: 'desc' }
         });
-
         let sira = 1;
-        if (sonRapor) {
-            const sonSira = parseInt(sonRapor.raporNo.split('-')[2]);
-            sira = sonSira + 1;
+        if (mevcutRaporlar.length > 0) {
+            const sonSira = parseInt(mevcutRaporlar[0].raporNo.split('-').pop());
+            if (!isNaN(sonSira)) sira = sonSira + 1;
         }
-        const raporNo = `ETR-${yil}-${sira.toString().padStart(4, '0')}`;
+        const raporNo = `${prefix}-${sira.toString().padStart(3, '0')}`;
 
         const rapor = await auth.prisma.elektrikTopraklamaRaporu.create({
             data: {
@@ -2227,6 +2319,12 @@ app.post('/api/elektrik-topraklama-raporu', async (req, res) => {
                 detayliOlcumler: true,
                 rcdSecicilik: true
             }
+        });
+
+        // Alt görevin raporNo alanını güncelle
+        await auth.prisma.altGorev.update({
+            where: { id: parseInt(altGorevId) },
+            data: { raporNo }
         });
 
         res.json(rapor);
@@ -2343,7 +2441,7 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/ekipman-bilgi', async (req, r
             where: { raporId },
             update: req.body,
             create: {
-                raporId,
+                rapor: { connect: { id: raporId } },
                 ...req.body
             }
         });
@@ -2397,12 +2495,12 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/olcum', async (req, res) => {
             sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
         }
 
-        // Sadece geçerli alanları al
-        const { tabloAdi, panoAdi, salterAdi, rcdVarMi, rcdIAn, rcdSure, aciklama } = data;
+        // Sadece geçerli alanları al - HTML'den gelen olcumNoktasi'nı tabloAdi'ye map et
+        const { olcumNoktasi, tabloAdi, panoAdi, salterAdi, rcdVarMi, rcdIAn, rcdSure, aciklama } = data;
 
         const olcum = await auth.prisma.topraklamaDetayliOlcum.create({
             data: {
-                raporId,
+                rapor: { connect: { id: raporId } },
                 siraNo,
                 anmaAkimi: anmaAkimi ? parseFloat(anmaAkimi) : null,
                 sigortaTipi,
@@ -2412,7 +2510,7 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/olcum', async (req, res) => {
                 zx: zx ? parseFloat(zx) : null,
                 ik,
                 sonuc,
-                tabloAdi: tabloAdi || null,
+                tabloAdi: olcumNoktasi || tabloAdi || null,
                 panoAdi: panoAdi || null,
                 salterAdi: salterAdi || null,
                 rcdVarMi: rcdVarMi === true || rcdVarMi === 'true',
@@ -2515,7 +2613,7 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/rcd-secicilik', async (req, r
 
         const rcd = await auth.prisma.rCDSecicilik.create({
             data: {
-                raporId,
+                rapor: { connect: { id: raporId } },
                 siraNo,
                 ...req.body
             }
@@ -2550,6 +2648,231 @@ app.delete('/api/elektrik-topraklama-raporu/:id', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.error('Elektrik topraklama raporu silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ KOMPRESÖR MUAYENE RAPORU API ============
+
+// Kompresör raporlarını listele
+app.get('/api/kompresor-raporu', async (req, res) => {
+    try {
+        const raporlar = await auth.prisma.kompresorRaporu.findMany({
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(raporlar);
+    } catch (error) {
+        console.error('Kompresör rapor listesi hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kompresör raporu oluştur
+app.post('/api/kompresor-raporu', async (req, res) => {
+    try {
+        const { altGorevId, baslangicTarihi, bitisTarihi, ...data } = req.body;
+
+        const convertDate = (dateStr) => {
+            if (!dateStr) return null;
+            return new Date(dateStr + 'T00:00:00.000Z');
+        };
+
+        // Rapor numarası: MK-{TeklifNo}-{sıra}
+        const altGorev = await auth.prisma.altGorev.findUnique({
+            where: { id: parseInt(altGorevId) },
+            include: { isEmri: { include: { teklif: true } } }
+        });
+        const teklifNo = altGorev?.isEmri?.teklif?.teklifNo || new Date().getFullYear().toString();
+        const prefix = `MK-${teklifNo}`;
+        const mevcutRaporlar = await auth.prisma.kompresorRaporu.findMany({
+            where: { raporNo: { startsWith: prefix } },
+            orderBy: { raporNo: 'desc' }
+        });
+        let sira = 1;
+        if (mevcutRaporlar.length > 0) {
+            const sonSira = parseInt(mevcutRaporlar[0].raporNo.split('-').pop());
+            if (!isNaN(sonSira)) sira = sonSira + 1;
+        }
+        const raporNo = `${prefix}-${sira.toString().padStart(3, '0')}`;
+
+        const rapor = await auth.prisma.kompresorRaporu.create({
+            data: {
+                raporNo,
+                altGorevId: parseInt(altGorevId),
+                baslangicTarihi: convertDate(baslangicTarihi),
+                bitisTarihi: convertDate(bitisTarihi),
+                ...data
+            },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Alt görevin raporNo alanını güncelle
+        await auth.prisma.altGorev.update({
+            where: { id: parseInt(altGorevId) },
+            data: { raporNo }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Kompresör raporu oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Alt görev için kompresör raporu getir (`:id` den ÖNCE tanımlanmalı)
+app.get('/api/kompresor-raporu/alt-gorev/:altGorevId', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.kompresorRaporu.findFirst({
+            where: { altGorevId: parseInt(req.params.altGorevId) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Kompresör raporu getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kompresör raporu getir (ID ile)
+app.get('/api/kompresor-raporu/:id', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.kompresorRaporu.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!rapor) {
+            return res.status(404).json({ error: 'Rapor bulunamadı' });
+        }
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Kompresör raporu getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kompresör raporu güncelle
+app.put('/api/kompresor-raporu/:id', async (req, res) => {
+    try {
+        const { baslangicTarihi, bitisTarihi, ...raporData } = req.body;
+
+        const convertDate = (dateStr) => {
+            if (!dateStr) return null;
+            if (dateStr instanceof Date) return dateStr;
+            if (dateStr.includes('T')) return new Date(dateStr);
+            return new Date(dateStr + 'T00:00:00.000Z');
+        };
+
+        const rapor = await auth.prisma.kompresorRaporu.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                ...raporData,
+                baslangicTarihi: convertDate(baslangicTarihi),
+                bitisTarihi: convertDate(bitisTarihi)
+            }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Kompresör raporu güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kompresör raporu sil
+app.delete('/api/kompresor-raporu/:id', async (req, res) => {
+    try {
+        await auth.prisma.kompresorRaporu.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Kompresör raporu silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kompresör raporu için Word dosyası oluştur
+app.post('/api/kompresor-raporu/:id/word', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.kompresorRaporu.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!rapor) {
+            return res.status(404).json({ error: 'Rapor bulunamadı' });
+        }
+
+        const kompresorWordService = require('./services/kompresorWordService');
+        const isEmri = rapor.altGorev?.isEmri;
+
+        const options = {
+            ...req.body,
+            tekniker: req.body.tekniker || {}
+        };
+
+        const wordBuffer = await kompresorWordService.generateKompresorWord(rapor, isEmri, options);
+
+        const filename = `${rapor.raporNo || 'Rapor'}_${Date.now()}.docx`;
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(wordBuffer);
+
+    } catch (error) {
+        console.error('Kompresör Word dosyası oluşturma hatası:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -2616,18 +2939,109 @@ app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
         const isEmri = rapor.altGorev?.isEmri;
         const olcumler = rapor.detayliOlcumler || [];
 
+        // Checkbox ve diğer parametreler - HTML'den gelen isimlerle uyumlu
+        const {
+            // Sistem tipi
+            sistemTipi,
+            // Checkbox parametreleri
+            kontrolNedeni,
+            projeVar,
+            tekHatSemasiVar,
+            // Yapı cinsi (ayrı ayrı geliyor)
+            yapiEv,
+            yapiTicari,
+            yapiEndustri,
+            yapiDiger,
+            // Topraklayıcı tipi
+            toprakRing,
+            toprakYuzeysel,
+            toprakTemel,
+            toprakDerin,
+            toprakBelirlenemedi,
+            // Koruma önlemi
+            korumaEspotansiyel,
+            korumaYalitma,
+            korumaAyirma,
+            korumaKucukGerilim,
+            // Diğer checkbox'lar
+            kapsamliDegisiklik,
+            oncekiKontrolEtiketi,
+            // Ölçüm metodu (HTML'den gelen isimlerle)
+            olcumCevrimEmpedansi,
+            olcum3UcluTopraklama,
+            olcumKlamp,
+            // Diğer parametreler
+            enerjiSaglayan,
+            sebekeGerilimi,
+            projeBilgileri,
+            ekipmanKullanimAmaci,
+            sonKontrolTarihi,
+            panoTanimi,
+            baslangicSaati,
+            bitisSaati,
+            // Ölçüm verileri
+            olcumler: formOlcumler,
+            // RCD Selektivite verileri
+            rcdSelektivite: formRcdSelektivite
+        } = req.body;
+
         const options = {
             uygunlukNotu,
             kusurlar,
             kusurAciklama,
             notlar,
-            tekniker: tekniker || {}
+            tekniker: tekniker || {},
+            // Sistem tipi (formdan veya DB'den)
+            sistemTipi: sistemTipi || rapor.sistemTipi,
+            // Checkbox parametreleri
+            kontrolNedeni,
+            projeVar,
+            tekHatSemasiVar,
+            // Yapı cinsi
+            yapiEv,
+            yapiTicari,
+            yapiEndustri,
+            yapiDiger,
+            // Topraklayıcı tipi
+            toprakRing,
+            toprakYuzeysel,
+            toprakTemel,
+            toprakDerin,
+            toprakBelirlenemedi,
+            // Koruma önlemi
+            korumaEspotansiyel,
+            korumaYalitma,
+            korumaAyirma,
+            korumaKucukGerilim,
+            // Diğer checkbox'lar
+            kapsamliDegisiklik,
+            oncekiKontrolEtiketi,
+            // Ölçüm metodu
+            olcumCevrim: olcumCevrimEmpedansi,
+            olcum3Uclu: olcum3UcluTopraklama,
+            olcumKlamp,
+            // Diğer parametreler
+            enerjiSaglayan,
+            sebekeGerilimi,
+            projeBilgileri,
+            kullanimAmaci: ekipmanKullanimAmaci,
+            sonKontrolTarihi,
+            panoTanimi,
+            baslangicSaati,
+            bitisSaati,
+            // RCD Selektivite
+            rcdSelektivite: formRcdSelektivite && formRcdSelektivite.length > 0
+                ? formRcdSelektivite
+                : (rapor.rcdSecicilik || [])
         };
+
+        // Ölçüm verileri: Formdan gelen veya DB'den
+        const finalOlcumler = formOlcumler && formOlcumler.length > 0 ? formOlcumler : olcumler;
 
         const wordBuffer = await elektrikWordService.generateElektrikTopraklamaWord(
             rapor,
             isEmri,
-            olcumler,
+            finalOlcumler,
             options
         );
 

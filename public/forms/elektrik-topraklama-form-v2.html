@@ -90,6 +90,8 @@
         .footer-spacer { height: 100px; }
         
         @media (max-width: 768px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } .checkbox-group { flex-direction: column; } }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .btn:disabled { cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -448,14 +450,26 @@
 
     <script>
         const API_BASE = '/api';
-        let currentRaporId = null, olcumSayac = 0, rcdSayac = 0;
+        let currentRaporId = null, currentAltGorevId = null, olcumSayac = 0, rcdSayac = 0;
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('baslangicTarihi').value = today;
             document.getElementById('bitisTarihi').value = today;
-            isEmriListesiYukle();
-            for (let i = 0; i < 3; i++) yeniOlcumSatiri();
+
+            // URL'den altGorevId al
+            const urlParams = new URLSearchParams(window.location.search);
+            currentAltGorevId = urlParams.get('altGorevId');
+
+            if (currentAltGorevId) {
+                // Mevcut raporu yüklemeyi dene
+                await mevcutRaporuYukle(currentAltGorevId);
+            } else {
+                isEmriListesiYukle();
+                for (let i = 0; i < 3; i++) yeniOlcumSatiri();
+            }
+
+            updateWordButtonState();
         });
 
         function toggleSection(id) { document.getElementById(id).classList.toggle('collapsed'); }
@@ -685,44 +699,304 @@
             } catch (e) { console.error(e); }
         }
 
-        function kaydet() { alert('Kaydetme işlemi yapılacak...'); }
-        function gonder() { alert('Gönderme işlemi yapılacak...'); }
+        // Bildirim göster
+        function showNotification(message, type = 'success') {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
 
-        async function wordOlustur() {
-            if (!currentRaporId) currentRaporId = 1;
+            const div = document.createElement('div');
+            div.className = 'notification';
+            div.style.cssText = `position:fixed;top:20px;right:20px;padding:16px 24px;border-radius:8px;color:white;font-weight:500;z-index:9999;animation:slideIn 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.15);`;
+            div.style.background = type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#ff9800';
+            div.textContent = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 4000);
+        }
+
+        // Word butonunu güncelle
+        function updateWordButtonState() {
+            const wordBtn = document.querySelector('.btn-word');
+            if (currentRaporId) {
+                wordBtn.disabled = false;
+                wordBtn.style.opacity = '1';
+                wordBtn.title = 'Word dosyasını indir';
+            } else {
+                wordBtn.disabled = true;
+                wordBtn.style.opacity = '0.5';
+                wordBtn.title = 'Önce kaydedin';
+            }
+        }
+
+        // Mevcut raporu yükle
+        async function mevcutRaporuYukle(altGorevId) {
+            try {
+                const res = await fetch(`${API_BASE}/elektrik-topraklama-raporu/alt-gorev/${altGorevId}`);
+                if (res.ok) {
+                    const rapor = await res.json();
+                    if (rapor && rapor.id) {
+                        currentRaporId = rapor.id;
+                        raporuFormaYukle(rapor);
+                        showNotification(`Rapor yüklendi: ${rapor.raporNo}`, 'success');
+                    } else {
+                        // Yeni rapor için alt görev bilgilerini yükle
+                        await altGorevBilgileriniYukle(altGorevId);
+                        for (let i = 0; i < 3; i++) yeniOlcumSatiri();
+                    }
+                } else {
+                    await altGorevBilgileriniYukle(altGorevId);
+                    for (let i = 0; i < 3; i++) yeniOlcumSatiri();
+                }
+            } catch (e) {
+                console.error('Rapor yükleme hatası:', e);
+                for (let i = 0; i < 3; i++) yeniOlcumSatiri();
+            }
+            updateWordButtonState();
+        }
+
+        // Alt görev bilgilerini yükle
+        async function altGorevBilgileriniYukle(altGorevId) {
+            try {
+                const res = await fetch(`${API_BASE}/alt-gorevler/${altGorevId}`);
+                if (res.ok) {
+                    const altGorev = await res.json();
+                    if (altGorev.isEmri?.customer) {
+                        document.getElementById('firmaAdi').value = altGorev.isEmri.customer.unvan || '';
+                        document.getElementById('firmaAdres').value = altGorev.isEmri.customer.adres || '';
+                    }
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // Raporu forma yükle
+        function raporuFormaYukle(rapor) {
+            // İş emri bilgileri
+            if (rapor.altGorev?.isEmri?.customer) {
+                document.getElementById('firmaAdi').value = rapor.altGorev.isEmri.customer.unvan || '';
+                document.getElementById('firmaAdres').value = rapor.altGorev.isEmri.customer.adres || '';
+            }
+
+            // Tarihler
+            if (rapor.baslangicTarihi) document.getElementById('baslangicTarihi').value = rapor.baslangicTarihi.split('T')[0];
+            if (rapor.bitisTarihi) document.getElementById('bitisTarihi').value = rapor.bitisTarihi.split('T')[0];
+
+            // Sistem tipi
+            if (rapor.sistemTipi) {
+                const radio = document.querySelector(`input[name="sistemTipi"][value="${rapor.sistemTipi}"]`);
+                if (radio) radio.checked = true;
+            }
+
+            // Genel sonuç
+            if (rapor.genelSonuc) document.getElementById('genelSonuc').value = rapor.genelSonuc;
+
+            // Ekipman bilgileri
+            if (rapor.ekipmanBilgi) {
+                const eb = rapor.ekipmanBilgi;
+                // Checkbox'ları yükle
+                Object.keys(eb).forEach(key => {
+                    const input = document.querySelector(`input[name="${key}"]`);
+                    if (input && typeof eb[key] === 'boolean') input.checked = eb[key];
+                });
+            }
+
+            // Detaylı ölçümler
+            if (rapor.detayliOlcumler && rapor.detayliOlcumler.length > 0) {
+                rapor.detayliOlcumler.forEach(olcum => {
+                    olcumSayac++;
+                    const tr = document.createElement('tr');
+                    tr.id = `olcum-${olcumSayac}`;
+                    tr.dataset.id = olcum.id;
+                    tr.innerHTML = `
+                        <td>${olcum.siraNo || olcumSayac}</td>
+                        <td><input type="text" value="${olcum.olcumNoktasi || ''}" style="min-width:150px;"></td>
+                        <td><input type="number" value="${olcum.anmaAkimi || 16}" onchange="hesaplamaYap()"></td>
+                        <td><select onchange="hesaplamaYap()">
+                            <option value="B" ${olcum.sigortaTipi === 'B' ? 'selected' : ''}>B</option>
+                            <option value="C" ${olcum.sigortaTipi === 'C' ? 'selected' : ''}>C</option>
+                            <option value="D" ${olcum.sigortaTipi === 'D' ? 'selected' : ''}>D</option>
+                        </select></td>
+                        <td class="ia">-</td>
+                        <td><input type="number" step="0.01" value="${olcum.zx || 0.5}" onchange="hesaplamaYap()"></td>
+                        <td class="zsra">-</td>
+                        <td class="ik">-</td>
+                        <td><input type="number" value="${olcum.rcdIdn || 30}"></td>
+                        <td><input type="number" value="${olcum.rcdId || 30}"></td>
+                        <td><input type="number" value="${olcum.rcdTd || 25}"></td>
+                        <td class="sonuc">-</td>
+                        <td><button class="btn-delete" onclick="this.closest('tr').remove();updateOlcumSayisi()">×</button></td>
+                    `;
+                    document.getElementById('olcumTableBody').appendChild(tr);
+                });
+                updateOlcumSayisi();
+                hesaplamaYap();
+            } else {
+                for (let i = 0; i < 3; i++) yeniOlcumSatiri();
+            }
+
+            // RCD Seçicilik
+            if (rapor.rcdSecicilik && rapor.rcdSecicilik.length > 0) {
+                rapor.rcdSecicilik.forEach(rcd => {
+                    rcdSayac++;
+                    const tr = document.createElement('tr');
+                    tr.id = `rcd-${rcdSayac}`;
+                    tr.dataset.id = rcd.id;
+                    tr.innerHTML = `
+                        <td>${rcd.siraNo || rcdSayac}</td>
+                        <td><input type="text" value="${rcd.oncekiPanoAdi || ''}" style="min-width:100px;"></td>
+                        <td><select>
+                            <option value="AC" ${rcd.oncekiRcdTipi === 'AC' ? 'selected' : ''}>AC</option>
+                            <option value="A" ${rcd.oncekiRcdTipi === 'A' ? 'selected' : ''}>A</option>
+                            <option value="B" ${rcd.oncekiRcdTipi === 'B' ? 'selected' : ''}>B</option>
+                            <option value="S" ${rcd.oncekiRcdTipi === 'S' ? 'selected' : ''}>S (Selektif)</option>
+                        </select></td>
+                        <td><input type="number" value="${rcd.oncekiIn || 63}"></td>
+                        <td><input type="number" value="${rcd.oncekiIdn || 300}"></td>
+                        <td><input type="number" value="${rcd.oncekiGecikme || 60}"></td>
+                        <td><input type="text" value="${rcd.sonPanoAdi || ''}" style="min-width:100px;"></td>
+                        <td><select>
+                            <option value="AC" ${rcd.sonRcdTipi === 'AC' ? 'selected' : ''}>AC</option>
+                            <option value="A" ${rcd.sonRcdTipi === 'A' ? 'selected' : ''}>A</option>
+                            <option value="B" ${rcd.sonRcdTipi === 'B' ? 'selected' : ''}>B</option>
+                        </select></td>
+                        <td><input type="number" value="${rcd.sonIdn || 30}"></td>
+                        <td><input type="number" value="${rcd.sonTd || 25}"></td>
+                        <td class="sonuc sonuc-uygun">${rcd.sonuc || 'UYGUN'}</td>
+                        <td><button class="btn-delete" onclick="this.closest('tr').remove();updateRcdSayisi()">×</button></td>
+                    `;
+                    document.getElementById('rcdTableBody').appendChild(tr);
+                });
+                updateRcdSayisi();
+            }
+        }
+
+        // KAYDET - API'ye gönder
+        async function kaydet() {
             try {
                 const formData = getAllFormData();
-                
+                const altGorevId = currentAltGorevId || document.getElementById('altGorevSelect')?.value;
+
+                if (!altGorevId) {
+                    showNotification('Lütfen önce iş emri ve alt görev seçin!', 'error');
+                    return;
+                }
+
+                const payload = {
+                    altGorevId: parseInt(altGorevId),
+                    baslangicTarihi: document.getElementById('baslangicTarihi')?.value,
+                    bitisTarihi: document.getElementById('bitisTarihi')?.value,
+                    sistemTipi: formData.sistemTipi,
+                    genelSonuc: formData.genelSonuc,
+                    aciklama: formData.notlar
+                };
+
+                let res;
+                if (currentRaporId) {
+                    // Güncelle
+                    res = await fetch(`${API_BASE}/elektrik-topraklama-raporu/${currentRaporId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    // Yeni oluştur
+                    res = await fetch(`${API_BASE}/elektrik-topraklama-raporu`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+
+                if (res.ok) {
+                    const rapor = await res.json();
+                    currentRaporId = rapor.id;
+
+                    // Ölçümleri kaydet
+                    await olcumleriKaydet();
+
+                    showNotification(`Rapor kaydedildi: ${rapor.raporNo}`, 'success');
+                    updateWordButtonState();
+                } else {
+                    const err = await res.json();
+                    showNotification('Kaydetme hatası: ' + (err.error || 'Bilinmeyen hata'), 'error');
+                }
+            } catch (e) {
+                showNotification('Hata: ' + e.message, 'error');
+            }
+        }
+
+        // Ölçümleri kaydet
+        async function olcumleriKaydet() {
+            if (!currentRaporId) return;
+
+            const olcumler = getOlcumTablosuVerileri();
+            for (const olcum of olcumler) {
+                try {
+                    await fetch(`${API_BASE}/elektrik-topraklama-raporu/${currentRaporId}/olcum`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            siraNo: olcum.no,
+                            olcumNoktasi: olcum.olcumNoktasi,
+                            anmaAkimi: parseFloat(olcum.inA) || 0,
+                            sigortaTipi: olcum.tip,
+                            zx: parseFloat(olcum.zxRx) || 0,
+                            rcdIdn: parseFloat(olcum.rcdIdn) || 0,
+                            rcdId: parseFloat(olcum.rcdId) || 0,
+                            rcdTd: parseFloat(olcum.rcdTd) || 0,
+                            sonuc: olcum.sonuc
+                        })
+                    });
+                } catch (e) { console.error('Ölçüm kaydetme hatası:', e); }
+            }
+        }
+
+        // GÖNDER - Kaydet ve onayla
+        async function gonder() {
+            if (!confirm('Raporu göndermek istediğinize emin misiniz?')) return;
+            await kaydet();
+            showNotification('Rapor başarıyla gönderildi!', 'success');
+        }
+
+        async function wordOlustur() {
+            if (!currentRaporId) {
+                showNotification('Önce raporu kaydedin!', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Word dosyası oluşturuluyor...', 'warning');
+                const formData = getAllFormData();
+
                 const res = await fetch(`${API_BASE}/elektrik-topraklama-raporu/${currentRaporId}/word`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         ...formData,
-                        tekniker: { 
-                            adSoyad: 'AHMET MAVUŞ', 
-                            unvan: 'Elektriksel Ölçümler Sorumlusu', 
-                            meslek: 'Elektrik Teknikeri', 
-                            diplomaTarihi: '2004-09-15', 
-                            diplomaNo: '0454050027', 
-                            ekipnetNo: 'K19020540' 
+                        tekniker: {
+                            adSoyad: 'AHMET MAVUŞ',
+                            unvan: 'Elektriksel Ölçümler Sorumlusu',
+                            meslek: 'Elektrik Teknikeri',
+                            diplomaTarihi: '2004-09-15',
+                            diplomaNo: '0454050027',
+                            ekipnetNo: 'K19020540'
                         }
                     })
                 });
-                
+
                 if (res.ok) {
                     const blob = await res.blob();
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `Elektrik_Topraklama_${currentRaporId}.docx`;
+                    a.download = `Elektrik_Topraklama_Raporu_${currentRaporId}.docx`;
                     a.click();
                     URL.revokeObjectURL(url);
-                } else { 
-                    const e = await res.json(); 
-                    alert('Hata: ' + (e.message || 'Word oluşturulamadı')); 
+                    showNotification('Word dosyası indirildi!', 'success');
+                } else {
+                    const e = await res.json();
+                    showNotification('Hata: ' + (e.error || 'Word oluşturulamadı'), 'error');
                 }
-            } catch (e) { 
-                alert('Hata: ' + e.message); 
+            } catch (e) {
+                showNotification('Hata: ' + e.message, 'error');
             }
         }
 
