@@ -512,6 +512,14 @@ model KompresorRaporu {
   raporNo               String   @unique
   altGorevId            Int
 
+  // Firma/Rapor üst bilgileri
+  bolumu                String?
+  kontrolTarihi         String?
+  raporTarihi           String?
+  sonrakiKontrolTarihi  String?
+  sgkSicilNo            String?
+  isgKatipNo            String?
+
   // Tarihler
   baslangicTarihi       DateTime?
   bitisTarihi           DateTime?

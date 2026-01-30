@@ -44,19 +44,28 @@ function escapeXml(str) {
 
 // ============ HÜCRE İŞLEMLERİ ============
 
-function writeToCell(cellXml, newText) {
+function writeToCell(cellXml, newText, opts = {}) {
     const escapedText = escapeXml(newText || '-');
 
     if (!/<w:t[ >]/.test(cellXml)) {
+        // Extract rPr from pPr to inherit font formatting (size, bold, etc.)
+        const rPrMatch = cellXml.match(/<w:pPr>[\s\S]*?<w:rPr>([\s\S]*?)<\/w:rPr>[\s\S]*?<\/w:pPr>/);
+        let rPrInner = rPrMatch ? rPrMatch[1] : '';
+        // Strip color if requested
+        if (opts.stripColor) {
+            rPrInner = rPrInner.replace(/<w:color[^/]*\/>/g, '');
+        }
+        const rPrTag = rPrInner ? `<w:rPr>${rPrInner}</w:rPr>` : '';
+
         if (/<w:pPr>[\s\S]*?<\/w:pPr>/.test(cellXml)) {
             return cellXml.replace(
                 /(<\/w:pPr>)/,
-                `$1<w:r><w:t xml:space="preserve">${escapedText}</w:t></w:r>`
+                `$1<w:r>${rPrTag}<w:t xml:space="preserve">${escapedText}</w:t></w:r>`
             );
         }
         return cellXml.replace(
             /(<\/w:p>)/,
-            `<w:r><w:t xml:space="preserve">${escapedText}</w:t></w:r>$1`
+            `<w:r>${rPrTag}<w:t xml:space="preserve">${escapedText}</w:t></w:r>$1`
         );
     }
 
@@ -130,7 +139,7 @@ function setKontrolSorusu(xml, soruText, deger) {
         if (cells.length >= 2) {
             // Son hücreye sonucu yaz
             const lastCell = cells[cells.length - 1];
-            const newCell = writeToCell(lastCell, deger);
+            const newCell = writeToCell(lastCell, deger, { stripColor: true });
             const newRow = row.replace(lastCell, newCell);
             return xml.replace(row, newRow);
         }
@@ -149,18 +158,26 @@ async function generateKompresorWord(rapor, isEmri, options = {}) {
     const firma = isEmri?.customer || {};
     const firmaBilgi = isEmri?.firmaBilgi || {};
 
-    // === 1. FİRMA BİLGİLERİ ===
-    docXml = setValueByLabel(docXml, 'Firma Adı', firma.unvan);
-    docXml = setValueByLabel(docXml, 'Rapor Numarası', rapor.raporNo);
-    docXml = setValueByLabel(docXml, 'Periyodik Kontrol Adresi', firma.adres);
-    docXml = setValueByLabel(docXml, 'Rapor Tarihi', formatDate(rapor.bitisTarihi || new Date()));
-    docXml = setValueByLabel(docXml, 'İSG-KATİP Sözleşme ID', rapor.isgKatipNo || firmaBilgi.isgKatipId);
-    docXml = setValueByLabel(docXml, 'SGK Sicil Numarası', rapor.sgkSicilNo || firmaBilgi.sgkSicilNo);
-    docXml = setValueByLabel(docXml, 'Periyodik Kontrol Başlangıç Tarihi ve Saati', formatDateTime(rapor.baslangicTarihi, options.baslangicSaati || '09:00'));
-    docXml = setValueByLabel(docXml, 'Periyodik Kontrol Bitiş Tarihi ve Saati', formatDateTime(rapor.bitisTarihi, options.bitisSaati || '17:00'));
-    docXml = setValueByLabel(docXml, 'Bir Sonraki Periyodik Kontrol Tarihi', getNextYearDate(rapor.bitisTarihi));
+    // === 1. FİRMA & RAPOR BİLGİLERİ (header2.xml'de) ===
+    const headerFile = zip.file('word/header2.xml');
+    if (headerFile) {
+        let headerXml = await headerFile.async('string');
+        headerXml = setValueByLabel(headerXml, 'Firma Adı', firma.unvan);
+        headerXml = setValueByLabel(headerXml, 'Adresi', firma.adres);
+        headerXml = setValueByLabel(headerXml, 'Tel/Fax', firma.telefon);
+        headerXml = setValueByLabel(headerXml, 'E-mail', firma.email);
+        headerXml = setValueByLabel(headerXml, 'Web', firma.web || '-');
+        headerXml = setValueByLabel(headerXml, 'Bölümü', rapor.bolumu || options.bolumu);
+        headerXml = setValueByLabel(headerXml, 'Kontrol Tarihi', formatDate(rapor.kontrolTarihi || options.kontrolTarihi));
+        headerXml = setValueByLabel(headerXml, 'Rapor Tarihi', formatDate(rapor.raporTarihi || options.raporTarihi));
+        headerXml = setValueByLabel(headerXml, 'Sonraki Kontrol Tarihi', formatDate(rapor.sonrakiKontrolTarihi || options.sonrakiKontrolTarihi));
+        headerXml = setValueByLabel(headerXml, 'Rapor No', rapor.raporNo);
+        headerXml = setValueByLabel(headerXml, 'SGK Sicil No', rapor.sgkSicilNo || firmaBilgi.sgkSicilNo);
+        headerXml = setValueByLabel(headerXml, 'İSG-KATİP Sözleşme ID', rapor.isgKatipNo || firmaBilgi.isgKatipId);
+        zip.file('word/header2.xml', headerXml);
+    }
 
-    // === 2. EKİPMAN BİLGİLERİ ===
+    // === 2. EKİPMAN BİLGİLERİ (document.xml Table 1) ===
     docXml = setValueByLabel(docXml, 'Markası', rapor.markasi || options.markasi);
     docXml = setValueByLabel(docXml, 'Tip', rapor.tip || options.tip);
     docXml = setValueByLabel(docXml, 'Seri No', rapor.seriNo || options.seriNo);
@@ -169,18 +186,19 @@ async function generateKompresorWord(rapor, isEmri, options = {}) {
     docXml = setValueByLabel(docXml, 'Durma Basıncı', rapor.durmaBasinci || options.durmaBasinci);
     docXml = setValueByLabel(docXml, 'Tekrar Çalışma', rapor.tekrarCalismaBasinci || options.tekrarCalismaBasinci);
 
-    // === 3. KONTROL SORULARI (10 adet) - Uygun/Uygun Değil ===
+    // === 3. KONTROL SORULARI (document.xml Table 4, 10 adet) ===
+    // Daha spesifik eşleşme metinleri - Tablo 1'deki "Basınç ayar otomatiği" ile çakışmayı önler
     const sorular = [
-        { field: 'soru1ArizaKarti', text: 'arıza kartı' },
-        { field: 'soru2TseCe', text: 'TSE/CE' },
-        { field: 'soru3YagToz', text: 'yağ/toz' },
-        { field: 'soru4BasincAyar', text: 'Basınç ayar otomatiği' },
-        { field: 'soru5KayisKasnak', text: 'Kayış-kasnak' },
-        { field: 'soru6ElektrikMotor', text: 'Elektrik motoru' },
-        { field: 'soru7VanaHortum', text: 'vana/hortum' },
-        { field: 'soru8HavaFiltresi', text: 'Hava Filtresi' },
-        { field: 'soru9YanginSondurucu', text: 'Yangın söndürücü' },
-        { field: 'soru10UyariTalimat', text: 'Uyarı ve kullanma talimatı' }
+        { field: 'soru1ArizaKarti', text: 'arıza kartı var mı' },
+        { field: 'soru2TseCe', text: 'TSE/CE işareti var mı' },
+        { field: 'soru3YagToz', text: 'yağ/toz var mı' },
+        { field: 'soru4BasincAyar', text: 'otomatiği çalışıyor mu' },
+        { field: 'soru5KayisKasnak', text: 'koruyucu sacı var mı' },
+        { field: 'soru6ElektrikMotor', text: 'gevşeklik var mı' },
+        { field: 'soru7VanaHortum', text: 'hava kaçağı var mı' },
+        { field: 'soru8HavaFiltresi', text: 'Filtresi temiz mi' },
+        { field: 'soru9YanginSondurucu', text: 'söndürücü yeri' },
+        { field: 'soru10UyariTalimat', text: 'kullanma talimatı durumu' }
     ];
 
     for (const soru of sorular) {
@@ -200,11 +218,32 @@ async function generateKompresorWord(rapor, isEmri, options = {}) {
         docXml = fillNotlarTable(docXml, rapor.notlar || options.notlar);
     }
 
-    // === 6. SONUÇ ===
-    const sonucMetni = rapor.genelSonuc === 'UYGUN' ? 'uygundur' : 'uygun değildir';
+    // === 6. SONUÇ (renkli) ===
+    // Şablondaki "uygundur" kelimesi ayrı bir <w:t> tag'inde (index 74)
+    // Bunu bulup hem metni hem rengini değiştiriyoruz
+    const sonucUygun = (rapor.genelSonuc || options.genelSonuc) === 'UYGUN';
+    const sonucMetni = sonucUygun ? 'uygundur' : 'uygun değildir';
+    const sonucRenk = sonucUygun ? '059669' : 'DC2626';
+
+    // "uygundur" tam eşleşme ile <w:r> bloğunu bul ve değiştir
     docXml = docXml.replace(
-        /(kullanımı\s*)(uygundur|uygun değildir)/gi,
-        `$1${sonucMetni}`
+        /(<w:r\b[^>]*>)([\s\S]*?)(<w:t[^>]*>)\s*(uygundur)\s*(<\/w:t>)/i,
+        (match, rOpen, rContent, tOpen, oldText, tClose) => {
+            const colorTag = `<w:color w:val="${sonucRenk}"/>`;
+            const boldTag = '<w:b/>';
+            // rPr varsa renk ekle/değiştir, yoksa oluştur
+            if (rContent.includes('<w:rPr>')) {
+                let newContent = rContent;
+                if (newContent.includes('<w:color')) {
+                    newContent = newContent.replace(/<w:color[^/]*\/>/g, colorTag);
+                } else {
+                    newContent = newContent.replace('</w:rPr>', `${colorTag}${boldTag}</w:rPr>`);
+                }
+                return `${rOpen}${newContent}${tOpen}${escapeXml(sonucMetni)}${tClose}`;
+            } else {
+                return `${rOpen}<w:rPr>${colorTag}${boldTag}</w:rPr>${rContent}${tOpen}${escapeXml(sonucMetni)}${tClose}`;
+            }
+        }
     );
 
     // === 7. YETKİLİ KİŞİ ===
@@ -217,7 +256,7 @@ async function generateKompresorWord(rapor, isEmri, options = {}) {
         docXml = setValueByLabel(docXml, 'Ekipnet Kayıt No', options.tekniker.ekipnetNo);
     }
 
-    // Güncellenmiş XML'i kaydet
+    // Güncellenmiş XML'leri kaydet
     zip.file('word/document.xml', docXml);
 
     return await zip.generateAsync({

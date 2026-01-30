@@ -40,12 +40,6 @@
         .kontrol-item select.uygun { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
         .kontrol-item select.uygun-degil { background: #ffebee; border-color: #f44336; color: #c62828; }
 
-        .sonuc-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
-        .sonuc-btn { padding: 32px; border: 2px solid #e0e0e0; border-radius: 12px; text-align: center; cursor: pointer; background: white; }
-        .sonuc-btn.uygun:hover, .sonuc-btn.uygun.active { border-color: #4caf50; background: #e8f5e9; }
-        .sonuc-btn.uygunsuz:hover, .sonuc-btn.uygunsuz.active { border-color: #f44336; background: #ffebee; }
-        .sonuc-btn .icon { font-size: 48px; margin-bottom: 12px; }
-        .sonuc-btn h3 { font-size: 18px; }
 
         .footer-buttons { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px 24px; display: flex; gap: 16px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 100; }
         .footer-buttons .btn { flex: 1; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -85,22 +79,33 @@
             </div>
         </div>
 
-        <!-- Firma Bilgileri -->
+        <!-- Firma & Rapor Bilgileri -->
         <div class="card">
-            <div class="card-header" onclick="toggleSection('firmaSection')"><span>Firma Bilgileri</span><span class="badge">Otomatik</span></div>
+            <div class="card-header" onclick="toggleSection('firmaSection')"><span>Firma & Rapor Bilgileri</span><span>&#9650;</span></div>
             <div class="card-body" id="firmaSection">
-                <div class="form-group"><label class="form-label">Firma Adı</label><input type="text" id="firmaAdi" class="form-control" disabled></div>
-                <div class="form-group"><label class="form-label">Adres</label><input type="text" id="firmaAdres" class="form-control" disabled></div>
-            </div>
-        </div>
-
-        <!-- Tarih -->
-        <div class="card">
-            <div class="card-header" onclick="toggleSection('tarihSection')"><span>Tarih Bilgileri</span><span>&#9650;</span></div>
-            <div class="card-body" id="tarihSection">
                 <div class="form-row">
-                    <div class="form-group"><label class="form-label">Başlangıç Tarihi</label><input type="date" id="baslangicTarihi" class="form-control"></div>
-                    <div class="form-group"><label class="form-label">Bitiş Tarihi</label><input type="date" id="bitisTarihi" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Firma Adı <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="firmaAdi" class="form-control" disabled></div>
+                    <div class="form-group"><label class="form-label">Bölümü</label><input type="text" id="bolumu" class="form-control" placeholder="Üretim, Bakım vb."></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Adresi <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="firmaAdres" class="form-control" disabled></div>
+                    <div class="form-group"><label class="form-label">Kontrol Tarihi</label><input type="date" id="kontrolTarihi" class="form-control"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Tel/Fax <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="firmaTelefon" class="form-control" disabled></div>
+                    <div class="form-group"><label class="form-label">Rapor Tarihi</label><input type="date" id="raporTarihi" class="form-control"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">E-mail <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="firmaEmail" class="form-control" disabled></div>
+                    <div class="form-group"><label class="form-label">Sonraki Kontrol Tarihi</label><input type="date" id="sonrakiKontrolTarihi" class="form-control"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Web <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="firmaWeb" class="form-control" disabled></div>
+                    <div class="form-group"><label class="form-label">Rapor No <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="raporNo" class="form-control" disabled placeholder="Kaydettiğinizde oluşturulur"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">SGK Sicil No</label><input type="text" id="sgkSicilNo" class="form-control" placeholder="SGK Sicil No"></div>
+                    <div class="form-group"><label class="form-label">İSG-KATİP Sözleşme ID</label><input type="text" id="isgKatipNo" class="form-control" placeholder="İSG-KATİP No"></div>
                 </div>
             </div>
         </div>
@@ -210,9 +215,14 @@
         <div class="card">
             <div class="card-header" onclick="toggleSection('sonucSection')"><span>Sonuç ve Kanaat</span><span>&#9650;</span></div>
             <div class="card-body" id="sonucSection">
-                <div class="sonuc-group">
-                    <div class="sonuc-btn uygun active" onclick="setSonuc(this,'UYGUN')"><div class="icon">&#10004;</div><h3>UYGUN</h3></div>
-                    <div class="sonuc-btn uygunsuz" onclick="setSonuc(this,'UYGUN_DEGIL')"><div class="icon">&#10008;</div><h3>UYGUN DEĞİL</h3></div>
+                <div style="background:#f8f9fa;border:1px solid #e0e0e0;border-radius:10px;padding:20px;font-size:15px;line-height:1.8;">
+                    <p>Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen "Kompresör" mevcut şartlar altında
+                        <select id="genelSonucSelect" onchange="sonucDegisti()" style="padding:8px 16px;border-radius:6px;font-size:15px;font-weight:700;border:2px solid #059669;background:#ecfdf5;color:#059669;cursor:pointer;">
+                            <option value="UYGUN">kullanımı uygundur</option>
+                            <option value="UYGUN_DEGIL">kullanımı uygun değildir</option>
+                        </select>
+                    </p>
+                    <p style="margin-top:12px;color:#666;font-size:13px;font-style:italic;">Tespit edilen hafif kusurların bir sonraki periyodik kontrol tarihine kadar giderilmesi gereklidir. (Sadece hafif kusur tespit edilmesi durumunda yazılacaktır.)</p>
                 </div>
                 <input type="hidden" id="genelSonuc" value="UYGUN">
             </div>
@@ -232,8 +242,12 @@
 
         document.addEventListener('DOMContentLoaded', async function() {
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('baslangicTarihi').value = today;
-            document.getElementById('bitisTarihi').value = today;
+            document.getElementById('kontrolTarihi').value = today;
+            document.getElementById('raporTarihi').value = today;
+            // Sonraki kontrol tarihi: 1 yıl sonra
+            const nextYear = new Date();
+            nextYear.setFullYear(nextYear.getFullYear() + 1);
+            document.getElementById('sonrakiKontrolTarihi').value = nextYear.toISOString().split('T')[0];
 
             const urlParams = new URLSearchParams(window.location.search);
             currentAltGorevId = urlParams.get('altGorevId');
@@ -251,10 +265,18 @@
 
         function toggleSection(id) { document.getElementById(id).classList.toggle('collapsed'); }
 
-        function setSonuc(el, sonuc) {
-            document.getElementById('genelSonuc').value = sonuc;
-            document.querySelectorAll('.sonuc-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
+        function sonucDegisti() {
+            const sel = document.getElementById('genelSonucSelect');
+            document.getElementById('genelSonuc').value = sel.value;
+            if (sel.value === 'UYGUN') {
+                sel.style.borderColor = '#059669';
+                sel.style.background = '#ecfdf5';
+                sel.style.color = '#059669';
+            } else {
+                sel.style.borderColor = '#dc2626';
+                sel.style.background = '#fef2f2';
+                sel.style.color = '#dc2626';
+            }
         }
 
         function updateSelectStyle(sel) {
@@ -263,6 +285,12 @@
 
         function getAllFormData() {
             return {
+                bolumu: document.getElementById('bolumu')?.value || '',
+                kontrolTarihi: document.getElementById('kontrolTarihi')?.value || '',
+                raporTarihi: document.getElementById('raporTarihi')?.value || '',
+                sonrakiKontrolTarihi: document.getElementById('sonrakiKontrolTarihi')?.value || '',
+                sgkSicilNo: document.getElementById('sgkSicilNo')?.value || '',
+                isgKatipNo: document.getElementById('isgKatipNo')?.value || '',
                 markasi: document.getElementById('markasi')?.value || '',
                 tip: document.getElementById('tip')?.value || '',
                 seriNo: document.getElementById('seriNo')?.value || '',
@@ -302,8 +330,7 @@
             try {
                 const res = await fetch(`${API_BASE}/is-emirleri/${id}`);
                 const ie = await res.json();
-                document.getElementById('firmaAdi').value = ie.customer?.unvan || '';
-                document.getElementById('firmaAdres').value = ie.customer?.adres || '';
+                firmaBilgileriniDoldur(ie.customer);
                 const sel = document.getElementById('altGorevSelect');
                 sel.innerHTML = '<option value="">Alt Görev Seçin...</option>';
                 (ie.altGorevler || []).forEach(g => { sel.innerHTML += `<option value="${g.id}">${g.siraNo}. ${g.hizmetAdi}</option>`; });
@@ -356,27 +383,38 @@
             updateWordButtonState();
         }
 
+        function firmaBilgileriniDoldur(customer) {
+            if (!customer) return;
+            document.getElementById('firmaAdi').value = customer.unvan || '';
+            document.getElementById('firmaAdres').value = customer.adres || '';
+            document.getElementById('firmaTelefon').value = customer.telefon || '';
+            document.getElementById('firmaEmail').value = customer.email || '';
+            document.getElementById('firmaWeb').value = customer.web || '';
+        }
+
         async function altGorevBilgileriniYukle(altGorevId) {
             try {
                 const res = await fetch(`${API_BASE}/alt-gorevler/${altGorevId}`);
                 if (res.ok) {
                     const altGorev = await res.json();
-                    if (altGorev.isEmri?.customer) {
-                        document.getElementById('firmaAdi').value = altGorev.isEmri.customer.unvan || '';
-                        document.getElementById('firmaAdres').value = altGorev.isEmri.customer.adres || '';
-                    }
+                    firmaBilgileriniDoldur(altGorev.isEmri?.customer);
                 }
             } catch (e) { console.error(e); }
         }
 
         function raporuFormaYukle(rapor) {
-            if (rapor.altGorev?.isEmri?.customer) {
-                document.getElementById('firmaAdi').value = rapor.altGorev.isEmri.customer.unvan || '';
-                document.getElementById('firmaAdres').value = rapor.altGorev.isEmri.customer.adres || '';
-            }
+            firmaBilgileriniDoldur(rapor.altGorev?.isEmri?.customer);
 
-            if (rapor.baslangicTarihi) document.getElementById('baslangicTarihi').value = rapor.baslangicTarihi.split('T')[0];
-            if (rapor.bitisTarihi) document.getElementById('bitisTarihi').value = rapor.bitisTarihi.split('T')[0];
+            // Rapor No
+            if (rapor.raporNo) document.getElementById('raporNo').value = rapor.raporNo;
+
+            // Üst bilgiler
+            if (rapor.bolumu) document.getElementById('bolumu').value = rapor.bolumu;
+            if (rapor.kontrolTarihi) document.getElementById('kontrolTarihi').value = rapor.kontrolTarihi;
+            if (rapor.raporTarihi) document.getElementById('raporTarihi').value = rapor.raporTarihi;
+            if (rapor.sonrakiKontrolTarihi) document.getElementById('sonrakiKontrolTarihi').value = rapor.sonrakiKontrolTarihi;
+            if (rapor.sgkSicilNo) document.getElementById('sgkSicilNo').value = rapor.sgkSicilNo;
+            if (rapor.isgKatipNo) document.getElementById('isgKatipNo').value = rapor.isgKatipNo;
 
             // Ekipman bilgileri
             if (rapor.markasi) document.getElementById('markasi').value = rapor.markasi;
@@ -400,9 +438,8 @@
             if (rapor.notlar) document.getElementById('notlar').value = rapor.notlar;
             if (rapor.genelSonuc) {
                 document.getElementById('genelSonuc').value = rapor.genelSonuc;
-                document.querySelectorAll('.sonuc-btn').forEach(b => b.classList.remove('active'));
-                if (rapor.genelSonuc === 'UYGUN') document.querySelector('.sonuc-btn.uygun').classList.add('active');
-                else document.querySelector('.sonuc-btn.uygunsuz').classList.add('active');
+                document.getElementById('genelSonucSelect').value = rapor.genelSonuc;
+                sonucDegisti();
             }
         }
 
@@ -418,8 +455,6 @@
 
                 const payload = {
                     altGorevId: parseInt(altGorevId),
-                    baslangicTarihi: document.getElementById('baslangicTarihi')?.value,
-                    bitisTarihi: document.getElementById('bitisTarihi')?.value,
                     ...formData
                 };
 
@@ -441,6 +476,7 @@
                 if (res.ok) {
                     const rapor = await res.json();
                     currentRaporId = rapor.id;
+                    if (rapor.raporNo) document.getElementById('raporNo').value = rapor.raporNo;
                     showNotification(`Rapor kaydedildi: ${rapor.raporNo}`, 'success');
                     document.getElementById('saveStatus').textContent = 'Kaydedildi';
                     updateWordButtonState();
