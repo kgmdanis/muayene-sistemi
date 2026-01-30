@@ -2281,19 +2281,23 @@ app.post('/api/elektrik-topraklama-raporu', async (req, res) => {
             return new Date(dateStr + 'T00:00:00.000Z');
         };
 
-        // Rapor numarası oluştur
-        const yil = new Date().getFullYear().toString().slice(-2);
-        const sonRapor = await auth.prisma.elektrikTopraklamaRaporu.findFirst({
-            where: { raporNo: { startsWith: `ETR-${yil}-` } },
+        // Rapor numarası: ET-{TeklifNo}-{sıra}
+        const altGorev = await auth.prisma.altGorev.findUnique({
+            where: { id: parseInt(altGorevId) },
+            include: { isEmri: { include: { teklif: true } } }
+        });
+        const teklifNo = altGorev?.isEmri?.teklif?.teklifNo || new Date().getFullYear().toString();
+        const prefix = `ET-${teklifNo}`;
+        const mevcutRaporlar = await auth.prisma.elektrikTopraklamaRaporu.findMany({
+            where: { raporNo: { startsWith: prefix } },
             orderBy: { raporNo: 'desc' }
         });
-
         let sira = 1;
-        if (sonRapor) {
-            const sonSira = parseInt(sonRapor.raporNo.split('-')[2]);
-            sira = sonSira + 1;
+        if (mevcutRaporlar.length > 0) {
+            const sonSira = parseInt(mevcutRaporlar[0].raporNo.split('-').pop());
+            if (!isNaN(sonSira)) sira = sonSira + 1;
         }
-        const raporNo = `ETR-${yil}-${sira.toString().padStart(4, '0')}`;
+        const raporNo = `${prefix}-${sira.toString().padStart(3, '0')}`;
 
         const rapor = await auth.prisma.elektrikTopraklamaRaporu.create({
             data: {
@@ -2676,19 +2680,23 @@ app.post('/api/kompresor-raporu', async (req, res) => {
             return new Date(dateStr + 'T00:00:00.000Z');
         };
 
-        // Rapor numarası: MK-YY-XXXX
-        const yil = new Date().getFullYear().toString().slice(-2);
-        const sonRapor = await auth.prisma.kompresorRaporu.findFirst({
-            where: { raporNo: { startsWith: `MK-${yil}-` } },
+        // Rapor numarası: MK-{TeklifNo}-{sıra}
+        const altGorev = await auth.prisma.altGorev.findUnique({
+            where: { id: parseInt(altGorevId) },
+            include: { isEmri: { include: { teklif: true } } }
+        });
+        const teklifNo = altGorev?.isEmri?.teklif?.teklifNo || new Date().getFullYear().toString();
+        const prefix = `MK-${teklifNo}`;
+        const mevcutRaporlar = await auth.prisma.kompresorRaporu.findMany({
+            where: { raporNo: { startsWith: prefix } },
             orderBy: { raporNo: 'desc' }
         });
-
         let sira = 1;
-        if (sonRapor) {
-            const sonSira = parseInt(sonRapor.raporNo.split('-')[2]);
-            sira = sonSira + 1;
+        if (mevcutRaporlar.length > 0) {
+            const sonSira = parseInt(mevcutRaporlar[0].raporNo.split('-').pop());
+            if (!isNaN(sonSira)) sira = sonSira + 1;
         }
-        const raporNo = `MK-${yil}-${sira.toString().padStart(4, '0')}`;
+        const raporNo = `${prefix}-${sira.toString().padStart(3, '0')}`;
 
         const rapor = await auth.prisma.kompresorRaporu.create({
             data: {
