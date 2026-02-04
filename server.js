@@ -26,6 +26,34 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+// Sertifika dosyaları için multer konfigürasyonu
+const sertifikaStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadDir = path.join(__dirname, 'public', 'uploads', 'sertifikalar');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        cb(null, 'sertifika-' + uniqueSuffix + ext);
+    }
+});
+const sertifikaUpload = multer({
+    storage: sertifikaStorage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Sadece PDF ve resim dosyaları yüklenebilir'));
+        }
+    }
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -496,6 +524,50 @@ app.get('/api/kategoriler', auth.authMiddleware(), async (req, res) => {
     }
 });
 
+app.post('/api/kategoriler', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        const { ad } = req.body;
+        if (!ad) return res.status(400).json({ error: 'Kategori adı zorunludur' });
+
+        const maxSira = await auth.prisma.kategori.aggregate({ _max: { sira: true } });
+        const kategori = await auth.prisma.kategori.create({
+            data: { ad, sira: (maxSira._max.sira || 0) + 1 }
+        });
+        res.json(kategori);
+    } catch (error) {
+        res.status(500).json({ error: 'Kategori eklenemedi' });
+    }
+});
+
+app.put('/api/kategoriler/:id', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { ad } = req.body;
+        if (!ad) return res.status(400).json({ error: 'Kategori adı zorunludur' });
+
+        const kategori = await auth.prisma.kategori.update({
+            where: { id: parseInt(id) },
+            data: { ad }
+        });
+        res.json(kategori);
+    } catch (error) {
+        res.status(500).json({ error: 'Kategori güncellenemedi' });
+    }
+});
+
+app.delete('/api/kategoriler/:id', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        // Önce kategorideki hizmetleri sil
+        await auth.prisma.hizmet.deleteMany({ where: { kategoriId: parseInt(id) } });
+        // Sonra kategoriyi sil
+        await auth.prisma.kategori.delete({ where: { id: parseInt(id) } });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Kategori silinemedi' });
+    }
+});
+
 app.get('/api/hizmetler', auth.authMiddleware(), async (req, res) => {
     try {
         const hizmetler = await auth.prisma.hizmet.findMany({
@@ -896,7 +968,7 @@ app.get('/api/teklifler/:id/pdf', auth.authMiddleware(), async (req, res) => {
 
         // Firma bilgilerini ekle
         const firma = await auth.prisma.firmaAyarlari.findFirst();
-        teklif.firma = firma;
+        teklif.tenant = firma;
 
         // TÜM kategorileri ve hizmetleri çek (metodKapsam dahil)
         const tumKategoriler = await auth.prisma.kategori.findMany({
@@ -1841,7 +1913,7 @@ app.get('/api/sertifika-sablonlari', auth.authMiddleware(), async (req, res) => 
 
 app.post('/api/teklifler/:id/send-email', auth.authMiddleware('admin'), async (req, res) => {
     try {
-        const { customMessage, smtpConfig } = req.body;
+        const { customMessage, smtpConfig, emails } = req.body;
 
         const teklif = await auth.prisma.teklif.findUnique({
             where: { id: parseInt(req.params.id) },
@@ -1864,10 +1936,18 @@ app.post('/api/teklifler/:id/send-email', auth.authMiddleware('admin'), async (r
 
         // Firma bilgilerini ekle
         const firma = await auth.prisma.firmaAyarlari.findFirst();
-        teklif.firma = firma;
+        teklif.tenant = firma;
 
-        if (!teklif.customer?.email || teklif.customer.email === '-') {
-            return res.status(400).json({ error: 'Müşteri email adresi tanımlı değil' });
+        // Email listesini belirle (frontend'den gelen veya müşteri emaili)
+        let emailList = [];
+        if (emails && Array.isArray(emails) && emails.length > 0) {
+            emailList = emails.filter(e => e && e.includes('@'));
+        } else if (teklif.customer?.email && teklif.customer.email !== '-') {
+            emailList = [teklif.customer.email];
+        }
+
+        if (emailList.length === 0) {
+            return res.status(400).json({ error: 'Geçerli bir email adresi bulunamadı' });
         }
 
         const smtp = smtpConfig || {
@@ -1881,18 +1961,34 @@ app.post('/api/teklifler/:id/send-email', auth.authMiddleware('admin'), async (r
             return res.status(400).json({ error: 'Email ayarları yapılandırılmamış. Lütfen SMTP ayarlarını kontrol edin.' });
         }
 
-        const result = await emailService.sendTeklifEmail(teklif, smtp, customMessage);
+        // Her email adresine gönder
+        const results = [];
+        for (const email of emailList) {
+            try {
+                // Teklif objesine geçici olarak email ekle
+                const teklifCopy = { ...teklif, customer: { ...teklif.customer, email } };
+                const result = await emailService.sendTeklifEmail(teklifCopy, smtp, customMessage);
+                results.push({ email, success: true, messageId: result.messageId });
+            } catch (err) {
+                console.error(`Email gönderme hatası (${email}):`, err.message);
+                results.push({ email, success: false, error: err.message });
+            }
+        }
 
-        await auth.prisma.teklif.update({
-            where: { id: teklif.id },
-            data: { durum: 'GONDERILDI' }
-        });
+        // En az bir başarılı gönderim varsa durumu güncelle
+        const successCount = results.filter(r => r.success).length;
+        if (successCount > 0) {
+            await auth.prisma.teklif.update({
+                where: { id: teklif.id },
+                data: { durum: 'GONDERILDI' }
+            });
+        }
 
         res.json({
-            success: true,
-            message: 'Teklif başarıyla gönderildi',
-            to: result.to,
-            messageId: result.messageId
+            success: successCount > 0,
+            message: `${successCount}/${emailList.length} email gönderildi`,
+            sentTo: results.filter(r => r.success).map(r => r.email).join(', '),
+            results
         });
 
     } catch (error) {
@@ -1948,7 +2044,7 @@ app.get('/api/teklifler/:id/pdf-excel', auth.authMiddleware(), async (req, res) 
 
         // Firma bilgilerini ekle
         const firma = await auth.prisma.firmaAyarlari.findFirst();
-        teklif.firma = firma;
+        teklif.tenant = firma;
 
         const pdfBuffer = await emailService.createTeklifPDFBuffer(teklif);
 
@@ -2063,6 +2159,206 @@ app.get('/api/olcum-cihazlari-kalibrasyon-uyari', async (req, res) => {
         res.json(cihazlar);
     } catch (error) {
         console.error('Kalibrasyon uyarı hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Cihaz detayı ile kalibrasyon geçmişi
+app.get('/api/olcum-cihazlari/:id/detay', async (req, res) => {
+    try {
+        const cihaz = await auth.prisma.olcumCihazi.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                kalibrasyonGecmisi: {
+                    orderBy: { kalibrasyonTarihi: 'desc' }
+                }
+            }
+        });
+        if (!cihaz) {
+            return res.status(404).json({ error: 'Cihaz bulunamadı' });
+        }
+        res.json(cihaz);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kalibrasyon geçmişi listele
+app.get('/api/olcum-cihazlari/:id/kalibrasyon-gecmisi', async (req, res) => {
+    try {
+        const gecmis = await auth.prisma.kalibrasyonGecmisi.findMany({
+            where: { cihazId: parseInt(req.params.id) },
+            orderBy: { kalibrasyonTarihi: 'desc' }
+        });
+        res.json(gecmis);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kalibrasyon geçmişi ekle
+app.post('/api/olcum-cihazlari/:id/kalibrasyon-gecmisi', async (req, res) => {
+    try {
+        const cihazId = parseInt(req.params.id);
+        const { kalibrasyonTarihi, gecerlilikTarihi, sertifikaNo, kalibrasyonYapan, maliyet, notlar } = req.body;
+
+        // Kalibrasyon geçmişine ekle
+        const gecmis = await auth.prisma.kalibrasyonGecmisi.create({
+            data: {
+                cihazId,
+                kalibrasyonTarihi: new Date(kalibrasyonTarihi),
+                gecerlilikTarihi: new Date(gecerlilikTarihi),
+                sertifikaNo,
+                kalibrasyonYapan,
+                maliyet: maliyet ? parseFloat(maliyet) : null,
+                notlar
+            }
+        });
+
+        // Cihazın güncel kalibrasyon bilgilerini güncelle
+        await auth.prisma.olcumCihazi.update({
+            where: { id: cihazId },
+            data: {
+                kalibrasyonTarihi: new Date(kalibrasyonTarihi),
+                kalibrasyonGecerlilik: new Date(gecerlilikTarihi),
+                kalibrasyonNo: sertifikaNo
+            }
+        });
+
+        res.json(gecmis);
+    } catch (error) {
+        console.error('Kalibrasyon ekleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kalibrasyon geçmişi sil
+app.delete('/api/kalibrasyon-gecmisi/:id', async (req, res) => {
+    try {
+        await auth.prisma.kalibrasyonGecmisi.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Cihaz durum güncelle
+app.patch('/api/olcum-cihazlari/:id/durum', async (req, res) => {
+    try {
+        const { durum } = req.body;
+        const cihaz = await auth.prisma.olcumCihazi.update({
+            where: { id: parseInt(req.params.id) },
+            data: { durum }
+        });
+        res.json(cihaz);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Sertifika dosyası yükleme
+app.post('/api/olcum-cihazlari/:id/sertifika', sertifikaUpload.single('sertifika'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'Dosya yüklenmedi' });
+        }
+
+        const dosyaYolu = '/uploads/' + req.file.filename;
+        const cihazId = parseInt(req.params.id);
+        const gecmisId = req.body.gecmisId ? parseInt(req.body.gecmisId) : null;
+
+        // Kalibrasyon geçmişine sertifika ekle
+        if (gecmisId) {
+            await auth.prisma.kalibrasyonGecmisi.update({
+                where: { id: gecmisId },
+                data: { sertifikaDosya: dosyaYolu }
+            });
+        }
+
+        // Cihaza da sertifika ekle
+        await auth.prisma.olcumCihazi.update({
+            where: { id: cihazId },
+            data: { sertifikaDosya: dosyaYolu }
+        });
+
+        res.json({ success: true, dosyaYolu });
+    } catch (error) {
+        console.error('Sertifika yükleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Kalibrasyon hatırlatma emaili gönder
+app.post('/api/olcum-cihazlari/kalibrasyon-hatirlatma', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        const { cihazIds, email } = req.body;
+
+        const cihazlar = await auth.prisma.olcumCihazi.findMany({
+            where: { id: { in: cihazIds } }
+        });
+
+        if (cihazlar.length === 0) {
+            return res.status(400).json({ error: 'Cihaz bulunamadı' });
+        }
+
+        const smtp = {
+            host: process.env.SMTP_HOST || 'smtp.gmail.com',
+            port: parseInt(process.env.SMTP_PORT) || 587,
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
+        };
+
+        if (!smtp.user || !smtp.pass) {
+            return res.status(400).json({ error: 'Email ayarları yapılandırılmamış' });
+        }
+
+        const nodemailer = require('nodemailer');
+        const transporter = nodemailer.createTransport({
+            host: smtp.host,
+            port: smtp.port,
+            secure: false,
+            auth: { user: smtp.user, pass: smtp.pass }
+        });
+
+        let cihazListesi = cihazlar.map(c => {
+            const gecerlilik = c.kalibrasyonGecerlilik ? new Date(c.kalibrasyonGecerlilik).toLocaleDateString('tr-TR') : '-';
+            return `<tr><td>${c.cihazAdi}</td><td>${c.marka || ''} ${c.model || ''}</td><td>${c.seriNo || '-'}</td><td>${gecerlilik}</td></tr>`;
+        }).join('');
+
+        const htmlContent = `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+            <div style="background:#1a5f7a;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;">
+                <h2 style="margin:0;">⚠️ Kalibrasyon Hatırlatması</h2>
+            </div>
+            <div style="padding:20px;border:1px solid #ddd;border-top:none;">
+                <p>Aşağıdaki cihazların kalibrasyon süresi dolmuş veya dolmak üzere:</p>
+                <table style="width:100%;border-collapse:collapse;margin:15px 0;">
+                    <thead>
+                        <tr style="background:#f5f5f5;">
+                            <th style="padding:10px;border:1px solid #ddd;text-align:left;">Cihaz</th>
+                            <th style="padding:10px;border:1px solid #ddd;text-align:left;">Marka/Model</th>
+                            <th style="padding:10px;border:1px solid #ddd;text-align:left;">Seri No</th>
+                            <th style="padding:10px;border:1px solid #ddd;text-align:left;">Geçerlilik</th>
+                        </tr>
+                    </thead>
+                    <tbody>${cihazListesi}</tbody>
+                </table>
+                <p style="color:#666;">Lütfen kalibrasyon işlemlerini planlamayı unutmayın.</p>
+            </div>
+        </div>`;
+
+        await transporter.sendMail({
+            from: smtp.user,
+            to: email,
+            subject: '⚠️ Kalibrasyon Hatırlatması - ÖNDER MUAYENE',
+            html: htmlContent
+        });
+
+        res.json({ success: true, message: 'Hatırlatma emaili gönderildi' });
+    } catch (error) {
+        console.error('Kalibrasyon hatırlatma hatası:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -2190,6 +2486,7 @@ app.get('/api/raporlar', async (req, res) => {
 
         const where = {};
         const whereKompresor = {};
+        const whereHavaTanki = {};
 
         // Tekniker ise sadece kendi kategorisindeki raporları göster
         if (role === 'tekniker' && kategori) {
@@ -2197,6 +2494,9 @@ app.get('/api/raporlar', async (req, res) => {
                 hizmetAdi: { contains: kategori, mode: 'insensitive' }
             };
             whereKompresor.altGorev = {
+                hizmetAdi: { contains: kategori, mode: 'insensitive' }
+            };
+            whereHavaTanki.altGorev = {
                 hizmetAdi: { contains: kategori, mode: 'insensitive' }
             };
         }
@@ -2260,7 +2560,36 @@ app.get('/api/raporlar', async (req, res) => {
             isEmriNo: r.altGorev?.isEmri?.isEmriNo || '-'
         }));
 
-        const formattedRaporlar = [...formattedElektrik, ...formattedKompresor]
+        // Hava tankı raporları
+        const havaTankiRaporlar = await auth.prisma.havaTankiRaporu.findMany({
+            where: whereHavaTanki,
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        const formattedHavaTanki = havaTankiRaporlar.map(r => ({
+            id: r.id,
+            raporNo: r.raporNo,
+            raporTipi: 'Hava Tankı',
+            firmaAdi: r.altGorev?.isEmri?.customer?.unvan || '-',
+            tarih: r.createdAt,
+            baslangicTarihi: r.baslangicTarihi,
+            bitisTarihi: r.bitisTarihi,
+            sonuc: r.genelSonuc || '-',
+            durum: r.genelSonuc ? 'Tamamlandı' : 'Taslak',
+            altGorevId: r.altGorevId,
+            isEmriNo: r.altGorev?.isEmri?.isEmriNo || '-'
+        }));
+
+        const formattedRaporlar = [...formattedElektrik, ...formattedKompresor, ...formattedHavaTanki]
             .sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
 
         res.json(formattedRaporlar);
@@ -2873,6 +3202,480 @@ app.post('/api/kompresor-raporu/:id/word', async (req, res) => {
 
     } catch (error) {
         console.error('Kompresör Word dosyası oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ HAVA TANKI MUAYENE RAPORU API ============
+
+// Hava tankı rapor listesi
+app.get('/api/hava-tanki-raporu', async (req, res) => {
+    try {
+        const raporlar = await auth.prisma.havaTankiRaporu.findMany({
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(raporlar);
+    } catch (error) {
+        console.error('Hava tankı rapor listesi hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Hava tankı raporu oluştur
+app.post('/api/hava-tanki-raporu', async (req, res) => {
+    try {
+        const { altGorevId, baslangicTarihi, bitisTarihi, ...data } = req.body;
+
+        const convertDate = (dateStr) => {
+            if (!dateStr) return null;
+            return new Date(dateStr + 'T00:00:00.000Z');
+        };
+
+        // Rapor numarası: MK-{TeklifNo}-{sıra}
+        const altGorev = await auth.prisma.altGorev.findUnique({
+            where: { id: parseInt(altGorevId) },
+            include: { isEmri: { include: { teklif: true } } }
+        });
+        const teklifNo = altGorev?.isEmri?.teklif?.teklifNo || new Date().getFullYear().toString();
+        const prefix = `MK-${teklifNo}`;
+        const mevcutRaporlar = await auth.prisma.havaTankiRaporu.findMany({
+            where: { raporNo: { startsWith: prefix } },
+            orderBy: { raporNo: 'desc' }
+        });
+        let sira = 1;
+        if (mevcutRaporlar.length > 0) {
+            const sonSira = parseInt(mevcutRaporlar[0].raporNo.split('-').pop());
+            if (!isNaN(sonSira)) sira = sonSira + 1;
+        }
+        const raporNo = `${prefix}-${sira.toString().padStart(3, '0')}`;
+
+        const rapor = await auth.prisma.havaTankiRaporu.create({
+            data: {
+                raporNo,
+                altGorevId: parseInt(altGorevId),
+                baslangicTarihi: convertDate(baslangicTarihi),
+                bitisTarihi: convertDate(bitisTarihi),
+                ...data
+            },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Alt görevin raporNo alanını güncelle
+        await auth.prisma.altGorev.update({
+            where: { id: parseInt(altGorevId) },
+            data: { raporNo }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Hava tankı raporu oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Alt görev için hava tankı raporu getir
+app.get('/api/hava-tanki-raporu/alt-gorev/:altGorevId', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.havaTankiRaporu.findFirst({
+            where: { altGorevId: parseInt(req.params.altGorevId) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Hava tankı raporu getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Hava tankı raporu getir (ID ile)
+app.get('/api/hava-tanki-raporu/:id', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.havaTankiRaporu.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!rapor) {
+            return res.status(404).json({ error: 'Rapor bulunamadı' });
+        }
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Hava tankı raporu getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Hava tankı raporu güncelle
+app.put('/api/hava-tanki-raporu/:id', async (req, res) => {
+    try {
+        const { baslangicTarihi, bitisTarihi, ...raporData } = req.body;
+
+        const convertDate = (dateStr) => {
+            if (!dateStr) return null;
+            if (dateStr instanceof Date) return dateStr;
+            if (dateStr.includes('T')) return new Date(dateStr);
+            return new Date(dateStr + 'T00:00:00.000Z');
+        };
+
+        const rapor = await auth.prisma.havaTankiRaporu.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                ...raporData,
+                baslangicTarihi: convertDate(baslangicTarihi),
+                bitisTarihi: convertDate(bitisTarihi)
+            }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Hava tankı raporu güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Hava tankı raporu sil
+app.delete('/api/hava-tanki-raporu/:id', async (req, res) => {
+    try {
+        await auth.prisma.havaTankiRaporu.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Hava tankı raporu silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Hava tankı raporu için Word dosyası oluştur
+app.post('/api/hava-tanki-raporu/:id/word', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.havaTankiRaporu.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!rapor) {
+            return res.status(404).json({ error: 'Rapor bulunamadı' });
+        }
+
+        const havaTankiWordService = require('./services/havaTankiWordService');
+        const isEmri = rapor.altGorev?.isEmri;
+
+        const options = {
+            ...req.body,
+            tekniker: req.body.tekniker || {}
+        };
+
+        const wordBuffer = await havaTankiWordService.generateHavaTankiWord(rapor, isEmri, options);
+
+        const filename = `${rapor.raporNo || 'Rapor'}_${Date.now()}.docx`;
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(wordBuffer);
+
+    } catch (error) {
+        console.error('Hava tankı Word dosyası oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ GENERIC RAPOR API ============
+
+const genericWordService = require('./services/genericWordService');
+
+// Şablon listesi
+app.get('/api/rapor-sablonu', async (req, res) => {
+    try {
+        // Önce DB'den dene
+        let sablonlar = await auth.prisma.raporSablonu.findMany({
+            where: { isActive: true },
+            select: { id: true, sablonKodu: true, sablonAdi: true, kategori: true }
+        });
+
+        // DB boşsa JSON dosyalarından oku
+        if (sablonlar.length === 0) {
+            const configDir = path.join(__dirname, 'services', 'templateConfigs');
+            if (fs.existsSync(configDir)) {
+                const files = fs.readdirSync(configDir).filter(f => f.endsWith('.json'));
+                sablonlar = files.map(f => {
+                    try {
+                        const config = JSON.parse(fs.readFileSync(path.join(configDir, f), 'utf8'));
+                        return {
+                            sablonKodu: config.sablonKodu,
+                            sablonAdi: config.sablonAdi,
+                            kategori: config.kategori || config.altKategori || 'diğer'
+                        };
+                    } catch (e) { return null; }
+                }).filter(Boolean);
+            }
+        }
+
+        // Kategoriye göre sırala
+        sablonlar.sort((a, b) => (a.kategori || '').localeCompare(b.kategori || '') || (a.sablonKodu || '').localeCompare(b.sablonKodu || ''));
+        res.json(sablonlar);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Şablon config getir
+app.get('/api/rapor-sablonu/:kod', async (req, res) => {
+    try {
+        const sablon = await auth.prisma.raporSablonu.findUnique({
+            where: { sablonKodu: req.params.kod }
+        });
+        if (!sablon) {
+            // DB'de yoksa dosyadan yükle
+            try {
+                const config = genericWordService.loadConfig(req.params.kod);
+                return res.json({ sablonKodu: req.params.kod, config });
+            } catch (e) {
+                return res.status(404).json({ error: 'Şablon bulunamadı' });
+            }
+        }
+        res.json(sablon);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor listesi (şablon koduna göre)
+app.get('/api/rapor/:sablonKodu', async (req, res) => {
+    try {
+        const raporlar = await auth.prisma.rapor.findMany({
+            where: { sablonKodu: req.params.sablonKodu },
+            include: {
+                altGorev: {
+                    include: { isEmri: { include: { customer: true } } }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(raporlar);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor oluştur
+app.post('/api/rapor/:sablonKodu', async (req, res) => {
+    try {
+        const { altGorevId, sgkSicilNo, isgKatipNo, baslangicTarihi, bitisTarihi, genelSonuc, formData } = req.body;
+
+        const convertDate = (dateStr) => {
+            if (!dateStr) return null;
+            return new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00.000Z');
+        };
+
+        // Rapor numarası oluştur
+        const altGorev = await auth.prisma.altGorev.findUnique({
+            where: { id: parseInt(altGorevId) },
+            include: { isEmri: { include: { teklif: true } } }
+        });
+        const teklifNo = altGorev?.isEmri?.teklif?.teklifNo || new Date().getFullYear().toString();
+
+        // Config'den prefix al
+        let prefix = 'MK';
+        try {
+            const config = genericWordService.loadConfig(req.params.sablonKodu);
+            prefix = config.raporNoPrefix || 'MK';
+        } catch (e) {}
+
+        const raporNoPrefix = `${prefix}-${teklifNo}`;
+        const mevcutRaporlar = await auth.prisma.rapor.findMany({
+            where: { raporNo: { startsWith: raporNoPrefix } },
+            orderBy: { raporNo: 'desc' }
+        });
+        let sira = 1;
+        if (mevcutRaporlar.length > 0) {
+            const sonSira = parseInt(mevcutRaporlar[0].raporNo.split('-').pop());
+            if (!isNaN(sonSira)) sira = sonSira + 1;
+        }
+        const raporNo = `${raporNoPrefix}-${sira.toString().padStart(3, '0')}`;
+
+        const rapor = await auth.prisma.rapor.create({
+            data: {
+                raporNo,
+                sablonKodu: req.params.sablonKodu,
+                altGorevId: parseInt(altGorevId),
+                sgkSicilNo: sgkSicilNo || null,
+                isgKatipNo: isgKatipNo || null,
+                baslangicTarihi: convertDate(baslangicTarihi),
+                bitisTarihi: convertDate(bitisTarihi),
+                genelSonuc: genelSonuc || null,
+                formData: formData || {}
+            },
+            include: {
+                altGorev: {
+                    include: { isEmri: { include: { customer: true, firmaBilgi: true } } }
+                }
+            }
+        });
+
+        // Alt görevin raporNo alanını güncelle
+        await auth.prisma.altGorev.update({
+            where: { id: parseInt(altGorevId) },
+            data: { raporNo }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('Generic rapor oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Alt görev ile rapor getir
+app.get('/api/rapor/:sablonKodu/alt-gorev/:altGorevId', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.rapor.findFirst({
+            where: {
+                sablonKodu: req.params.sablonKodu,
+                altGorevId: parseInt(req.params.altGorevId)
+            },
+            include: {
+                altGorev: {
+                    include: { isEmri: { include: { customer: true, firmaBilgi: true } } }
+                }
+            }
+        });
+        res.json(rapor);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor getir (ID ile)
+app.get('/api/rapor/:sablonKodu/:id', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.rapor.findFirst({
+            where: { id: parseInt(req.params.id), sablonKodu: req.params.sablonKodu },
+            include: {
+                altGorev: {
+                    include: { isEmri: { include: { customer: true, firmaBilgi: true } } }
+                }
+            }
+        });
+        if (!rapor) return res.status(404).json({ error: 'Rapor bulunamadı' });
+        res.json(rapor);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor güncelle
+app.put('/api/rapor/:sablonKodu/:id', async (req, res) => {
+    try {
+        const { sgkSicilNo, isgKatipNo, baslangicTarihi, bitisTarihi, genelSonuc, formData } = req.body;
+
+        const convertDate = (dateStr) => {
+            if (!dateStr) return null;
+            if (dateStr instanceof Date) return dateStr;
+            return new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00.000Z');
+        };
+
+        const rapor = await auth.prisma.rapor.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                sgkSicilNo, isgKatipNo,
+                baslangicTarihi: convertDate(baslangicTarihi),
+                bitisTarihi: convertDate(bitisTarihi),
+                genelSonuc, formData: formData || {}
+            }
+        });
+        res.json(rapor);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor sil
+app.delete('/api/rapor/:sablonKodu/:id', async (req, res) => {
+    try {
+        await auth.prisma.rapor.delete({ where: { id: parseInt(req.params.id) } });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Generic Word oluştur
+app.post('/api/rapor/:sablonKodu/:id/word', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.rapor.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                altGorev: {
+                    include: { isEmri: { include: { customer: true, firmaBilgi: true } } }
+                }
+            }
+        });
+
+        if (!rapor) return res.status(404).json({ error: 'Rapor bulunamadı' });
+
+        const isEmri = rapor.altGorev?.isEmri;
+        const options = { ...req.body, tekniker: req.body.tekniker || {} };
+
+        const wordBuffer = await genericWordService.generateGenericWord(rapor, isEmri, options);
+
+        const filename = `${rapor.raporNo || 'Rapor'}_${Date.now()}.docx`;
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(filename)}"`);
+        res.send(wordBuffer);
+    } catch (error) {
+        console.error('Generic Word oluşturma hatası:', error);
         res.status(500).json({ error: error.message });
     }
 });

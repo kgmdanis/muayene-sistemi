@@ -16,10 +16,12 @@ let authToken = null;
 
 // Pagination değişkenleri
 const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE_MUSTERI = 10; // Müşteriler için son 10
 let currentPageMusteri = 1;
 let currentPageTeklif = 1;
 let currentPageMuayene = 1;
 let currentPageSertifika = 1;
+let showAllMusteriler = false; // Tüm müşterileri göster
 
 // Arama filtresi
 let musteriSearchTerm = '';
@@ -396,30 +398,49 @@ function renderMusteriTable() {
     const tbody = document.querySelector('#musteri-table tbody');
     const container = document.querySelector('#musteri-table').parentElement;
 
+    // Müşterileri tarihe göre sırala (en yeni önce)
+    let sortedMusteriler = [...musteriler].sort((a, b) => {
+        const dateA = new Date(a.updatedAt || a.createdAt || 0);
+        const dateB = new Date(b.updatedAt || b.createdAt || 0);
+        return dateB - dateA;
+    });
+
     // Arama filtresini uygula
-    let filteredMusteriler = musteriler;
+    let filteredMusteriler = sortedMusteriler;
     if (musteriSearchTerm) {
-        filteredMusteriler = musteriler.filter(musteri => {
+        filteredMusteriler = sortedMusteriler.filter(musteri => {
             return musteri.unvan.toLowerCase().includes(musteriSearchTerm) ||
                 (musteri.vergiNo && musteri.vergiNo.toLowerCase().includes(musteriSearchTerm)) ||
-                (musteri.telefon && musteri.telefon.toLowerCase().includes(musteriSearchTerm));
+                (musteri.telefon && musteri.telefon.toLowerCase().includes(musteriSearchTerm)) ||
+                (musteri.email && musteri.email.toLowerCase().includes(musteriSearchTerm)) ||
+                (musteri.yetkiliKisi && musteri.yetkiliKisi.toLowerCase().includes(musteriSearchTerm));
         });
     }
 
     if (filteredMusteriler.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Henüz müşteri kaydı bulunmamaktadır</td></tr>';
-        // Pagination'ı temizle
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Müşteri bulunamadı</td></tr>';
         const existingPagination = container.querySelector('.pagination-container');
         if (existingPagination) existingPagination.remove();
         return;
     }
 
-    // Pagination hesapla
-    const startIndex = (currentPageMusteri - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    const paginatedMusteriler = filteredMusteriler.slice(startIndex, endIndex);
+    // Arama varsa veya tümünü göster aktifse tüm sonuçları sayfalama ile göster
+    // Yoksa sadece son 10 müşteriyi göster
+    const itemsPerPage = (musteriSearchTerm || showAllMusteriler) ? ITEMS_PER_PAGE : ITEMS_PER_PAGE_MUSTERI;
+    const showPagination = musteriSearchTerm || showAllMusteriler || filteredMusteriler.length <= ITEMS_PER_PAGE_MUSTERI;
 
-    tbody.innerHTML = paginatedMusteriler.map(musteri => `
+    let displayMusteriler;
+    if (musteriSearchTerm || showAllMusteriler) {
+        // Sayfalama ile göster
+        const startIndex = (currentPageMusteri - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        displayMusteriler = filteredMusteriler.slice(startIndex, endIndex);
+    } else {
+        // Sadece son 10 müşteriyi göster
+        displayMusteriler = filteredMusteriler.slice(0, ITEMS_PER_PAGE_MUSTERI);
+    }
+
+    tbody.innerHTML = displayMusteriler.map(musteri => `
         <tr>
             <td><strong>${musteri.unvan}</strong></td>
             <td>${musteri.vergiNo || '-'}</td>
@@ -433,14 +454,42 @@ function renderMusteriTable() {
         </tr>
     `).join('');
 
-    // Pagination kontrollerini ekle/güncelle
+    // Pagination veya "Tümünü Göster" butonu
     let paginationDiv = container.querySelector('.pagination-container');
     if (!paginationDiv) {
         paginationDiv = document.createElement('div');
         paginationDiv.className = 'pagination-container';
         container.appendChild(paginationDiv);
     }
-    paginationDiv.innerHTML = generatePaginationHTML(currentPageMusteri, filteredMusteriler.length, 'Musteri');
+
+    // Üstteki toggle butonunu güncelle
+    const toggleBtnContainer = document.getElementById('musteri-toggle-btn');
+    if (toggleBtnContainer) {
+        if (filteredMusteriler.length > ITEMS_PER_PAGE_MUSTERI && !musteriSearchTerm) {
+            if (showAllMusteriler) {
+                toggleBtnContainer.innerHTML = `<button class="btn" style="background:#6c757d;color:#fff;white-space:nowrap;" onclick="toggleShowAllMusteriler()">📋 Son 10 Müşteri</button>`;
+            } else {
+                toggleBtnContainer.innerHTML = `<button class="btn" style="background:#28a745;color:#fff;white-space:nowrap;" onclick="toggleShowAllMusteriler()">📋 Tümünü Göster (${filteredMusteriler.length})</button>`;
+            }
+        } else {
+            toggleBtnContainer.innerHTML = '';
+        }
+    }
+
+    // Alt kısımda sayfalama veya bilgi
+    if (musteriSearchTerm || showAllMusteriler) {
+        paginationDiv.innerHTML = generatePaginationHTML(currentPageMusteri, filteredMusteriler.length, 'Musteri');
+    } else if (filteredMusteriler.length > ITEMS_PER_PAGE_MUSTERI) {
+        paginationDiv.innerHTML = `<div style="text-align:center;color:#666;margin-top:10px;">Son ${ITEMS_PER_PAGE_MUSTERI} müşteri gösteriliyor</div>`;
+    } else {
+        paginationDiv.innerHTML = '';
+    }
+}
+
+function toggleShowAllMusteriler() {
+    showAllMusteriler = !showAllMusteriler;
+    currentPageMusteri = 1;
+    renderMusteriTable();
 }
 
 function changePageMusteri(page) {
@@ -451,8 +500,12 @@ function changePageMusteri(page) {
 }
 
 function musteriAra() {
-    musteriSearchTerm = document.getElementById('musteri-arama').value.toLowerCase();
-    currentPageMusteri = 1; // Arama yapınca ilk sayfaya dön
+    musteriSearchTerm = document.getElementById('musteri-arama').value.toLowerCase().trim();
+    currentPageMusteri = 1;
+    // Arama temizlendiğinde varsayılan görünüme dön
+    if (!musteriSearchTerm) {
+        showAllMusteriler = false;
+    }
     renderMusteriTable();
 }
 
@@ -608,11 +661,12 @@ async function musteriKaydet(event) {
             showToast(result.error || 'Kayıt başarısız', 'error');
         }
         closeModal();
+        showAllMusteriler = false; // Yeni/güncellenen müşteri en üstte görünsün
         await loadMusteriler();
     } catch (error) {
         console.error('❌ Müşteri kaydetme hatası:', error);
-        // Hata olsa bile listeyi yenile ve modal'ı kapat
         closeModal();
+        showAllMusteriler = false;
         await loadMusteriler();
     } finally {
         hideLoading();
@@ -1668,35 +1722,40 @@ function teklifEmailGonder(teklifId) {
     if (!teklif) return;
 
     const musteri = teklif.customer || musteriler.find(m => m.id === teklif.customerId);
-    if (!musteri || !musteri.email || musteri.email === '-') {
-        showToast('Müşterinin email adresi tanımlı değil', 'warning');
-        return;
-    }
+    const defaultEmail = (musteri?.email && musteri.email !== '-') ? musteri.email : '';
 
     // Email gönderim modalı aç
-    openEmailModal(teklifId, musteri.email);
+    openEmailModal(teklifId, defaultEmail);
 }
 
 // Email gönderim modalı
-function openEmailModal(teklifId, email) {
+function openEmailModal(teklifId, defaultEmail) {
     const modalHtml = `
         <div class="modal-overlay" id="email-modal-overlay">
-            <div class="modal" style="max-width: 500px;">
+            <div class="modal" style="max-width: 550px;">
                 <div class="modal-header">
-                    <h3>Teklifi E-posta ile Gönder</h3>
+                    <h3>📧 Teklifi E-posta ile Gönder</h3>
                     <button class="modal-close" onclick="closeEmailModal()">×</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Alıcı E-posta</label>
-                        <input type="email" id="email-to" value="${email}" class="form-control" readonly>
+                        <label><strong>Alıcılar</strong></label>
+                        <div id="email-list-container">
+                            <div class="email-row" style="display:flex;gap:8px;margin-bottom:8px;">
+                                <input type="email" class="form-control email-input" value="${defaultEmail}" placeholder="ornek@email.com" style="flex:1;">
+                                <button type="button" class="btn btn-danger btn-small" onclick="removeEmailRow(this)" title="Kaldır">✕</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="addEmailRow()" style="margin-top:5px;">
+                            + E-posta Ekle
+                        </button>
                     </div>
                     <div class="form-group">
                         <label>Ek Mesaj (Opsiyonel)</label>
-                        <textarea id="email-message" class="form-control" rows="4" placeholder="Müşteriye iletmek istediğiniz özel mesaj..."></textarea>
+                        <textarea id="email-message" class="form-control" rows="3" placeholder="Müşteriye iletmek istediğiniz özel mesaj..."></textarea>
                     </div>
                     <p style="color: #666; font-size: 12px;">
-                        <strong>Not:</strong> Teklif PDF olarak eklenecektir.
+                        <strong>Not:</strong> Teklif PDF olarak tüm alıcılara gönderilecektir.
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -1712,12 +1771,51 @@ function openEmailModal(teklifId, email) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
 
+function addEmailRow() {
+    const container = document.getElementById('email-list-container');
+    const row = document.createElement('div');
+    row.className = 'email-row';
+    row.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;';
+    row.innerHTML = `
+        <input type="email" class="form-control email-input" placeholder="ornek@email.com" style="flex:1;">
+        <button type="button" class="btn btn-danger btn-small" onclick="removeEmailRow(this)" title="Kaldır">✕</button>
+    `;
+    container.appendChild(row);
+    row.querySelector('input').focus();
+}
+
+function removeEmailRow(btn) {
+    const container = document.getElementById('email-list-container');
+    const rows = container.querySelectorAll('.email-row');
+    if (rows.length > 1) {
+        btn.closest('.email-row').remove();
+    } else {
+        // Son satırsa sadece temizle
+        btn.closest('.email-row').querySelector('input').value = '';
+    }
+}
+
 function closeEmailModal() {
     const modal = document.getElementById('email-modal-overlay');
     if (modal) modal.remove();
 }
 
 async function sendTeklifEmail(teklifId) {
+    // Tüm email inputlarını al
+    const emailInputs = document.querySelectorAll('#email-list-container .email-input');
+    const emails = [];
+    emailInputs.forEach(input => {
+        const email = input.value.trim();
+        if (email && email.includes('@')) {
+            emails.push(email);
+        }
+    });
+
+    if (emails.length === 0) {
+        showToast('En az bir geçerli e-posta adresi girin', 'warning');
+        return;
+    }
+
     const customMessage = document.getElementById('email-message')?.value || '';
 
     showLoading();
@@ -1726,14 +1824,17 @@ async function sendTeklifEmail(teklifId) {
     try {
         const response = await authenticatedFetch(`/api/teklifler/${teklifId}/send-email`, {
             method: 'POST',
-            body: JSON.stringify({ customMessage })
+            body: JSON.stringify({
+                customMessage,
+                emails: emails // Birden fazla email gönder
+            })
         });
 
         const result = await response.json();
 
         if (response.ok) {
-            showToast('Teklif başarıyla gönderildi: ' + result.to, 'success');
-            // Teklif listesini yenile
+            const sentTo = result.sentTo || emails.join(', ');
+            showToast(`Teklif ${emails.length} kişiye gönderildi: ${sentTo}`, 'success');
             await loadTeklifler();
         } else {
             showToast(result.error || 'Email gönderilemedi', 'error');
@@ -3087,9 +3188,15 @@ function showToast(message, type = 'info') {
     }, 5000);
 }
 
-function closeModal(event) {
-    // Eğer overlay'e tıklanmışsa veya fonksiyon doğrudan çağrılmışsa
-    if (!event || event.target.classList.contains('modal-overlay')) {
+function closeModal(eventOrId) {
+    // String parametre ile çağrıldıysa (modal ID)
+    if (typeof eventOrId === 'string') {
+        const modal = document.getElementById(eventOrId);
+        if (modal) modal.remove();
+        return;
+    }
+    // Event ile çağrıldıysa veya parametresiz
+    if (!eventOrId || !eventOrId.target || eventOrId.target.classList.contains('modal-overlay')) {
         document.getElementById('modal-container').innerHTML = '';
     }
 }
@@ -3495,57 +3602,61 @@ async function saveIsgKatipId(isEmriId, value) {
 // Ölçüm Yap - Şablon seçme modalını aç
 async function olcumYap(altGorevId, hizmetAdi) {
     try {
-        // Şablonları yükle
-        const response = await authenticatedFetch('/api/word-templates');
-        const templates = await response.json();
+        // Şablon config'lerini yükle
+        const response = await authenticatedFetch('/api/rapor-sablonu');
+        const sablonlar = response.ok ? await response.json() : [];
 
+        // Kategorilere göre grupla
+        const kategoriler = {};
+        const kategoriIcons = {
+            'kaldırma iletme': '🏗️',
+            'basınçlı malzemeler': '🫙',
+            'iş makineleri': '🚜',
+            'makine tezgahlar': '⚙️',
+            'endüstriyel raf ve kapılar': '🚪',
+            'elektrik': '⚡',
+            'tesisat': '🔌'
+        };
+
+        sablonlar.forEach(s => {
+            const kat = s.kategori || 'diğer';
+            if (!kategoriler[kat]) kategoriler[kat] = [];
+            kategoriler[kat].push(s);
+        });
+
+        // Kategori butonlarını oluştur
+        let kategoriHTML = '';
+        for (const [kat, items] of Object.entries(kategoriler)) {
+            const icon = kategoriIcons[kat] || '📄';
+            kategoriHTML += `
+                <div style="margin-bottom: 10px;">
+                    <div style="font-weight: 600; margin-bottom: 5px; color: #555; font-size: 13px; text-transform: uppercase;">${icon} ${kat} (${items.length})</div>
+                    <div style="display: grid; gap: 5px; padding-left: 10px;">
+                        ${items.map(s => `
+                            <button class="btn btn-outline" onclick="olcumFormuAc(${altGorevId}, '${s.sablonKodu}')" style="text-align: left; padding: 10px 15px; border: 1px solid #ddd; background: white; cursor: pointer; font-size: 13px;">
+                                <strong>${s.sablonKodu}</strong> - ${s.sablonAdi}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Arama kutusu + şablon listesi
         const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal" onclick="event.stopPropagation()" style="max-width: 600px;">
+                <div class="modal" onclick="event.stopPropagation()" style="max-width: 700px;">
                     <div class="modal-header">
                         <h3>📊 Ölçüm Şablonu Seç</h3>
                         <button class="modal-close" onclick="closeModal()">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <p style="margin-bottom: 15px;"><strong>Hizmet:</strong> ${hizmetAdi}</p>
-
-                        <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Ölçüm Türü Seçin:</label>
-                            <div style="display: grid; gap: 10px;">
-                                <button class="btn btn-outline" onclick="olcumFormuAc(${altGorevId}, 'elektrik-topraklama')" style="text-align: left; padding: 15px; border: 2px solid #ddd; background: white; cursor: pointer;">
-                                    <strong>⚡ Elektrik Topraklama Ölçümü</strong><br>
-                                    <small style="color: #666;">FR7.2.36 - Topraklama direnci, hat empedansı, RCD testi</small>
-                                </button>
-                                <button class="btn btn-outline" onclick="olcumFormuAc(${altGorevId}, 'kompresor')" style="text-align: left; padding: 15px; border: 2px solid #ddd; background: white; cursor: pointer;">
-                                    <strong>🔧 Kompresör Muayene</strong><br>
-                                    <small style="color: #666;">FR7.2.21 - Kompresör muayene ve ölçüm raporu</small>
-                                </button>
-                                <button class="btn btn-outline" style="text-align: left; padding: 15px; border: 2px solid #eee; background: #f9f9f9; color: #999; cursor: not-allowed;" disabled>
-                                    <strong>🌩️ Yıldırımdan Korunma</strong><br>
-                                    <small>FR7.2.37 - Yakında eklenecek</small>
-                                </button>
-                                <button class="btn btn-outline" style="text-align: left; padding: 15px; border: 2px solid #eee; background: #f9f9f9; color: #999; cursor: not-allowed;" disabled>
-                                    <strong>🔋 Jeneratör Muayene</strong><br>
-                                    <small>FR7.2.38 - Yakında eklenecek</small>
-                                </button>
-                                <button class="btn btn-outline" style="text-align: left; padding: 15px; border: 2px solid #eee; background: #f9f9f9; color: #999; cursor: not-allowed;" disabled>
-                                    <strong>🔌 İç Tesisat Ölçümü</strong><br>
-                                    <small>FR7.2.40 - Yakında eklenecek</small>
-                                </button>
-                            </div>
-                        </div>
-
-                        <hr style="margin: 20px 0;">
-
-                        <div>
-                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Mevcut Word Şablonları (${templates.length}):</label>
-                            <div style="max-height: 150px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px; padding: 10px; background: #f9f9f9;">
-                                ${templates.map(t => `
-                                    <div style="padding: 8px; border-bottom: 1px solid #eee; background: white; margin-bottom: 5px; border-radius: 4px;">
-                                        📄 ${t.name}
-                                    </div>
-                                `).join('')}
-                            </div>
+                        <p style="margin-bottom: 10px;"><strong>Hizmet:</strong> ${hizmetAdi}</p>
+                        <input type="text" id="sablonArama" placeholder="Şablon ara... (örn: forklift, kompresör)"
+                               oninput="sablonFiltrele(this.value)"
+                               style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
+                        <div id="sablonListesi" style="max-height: 500px; overflow-y: auto;">
+                            ${kategoriHTML}
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -3556,22 +3667,50 @@ async function olcumYap(altGorevId, hizmetAdi) {
         `;
 
         document.getElementById('modal-container').innerHTML = modalHtml;
+
+        // Arama fonksiyonu
+        window._sablonlarData = sablonlar;
+        window._sablonAltGorevId = altGorevId;
     } catch (error) {
         console.error('Şablon yükleme hatası:', error);
         showToast('Şablonlar yüklenemedi', 'error');
     }
 }
 
+// Şablon arama filtresi
+function sablonFiltrele(term) {
+    const container = document.getElementById('sablonListesi');
+    const buttons = container.querySelectorAll('button');
+    const sections = container.querySelectorAll(':scope > div');
+    const lowerTerm = term.toLowerCase();
+
+    sections.forEach(section => {
+        const btns = section.querySelectorAll('button');
+        let anyVisible = false;
+        btns.forEach(btn => {
+            const text = btn.textContent.toLowerCase();
+            const match = !term || text.includes(lowerTerm);
+            btn.style.display = match ? '' : 'none';
+            if (match) anyVisible = true;
+        });
+        section.style.display = anyVisible ? '' : 'none';
+    });
+}
+
 // Ölçüm Formunu Aç
 function olcumFormuAc(altGorevId, formTipi) {
     closeModal();
 
+    // Eski özel formlar (geriye uyumluluk)
     if (formTipi === 'elektrik-topraklama') {
         window.open(`/forms/elektrik-topraklama-form-v2.html?altGorevId=${altGorevId}`, '_blank');
     } else if (formTipi === 'kompresor') {
         window.open(`/forms/kompresor-form.html?altGorevId=${altGorevId}`, '_blank');
+    } else if (formTipi === 'hava-tanki') {
+        window.open(`/forms/hava-tanki-form.html?altGorevId=${altGorevId}`, '_blank');
     } else {
-        showToast('Bu ölçüm formu henüz hazır değil', 'warning');
+        // Generic form - şablon kodu ile aç
+        window.open(`/forms/generic-rapor-form.html?sablon=${formTipi}&altGorevId=${altGorevId}`, '_blank');
     }
 }
 
@@ -4664,6 +4803,17 @@ async function renderOlcumCihazlari(cihazlar) {
         html += '</ul></div>';
     }
 
+    // Hatırlatma email butonu
+    if (uyarilar.length > 0) {
+        html += `
+            <div style="margin-bottom: 15px;">
+                <button class="btn btn-warning" onclick="kalibrasyonHatirlatmaGonder()" style="background:#ffc107;color:#333;">
+                    📧 Kalibrasyon Hatırlatma Emaili Gönder
+                </button>
+            </div>
+        `;
+    }
+
     // Cihaz tablosu
     html += `
         <table class="table">
@@ -4673,9 +4823,10 @@ async function renderOlcumCihazlari(cihazlar) {
                     <th>Marka/Model</th>
                     <th>Seri No</th>
                     <th>Kategori</th>
-                    <th>Kalibrasyon Tarihi</th>
+                    <th>Cihaz Durumu</th>
+                    <th>Kalibrasyon</th>
                     <th>Geçerlilik</th>
-                    <th>Durum</th>
+                    <th>Kalibrasyon Durumu</th>
                     <th>İşlem</th>
                 </tr>
             </thead>
@@ -4683,22 +4834,33 @@ async function renderOlcumCihazlari(cihazlar) {
     `;
 
     if (!cihazlar || cihazlar.length === 0) {
-        html += '<tr><td colspan="8" style="text-align:center;">Henüz cihaz eklenmemiş</td></tr>';
+        html += '<tr><td colspan="9" style="text-align:center;">Henüz cihaz eklenmemiş</td></tr>';
     } else {
         cihazlar.forEach(c => {
             const gecerlilik = c.kalibrasyonGecerlilik ? new Date(c.kalibrasyonGecerlilik) : null;
             const kalanGun = gecerlilik ? Math.ceil((gecerlilik - bugun) / (1000 * 60 * 60 * 24)) : null;
 
-            let durumBadge = '<span class="badge" style="background:#6c757d">Belirsiz</span>';
+            // Kalibrasyon durumu badge
+            let kalDurumBadge = '<span class="badge" style="background:#6c757d">Belirsiz</span>';
             if (kalanGun !== null) {
                 if (kalanGun < 0) {
-                    durumBadge = '<span class="badge" style="background:#dc3545">Süresi Doldu</span>';
+                    kalDurumBadge = '<span class="badge" style="background:#dc3545">Süresi Doldu</span>';
                 } else if (kalanGun <= 30) {
-                    durumBadge = '<span class="badge" style="background:#ffc107;color:#000">' + kalanGun + ' gün</span>';
+                    kalDurumBadge = '<span class="badge" style="background:#ffc107;color:#000">' + kalanGun + ' gün</span>';
                 } else {
-                    durumBadge = '<span class="badge" style="background:#198754">Geçerli</span>';
+                    kalDurumBadge = '<span class="badge" style="background:#198754">Geçerli</span>';
                 }
             }
+
+            // Cihaz durumu badge
+            const durumMap = {
+                'AKTIF': { text: 'Aktif', color: '#198754', icon: '✅' },
+                'SERVISTE': { text: 'Serviste', color: '#17a2b8', icon: '🔧' },
+                'ARIZALI': { text: 'Arızalı', color: '#dc3545', icon: '❌' },
+                'PASIF': { text: 'Pasif', color: '#6c757d', icon: '⏸️' }
+            };
+            const cihazDurum = durumMap[c.durum] || durumMap['AKTIF'];
+            const cihazDurumBadge = '<span class="badge" style="background:' + cihazDurum.color + '">' + cihazDurum.icon + ' ' + cihazDurum.text + '</span>';
 
             const kategoriMap = {
                 'TOPRAKLAMA': 'Topraklama',
@@ -4717,10 +4879,12 @@ async function renderOlcumCihazlari(cihazlar) {
                     <td>${c.marka || ''} ${c.model || ''}</td>
                     <td>${c.seriNo || '-'}</td>
                     <td>${kategoriMap[c.kategori] || c.kategori || '-'}</td>
+                    <td>${cihazDurumBadge}</td>
                     <td>${c.kalibrasyonTarihi ? new Date(c.kalibrasyonTarihi).toLocaleDateString('tr-TR') : '-'}</td>
                     <td>${gecerlilik ? gecerlilik.toLocaleDateString('tr-TR') : '-'}</td>
-                    <td>${durumBadge}</td>
+                    <td>${kalDurumBadge}</td>
                     <td>
+                        <button class="btn btn-sm btn-info" onclick="cihazDetayModal(${c.id})" title="Detay & Geçmiş">📋</button>
                         <button class="btn btn-sm" onclick="cihazDuzenleModal(${c.id})" title="Düzenle">✏️</button>
                         <button class="btn btn-sm btn-danger" onclick="cihazSil(${c.id})" title="Sil">🗑️</button>
                     </td>
@@ -4737,68 +4901,130 @@ async function renderOlcumCihazlari(cihazlar) {
 // Yeni Cihaz Modal
 function yeniCihazModal() {
     const modal = document.createElement('div');
-    modal.className = 'modal';
+    modal.className = 'modal-overlay';
     modal.id = 'cihazModal';
+    modal.style.cssText = 'display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:10000;';
     modal.innerHTML = `
-        <div class="modal-content" style="max-width: 600px;">
-            <div class="modal-header">
-                <h2>Yeni Ölçüm Cihazı Ekle</h2>
-                <span class="close" onclick="closeModal('cihazModal')">&times;</span>
+        <div class="cihaz-modal-content" style="background:#fff;border-radius:12px;width:90%;max-width:650px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:modalSlide 0.3s ease;">
+            <div style="background:linear-gradient(135deg,#1a5f7a,#134b61);color:#fff;padding:20px 25px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <h2 style="margin:0;font-size:20px;font-weight:600;">🔧 Yeni Ölçüm Cihazı</h2>
+                    <p style="margin:5px 0 0;font-size:13px;opacity:0.9;">Cihaz bilgilerini eksiksiz doldurun</p>
+                </div>
+                <button onclick="closeModal('cihazModal')" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;"
+                    onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">&times;</button>
             </div>
-            <form id="cihazForm" onsubmit="cihazKaydet(event)">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div class="form-group">
-                        <label>Cihaz Adı *</label>
-                        <input type="text" name="cihazAdi" required placeholder="Topraklama Ölçer">
+            <form id="cihazForm" onsubmit="cihazKaydet(event)" style="padding:25px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                    <div style="grid-column:span 2;">
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px;">
+                            Cihaz Adı <span style="color:#dc3545;">*</span>
+                        </label>
+                        <input type="text" name="cihazAdi" required placeholder="Örn: Topraklama Ölçüm Cihazı"
+                            style="width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;transition:border-color 0.2s;"
+                            onfocus="this.style.borderColor='#1a5f7a'" onblur="this.style.borderColor='#e0e0e0'">
                     </div>
-                    <div class="form-group">
-                        <label>Kategori</label>
-                        <select name="kategori">
-                            <option value="">Seçiniz</option>
-                            <option value="TOPRAKLAMA">Topraklama</option>
-                            <option value="IZOLASYON">İzolasyon</option>
-                            <option value="CEVRIM_EMPEDANS">Çevrim Empedans</option>
-                            <option value="RCD_TEST">RCD Test</option>
-                            <option value="TERMAL_KAMERA">Termal Kamera</option>
-                            <option value="MULTIMETRE">Multimetre</option>
-                            <option value="PENS_AMPERMETRE">Pens Ampermetre</option>
-                            <option value="DIGER">Diğer</option>
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px;">Kategori</label>
+                        <select name="kategori" style="width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;background:#fff;cursor:pointer;">
+                            <option value="">-- Seçiniz --</option>
+                            <option value="TOPRAKLAMA">🔌 Topraklama</option>
+                            <option value="IZOLASYON">🛡️ İzolasyon</option>
+                            <option value="CEVRIM_EMPEDANS">⚡ Çevrim Empedans</option>
+                            <option value="RCD_TEST">🔒 RCD Test</option>
+                            <option value="TERMAL_KAMERA">🌡️ Termal Kamera</option>
+                            <option value="MULTIMETRE">📊 Multimetre</option>
+                            <option value="PENS_AMPERMETRE">📏 Pens Ampermetre</option>
+                            <option value="DIGER">📦 Diğer</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Marka</label>
-                        <input type="text" name="marka" placeholder="Fluke, Megger, Chauvin Arnoux">
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px;">Marka</label>
+                        <input type="text" name="marka" placeholder="Fluke, Megger, Chauvin Arnoux..."
+                            style="width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;"
+                            onfocus="this.style.borderColor='#1a5f7a'" onblur="this.style.borderColor='#e0e0e0'">
                     </div>
-                    <div class="form-group">
-                        <label>Model</label>
-                        <input type="text" name="model" placeholder="CA 6417">
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px;">Model</label>
+                        <input type="text" name="model" placeholder="Örn: CA 6417"
+                            style="width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;"
+                            onfocus="this.style.borderColor='#1a5f7a'" onblur="this.style.borderColor='#e0e0e0'">
                     </div>
-                    <div class="form-group">
-                        <label>Seri No</label>
-                        <input type="text" name="seriNo" placeholder="ABC123456">
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px;">Seri No</label>
+                        <input type="text" name="seriNo" placeholder="Örn: ABC123456"
+                            style="width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;"
+                            onfocus="this.style.borderColor='#1a5f7a'" onblur="this.style.borderColor='#e0e0e0'">
                     </div>
-                    <div class="form-group">
-                        <label>Sertifika No</label>
-                        <input type="text" name="kalibrasyonNo" placeholder="2500290">
-                    </div>
-                    <div class="form-group">
-                        <label>Kalibrasyon Tarihi</label>
-                        <input type="date" name="kalibrasyonTarihi">
-                    </div>
-                    <div class="form-group">
-                        <label>Geçerlilik Tarihi</label>
-                        <input type="date" name="kalibrasyonGecerlilik">
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px;">Durum</label>
+                        <select name="durum" style="width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;background:#fff;cursor:pointer;">
+                            <option value="AKTIF">✅ Aktif</option>
+                            <option value="SERVISTE">🔧 Serviste</option>
+                            <option value="ARIZALI">❌ Arızalı</option>
+                            <option value="PASIF">⏸️ Pasif</option>
+                        </select>
                     </div>
                 </div>
-                <div style="margin-top: 20px; text-align: right;">
-                    <button type="button" class="btn" onclick="closeModal('cihazModal')">İptal</button>
-                    <button type="submit" class="btn btn-primary">Kaydet</button>
+
+                <div style="margin-top:25px;padding-top:20px;border-top:2px solid #f0f0f0;">
+                    <h3 style="margin:0 0 15px;font-size:16px;color:#1a5f7a;display:flex;align-items:center;gap:8px;">
+                        📋 Kalibrasyon Bilgileri
+                    </h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                        <div>
+                            <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px;">Sertifika No</label>
+                            <input type="text" name="kalibrasyonNo" placeholder="Örn: 2500290"
+                                style="width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;"
+                                onfocus="this.style.borderColor='#1a5f7a'" onblur="this.style.borderColor='#e0e0e0'">
+                        </div>
+                        <div>
+                            <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px;">Kalibrasyon Tarihi</label>
+                            <input type="date" name="kalibrasyonTarihi"
+                                style="width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;"
+                                onfocus="this.style.borderColor='#1a5f7a'" onblur="this.style.borderColor='#e0e0e0'">
+                        </div>
+                        <div style="grid-column:span 2;">
+                            <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px;">
+                                Geçerlilik Tarihi
+                                <span style="font-weight:normal;color:#666;font-size:12px;">(Sertifika bitiş tarihi)</span>
+                            </label>
+                            <input type="date" name="kalibrasyonGecerlilik"
+                                style="width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;"
+                                onfocus="this.style.borderColor='#1a5f7a'" onblur="this.style.borderColor='#e0e0e0'">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top:25px;padding-top:20px;border-top:2px solid #f0f0f0;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;font-size:14px;">Notlar</label>
+                    <textarea name="notlar" rows="2" placeholder="Cihaz hakkında ek notlar..."
+                        style="width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;resize:vertical;"
+                        onfocus="this.style.borderColor='#1a5f7a'" onblur="this.style.borderColor='#e0e0e0'"></textarea>
+                </div>
+
+                <div style="margin-top:25px;padding-top:20px;border-top:2px solid #f0f0f0;display:flex;justify-content:flex-end;gap:12px;">
+                    <button type="button" onclick="closeModal('cihazModal')"
+                        style="padding:12px 24px;border:2px solid #e0e0e0;background:#fff;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;"
+                        onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
+                        İptal
+                    </button>
+                    <button type="submit"
+                        style="padding:12px 30px;border:none;background:linear-gradient(135deg,#28a745,#20913c);color:#fff;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;"
+                        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 15px rgba(40,167,69,0.4)'"
+                        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+                        💾 Kaydet
+                    </button>
                 </div>
             </form>
         </div>
     `;
     document.body.appendChild(modal);
-    modal.style.display = 'flex';
+
+    // Modal dışına tıklanınca kapat
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal('cihazModal');
+    });
 }
 
 // Cihaz Kaydet
@@ -4813,6 +5039,8 @@ async function cihazKaydet(event, id = null) {
         marka: formData.get('marka') || null,
         model: formData.get('model') || null,
         seriNo: formData.get('seriNo') || null,
+        durum: formData.get('durum') || 'AKTIF',
+        notlar: formData.get('notlar') || null,
         kalibrasyonNo: formData.get('kalibrasyonNo') || null,
         kalibrasyonTarihi: formData.get('kalibrasyonTarihi') ? new Date(formData.get('kalibrasyonTarihi')).toISOString() : null,
         kalibrasyonGecerlilik: formData.get('kalibrasyonGecerlilik') ? new Date(formData.get('kalibrasyonGecerlilik')).toISOString() : null,
@@ -4861,7 +5089,8 @@ async function cihazDuzenleModal(id) {
         yeniCihazModal();
 
         const form = document.getElementById('cihazForm');
-        document.querySelector('#cihazModal h2').textContent = 'Cihaz Düzenle';
+        document.querySelector('#cihazModal h2').textContent = '✏️ Cihaz Düzenle';
+        document.querySelector('#cihazModal h2 + p').textContent = 'Cihaz bilgilerini güncelleyin';
         form.onsubmit = (e) => cihazKaydet(e, id);
 
         form.querySelector('[name="cihazAdi"]').value = cihaz.cihazAdi || '';
@@ -4869,6 +5098,8 @@ async function cihazDuzenleModal(id) {
         form.querySelector('[name="marka"]').value = cihaz.marka || '';
         form.querySelector('[name="model"]').value = cihaz.model || '';
         form.querySelector('[name="seriNo"]').value = cihaz.seriNo || '';
+        form.querySelector('[name="durum"]').value = cihaz.durum || 'AKTIF';
+        form.querySelector('[name="notlar"]').value = cihaz.notlar || '';
         form.querySelector('[name="kalibrasyonNo"]').value = cihaz.kalibrasyonNo || '';
 
         if (cihaz.kalibrasyonTarihi) {
@@ -4901,6 +5132,269 @@ async function cihazSil(id) {
     } catch (error) {
         console.error('Cihaz silme hatası:', error);
         showToast('Silme sırasında hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Cihaz Detay Modal (Kalibrasyon Geçmişi ile)
+async function cihazDetayModal(id) {
+    try {
+        showLoading();
+        const response = await fetch('/api/olcum-cihazlari/' + id + '/detay');
+        const cihaz = await response.json();
+
+        if (!cihaz) {
+            showToast('Cihaz bulunamadı', 'error');
+            return;
+        }
+
+        const durumMap = {
+            'AKTIF': { text: 'Aktif', color: '#198754', icon: '✅' },
+            'SERVISTE': { text: 'Serviste', color: '#17a2b8', icon: '🔧' },
+            'ARIZALI': { text: 'Arızalı', color: '#dc3545', icon: '❌' },
+            'PASIF': { text: 'Pasif', color: '#6c757d', icon: '⏸️' }
+        };
+        const cihazDurum = durumMap[cihaz.durum] || durumMap['AKTIF'];
+
+        const gecmisHtml = cihaz.kalibrasyonGecmisi && cihaz.kalibrasyonGecmisi.length > 0
+            ? cihaz.kalibrasyonGecmisi.map(g => `
+                <tr>
+                    <td>${new Date(g.kalibrasyonTarihi).toLocaleDateString('tr-TR')}</td>
+                    <td>${new Date(g.gecerlilikTarihi).toLocaleDateString('tr-TR')}</td>
+                    <td>${g.sertifikaNo || '-'}</td>
+                    <td>${g.kalibrasyonYapan || '-'}</td>
+                    <td>${g.maliyet ? g.maliyet + ' ₺' : '-'}</td>
+                    <td>
+                        ${g.sertifikaDosya ? '<a href="' + g.sertifikaDosya + '" target="_blank" class="btn btn-sm">📄</a>' : '-'}
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="kalibrasyonGecmisiSil(${g.id}, ${id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('')
+            : '<tr><td colspan="7" style="text-align:center;color:#666;">Henüz kalibrasyon geçmişi yok</td></tr>';
+
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.id = 'cihazDetayModal';
+        modal.style.cssText = 'display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:10000;';
+        modal.innerHTML = `
+            <div style="background:#fff;border-radius:12px;width:95%;max-width:900px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                <div style="background:linear-gradient(135deg,#1a5f7a,#134b61);color:#fff;padding:20px 25px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <h2 style="margin:0;font-size:20px;">📋 ${cihaz.cihazAdi}</h2>
+                        <p style="margin:5px 0 0;font-size:13px;opacity:0.9;">${cihaz.marka || ''} ${cihaz.model || ''} | Seri: ${cihaz.seriNo || '-'}</p>
+                    </div>
+                    <button onclick="closeModal('cihazDetayModal')" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;">&times;</button>
+                </div>
+
+                <div style="padding:25px;">
+                    <!-- Cihaz Bilgileri -->
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:25px;">
+                        <div style="background:#f8f9fa;padding:15px;border-radius:8px;text-align:center;">
+                            <div style="font-size:12px;color:#666;margin-bottom:5px;">Durum</div>
+                            <span class="badge" style="background:${cihazDurum.color};font-size:14px;padding:5px 12px;">${cihazDurum.icon} ${cihazDurum.text}</span>
+                        </div>
+                        <div style="background:#f8f9fa;padding:15px;border-radius:8px;text-align:center;">
+                            <div style="font-size:12px;color:#666;margin-bottom:5px;">Son Kalibrasyon</div>
+                            <strong>${cihaz.kalibrasyonTarihi ? new Date(cihaz.kalibrasyonTarihi).toLocaleDateString('tr-TR') : '-'}</strong>
+                        </div>
+                        <div style="background:#f8f9fa;padding:15px;border-radius:8px;text-align:center;">
+                            <div style="font-size:12px;color:#666;margin-bottom:5px;">Geçerlilik</div>
+                            <strong>${cihaz.kalibrasyonGecerlilik ? new Date(cihaz.kalibrasyonGecerlilik).toLocaleDateString('tr-TR') : '-'}</strong>
+                        </div>
+                        <div style="background:#f8f9fa;padding:15px;border-radius:8px;text-align:center;">
+                            <div style="font-size:12px;color:#666;margin-bottom:5px;">Sertifika No</div>
+                            <strong>${cihaz.kalibrasyonNo || '-'}</strong>
+                        </div>
+                    </div>
+
+                    ${cihaz.notlar ? '<div style="background:#fff3cd;padding:12px;border-radius:8px;margin-bottom:20px;"><strong>Not:</strong> ' + cihaz.notlar + '</div>' : ''}
+
+                    ${cihaz.sertifikaDosya ? '<div style="margin-bottom:20px;"><a href="' + cihaz.sertifikaDosya + '" target="_blank" class="btn btn-primary">📄 Güncel Sertifikayı Görüntüle</a></div>' : ''}
+
+                    <!-- Kalibrasyon Geçmişi -->
+                    <div style="border-top:2px solid #f0f0f0;padding-top:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                            <h3 style="margin:0;color:#1a5f7a;">📜 Kalibrasyon Geçmişi</h3>
+                            <button class="btn btn-success" onclick="yeniKalibrasyonModal(${id})" style="background:#28a745;">+ Yeni Kalibrasyon Ekle</button>
+                        </div>
+                        <table class="table" style="font-size:13px;">
+                            <thead>
+                                <tr style="background:#f5f5f5;">
+                                    <th>Tarih</th>
+                                    <th>Geçerlilik</th>
+                                    <th>Sertifika No</th>
+                                    <th>Yapan</th>
+                                    <th>Maliyet</th>
+                                    <th>Belge</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>${gecmisHtml}</tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div style="padding:15px 25px;background:#f5f5f5;border-radius:0 0 12px 12px;display:flex;justify-content:flex-end;">
+                    <button class="btn" onclick="closeModal('cihazDetayModal')">Kapat</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal('cihazDetayModal'); });
+
+    } catch (error) {
+        console.error('Cihaz detay hatası:', error);
+        showToast('Cihaz bilgileri alınamadı', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Yeni Kalibrasyon Ekle Modal
+function yeniKalibrasyonModal(cihazId) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.id = 'kalibrasyonModal';
+    modal.style.cssText = 'display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:10001;';
+    modal.innerHTML = `
+        <div style="background:#fff;border-radius:12px;width:90%;max-width:500px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <div style="background:linear-gradient(135deg,#28a745,#20913c);color:#fff;padding:20px 25px;border-radius:12px 12px 0 0;">
+                <h3 style="margin:0;">📋 Yeni Kalibrasyon Kaydı</h3>
+            </div>
+            <form id="kalibrasyonForm" onsubmit="kalibrasyonKaydet(event, ${cihazId})" style="padding:25px;">
+                <div style="display:grid;gap:15px;">
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;">Kalibrasyon Tarihi *</label>
+                        <input type="date" name="kalibrasyonTarihi" required style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:6px;">
+                    </div>
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;">Geçerlilik Tarihi *</label>
+                        <input type="date" name="gecerlilikTarihi" required style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:6px;">
+                    </div>
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;">Sertifika No</label>
+                        <input type="text" name="sertifikaNo" placeholder="Örn: 2500290" style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:6px;">
+                    </div>
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;">Kalibrasyon Yapan Kurum/Kişi</label>
+                        <input type="text" name="kalibrasyonYapan" placeholder="Örn: TÜBİTAK UME" style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:6px;">
+                    </div>
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;">Maliyet (₺)</label>
+                        <input type="number" name="maliyet" step="0.01" min="0" placeholder="0.00" style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:6px;">
+                    </div>
+                    <div>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;">Notlar</label>
+                        <textarea name="notlar" rows="2" placeholder="Ek notlar..." style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:6px;"></textarea>
+                    </div>
+                </div>
+                <div style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px;">
+                    <button type="button" onclick="closeModal('kalibrasyonModal')" class="btn">İptal</button>
+                    <button type="submit" class="btn btn-success">💾 Kaydet</button>
+                </div>
+            </form>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+// Kalibrasyon Kaydet
+async function kalibrasyonKaydet(event, cihazId) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    const data = {
+        kalibrasyonTarihi: formData.get('kalibrasyonTarihi'),
+        gecerlilikTarihi: formData.get('gecerlilikTarihi'),
+        sertifikaNo: formData.get('sertifikaNo') || null,
+        kalibrasyonYapan: formData.get('kalibrasyonYapan') || null,
+        maliyet: formData.get('maliyet') || null,
+        notlar: formData.get('notlar') || null
+    };
+
+    try {
+        showLoading();
+        const response = await fetch('/api/olcum-cihazlari/' + cihazId + '/kalibrasyon-gecmisi', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            closeModal('kalibrasyonModal');
+            closeModal('cihazDetayModal');
+            showToast('Kalibrasyon kaydı eklendi', 'success');
+            loadOlcumCihazlari();
+            setTimeout(() => cihazDetayModal(cihazId), 500);
+        } else {
+            const error = await response.json();
+            showToast('Hata: ' + error.error, 'error');
+        }
+    } catch (error) {
+        console.error('Kalibrasyon kaydetme hatası:', error);
+        showToast('Kaydetme sırasında hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Kalibrasyon Geçmişi Sil
+async function kalibrasyonGecmisiSil(gecmisId, cihazId) {
+    if (!confirm('Bu kalibrasyon kaydını silmek istediğinize emin misiniz?')) return;
+
+    try {
+        showLoading();
+        const response = await fetch('/api/kalibrasyon-gecmisi/' + gecmisId, { method: 'DELETE' });
+        if (response.ok) {
+            showToast('Kalibrasyon kaydı silindi', 'success');
+            closeModal('cihazDetayModal');
+            setTimeout(() => cihazDetayModal(cihazId), 300);
+        } else {
+            showToast('Silme işlemi başarısız', 'error');
+        }
+    } catch (error) {
+        showToast('Hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Kalibrasyon Hatırlatma Email Gönder
+async function kalibrasyonHatirlatmaGonder() {
+    const email = prompt('Hatırlatma emaili gönderilecek adres:', localStorage.getItem('userEmail') || '');
+    if (!email) return;
+
+    try {
+        showLoading();
+        const uyariResponse = await fetch('/api/olcum-cihazlari-kalibrasyon-uyari');
+        const uyarilar = await uyariResponse.json();
+
+        if (uyarilar.length === 0) {
+            showToast('Uyarı durumunda cihaz yok', 'warning');
+            return;
+        }
+
+        const cihazIds = uyarilar.map(c => c.id);
+
+        const response = await fetch('/api/olcum-cihazlari/kalibrasyon-hatirlatma', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cihazIds, email })
+        });
+
+        if (response.ok) {
+            showToast('Hatırlatma emaili gönderildi: ' + email, 'success');
+        } else {
+            const error = await response.json();
+            showToast('Hata: ' + error.error, 'error');
+        }
+    } catch (error) {
+        console.error('Email gönderme hatası:', error);
+        showToast('Email gönderilemedi', 'error');
     } finally {
         hideLoading();
     }
@@ -5362,7 +5856,7 @@ function raporTablosuGuncelle(raporlar) {
         const sonucClass = rapor.sonuc === 'UYGUN' ? 'color: #27ae60; background: #e8f5e9;' :
             rapor.sonuc === 'UYGUN DEĞİL' ? 'color: #e74c3c; background: #ffebee;' : 'color: #666;';
         const durumClass = rapor.durum === 'Tamamlandı' ? 'background: #27ae60;' : 'background: #f39c12;';
-        const tipIcon = (rapor.raporTipi || '').toLowerCase().includes('kompres') ? '🔧' : '⚡';
+        const tipIcon = (rapor.raporTipi || '').toLowerCase().includes('kompres') ? '🔧' : (rapor.raporTipi || '').toLowerCase().includes('hava') ? '🫙' : '⚡';
         const tipEscaped = (rapor.raporTipi || '').replace(/'/g, "\\'");
 
         return `
@@ -5409,6 +5903,8 @@ function raporDuzenle(raporId, altGorevId, raporTipi) {
     const tip = (raporTipi || '').toLowerCase();
     if (tip.includes('kompres')) {
         window.open(`/forms/kompresor-form.html?altGorevId=${altGorevId}`, '_blank');
+    } else if (tip.includes('hava')) {
+        window.open(`/forms/hava-tanki-form.html?altGorevId=${altGorevId}`, '_blank');
     } else {
         window.open(`/forms/elektrik-topraklama-form-v2.html?altGorevId=${altGorevId}`, '_blank');
     }
@@ -5419,16 +5915,19 @@ async function raporWordIndir(raporId, raporTipi) {
     try {
         showToast('Word dosyası hazırlanıyor...', 'info');
 
-        const isKompresor = (raporTipi || '').toLowerCase().includes('kompres');
-        const apiPath = isKompresor ? 'kompresor-raporu' : 'elektrik-topraklama-raporu';
+        const tipLower = (raporTipi || '').toLowerCase();
+        const isKompresor = tipLower.includes('kompres');
+        const isHavaTanki = tipLower.includes('hava');
+        const apiPath = isKompresor ? 'kompresor-raporu' : isHavaTanki ? 'hava-tanki-raporu' : 'elektrik-topraklama-raporu';
+        const isMekanik = isKompresor || isHavaTanki;
         const res = await fetch(`${API_BASE}/${apiPath}/${raporId}/word`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 tekniker: {
                     adSoyad: 'AHMET MAVUŞ',
-                    unvan: isKompresor ? 'Mekanik Kontrol Sorumlusu' : 'Elektriksel Ölçümler Sorumlusu',
-                    meslek: isKompresor ? 'Makine Teknikeri' : 'Elektrik Teknikeri',
+                    unvan: isMekanik ? 'Mekanik Kontrol Sorumlusu' : 'Elektriksel Ölçümler Sorumlusu',
+                    meslek: isMekanik ? 'Makine Teknikeri' : 'Elektrik Teknikeri',
                     diplomaTarihi: '2004-09-15',
                     diplomaNo: '0454050027',
                     ekipnetNo: 'K19020540'
@@ -5441,7 +5940,7 @@ async function raporWordIndir(raporId, raporTipi) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            const dosyaAdi = isKompresor ? 'Kompresor_Muayene_Raporu' : 'Elektrik_Topraklama_Raporu';
+            const dosyaAdi = isKompresor ? 'Kompresor_Muayene_Raporu' : isHavaTanki ? 'Hava_Tanki_Muayene_Raporu' : 'Elektrik_Topraklama_Raporu';
             a.download = `${dosyaAdi}_${raporId}.docx`;
             a.click();
             URL.revokeObjectURL(url);
@@ -5461,7 +5960,8 @@ async function raporSil(raporId, raporTipi) {
     if (!confirm('Bu raporu silmek istediğinize emin misiniz?\nBu işlem geri alınamaz!')) return;
 
     try {
-        const apiPath = (raporTipi || '').toLowerCase().includes('kompres') ? 'kompresor-raporu' : 'elektrik-topraklama-raporu';
+        const tipL = (raporTipi || '').toLowerCase();
+        const apiPath = tipL.includes('kompres') ? 'kompresor-raporu' : tipL.includes('hava') ? 'hava-tanki-raporu' : 'elektrik-topraklama-raporu';
         const res = await fetch(`${API_BASE}/${apiPath}/${raporId}`, {
             method: 'DELETE'
         });

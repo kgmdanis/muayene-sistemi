@@ -132,8 +132,9 @@
                 </div>
 
                 <!-- Arama ve Filtre -->
-                <div class="search-bar">
-                    <input type="text" id="musteri-arama" placeholder="Müşteri ara (ünvan, vergi no, telefon)..." onkeyup="musteriAra()">
+                <div class="search-bar" style="display:flex;gap:10px;align-items:center;">
+                    <input type="text" id="musteri-arama" placeholder="Müşteri ara (ünvan, vergi no, telefon, email, yetkili)..." onkeyup="musteriAra()" style="flex:1;">
+                    <div id="musteri-toggle-btn"></div>
                 </div>
 
                 <!-- Müşteri Listesi -->

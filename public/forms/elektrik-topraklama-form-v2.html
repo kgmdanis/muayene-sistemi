@@ -96,6 +96,7 @@
 </head>
 <body>
     <div class="header">
+        <button onclick="geriDon()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:20px;margin-right:12px;display:flex;align-items:center;justify-content:center;" title="Geri Dön">←</button>
         <h1>⚡ FR7.2.36 Elektrik Topraklama Ölçüm Raporu</h1>
         <div class="header-status">
             <span class="status-dot"></span>
@@ -443,6 +444,7 @@
     </div>
 
     <div class="footer-buttons">
+        <button class="btn btn-back" onclick="geriDon()" style="background:#6c757d;color:white;">← Vazgeç</button>
         <button class="btn btn-save" onclick="kaydet()">📄 Kaydet</button>
         <button class="btn btn-submit" onclick="gonder()">📤 Gönder</button>
         <button class="btn btn-word" onclick="wordOlustur()">📝 Word</button>
@@ -451,6 +453,16 @@
     <script>
         const API_BASE = '/api';
         let currentRaporId = null, currentAltGorevId = null, olcumSayac = 0, rcdSayac = 0;
+
+        function geriDon() {
+            if (confirm('Kaydedilmemiş değişiklikler kaybolacak. Çıkmak istediğinize emin misiniz?')) {
+                if (window.opener) {
+                    window.close();
+                } else {
+                    window.history.back();
+                }
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', async function() {
             const today = new Date().toISOString().split('T')[0];

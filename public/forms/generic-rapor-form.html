@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapor Formu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+
+        .header { background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%); color: white; padding: 16px 24px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .header h1 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .header-status { display: flex; align-items: center; gap: 16px; font-size: 13px; }
+        .status-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .btn-new { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .btn-new:hover { background: rgba(255,255,255,0.3); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; overflow: hidden; }
+        .card-header { background: #f8f9fa; padding: 16px 20px; font-weight: 600; font-size: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .card-header:hover { background: #f0f0f0; }
+        .card-header .badge { background: #1565c0; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; }
+        .card-body { padding: 20px; }
+        .card-body.collapsed { display: none; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-weight: 500; margin-bottom: 8px; color: #333; font-size: 14px; }
+        .form-control { width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .form-control:focus { outline: none; border-color: #1565c0; box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1); }
+        .form-control:disabled { background: #f5f5f5; color: #666; }
+        .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+        .kontrol-list { display: flex; flex-direction: column; gap: 12px; }
+        .kontrol-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; }
+        .kontrol-item.highlight { background: #e3f2fd; }
+        .kontrol-item .soru-no { font-weight: 700; color: #1565c0; margin-right: 12px; min-width: 30px; }
+        .kontrol-item .soru-text { flex: 1; font-size: 14px; }
+        .kontrol-item select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; min-width: 140px; }
+        .kontrol-item select.uygun { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .kontrol-item select.uygun-degil { background: #ffebee; border-color: #f44336; color: #c62828; }
+
+        .sonuc-box { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px; font-size: 15px; line-height: 1.8; }
+        .sonuc-select { padding: 8px 16px; border-radius: 6px; font-size: 15px; font-weight: 700; border: 2px solid #059669; background: #ecfdf5; color: #059669; cursor: pointer; }
+
+        .footer-buttons { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px 24px; display: flex; gap: 16px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 100; }
+        .footer-buttons .btn { flex: 1; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-save { background: #f5f5f5; color: #333; }
+        .btn-save:hover { background: #e0e0e0; }
+        .btn-submit { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); color: white; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4); }
+        .btn-word { background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%); color: white; }
+        .btn-word:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(21, 101, 192, 0.4); }
+        .btn:disabled { cursor: not-allowed; opacity: 0.5; }
+        .footer-spacer { height: 100px; }
+
+        @media (max-width: 768px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button onclick="geriDon()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:20px;margin-right:12px;display:flex;align-items:center;justify-content:center;" title="Geri Dön">←</button>
+        <h1 id="formTitle">Rapor Formu</h1>
+        <div class="header-status">
+            <span class="status-dot"></span>
+            <span id="sablonInfo"></span>
+            <span id="saveStatus">Kaydedilmedi</span>
+            <button class="btn-new" onclick="yeniRapor()">Yeni Rapor</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Is Emri Secimi -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('isEmriSection')"><span>Is Emri & Gorev Secimi</span><span>&#9650;</span></div>
+            <div class="card-body" id="isEmriSection">
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Is Emri</label><select id="isEmriSelect" class="form-control" onchange="isEmriSecildi()"><option value="">Is Emri Secin...</option></select></div>
+                    <div class="form-group"><label class="form-label">Alt Gorev</label><select id="altGorevSelect" class="form-control"><option value="">Once Is Emri Secin...</option></select></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dinamik section'lar buraya render edilecek -->
+        <div id="dynamicSections"></div>
+
+        <div class="footer-spacer"></div>
+    </div>
+
+    <div class="footer-buttons">
+        <button class="btn btn-back" onclick="geriDon()" style="background:#6c757d;color:white;">← Vazgeç</button>
+        <button class="btn btn-save" onclick="kaydet()">Kaydet</button>
+        <button class="btn btn-submit" onclick="gonder()">Gonder</button>
+        <button class="btn btn-word" id="wordBtn" onclick="wordOlustur()" disabled>Word</button>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentRaporId = null, currentAltGorevId = null;
+        let sablonConfig = null, sablonKodu = null;
+
+        function geriDon() {
+            if (confirm('Kaydedilmemiş değişiklikler kaybolacak. Çıkmak istediğinize emin misiniz?')) {
+                if (window.opener) {
+                    window.close();
+                } else {
+                    window.history.back();
+                }
+            }
+        }
+
+        // ============ INIT ============
+        document.addEventListener('DOMContentLoaded', async function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            sablonKodu = urlParams.get('sablon');
+            currentAltGorevId = urlParams.get('altGorevId');
+
+            if (!sablonKodu) {
+                showNotification('Sablon kodu belirtilmedi!', 'error');
+                return;
+            }
+
+            // Config yukle
+            try {
+                const res = await fetch(`${API_BASE}/rapor-sablonu/${sablonKodu}`);
+                const data = await res.json();
+                sablonConfig = data.config || data;
+            } catch (e) {
+                showNotification('Sablon yuklenemedi: ' + e.message, 'error');
+                return;
+            }
+
+            // Baslik guncelle
+            document.getElementById('formTitle').textContent = sablonConfig.sablonAdi || sablonKodu;
+            document.getElementById('sablonInfo').textContent = sablonKodu;
+            document.title = sablonConfig.sablonAdi || sablonKodu;
+
+            // Formu render et
+            renderSections();
+
+            // Tarih default
+            const today = new Date().toISOString().split('T')[0];
+            setFieldValue('kontrolTarihi', today);
+            setFieldValue('raporTarihi', today);
+            const nextYear = new Date();
+            nextYear.setFullYear(nextYear.getFullYear() + 1);
+            setFieldValue('sonrakiKontrolTarihi', nextYear.toISOString().split('T')[0]);
+
+            if (currentAltGorevId) {
+                await mevcutRaporuYukle(currentAltGorevId);
+            } else {
+                isEmriListesiYukle();
+            }
+
+            updateWordButtonState();
+        });
+
+        // ============ RENDER ============
+        function renderSections() {
+            const container = document.getElementById('dynamicSections');
+            if (!sablonConfig.sections) return;
+
+            let html = '';
+            for (const section of sablonConfig.sections) {
+                if (section.type === 'control-questions') {
+                    html += renderControlQuestions(section);
+                } else if (section.type === 'sonuc') {
+                    html += renderSonuc(section);
+                } else {
+                    html += renderStandardSection(section);
+                }
+            }
+            container.innerHTML = html;
+
+            // Select stillerini uygula
+            document.querySelectorAll('.kontrol-item select').forEach(updateSelectStyle);
+        }
+
+        function renderStandardSection(section) {
+            const layoutClass = section.layout === 'row-3' ? 'form-row-3' : section.layout === 'row-2' ? 'form-row' : '';
+            const fields = (section.fields || []).map(f => renderField(f)).join('');
+
+            return `
+                <div class="card">
+                    <div class="card-header" onclick="toggleSection('${section.id}Section')">
+                        <span>${section.title}</span><span>&#9650;</span>
+                    </div>
+                    <div class="card-body" id="${section.id}Section">
+                        <div class="${layoutClass}">${fields}</div>
+                    </div>
+                </div>`;
+        }
+
+        function renderField(f) {
+            const autoFillBadge = f.autoFill ? ' <small style="color:#059669;">(Otomatik)</small>' : '';
+            const disabled = f.readonly ? 'disabled' : '';
+            let input = '';
+
+            switch (f.type) {
+                case 'textarea':
+                    input = `<textarea id="${f.id}" class="form-control" rows="${f.rows || 3}" placeholder="${f.placeholder || ''}" ${disabled}></textarea>`;
+                    break;
+                case 'dropdown':
+                    const opts = (f.options || []).map(o => `<option value="${o}">${o}</option>`).join('');
+                    input = `<select id="${f.id}" class="form-control" ${disabled}>${opts}</select>`;
+                    break;
+                default:
+                    input = `<input type="${f.type || 'text'}" id="${f.id}" class="form-control" placeholder="${f.placeholder || ''}" ${disabled}>`;
+            }
+
+            return `<div class="form-group"><label class="form-label">${f.label}${autoFillBadge}</label>${input}</div>`;
+        }
+
+        function renderControlQuestions(section) {
+            const questions = (section.questions || []).map(q => {
+                const opts = (q.options || ['Uygun', 'Uygun Degil']).map(o => `<option value="${o}">${o}</option>`).join('');
+                const highlight = q.highlight ? ' highlight' : '';
+                return `
+                    <div class="kontrol-item${highlight}">
+                        <span class="soru-no">${q.no}</span>
+                        <span class="soru-text">${q.text}</span>
+                        <select id="${q.id}" onchange="updateSelectStyle(this)">${opts}</select>
+                    </div>`;
+            }).join('');
+
+            const badge = section.badge ? `<span class="badge">${section.badge}</span>` : '';
+            return `
+                <div class="card">
+                    <div class="card-header" onclick="toggleSection('${section.id}Section')">
+                        <span>${section.title}</span>${badge}
+                    </div>
+                    <div class="card-body" id="${section.id}Section">
+                        <div class="kontrol-list">${questions}</div>
+                    </div>
+                </div>`;
+        }
+
+        function renderSonuc(section) {
+            return `
+                <div class="card">
+                    <div class="card-header" onclick="toggleSection('sonucSection')"><span>${section.title}</span><span>&#9650;</span></div>
+                    <div class="card-body" id="sonucSection">
+                        <div class="sonuc-box">
+                            <p>${section.sonucText || 'Periyodik kontrol tarihi itibari ile yukarida teknik ozellikleri belirtilen ekipman mevcut sartlar altinda'}
+                                <select id="genelSonucSelect" class="sonuc-select" onchange="sonucDegisti()">
+                                    <option value="UYGUN">kullanimi uygundur</option>
+                                    <option value="UYGUN_DEGIL">kullanimi uygun degildir</option>
+                                </select>
+                            </p>
+                            <p style="margin-top:12px;color:#666;font-size:13px;font-style:italic;">Tespit edilen hafif kusurlarin bir sonraki periyodik kontrol tarihine kadar giderilmesi gereklidir.</p>
+                        </div>
+                        <input type="hidden" id="genelSonuc" value="UYGUN">
+                    </div>
+                </div>`;
+        }
+
+        // ============ UI HELPERS ============
+        function toggleSection(id) { document.getElementById(id)?.classList.toggle('collapsed'); }
+
+        function setFieldValue(id, val) {
+            const el = document.getElementById(id);
+            if (el && val) el.value = val;
+        }
+
+        function updateSelectStyle(sel) {
+            if (!sel) return;
+            const val = sel.value || '';
+            sel.className = val.includes('Uygun') && !val.includes('Degil') && !val.includes('Değil') ? 'uygun' : 'uygun-degil';
+        }
+
+        function sonucDegisti() {
+            const sel = document.getElementById('genelSonucSelect');
+            document.getElementById('genelSonuc').value = sel.value;
+            if (sel.value === 'UYGUN') {
+                sel.style.borderColor = '#059669'; sel.style.background = '#ecfdf5'; sel.style.color = '#059669';
+            } else {
+                sel.style.borderColor = '#dc2626'; sel.style.background = '#fef2f2'; sel.style.color = '#dc2626';
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            const div = document.createElement('div');
+            div.className = 'notification';
+            div.style.cssText = `position:fixed;top:20px;right:20px;padding:16px 24px;border-radius:8px;color:white;font-weight:500;z-index:9999;animation:slideIn 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.15);`;
+            div.style.background = type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#ff9800';
+            div.textContent = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 4000);
+        }
+
+        function updateWordButtonState() {
+            const btn = document.getElementById('wordBtn');
+            if (currentRaporId) { btn.disabled = false; btn.style.opacity = '1'; }
+            else { btn.disabled = true; btn.style.opacity = '0.5'; }
+        }
+
+        // ============ DATA ============
+        function getAllFormData() {
+            const data = {};
+            if (!sablonConfig.sections) return data;
+
+            for (const section of sablonConfig.sections) {
+                if (section.fields) {
+                    for (const f of section.fields) {
+                        const el = document.getElementById(f.id);
+                        if (el && !f.readonly) data[f.id] = el.value || '';
+                    }
+                }
+                if (section.type === 'control-questions' && section.questions) {
+                    for (const q of section.questions) {
+                        const el = document.getElementById(q.id);
+                        if (el) data[q.id] = el.value || q.default || 'Uygun';
+                    }
+                }
+                if (section.type === 'sonuc') {
+                    data.genelSonuc = document.getElementById('genelSonuc')?.value || 'UYGUN';
+                }
+            }
+            return data;
+        }
+
+        function firmaBilgileriniDoldur(customer) {
+            if (!customer) return;
+            setFieldValue('firmaAdi', customer.unvan);
+            setFieldValue('firmaAdres', customer.adres);
+            setFieldValue('firmaTelefon', customer.telefon);
+            setFieldValue('firmaEmail', customer.email);
+            setFieldValue('firmaWeb', customer.web);
+        }
+
+        function raporuFormaYukle(rapor) {
+            firmaBilgileriniDoldur(rapor.altGorev?.isEmri?.customer);
+            setFieldValue('raporNo', rapor.raporNo);
+
+            // Ortak alanlar
+            if (rapor.sgkSicilNo) setFieldValue('sgkSicilNo', rapor.sgkSicilNo);
+            if (rapor.isgKatipNo) setFieldValue('isgKatipNo', rapor.isgKatipNo);
+
+            // formData alanlarini doldur
+            const fd = rapor.formData || {};
+            for (const [key, value] of Object.entries(fd)) {
+                const el = document.getElementById(key);
+                if (el) {
+                    el.value = value;
+                    if (el.tagName === 'SELECT' && el.closest('.kontrol-item')) {
+                        updateSelectStyle(el);
+                    }
+                }
+            }
+
+            // Sonuc
+            if (fd.genelSonuc || rapor.genelSonuc) {
+                const sonuc = fd.genelSonuc || rapor.genelSonuc;
+                setFieldValue('genelSonuc', sonuc);
+                setFieldValue('genelSonucSelect', sonuc);
+                sonucDegisti();
+            }
+        }
+
+        // ============ API ============
+        async function isEmriListesiYukle() {
+            try {
+                const res = await fetch(`${API_BASE}/is-emirleri`);
+                const data = await res.json();
+                const sel = document.getElementById('isEmriSelect');
+                sel.innerHTML = '<option value="">Is Emri Secin...</option>';
+                data.forEach(ie => { sel.innerHTML += `<option value="${ie.id}">${ie.isEmriNo} - ${ie.customer?.unvan || ''}</option>`; });
+            } catch (e) { console.error(e); }
+        }
+
+        async function isEmriSecildi() {
+            const id = document.getElementById('isEmriSelect').value;
+            if (!id) return;
+            try {
+                const res = await fetch(`${API_BASE}/is-emirleri/${id}`);
+                const ie = await res.json();
+                firmaBilgileriniDoldur(ie.customer);
+                const sel = document.getElementById('altGorevSelect');
+                sel.innerHTML = '<option value="">Alt Gorev Secin...</option>';
+                (ie.altGorevler || []).forEach(g => { sel.innerHTML += `<option value="${g.id}">${g.siraNo}. ${g.hizmetAdi}</option>`; });
+            } catch (e) { console.error(e); }
+        }
+
+        async function mevcutRaporuYukle(altGorevId) {
+            try {
+                const res = await fetch(`${API_BASE}/rapor/${sablonKodu}/alt-gorev/${altGorevId}`);
+                if (res.ok) {
+                    const rapor = await res.json();
+                    if (rapor && rapor.id) {
+                        currentRaporId = rapor.id;
+                        raporuFormaYukle(rapor);
+                        showNotification(`Rapor yuklendi: ${rapor.raporNo}`, 'success');
+                    } else {
+                        await altGorevBilgileriniYukle(altGorevId);
+                    }
+                } else {
+                    await altGorevBilgileriniYukle(altGorevId);
+                }
+            } catch (e) { console.error('Rapor yukleme hatasi:', e); }
+            updateWordButtonState();
+        }
+
+        async function altGorevBilgileriniYukle(altGorevId) {
+            try {
+                const res = await fetch(`${API_BASE}/alt-gorevler/${altGorevId}`);
+                if (res.ok) {
+                    const ag = await res.json();
+                    firmaBilgileriniDoldur(ag.isEmri?.customer);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function kaydet() {
+            try {
+                const formData = getAllFormData();
+                const altGorevId = currentAltGorevId || document.getElementById('altGorevSelect')?.value;
+
+                if (!altGorevId) {
+                    showNotification('Lutfen once is emri ve alt gorev secin!', 'error');
+                    return;
+                }
+
+                const payload = {
+                    altGorevId: parseInt(altGorevId),
+                    sgkSicilNo: formData.sgkSicilNo || null,
+                    isgKatipNo: formData.isgKatipNo || null,
+                    genelSonuc: formData.genelSonuc || 'UYGUN',
+                    formData: formData
+                };
+
+                let res;
+                if (currentRaporId) {
+                    res = await fetch(`${API_BASE}/rapor/${sablonKodu}/${currentRaporId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    res = await fetch(`${API_BASE}/rapor/${sablonKodu}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+
+                if (res.ok) {
+                    const rapor = await res.json();
+                    currentRaporId = rapor.id;
+                    if (rapor.raporNo) setFieldValue('raporNo', rapor.raporNo);
+                    showNotification(`Rapor kaydedildi: ${rapor.raporNo}`, 'success');
+                    document.getElementById('saveStatus').textContent = 'Kaydedildi';
+                    updateWordButtonState();
+                } else {
+                    const err = await res.json();
+                    showNotification('Kaydetme hatasi: ' + (err.error || 'Bilinmeyen hata'), 'error');
+                }
+            } catch (e) {
+                showNotification('Hata: ' + e.message, 'error');
+            }
+        }
+
+        async function gonder() {
+            if (!confirm('Raporu gondermek istediginize emin misiniz?')) return;
+            await kaydet();
+            showNotification('Rapor basariyla gonderildi!', 'success');
+        }
+
+        async function wordOlustur() {
+            if (!currentRaporId) {
+                showNotification('Once raporu kaydedin!', 'error');
+                return;
+            }
+            try {
+                showNotification('Word dosyasi olusturuluyor...', 'warning');
+                const formData = getAllFormData();
+
+                const res = await fetch(`${API_BASE}/rapor/${sablonKodu}/${currentRaporId}/word`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ...formData,
+                        tekniker: {
+                            adSoyad: 'AHMET MAVUS',
+                            unvan: 'Mekanik Kontrol Sorumlusu',
+                            meslek: 'Makine Teknikeri',
+                            diplomaTarihi: '2004-09-15',
+                            diplomaNo: '0454050027',
+                            ekipnetNo: 'K19020540'
+                        }
+                    })
+                });
+
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Rapor_${sablonKodu}_${currentRaporId}.docx`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showNotification('Word dosyasi indirildi!', 'success');
+                } else {
+                    const e = await res.json();
+                    showNotification('Hata: ' + (e.error || 'Word olusturulamadi'), 'error');
+                }
+            } catch (e) {
+                showNotification('Hata: ' + e.message, 'error');
+            }
+        }
+
+        function yeniRapor() {
+            if (confirm('Yeni rapor olusturmak istediginize emin misiniz?')) location.reload();
+        }
+    </script>
+</body>
+</html>

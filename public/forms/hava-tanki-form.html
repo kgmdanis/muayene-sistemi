@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FR7.2.21 Kompresör Muayene ve Ölçüm Raporu</title>
+    <title>FR7.2.156 Hava Tankı Muayene ve Ölçüm Raporu</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
@@ -40,7 +40,6 @@
         .kontrol-item select.uygun { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
         .kontrol-item select.uygun-degil { background: #ffebee; border-color: #f44336; color: #c62828; }
 
-
         .footer-buttons { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px 24px; display: flex; gap: 16px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 100; }
         .footer-buttons .btn { flex: 1; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-save { background: #f5f5f5; color: #333; }
@@ -59,23 +58,23 @@
 <body>
     <div class="header">
         <button onclick="geriDon()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:20px;margin-right:12px;display:flex;align-items:center;justify-content:center;" title="Geri Dön">←</button>
-        <h1>FR7.2.21 Kompresör Muayene ve Ölçüm Raporu</h1>
+        <h1>FR7.2.156 Hava Tanki Muayene ve Olcum Raporu</h1>
         <div class="header-status">
             <span class="status-dot"></span>
-            <span>Çevrimiçi</span>
+            <span>Cevrimici</span>
             <span id="saveStatus">Kaydedilmedi</span>
             <button class="btn-new" onclick="yeniRapor()">Yeni Rapor</button>
         </div>
     </div>
 
     <div class="container">
-        <!-- İş Emri -->
+        <!-- Is Emri -->
         <div class="card">
-            <div class="card-header" onclick="toggleSection('isEmriSection')"><span>İş Emri & Görev Seçimi</span><span>&#9650;</span></div>
+            <div class="card-header" onclick="toggleSection('isEmriSection')"><span>Is Emri & Gorev Secimi</span><span>&#9650;</span></div>
             <div class="card-body" id="isEmriSection">
                 <div class="form-row">
-                    <div class="form-group"><label class="form-label">İş Emri</label><select id="isEmriSelect" class="form-control" onchange="isEmriSecildi()"><option value="">İş Emri Seçin...</option></select></div>
-                    <div class="form-group"><label class="form-label">Alt Görev</label><select id="altGorevSelect" class="form-control"><option value="">Önce İş Emri Seçin...</option></select></div>
+                    <div class="form-group"><label class="form-label">Is Emri</label><select id="isEmriSelect" class="form-control" onchange="isEmriSecildi()"><option value="">Is Emri Secin...</option></select></div>
+                    <div class="form-group"><label class="form-label">Alt Gorev</label><select id="altGorevSelect" class="form-control"><option value="">Once Is Emri Secin...</option></select></div>
                 </div>
             </div>
         </div>
@@ -85,8 +84,8 @@
             <div class="card-header" onclick="toggleSection('firmaSection')"><span>Firma & Rapor Bilgileri</span><span>&#9650;</span></div>
             <div class="card-body" id="firmaSection">
                 <div class="form-row">
-                    <div class="form-group"><label class="form-label">Firma Adı <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="firmaAdi" class="form-control" disabled></div>
-                    <div class="form-group"><label class="form-label">Bölümü</label><input type="text" id="bolumu" class="form-control" placeholder="Üretim, Bakım vb."></div>
+                    <div class="form-group"><label class="form-label">Firma Adi <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="firmaAdi" class="form-control" disabled></div>
+                    <div class="form-group"><label class="form-label">Bolumu</label><input type="text" id="bolumu" class="form-control" placeholder="Uretim, Bakim vb."></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">Adresi <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="firmaAdres" class="form-control" disabled></div>
@@ -102,101 +101,141 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">Web <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="firmaWeb" class="form-control" disabled></div>
-                    <div class="form-group"><label class="form-label">Rapor No <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="raporNo" class="form-control" disabled placeholder="Kaydettiğinizde oluşturulur"></div>
+                    <div class="form-group"><label class="form-label">Rapor No <small style="color:#059669;">(Otomatik)</small></label><input type="text" id="raporNo" class="form-control" disabled placeholder="Kaydettikten sonra olusturulur"></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">SGK Sicil No</label><input type="text" id="sgkSicilNo" class="form-control" placeholder="SGK Sicil No"></div>
-                    <div class="form-group"><label class="form-label">İSG-KATİP Sözleşme ID</label><input type="text" id="isgKatipNo" class="form-control" placeholder="İSG-KATİP No"></div>
+                    <div class="form-group"><label class="form-label">ISG-KATIP Sozlesme ID</label><input type="text" id="isgKatipNo" class="form-control" placeholder="ISG-KATIP No"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Ekipman Bilgileri -->
+        <!-- Teknik Ozellikler -->
         <div class="card">
-            <div class="card-header" onclick="toggleSection('ekipmanSection')"><span>İş Ekipmanına Ait Teknik Özellikler</span><span>&#9650;</span></div>
+            <div class="card-header" onclick="toggleSection('ekipmanSection')"><span>Is Ekipmanina Ait Teknik Ozellikler</span><span>&#9650;</span></div>
             <div class="card-body" id="ekipmanSection">
                 <div class="form-row">
-                    <div class="form-group"><label class="form-label">Markası</label><input type="text" id="markasi" class="form-control" placeholder="Kompresör markası"></div>
-                    <div class="form-group"><label class="form-label">Tip</label><input type="text" id="tip" class="form-control" placeholder="Kompresör tipi"></div>
+                    <div class="form-group"><label class="form-label">Markasi</label><input type="text" id="markasi" class="form-control" placeholder="Hava tanki markasi"></div>
+                    <div class="form-group"><label class="form-label">Tip</label><input type="text" id="tip" class="form-control" placeholder="Hava tanki tipi"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label class="form-label">Seri No</label><input type="text" id="seriNo" class="form-control" placeholder="Seri numarası"></div>
-                    <div class="form-group"><label class="form-label">İmalat Yılı</label><input type="text" id="imalatYili" class="form-control" placeholder="Örn: 2020"></div>
+                    <div class="form-group"><label class="form-label">Seri No</label><input type="text" id="seriNo" class="form-control" placeholder="Seri numarasi"></div>
+                    <div class="form-group"><label class="form-label">Imalat Yili</label><input type="text" id="imalatYili" class="form-control" placeholder="Orn: 2020"></div>
                 </div>
-                <div class="form-row-3">
-                    <div class="form-group"><label class="form-label">Maksimum Basınç (Bar)</label><input type="text" id="maksBasinc" class="form-control" placeholder="Örn: 10"></div>
-                    <div class="form-group"><label class="form-label">Durma Basıncı (Bar)</label><input type="text" id="durmaBasinci" class="form-control" placeholder="Örn: 8"></div>
-                    <div class="form-group"><label class="form-label">Tekrar Çalışma Basıncı (Bar)</label><input type="text" id="tekrarCalismaBasinci" class="form-control" placeholder="Örn: 6"></div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Tasarim Basinci (Bar)</label><input type="text" id="tasarimBasinci" class="form-control" placeholder="Orn: 10"></div>
+                    <div class="form-group"><label class="form-label">Uretim Test Basinci (Bar)</label><input type="text" id="uretimTestBasinci" class="form-control" placeholder="Orn: 15"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Isletme Basinci (Bar)</label><input type="text" id="isletmeBasinci" class="form-control" placeholder="Orn: 8"></div>
+                    <div class="form-group"><label class="form-label">Test Basinci (Bar)</label><input type="text" id="testBasinci" class="form-control" placeholder="Orn: 12"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Hacmi (Litre)</label><input type="text" id="hacmi" class="form-control" placeholder="Orn: 500"></div>
+                    <div class="form-group"><label class="form-label">Emniyet Ventil Acma Basinci (Bar)</label><input type="text" id="emniyetVentilAcmaBasinci" class="form-control" placeholder="Orn: 10"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Kontrol Soruları -->
+        <!-- Basinc Kaynagi Bilgileri -->
         <div class="card">
-            <div class="card-header" onclick="toggleSection('kontrolSection')"><span>Tespit ve Değerlendirme</span><span class="badge">10 Kontrol</span></div>
+            <div class="card-header" onclick="toggleSection('basincSection')"><span>Basinc Kaynagi Bilgileri</span><span>&#9650;</span></div>
+            <div class="card-body" id="basincSection">
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Basinc Kaynagi Adi</label><input type="text" id="basincKaynagiAdi" class="form-control" placeholder="Orn: Kompresor"></div>
+                    <div class="form-group"><label class="form-label">Basinc Kaynagi Seri No</label><input type="text" id="basincKaynagiSeriNo" class="form-control" placeholder="Seri numarasi"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Degerleri -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('testSection')"><span>Test Degerleri</span><span>&#9650;</span></div>
+            <div class="card-body" id="testSection">
+                <div class="form-row-3">
+                    <div class="form-group"><label class="form-label">Test Tarihi</label><input type="date" id="testTarihi" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Hidrostatik Test Degeri (Bar)</label><input type="text" id="hidrostatikTestDegeri" class="form-control" placeholder="Orn: 12"></div>
+                    <div class="form-group"><label class="form-label">Emniyet Valfi Testi Degeri (Bar)</label><input type="text" id="emniyetValfiTestiDegeri" class="form-control" placeholder="Orn: 10"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kontrol Kriterleri -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('kontrolSection')"><span>Tespit ve Degerlendirme</span><span class="badge">12 Kontrol</span></div>
             <div class="card-body" id="kontrolSection">
                 <div class="kontrol-list">
                     <div class="kontrol-item">
                         <span class="soru-no">1</span>
-                        <span class="soru-text">Kompresör arıza yaptığında üzerine takılan arıza kartı var mı?</span>
-                        <select id="soru1ArizaKarti" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Değil">Uygun Değil</option></select>
+                        <span class="soru-text">Bilgi etiketi, saglik ve guvenlik isaretleri</span>
+                        <select id="kriter1" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
                     </div>
                     <div class="kontrol-item">
                         <span class="soru-no">2</span>
-                        <span class="soru-text">Kompresör üzerinde TSE/CE işareti var mı?</span>
-                        <select id="soru2TseCe" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Değil">Uygun Değil</option></select>
+                        <span class="soru-text">Isletme talimatlari</span>
+                        <select id="kriter2" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
                     </div>
                     <div class="kontrol-item">
                         <span class="soru-no">3</span>
-                        <span class="soru-text">Kompresör üzerinde yağ/toz var mı?</span>
-                        <select id="soru3YagToz" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Değil">Uygun Değil</option></select>
+                        <span class="soru-text">Tank uzerinde islemler</span>
+                        <select id="kriter3" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
                     </div>
                     <div class="kontrol-item">
                         <span class="soru-no">4</span>
-                        <span class="soru-text">Basınç ayar otomatiği çalışıyor mu?</span>
-                        <select id="soru4BasincAyar" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Değil">Uygun Değil</option></select>
+                        <span class="soru-text">Tank yuzeyleri</span>
+                        <select id="kriter4" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
                     </div>
                     <div class="kontrol-item">
                         <span class="soru-no">5</span>
-                        <span class="soru-text">Kayış-kasnak sisteminin koruyucu sacı var mı?</span>
-                        <select id="soru5KayisKasnak" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Değil">Uygun Değil</option></select>
+                        <span class="soru-text">El, bas, adam, gozetleme vb. giris acikliklari</span>
+                        <select id="kriter5" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
                     </div>
                     <div class="kontrol-item">
                         <span class="soru-no">6</span>
-                        <span class="soru-text">Elektrik motoru bağlantılarında gevşeklik var mı?</span>
-                        <select id="soru6ElektrikMotor" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Değil">Uygun Değil</option></select>
+                        <span class="soru-text">Bosaltma tertibatlari</span>
+                        <select id="kriter6" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
                     </div>
                     <div class="kontrol-item">
                         <span class="soru-no">7</span>
-                        <span class="soru-text">Kompresör vana/hortum bağlantı yerlerinde hava kaçağı var mı?</span>
-                        <select id="soru7VanaHortum" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Değil">Uygun Değil</option></select>
+                        <span class="soru-text">Tankin titresimden korunmasi</span>
+                        <select id="kriter7" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
                     </div>
                     <div class="kontrol-item">
                         <span class="soru-no">8</span>
-                        <span class="soru-text">Hava filtresi temiz mi?</span>
-                        <select id="soru8HavaFiltresi" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Değil">Uygun Değil</option></select>
+                        <span class="soru-text">Basinc olcum cihazi (manometre)</span>
+                        <select id="kriter8" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
                     </div>
                     <div class="kontrol-item">
                         <span class="soru-no">9</span>
-                        <span class="soru-text">Yangın söndürücü yeri ve durumu uygun mu?</span>
-                        <select id="soru9YanginSondurucu" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Değil">Uygun Değil</option></select>
+                        <span class="soru-text">Emniyet valfleri</span>
+                        <select id="kriter9" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
                     </div>
                     <div class="kontrol-item">
                         <span class="soru-no">10</span>
-                        <span class="soru-text">Uyarı ve kullanma talimatı durumu uygun mu?</span>
-                        <select id="soru10UyariTalimat" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Değil">Uygun Değil</option></select>
+                        <span class="soru-text">Yetkisiz kullanima ve/veya mekanik darbelere karsi koruma</span>
+                        <select id="kriter10" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
+                    </div>
+                    <div class="kontrol-item" style="background: #e3f2fd;">
+                        <span class="soru-no">11</span>
+                        <span class="soru-text">Hidrostatik test</span>
+                        <select id="testHidrostatik" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
+                    </div>
+                    <div class="kontrol-item" style="background: #e3f2fd;">
+                        <span class="soru-no">12</span>
+                        <span class="soru-text">Emniyet valfi testi</span>
+                        <select id="testEmniyetValfi" onchange="updateSelectStyle(this)"><option value="Uygun">Uygun</option><option value="Uygun Degil">Uygun Degil</option></select>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Kusur Açıklamaları -->
+        <!-- Kusur Aciklamalari -->
         <div class="card">
-            <div class="card-header" onclick="toggleSection('kusurSection')"><span>Kusur Açıklamaları</span><span>&#9650;</span></div>
+            <div class="card-header" onclick="toggleSection('kusurSection')"><span>Kusur Aciklamalari</span><span>&#9650;</span></div>
             <div class="card-body" id="kusurSection">
                 <div class="form-group">
-                    <label class="form-label">Kusur Açıklaması</label>
-                    <textarea id="kusurAciklama" class="form-control" rows="3" placeholder="Tespit edilen kusurları açıklayın..."></textarea>
+                    <label class="form-label">Kusur Aciklamasi</label>
+                    <textarea id="kusurAciklama" class="form-control" rows="3" placeholder="Tespit edilen kusurlari aciklayin..."></textarea>
                 </div>
             </div>
         </div>
@@ -207,23 +246,23 @@
             <div class="card-body" id="notlarSection">
                 <div class="form-group">
                     <label class="form-label">Ek Notlar</label>
-                    <textarea id="notlar" class="form-control" rows="3" placeholder="Varsa ek açıklamalar..."></textarea>
+                    <textarea id="notlar" class="form-control" rows="3" placeholder="Varsa ek aciklamalar..."></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- Sonuç ve Kanaat -->
+        <!-- Sonuc ve Kanaat -->
         <div class="card">
-            <div class="card-header" onclick="toggleSection('sonucSection')"><span>Sonuç ve Kanaat</span><span>&#9650;</span></div>
+            <div class="card-header" onclick="toggleSection('sonucSection')"><span>Sonuc ve Kanaat</span><span>&#9650;</span></div>
             <div class="card-body" id="sonucSection">
                 <div style="background:#f8f9fa;border:1px solid #e0e0e0;border-radius:10px;padding:20px;font-size:15px;line-height:1.8;">
-                    <p>Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen "Kompresör" mevcut şartlar altında
+                    <p>Periyodik kontrol tarihi itibari ile yukarida teknik ozellikleri belirtilen "Hava Tanki" mevcut sartlar altinda
                         <select id="genelSonucSelect" onchange="sonucDegisti()" style="padding:8px 16px;border-radius:6px;font-size:15px;font-weight:700;border:2px solid #059669;background:#ecfdf5;color:#059669;cursor:pointer;">
-                            <option value="UYGUN">kullanımı uygundur</option>
-                            <option value="UYGUN_DEGIL">kullanımı uygun değildir</option>
+                            <option value="UYGUN">kullanimi uygundur</option>
+                            <option value="UYGUN_DEGIL">kullanimi uygun degildir</option>
                         </select>
                     </p>
-                    <p style="margin-top:12px;color:#666;font-size:13px;font-style:italic;">Tespit edilen hafif kusurların bir sonraki periyodik kontrol tarihine kadar giderilmesi gereklidir. (Sadece hafif kusur tespit edilmesi durumunda yazılacaktır.)</p>
+                    <p style="margin-top:12px;color:#666;font-size:13px;font-style:italic;">Tespit edilen hafif kusurlarin bir sonraki periyodik kontrol tarihine kadar giderilmesi gereklidir.</p>
                 </div>
                 <input type="hidden" id="genelSonuc" value="UYGUN">
             </div>
@@ -234,7 +273,7 @@
     <div class="footer-buttons">
         <button class="btn btn-back" onclick="geriDon()" style="background:#6c757d;color:white;">← Vazgeç</button>
         <button class="btn btn-save" onclick="kaydet()">Kaydet</button>
-        <button class="btn btn-submit" onclick="gonder()">Gönder</button>
+        <button class="btn btn-submit" onclick="gonder()">Gonder</button>
         <button class="btn btn-word" onclick="wordOlustur()">Word</button>
     </div>
 
@@ -256,7 +295,6 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('kontrolTarihi').value = today;
             document.getElementById('raporTarihi').value = today;
-            // Sonraki kontrol tarihi: 1 yıl sonra
             const nextYear = new Date();
             nextYear.setFullYear(nextYear.getFullYear() + 1);
             document.getElementById('sonrakiKontrolTarihi').value = nextYear.toISOString().split('T')[0];
@@ -270,7 +308,6 @@
                 isEmriListesiYukle();
             }
 
-            // Tüm select'lerin stilini güncelle
             document.querySelectorAll('.kontrol-item select').forEach(updateSelectStyle);
             updateWordButtonState();
         });
@@ -281,13 +318,9 @@
             const sel = document.getElementById('genelSonucSelect');
             document.getElementById('genelSonuc').value = sel.value;
             if (sel.value === 'UYGUN') {
-                sel.style.borderColor = '#059669';
-                sel.style.background = '#ecfdf5';
-                sel.style.color = '#059669';
+                sel.style.borderColor = '#059669'; sel.style.background = '#ecfdf5'; sel.style.color = '#059669';
             } else {
-                sel.style.borderColor = '#dc2626';
-                sel.style.background = '#fef2f2';
-                sel.style.color = '#dc2626';
+                sel.style.borderColor = '#dc2626'; sel.style.background = '#fef2f2'; sel.style.color = '#dc2626';
             }
         }
 
@@ -307,19 +340,29 @@
                 tip: document.getElementById('tip')?.value || '',
                 seriNo: document.getElementById('seriNo')?.value || '',
                 imalatYili: document.getElementById('imalatYili')?.value || '',
-                maksBasinc: document.getElementById('maksBasinc')?.value || '',
-                durmaBasinci: document.getElementById('durmaBasinci')?.value || '',
-                tekrarCalismaBasinci: document.getElementById('tekrarCalismaBasinci')?.value || '',
-                soru1ArizaKarti: document.getElementById('soru1ArizaKarti')?.value || 'Uygun',
-                soru2TseCe: document.getElementById('soru2TseCe')?.value || 'Uygun',
-                soru3YagToz: document.getElementById('soru3YagToz')?.value || 'Uygun',
-                soru4BasincAyar: document.getElementById('soru4BasincAyar')?.value || 'Uygun',
-                soru5KayisKasnak: document.getElementById('soru5KayisKasnak')?.value || 'Uygun',
-                soru6ElektrikMotor: document.getElementById('soru6ElektrikMotor')?.value || 'Uygun',
-                soru7VanaHortum: document.getElementById('soru7VanaHortum')?.value || 'Uygun',
-                soru8HavaFiltresi: document.getElementById('soru8HavaFiltresi')?.value || 'Uygun',
-                soru9YanginSondurucu: document.getElementById('soru9YanginSondurucu')?.value || 'Uygun',
-                soru10UyariTalimat: document.getElementById('soru10UyariTalimat')?.value || 'Uygun',
+                tasarimBasinci: document.getElementById('tasarimBasinci')?.value || '',
+                uretimTestBasinci: document.getElementById('uretimTestBasinci')?.value || '',
+                isletmeBasinci: document.getElementById('isletmeBasinci')?.value || '',
+                testBasinci: document.getElementById('testBasinci')?.value || '',
+                hacmi: document.getElementById('hacmi')?.value || '',
+                emniyetVentilAcmaBasinci: document.getElementById('emniyetVentilAcmaBasinci')?.value || '',
+                basincKaynagiAdi: document.getElementById('basincKaynagiAdi')?.value || '',
+                basincKaynagiSeriNo: document.getElementById('basincKaynagiSeriNo')?.value || '',
+                testTarihi: document.getElementById('testTarihi')?.value || '',
+                hidrostatikTestDegeri: document.getElementById('hidrostatikTestDegeri')?.value || '',
+                emniyetValfiTestiDegeri: document.getElementById('emniyetValfiTestiDegeri')?.value || '',
+                kriter1: document.getElementById('kriter1')?.value || 'Uygun',
+                kriter2: document.getElementById('kriter2')?.value || 'Uygun',
+                kriter3: document.getElementById('kriter3')?.value || 'Uygun',
+                kriter4: document.getElementById('kriter4')?.value || 'Uygun',
+                kriter5: document.getElementById('kriter5')?.value || 'Uygun',
+                kriter6: document.getElementById('kriter6')?.value || 'Uygun',
+                kriter7: document.getElementById('kriter7')?.value || 'Uygun',
+                kriter8: document.getElementById('kriter8')?.value || 'Uygun',
+                kriter9: document.getElementById('kriter9')?.value || 'Uygun',
+                kriter10: document.getElementById('kriter10')?.value || 'Uygun',
+                testHidrostatik: document.getElementById('testHidrostatik')?.value || 'Uygun',
+                testEmniyetValfi: document.getElementById('testEmniyetValfi')?.value || 'Uygun',
                 kusurAciklama: document.getElementById('kusurAciklama')?.value || '',
                 notlar: document.getElementById('notlar')?.value || '',
                 genelSonuc: document.getElementById('genelSonuc')?.value || 'UYGUN'
@@ -331,7 +374,7 @@
                 const res = await fetch(`${API_BASE}/is-emirleri`);
                 const data = await res.json();
                 const sel = document.getElementById('isEmriSelect');
-                sel.innerHTML = '<option value="">İş Emri Seçin...</option>';
+                sel.innerHTML = '<option value="">Is Emri Secin...</option>';
                 data.forEach(ie => { sel.innerHTML += `<option value="${ie.id}">${ie.isEmriNo} - ${ie.customer?.unvan || ''}</option>`; });
             } catch (e) { console.error(e); }
         }
@@ -344,7 +387,7 @@
                 const ie = await res.json();
                 firmaBilgileriniDoldur(ie.customer);
                 const sel = document.getElementById('altGorevSelect');
-                sel.innerHTML = '<option value="">Alt Görev Seçin...</option>';
+                sel.innerHTML = '<option value="">Alt Gorev Secin...</option>';
                 (ie.altGorevler || []).forEach(g => { sel.innerHTML += `<option value="${g.id}">${g.siraNo}. ${g.hizmetAdi}</option>`; });
             } catch (e) { console.error(e); }
         }
@@ -364,25 +407,21 @@
         function updateWordButtonState() {
             const wordBtn = document.querySelector('.btn-word');
             if (currentRaporId) {
-                wordBtn.disabled = false;
-                wordBtn.style.opacity = '1';
-                wordBtn.title = 'Word dosyasını indir';
+                wordBtn.disabled = false; wordBtn.style.opacity = '1'; wordBtn.title = 'Word dosyasini indir';
             } else {
-                wordBtn.disabled = true;
-                wordBtn.style.opacity = '0.5';
-                wordBtn.title = 'Önce kaydedin';
+                wordBtn.disabled = true; wordBtn.style.opacity = '0.5'; wordBtn.title = 'Once kaydedin';
             }
         }
 
         async function mevcutRaporuYukle(altGorevId) {
             try {
-                const res = await fetch(`${API_BASE}/kompresor-raporu/alt-gorev/${altGorevId}`);
+                const res = await fetch(`${API_BASE}/hava-tanki-raporu/alt-gorev/${altGorevId}`);
                 if (res.ok) {
                     const rapor = await res.json();
                     if (rapor && rapor.id) {
                         currentRaporId = rapor.id;
                         raporuFormaYukle(rapor);
-                        showNotification(`Rapor yüklendi: ${rapor.raporNo}`, 'success');
+                        showNotification(`Rapor yuklendi: ${rapor.raporNo}`, 'success');
                     } else {
                         await altGorevBilgileriniYukle(altGorevId);
                     }
@@ -390,7 +429,7 @@
                     await altGorevBilgileriniYukle(altGorevId);
                 }
             } catch (e) {
-                console.error('Rapor yükleme hatası:', e);
+                console.error('Rapor yukleme hatasi:', e);
             }
             updateWordButtonState();
         }
@@ -417,10 +456,7 @@
         function raporuFormaYukle(rapor) {
             firmaBilgileriniDoldur(rapor.altGorev?.isEmri?.customer);
 
-            // Rapor No
             if (rapor.raporNo) document.getElementById('raporNo').value = rapor.raporNo;
-
-            // Üst bilgiler
             if (rapor.bolumu) document.getElementById('bolumu').value = rapor.bolumu;
             if (rapor.kontrolTarihi) document.getElementById('kontrolTarihi').value = rapor.kontrolTarihi;
             if (rapor.raporTarihi) document.getElementById('raporTarihi').value = rapor.raporTarihi;
@@ -428,18 +464,26 @@
             if (rapor.sgkSicilNo) document.getElementById('sgkSicilNo').value = rapor.sgkSicilNo;
             if (rapor.isgKatipNo) document.getElementById('isgKatipNo').value = rapor.isgKatipNo;
 
-            // Ekipman bilgileri
             if (rapor.markasi) document.getElementById('markasi').value = rapor.markasi;
             if (rapor.tip) document.getElementById('tip').value = rapor.tip;
             if (rapor.seriNo) document.getElementById('seriNo').value = rapor.seriNo;
             if (rapor.imalatYili) document.getElementById('imalatYili').value = rapor.imalatYili;
-            if (rapor.maksBasinc) document.getElementById('maksBasinc').value = rapor.maksBasinc;
-            if (rapor.durmaBasinci) document.getElementById('durmaBasinci').value = rapor.durmaBasinci;
-            if (rapor.tekrarCalismaBasinci) document.getElementById('tekrarCalismaBasinci').value = rapor.tekrarCalismaBasinci;
+            if (rapor.tasarimBasinci) document.getElementById('tasarimBasinci').value = rapor.tasarimBasinci;
+            if (rapor.uretimTestBasinci) document.getElementById('uretimTestBasinci').value = rapor.uretimTestBasinci;
+            if (rapor.isletmeBasinci) document.getElementById('isletmeBasinci').value = rapor.isletmeBasinci;
+            if (rapor.testBasinci) document.getElementById('testBasinci').value = rapor.testBasinci;
+            if (rapor.hacmi) document.getElementById('hacmi').value = rapor.hacmi;
+            if (rapor.emniyetVentilAcmaBasinci) document.getElementById('emniyetVentilAcmaBasinci').value = rapor.emniyetVentilAcmaBasinci;
 
-            // Kontrol soruları
-            const soruFields = ['soru1ArizaKarti','soru2TseCe','soru3YagToz','soru4BasincAyar','soru5KayisKasnak','soru6ElektrikMotor','soru7VanaHortum','soru8HavaFiltresi','soru9YanginSondurucu','soru10UyariTalimat'];
-            soruFields.forEach(field => {
+            if (rapor.basincKaynagiAdi) document.getElementById('basincKaynagiAdi').value = rapor.basincKaynagiAdi;
+            if (rapor.basincKaynagiSeriNo) document.getElementById('basincKaynagiSeriNo').value = rapor.basincKaynagiSeriNo;
+
+            if (rapor.testTarihi) document.getElementById('testTarihi').value = rapor.testTarihi;
+            if (rapor.hidrostatikTestDegeri) document.getElementById('hidrostatikTestDegeri').value = rapor.hidrostatikTestDegeri;
+            if (rapor.emniyetValfiTestiDegeri) document.getElementById('emniyetValfiTestiDegeri').value = rapor.emniyetValfiTestiDegeri;
+
+            const kriterFields = ['kriter1','kriter2','kriter3','kriter4','kriter5','kriter6','kriter7','kriter8','kriter9','kriter10','testHidrostatik','testEmniyetValfi'];
+            kriterFields.forEach(field => {
                 if (rapor[field]) {
                     const sel = document.getElementById(field);
                     if (sel) { sel.value = rapor[field]; updateSelectStyle(sel); }
@@ -461,24 +505,21 @@
                 const altGorevId = currentAltGorevId || document.getElementById('altGorevSelect')?.value;
 
                 if (!altGorevId) {
-                    showNotification('Lütfen önce iş emri ve alt görev seçin!', 'error');
+                    showNotification('Lutfen once is emri ve alt gorev secin!', 'error');
                     return;
                 }
 
-                const payload = {
-                    altGorevId: parseInt(altGorevId),
-                    ...formData
-                };
+                const payload = { altGorevId: parseInt(altGorevId), ...formData };
 
                 let res;
                 if (currentRaporId) {
-                    res = await fetch(`${API_BASE}/kompresor-raporu/${currentRaporId}`, {
+                    res = await fetch(`${API_BASE}/hava-tanki-raporu/${currentRaporId}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
                 } else {
-                    res = await fetch(`${API_BASE}/kompresor-raporu`, {
+                    res = await fetch(`${API_BASE}/hava-tanki-raporu`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
@@ -494,7 +535,7 @@
                     updateWordButtonState();
                 } else {
                     const err = await res.json();
-                    showNotification('Kaydetme hatası: ' + (err.error || 'Bilinmeyen hata'), 'error');
+                    showNotification('Kaydetme hatasi: ' + (err.error || 'Bilinmeyen hata'), 'error');
                 }
             } catch (e) {
                 showNotification('Hata: ' + e.message, 'error');
@@ -502,28 +543,28 @@
         }
 
         async function gonder() {
-            if (!confirm('Raporu göndermek istediğinize emin misiniz?')) return;
+            if (!confirm('Raporu gondermek istediginize emin misiniz?')) return;
             await kaydet();
-            showNotification('Rapor başarıyla gönderildi!', 'success');
+            showNotification('Rapor basariyla gonderildi!', 'success');
         }
 
         async function wordOlustur() {
             if (!currentRaporId) {
-                showNotification('Önce raporu kaydedin!', 'error');
+                showNotification('Once raporu kaydedin!', 'error');
                 return;
             }
 
             try {
-                showNotification('Word dosyası oluşturuluyor...', 'warning');
+                showNotification('Word dosyasi olusturuluyor...', 'warning');
                 const formData = getAllFormData();
 
-                const res = await fetch(`${API_BASE}/kompresor-raporu/${currentRaporId}/word`, {
+                const res = await fetch(`${API_BASE}/hava-tanki-raporu/${currentRaporId}/word`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         ...formData,
                         tekniker: {
-                            adSoyad: 'AHMET MAVUŞ',
+                            adSoyad: 'AHMET MAVUS',
                             unvan: 'Mekanik Kontrol Sorumlusu',
                             meslek: 'Makine Teknikeri',
                             diplomaTarihi: '2004-09-15',
@@ -538,13 +579,13 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `Kompresor_Muayene_Raporu_${currentRaporId}.docx`;
+                    a.download = `Hava_Tanki_Muayene_Raporu_${currentRaporId}.docx`;
                     a.click();
                     URL.revokeObjectURL(url);
-                    showNotification('Word dosyası indirildi!', 'success');
+                    showNotification('Word dosyasi indirildi!', 'success');
                 } else {
                     const e = await res.json();
-                    showNotification('Hata: ' + (e.error || 'Word oluşturulamadı'), 'error');
+                    showNotification('Hata: ' + (e.error || 'Word olusturulamadi'), 'error');
                 }
             } catch (e) {
                 showNotification('Hata: ' + e.message, 'error');
@@ -552,7 +593,7 @@
         }
 
         function yeniRapor() {
-            if (confirm('Yeni rapor oluşturmak istediğinize emin misiniz?')) location.reload();
+            if (confirm('Yeni rapor olusturmak istediginize emin misiniz?')) location.reload();
         }
     </script>
 </body>
