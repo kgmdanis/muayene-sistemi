@@ -1,0 +1,434 @@
+{
+  "sablonKodu": "FR7.2.170",
+  "sablonAdi": "Merdivenli Araç Muayene ve Ölçüm Raporu",
+  "kategori": "kaldırma iletme",
+  "altKategori": "kaldırma iletme",
+  "raporNoPrefix": "KI",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "Markası"
+        },
+        {
+          "id": "tasiyici_ayak_tekerlek_adeti",
+          "label": "Taşıyıcı Ayak/Tekerlek Adeti",
+          "type": "text",
+          "placeholder": "Taşıyıcı Ayak/Tekerlek Adeti"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal Yılı",
+          "type": "text",
+          "placeholder": "İmal Yılı"
+        },
+        {
+          "id": "kaldirma_yuksekligi_mm",
+          "label": "Kaldırma Yüksekliği (mm)",
+          "type": "text",
+          "placeholder": "Kaldırma Yüksekliği (mm)"
+        },
+        {
+          "id": "model",
+          "label": "Model",
+          "type": "text",
+          "placeholder": "Model"
+        },
+        {
+          "id": "tasima_kapasitesi_kg",
+          "label": "Taşıma Kapasitesi (kg)",
+          "type": "text",
+          "placeholder": "Taşıma Kapasitesi (kg)"
+        },
+        {
+          "id": "plaka",
+          "label": "Plaka",
+          "type": "text",
+          "placeholder": "Plaka"
+        },
+        {
+          "id": "i_sletme_kapasitesi_kg",
+          "label": "İşletme Kapasitesi (kg)",
+          "type": "text",
+          "placeholder": "İşletme Kapasitesi (kg)"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "test_dinamik_test_agirligi_kg",
+          "label": "Dinamik Test Ağırlığı(kg)",
+          "type": "text",
+          "placeholder": "Dinamik Test Ağırlığı(kg)"
+        },
+        {
+          "id": "test_statik_test_agirligi_kg",
+          "label": "Statik Test Ağırlığı(kg)",
+          "type": "text",
+          "placeholder": "Statik Test Ağırlığı(kg)"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "9 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Uyarı levhası ve kullanma talimatı durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Merdiven taşıyıcı sistemi durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Merdiven destek ayağı bağlantı durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Merdiven alt-üst sınır kesiciler durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Merdiven yukarı-aşağı hareket, fren ve titreme durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Hidrolik pistonlarda kaçak durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "I.Yüksüz hareket-fren durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "II.Yük altında dinamik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "III.Yük altında statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Merdivenli Araç\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/1. Kaldırma İletme/İtfaye Merdiveni/FR7.2.170 Merdivenli Araç Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header1.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Taşıyıcı Ayak/Tekerlek Adeti",
+        "field": "tasiyici_ayak_tekerlek_adeti"
+      },
+      {
+        "label": "İmal Yılı",
+        "field": "i_mal_yili"
+      },
+      {
+        "label": "Kaldırma Yüksekliği (mm)",
+        "field": "kaldirma_yuksekligi_mm"
+      },
+      {
+        "label": "Model",
+        "field": "model"
+      },
+      {
+        "label": "Taşıma Kapasitesi (kg)",
+        "field": "tasima_kapasitesi_kg"
+      },
+      {
+        "label": "Plaka",
+        "field": "plaka"
+      },
+      {
+        "label": "İşletme Kapasitesi (kg)",
+        "field": "i_sletme_kapasitesi_kg"
+      },
+      {
+        "label": "Dinamik Test Ağırlığı(kg)",
+        "field": "test_dinamik_test_agirligi_kg"
+      },
+      {
+        "label": "Statik Test Ağırlığı(kg)",
+        "field": "test_statik_test_agirligi_kg"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Uyarı levhası ve kullanma",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Merdiven taşıyıcı sistemi durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Merdiven destek ayağı bağlantı",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Merdiven alt-üst sınır kesiciler",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Merdiven yukarı-aşağı hareket, fren",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Hidrolik pistonlarda kaçak durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "I.Yüksüz hareket-fren durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "II.Yük altında dinamik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "III.Yük altında statik kontrol",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,488 @@
+{
+  "sablonKodu": "FR7.2.7",
+  "sablonAdi": "Gırgır Vinç Muayene ve Ölçüm Raporu",
+  "kategori": "kaldırma iletme",
+  "altKategori": "kaldırma iletme",
+  "raporNoPrefix": "KI",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal Yılı",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "kaldirma_kapasitesi_kg",
+          "label": "Kaldırma Kapasitesi(kg)",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "seri_numarasi",
+          "label": "Seri Numarası",
+          "type": "text",
+          "placeholder": "GGV 01"
+        },
+        {
+          "id": "kaldirma_yuksekligi_m",
+          "label": "Kaldırma Yüksekliği(m)",
+          "type": "text",
+          "placeholder": "120"
+        },
+        {
+          "id": "i_sletme_kapasitesi_kg",
+          "label": "İşletme Kapasitesi (kg)",
+          "type": "text",
+          "placeholder": "200"
+        }
+      ]
+    },
+    {
+      "id": "motor",
+      "title": "Motor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "motor_fonksiyon",
+          "label": "Fonksiyon",
+          "type": "text",
+          "placeholder": "Fonksiyon"
+        },
+        {
+          "id": "motor_gucu_hp",
+          "label": "Gücü(hp)",
+          "type": "text",
+          "placeholder": "Gücü(hp)"
+        },
+        {
+          "id": "motor_seri_no",
+          "label": "Seri no",
+          "type": "text",
+          "placeholder": "Seri no"
+        },
+        {
+          "id": "motor_kaldirma_grubu",
+          "label": "Kaldırma Grubu",
+          "type": "text",
+          "placeholder": "Kaldırma Grubu"
+        },
+        {
+          "id": "motor_",
+          "label": "-",
+          "type": "text",
+          "placeholder": "-"
+        }
+      ]
+    },
+    {
+      "id": "halat",
+      "title": "Halat/Zincir ve Kanca Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "halat_zincir_bakla_ic_genisligi_mm",
+          "label": "Zincir bakla iç genişliği(mm)",
+          "type": "text",
+          "placeholder": "Zincir bakla iç genişliği(mm)"
+        },
+        {
+          "id": "halat_deney_oncesi_agiz_acikligi_mm",
+          "label": "Deney öncesi ağız açıklığı(mm)",
+          "type": "text",
+          "placeholder": "Deney öncesi ağız açıklığı(mm)"
+        },
+        {
+          "id": "halat_zincir_bakla_ic_uzunlugu_mm",
+          "label": "Zincir bakla iç uzunluğu(mm)",
+          "type": "text",
+          "placeholder": "Zincir bakla iç uzunluğu(mm)"
+        },
+        {
+          "id": "halat_deney_sonrasi_agiz_acikligi_mm",
+          "label": "Deney sonrası ağız açıklığı(mm)",
+          "type": "text",
+          "placeholder": "Deney sonrası ağız açıklığı(mm)"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "test_dinamik_test_agirligi_kg",
+          "label": "Dinamik Test Ağırlığı(kg)",
+          "type": "text",
+          "placeholder": "Dinamik Test Ağırlığı(kg)"
+        },
+        {
+          "id": "test_statik_test_agirligi_kg",
+          "label": "Statik Test Ağırlığı(kg)",
+          "type": "text",
+          "placeholder": "Statik Test Ağırlığı(kg)"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "7 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Vinç metal yapısı ve bağlantıları, merdivenler, ulaşım yolları ve platformların durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Redüktör ve yağ sızıntı durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Otomatik ve kablolu kumanda, kablo yatakları durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Elektrik motoru, elektrik elemanları, ana şalter ve panosu durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "I.Yüksüz hareket",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "II. Yükte statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "III.Yükte dinamik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Gırgır Vinç\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/1. Kaldırma İletme/GırGır Vinç/FR7.2.7 Gırgır Vinç Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "İmal Yılı",
+        "field": "i_mal_yili"
+      },
+      {
+        "label": "Kaldırma Kapasitesi(kg)",
+        "field": "kaldirma_kapasitesi_kg"
+      },
+      {
+        "label": "Seri Numarası",
+        "field": "seri_numarasi"
+      },
+      {
+        "label": "Kaldırma Yüksekliği(m)",
+        "field": "kaldirma_yuksekligi_m"
+      },
+      {
+        "label": "İşletme Kapasitesi (kg)",
+        "field": "i_sletme_kapasitesi_kg"
+      },
+      {
+        "label": "Fonksiyon",
+        "field": "motor_fonksiyon"
+      },
+      {
+        "label": "Gücü(hp)",
+        "field": "motor_gucu_hp"
+      },
+      {
+        "label": "Seri no",
+        "field": "motor_seri_no"
+      },
+      {
+        "label": "Kaldırma Grubu",
+        "field": "motor_kaldirma_grubu"
+      },
+      {
+        "label": "-",
+        "field": "motor_"
+      },
+      {
+        "label": "Zincir bakla iç genişliği(mm)",
+        "field": "halat_zincir_bakla_ic_genisligi_mm"
+      },
+      {
+        "label": "Deney öncesi ağız açıklığı(mm)",
+        "field": "halat_deney_oncesi_agiz_acikligi_mm"
+      },
+      {
+        "label": "Zincir bakla iç uzunluğu(mm)",
+        "field": "halat_zincir_bakla_ic_uzunlugu_mm"
+      },
+      {
+        "label": "Deney sonrası ağız açıklığı(mm)",
+        "field": "halat_deney_sonrasi_agiz_acikligi_mm"
+      },
+      {
+        "label": "Dinamik Test Ağırlığı(kg)",
+        "field": "test_dinamik_test_agirligi_kg"
+      },
+      {
+        "label": "Statik Test Ağırlığı(kg)",
+        "field": "test_statik_test_agirligi_kg"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Vinç metal yapısı ve",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Redüktör ve yağ sızıntı",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Otomatik ve kablolu kumanda,",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Elektrik motoru, elektrik elemanları,",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "I.Yüksüz hareket",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "II. Yükte statik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "III.Yükte dinamik kontrol durumu",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

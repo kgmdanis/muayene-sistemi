@@ -1,0 +1,591 @@
+{
+  "sablonKodu": "FR7.2.18",
+  "sablonAdi": "Kalorifer Kazanı Muayene ve Ölçüm Raporu",
+  "kategori": "basınçlı kaplar",
+  "altKategori": "basınçlı kaplar",
+  "raporNoPrefix": "BK",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "ÜNMAK"
+        },
+        {
+          "id": "tasarim_basinci_bar",
+          "label": "Tasarım Basıncı ( Bar )",
+          "type": "text",
+          "placeholder": "4"
+        },
+        {
+          "id": "i_malat_yili",
+          "label": "İmalat Yılı",
+          "type": "text",
+          "placeholder": "2013"
+        },
+        {
+          "id": "uretim_deneme_basinci_bar",
+          "label": "Üretim  Deneme Basıncı ( Bar )",
+          "type": "text",
+          "placeholder": "6"
+        },
+        {
+          "id": "tipi",
+          "label": "Tipi",
+          "type": "text",
+          "placeholder": "ÜKYS-3G-Y600"
+        },
+        {
+          "id": "i_sletme_basinci_bar",
+          "label": "İşletme Basıncı ( Bar )",
+          "type": "text",
+          "placeholder": "4"
+        },
+        {
+          "id": "seri_no",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "13070910376"
+        },
+        {
+          "id": "deneme_basinci_bar",
+          "label": "Deneme Basıncı ( Bar )",
+          "type": "text",
+          "placeholder": "6"
+        },
+        {
+          "id": "kapasitesi",
+          "label": "Kapasitesi",
+          "type": "text",
+          "placeholder": "600.000 KCAL/H"
+        },
+        {
+          "id": "guvenlik_ventili_acma_basinci_bar",
+          "label": "Güvenlik Ventili Açma Basınçı ( Bar)",
+          "type": "text",
+          "placeholder": "-"
+        }
+      ]
+    },
+    {
+      "id": "donanim",
+      "title": "Yardımcı Donanımlar",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "donanim_yakit_sistemi",
+          "label": "Yakıt Sistemi",
+          "type": "text",
+          "placeholder": "Yakıt Sistemi"
+        },
+        {
+          "id": "donanim_su_sistemi",
+          "label": "Su Sistemi",
+          "type": "text",
+          "placeholder": "Su Sistemi"
+        },
+        {
+          "id": "donanim_marka_model",
+          "label": "Marka / Model",
+          "type": "text",
+          "placeholder": "Marka / Model"
+        },
+        {
+          "id": "donanim_seri_no",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "Seri No"
+        },
+        {
+          "id": "donanim_i_mal_yili",
+          "label": "İmal Yılı",
+          "type": "text",
+          "placeholder": "İmal Yılı"
+        },
+        {
+          "id": "donanim_kapasite_kw",
+          "label": "Kapasite (kW)",
+          "type": "text",
+          "placeholder": "Kapasite (kW)"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "test_hidrostatik_test",
+          "label": "Hidrostatik Test",
+          "type": "text",
+          "placeholder": "Hidrostatik Test"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "14 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Manometre",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Termometre",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Sıcakalık Ayar Otomatiği (Termostat)",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Güvenlik Ventili",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Blöf Düzeni",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Manometre çalışıyor, konum ve bağlantı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Termometre çalışıyor, konum ve bağlantı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Emniyet ventili çalışıyor ve bağlantı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Blöf vanası çalışıyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Duman sandığı kapak contalarının durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "Yapılan bakım ve onarımlar sicil defterine işleniyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "Yangın söndürücü yeri ve durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "Uyarı ve kullanma talimatı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 14,
+          "text": "Kazan Operatör belgesi var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Kalorifer Kazanı\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/2. Basınçlı Kaplar/Kalorifer Kazanı/FR7.2.18 Kalorifer Kazanı Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Tasarım Basıncı ( Bar )",
+        "field": "tasarim_basinci_bar"
+      },
+      {
+        "label": "İmalat Yılı",
+        "field": "i_malat_yili"
+      },
+      {
+        "label": "Üretim  Deneme Basıncı ( Bar )",
+        "field": "uretim_deneme_basinci_bar"
+      },
+      {
+        "label": "Tipi",
+        "field": "tipi"
+      },
+      {
+        "label": "İşletme Basıncı ( Bar )",
+        "field": "i_sletme_basinci_bar"
+      },
+      {
+        "label": "Seri No",
+        "field": "seri_no"
+      },
+      {
+        "label": "Deneme Basıncı ( Bar )",
+        "field": "deneme_basinci_bar"
+      },
+      {
+        "label": "Kapasitesi",
+        "field": "kapasitesi"
+      },
+      {
+        "label": "Güvenlik Ventili Açma Basınçı ( Bar)",
+        "field": "guvenlik_ventili_acma_basinci_bar"
+      },
+      {
+        "label": "Yakıt Sistemi",
+        "field": "donanim_yakit_sistemi"
+      },
+      {
+        "label": "Su Sistemi",
+        "field": "donanim_su_sistemi"
+      },
+      {
+        "label": "Marka / Model",
+        "field": "donanim_marka_model"
+      },
+      {
+        "label": "Seri No",
+        "field": "donanim_seri_no"
+      },
+      {
+        "label": "İmal Yılı",
+        "field": "donanim_i_mal_yili"
+      },
+      {
+        "label": "Kapasite (kW)",
+        "field": "donanim_kapasite_kw"
+      },
+      {
+        "label": "Hidrostatik Test",
+        "field": "test_hidrostatik_test"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Manometre",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Termometre",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Sıcakalık Ayar Otomatiği (Termostat)",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Güvenlik Ventili",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Blöf Düzeni",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Manometre çalışıyor, konum ve",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Termometre çalışıyor, konum ve",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Emniyet ventili çalışıyor ve",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Blöf vanası çalışıyor mu?",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "Duman sandığı kapak contalarının",
+          "exact": true
+        },
+        {
+          "field": "kriter11",
+          "text": "Yapılan bakım ve onarımlar",
+          "exact": true
+        },
+        {
+          "field": "kriter12",
+          "text": "Yangın söndürücü yeri ve",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "Uyarı ve kullanma talimatı",
+          "exact": true
+        },
+        {
+          "field": "kriter14",
+          "text": "Kazan Operatör belgesi var",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,563 @@
+{
+  "sablonKodu": "FR7.2.13",
+  "sablonAdi": "Araç Kaldırma Lifti Muayene ve Ölçüm Raporu",
+  "kategori": "kaldırma iletme",
+  "altKategori": "kaldırma iletme",
+  "raporNoPrefix": "KI",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "YILMAZ KARDEŞLER"
+        },
+        {
+          "id": "kapasitesi_kg",
+          "label": "Kapasitesi(kg)",
+          "type": "text",
+          "placeholder": "60.000"
+        },
+        {
+          "id": "modeli",
+          "label": "Modeli",
+          "type": "text",
+          "placeholder": "PİSTONLU"
+        },
+        {
+          "id": "i_sletme_kapasitesi_kg",
+          "label": "İşletme Kapasitesi(kg)",
+          "type": "text",
+          "placeholder": "60.000"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal yılı",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "kaldirma_yuksekligi_m",
+          "label": "Kaldırma yüksekliği(m)",
+          "type": "text",
+          "placeholder": "5"
+        },
+        {
+          "id": "tipi",
+          "label": "Tipi",
+          "type": "text",
+          "placeholder": "KAMYON BOŞALTMA LİFTİ"
+        },
+        {
+          "id": "kaldirma_hizi_mm_s",
+          "label": "Kaldırma Hızı (mm/s)",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "seri_no",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "01 NOLU"
+        },
+        {
+          "id": "kaldirma_sistemi",
+          "label": "Kaldırma Sistemi",
+          "type": "text",
+          "placeholder": "Pistonlu   Sonsuz Vidalı / Körüklü"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "test_dinamik_test_agirligi_kg",
+          "label": "Dinamik Test Ağırlığı(kg)",
+          "type": "text",
+          "placeholder": "Dinamik Test Ağırlığı(kg)"
+        },
+        {
+          "id": "test_statik_test_agirligi_kg",
+          "label": "Statik Test Ağırlığı(kg)",
+          "type": "text",
+          "placeholder": "Statik Test Ağırlığı(kg)"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "16 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Motor gücü (kw)",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Motor markası",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Motor devri",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Motor bağlantısı",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Sonsuz vida alt-üst rulmanlarının hareketinde zorlanma var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Yük şaryosu kilidi görev yapıyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Güç iletici mil veya zincir boşlukları normal mi?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Yük kolları (Mafsallı / Teleskopik ) uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Yük şaryosu baskıları ile kule kızağı ara boşlukları normal mi?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Yük kolları açısal kilidi çalışıyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "Yük kollarının inişi ve kalkışı sırasındaki senkronizasyonu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "Kriko yük takozu ileri-geri ve sağa-sola kaydırma ma kilidi var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "I.Yüksüz harekette kaldırma kollarının durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 14,
+          "text": "II.Yük altında statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter15",
+          "no": 15,
+          "text": "III.Yük altında dinamik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter16",
+          "no": 16,
+          "text": "Selenoid emniyet valfleri çalışıyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Araç Kaldırma Lifti\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/1. Kaldırma İletme/Araç Kaldırma Lifti/FR7.2.13 Araç Kaldırma Lifti Muayene ve Ölçüm Raporu-1.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Kapasitesi(kg)",
+        "field": "kapasitesi_kg"
+      },
+      {
+        "label": "Modeli",
+        "field": "modeli"
+      },
+      {
+        "label": "İşletme Kapasitesi(kg)",
+        "field": "i_sletme_kapasitesi_kg"
+      },
+      {
+        "label": "İmal yılı",
+        "field": "i_mal_yili"
+      },
+      {
+        "label": "Kaldırma yüksekliği(m)",
+        "field": "kaldirma_yuksekligi_m"
+      },
+      {
+        "label": "Tipi",
+        "field": "tipi"
+      },
+      {
+        "label": "Kaldırma Hızı (mm/s)",
+        "field": "kaldirma_hizi_mm_s"
+      },
+      {
+        "label": "Seri No",
+        "field": "seri_no"
+      },
+      {
+        "label": "Kaldırma Sistemi",
+        "field": "kaldirma_sistemi"
+      },
+      {
+        "label": "Dinamik Test Ağırlığı(kg)",
+        "field": "test_dinamik_test_agirligi_kg"
+      },
+      {
+        "label": "Statik Test Ağırlığı(kg)",
+        "field": "test_statik_test_agirligi_kg"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Motor gücü (kw)",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Motor markası",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Motor devri",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Motor bağlantısı",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Sonsuz vida alt-üst rulmanlarının",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Yük şaryosu kilidi görev",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Güç iletici mil veya",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Yük kolları (Mafsallı /",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Yük şaryosu baskıları ile",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "Yük kolları açısal kilidi",
+          "exact": true
+        },
+        {
+          "field": "kriter11",
+          "text": "Yük kollarının inişi ve",
+          "exact": true
+        },
+        {
+          "field": "kriter12",
+          "text": "Kriko yük takozu ileri-geri",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "I.Yüksüz harekette kaldırma kollarının",
+          "exact": true
+        },
+        {
+          "field": "kriter14",
+          "text": "II.Yük altında statik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter15",
+          "text": "III.Yük altında dinamik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter16",
+          "text": "Selenoid emniyet valfleri çalışıyor",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

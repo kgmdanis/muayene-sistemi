@@ -1,0 +1,562 @@
+{
+  "sablonKodu": "FR7.2.156",
+  "sablonAdi": "Hava Tankı Muayene ve Ölçüm Raporu",
+  "kategori": "mekanik",
+  "altKategori": "basınçlı malzemeler",
+  "raporNoPrefix": "MK",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "Hava tankı markası"
+        },
+        {
+          "id": "tip",
+          "label": "Tip",
+          "type": "text",
+          "placeholder": "Hava tankı tipi"
+        },
+        {
+          "id": "seriNo",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "Seri numarası"
+        },
+        {
+          "id": "imalatYili",
+          "label": "İmalat Yılı",
+          "type": "text",
+          "placeholder": "Örn: 2020"
+        },
+        {
+          "id": "tasarimBasinci",
+          "label": "Tasarım Basıncı (Bar)",
+          "type": "text",
+          "placeholder": "Örn: 10"
+        },
+        {
+          "id": "uretimTestBasinci",
+          "label": "Üretim Test Basıncı (Bar)",
+          "type": "text",
+          "placeholder": "Örn: 15"
+        },
+        {
+          "id": "isletmeBasinci",
+          "label": "İşletme Basıncı (Bar)",
+          "type": "text",
+          "placeholder": "Örn: 8"
+        },
+        {
+          "id": "testBasinci",
+          "label": "Test Basıncı (Bar)",
+          "type": "text",
+          "placeholder": "Örn: 12"
+        },
+        {
+          "id": "hacmi",
+          "label": "Hacmi (Litre)",
+          "type": "text",
+          "placeholder": "Örn: 500"
+        },
+        {
+          "id": "emniyetVentilAcmaBasinci",
+          "label": "Emniyet Ventil Açma Basıncı (Bar)",
+          "type": "text",
+          "placeholder": "Örn: 10"
+        }
+      ]
+    },
+    {
+      "id": "basinc",
+      "title": "Basınç Kaynağı Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "basincKaynagiAdi",
+          "label": "Basınç Kaynağı Adı",
+          "type": "text",
+          "placeholder": "Örn: Kompresör"
+        },
+        {
+          "id": "basincKaynagiSeriNo",
+          "label": "Basınç Kaynağı Seri No",
+          "type": "text",
+          "placeholder": "Seri numarası"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "testTarihi",
+          "label": "Test Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "hidrostatikTestDegeri",
+          "label": "Hidrostatik Test Değeri (Bar)",
+          "type": "text",
+          "placeholder": "Örn: 12"
+        },
+        {
+          "id": "emniyetValfiTestiDegeri",
+          "label": "Emniyet Valfi Testi Değeri (Bar)",
+          "type": "text",
+          "placeholder": "Örn: 10"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "12 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Bilgi etiketi, sağlık ve güvenlik işaretleri",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "İşletme talimatları",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Tank üzerinde işlemler",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Tank yüzeyleri",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "El, baş, adam, gözetleme vb. giriş açıklıkları",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Boşaltma tertibatları",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Tankın titreşimden korunması",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Basınç ölçüm cihazı (manometre)",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Emniyet valfleri",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Yetkisiz kullanıma ve/veya mekanik darbelere karşı koruma",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "testHidrostatik",
+          "no": 11,
+          "text": "Hidrostatik test",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun",
+          "highlight": true
+        },
+        {
+          "id": "testEmniyetValfi",
+          "no": 12,
+          "text": "Emniyet valfi testi",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun",
+          "highlight": true
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "Kusur Açıklamaları",
+      "fields": [
+        {
+          "id": "kusurAciklama",
+          "label": "Kusur Açıklaması",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusurları açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "notlar",
+      "title": "Notlar",
+      "fields": [
+        {
+          "id": "notlar",
+          "label": "Ek Notlar",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Varsa ek açıklamalar..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Hava Tankı\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/mekanik/basınçlı malzemeler/FR7.2.156 Hava Tankı Muayene ve Ölçüm Raporu-1.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Tasarım Basıncı",
+        "field": "tasarimBasinci"
+      },
+      {
+        "label": "Tip",
+        "field": "tip"
+      },
+      {
+        "label": "Üretim Test Basıncı",
+        "field": "uretimTestBasinci"
+      },
+      {
+        "label": "Seri No",
+        "field": "seriNo"
+      },
+      {
+        "label": "İşletme Basıncı",
+        "field": "isletmeBasinci"
+      },
+      {
+        "label": "İmalat Yılı",
+        "field": "imalatYili"
+      },
+      {
+        "label": "Test Basıncı",
+        "field": "testBasinci"
+      },
+      {
+        "label": "Hacmi (lt)",
+        "field": "hacmi"
+      },
+      {
+        "label": "Emniyet Ventilleri Açma Basıncı",
+        "field": "emniyetVentilAcmaBasinci"
+      },
+      {
+        "label": "Basınç kaynağı adı",
+        "field": "basincKaynagiAdi"
+      },
+      {
+        "label": "Basınç kaynağı seri numarası",
+        "field": "basincKaynagiSeriNo"
+      }
+    ],
+    "testRows": [
+      {
+        "text": "Hidrostatik Test",
+        "dateField": "testTarihi",
+        "valueField": "hidrostatikTestDegeri"
+      },
+      {
+        "text": "Emniyet Valfi Testi",
+        "dateField": "testTarihi",
+        "valueField": "emniyetValfiTestiDegeri"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Bilgi etiketi",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "İşletme talimatları",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Tank üzerinde işlemler",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Tank yüzeyleri",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "giriş açıklıkları",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Boşaltma tertibatları",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "titreşimden korunması",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "manometre",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Emniyet valfleri",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "mekanik darbelere",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "testHidrostatik",
+          "text": "Hidrostatik test",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "testEmniyetValfi",
+          "text": "Emniyet valfi testi",
+          "mode": "last",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

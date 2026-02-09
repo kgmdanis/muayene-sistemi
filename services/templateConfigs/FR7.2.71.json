@@ -1,0 +1,377 @@
+{
+  "sablonKodu": "FR7.2.71",
+  "sablonAdi": "Chiller  Muayene ve Ölçüm Raporu",
+  "kategori": "basınçlı kaplar",
+  "altKategori": "basınçlı kaplar",
+  "raporNoPrefix": "BK",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "marka",
+          "label": "Marka",
+          "type": "text",
+          "placeholder": "SXA"
+        },
+        {
+          "id": "model",
+          "label": "Model",
+          "type": "text",
+          "placeholder": "CWFL-600EN"
+        },
+        {
+          "id": "calisma_sicakligi_0c",
+          "label": "Çalışma Sıcaklığı (0C",
+          "type": "text",
+          "placeholder": "40/20"
+        },
+        {
+          "id": "seri_no",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "9460"
+        },
+        {
+          "id": "brulor",
+          "label": "Brulör",
+          "type": "text",
+          "placeholder": "TERMOKAR"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "9 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Pompaların durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Sistem üzerindeki kaçak durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Pislik tutucuların durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Tahliye Blöf vanası çalışıyor ve bağlantı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Depolama tankı kalıcı deformasyon (çatlak, gözenek veya cüruf) var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Frekans konvetörlerin dijital gösterge durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Temizleme kapakları, konum ve bağlantı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Ayakların ve ayak takviye sacı genel durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Yapılan bakım ve onarımlar sicil defterine işleniyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Chiller\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/2. Basınçlı Kaplar/Chiller/FR7.2.71 Chiller  Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Marka",
+        "field": "marka"
+      },
+      {
+        "label": "Model",
+        "field": "model"
+      },
+      {
+        "label": "Çalışma Sıcaklığı (0C",
+        "field": "calisma_sicakligi_0c"
+      },
+      {
+        "label": "Seri No",
+        "field": "seri_no"
+      },
+      {
+        "label": "Brulör",
+        "field": "brulor"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Pompaların durumu uygun mu?",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Sistem üzerindeki kaçak durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Pislik tutucuların durumu uygun",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Tahliye Blöf vanası çalışıyor",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Depolama tankı kalıcı deformasyon",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Frekans konvetörlerin dijital gösterge",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Temizleme kapakları, konum ve",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Ayakların ve ayak takviye",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Yapılan bakım ve onarımlar",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

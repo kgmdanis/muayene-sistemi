@@ -1,0 +1,427 @@
+{
+  "sablonKodu": "FR7.2.90",
+  "sablonAdi": "Enjeksiyon Makinesi Muayene ve Ölçüm Raporu",
+  "kategori": "makine tezgahlar",
+  "altKategori": "makine tezgahlar",
+  "raporNoPrefix": "MT",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "DEWALT"
+        },
+        {
+          "id": "seri_no",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "model",
+          "label": "Model",
+          "type": "text",
+          "placeholder": "DWS780-QS"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal Yılı",
+          "type": "text",
+          "placeholder": "00812"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "13 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Mengene kilitleme mekanizmasının arka ve yan koruyucuları uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Kalıp bölümü koruyucu kapısı ve emniyet kilitleri uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Kalıp bölümü üstten operatörün erişimini kısıtlayan önlemler alınmış mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Kalıp ve mengene kısmına yandan ve alttan ulaşılmasını önleyecek koruyucular uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Nozzle ( meme ) kısmının koruyucu ve emniyet sivici uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Kovan ısıtıcıların korumaları ve uyarı levhaları uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Huni bölgesinde vida kısmına erişimi önleyen koruyucular uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Vida tahrik kısmındaki koruyucular uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Elektrik tesisatı, kumanda paneli ve elektrik panoları uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Kovan ve nozzle (meme) ısıtıcı elektrik bağlantı ve kabloları uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "Hidrolik hortumlarda deformasyon, hidrolik sistemde yağ kaçağı var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "Makinenin çevresinde ve yerlerde operatör açısından risk oluşturabilecek düzensiz malzeme , yağ sızıntısı, kablo, hortum v.b şeyler var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "Makine bakımları ve temizlikleri peryodik olarak yapılıyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Enjeksiyon Makinesi\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/6- Makine Tezgahlar/FR7.2.90 Enjeksiyon Makinesi Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Seri No",
+        "field": "seri_no"
+      },
+      {
+        "label": "Model",
+        "field": "model"
+      },
+      {
+        "label": "İmal Yılı",
+        "field": "i_mal_yili"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Mengene kilitleme mekanizmasının arka",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Kalıp bölümü koruyucu kapısı",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Kalıp bölümü üstten operatörün",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Kalıp ve mengene kısmına",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Nozzle ( meme )",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Kovan ısıtıcıların korumaları ve",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Huni bölgesinde vida kısmına",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Vida tahrik kısmındaki koruyucular",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Elektrik tesisatı, kumanda paneli",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "Kovan ve nozzle (meme)",
+          "exact": true
+        },
+        {
+          "field": "kriter11",
+          "text": "Hidrolik hortumlarda deformasyon, hidrolik",
+          "exact": true
+        },
+        {
+          "field": "kriter12",
+          "text": "Makinenin çevresinde ve yerlerde",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "Makine bakımları ve temizlikleri",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

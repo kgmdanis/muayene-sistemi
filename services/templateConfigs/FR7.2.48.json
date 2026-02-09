@@ -1,0 +1,377 @@
+{
+  "sablonKodu": "FR7.2.48",
+  "sablonAdi": "Alimak Muayene ve Ölçüm Raporu",
+  "kategori": "kaldırma iletme",
+  "altKategori": "kaldırma iletme",
+  "raporNoPrefix": "KI",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "Markası"
+        },
+        {
+          "id": "kapasitesi_kg",
+          "label": "Kapasitesi(kg)",
+          "type": "text",
+          "placeholder": "Kapasitesi(kg)"
+        },
+        {
+          "id": "modeli",
+          "label": "Modeli",
+          "type": "text",
+          "placeholder": "Modeli"
+        },
+        {
+          "id": "ayak_acikligi_m",
+          "label": "Ayak Açıklığı (m)",
+          "type": "text",
+          "placeholder": "Ayak Açıklığı (m)"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal yılı",
+          "type": "text",
+          "placeholder": "İmal yılı"
+        },
+        {
+          "id": "kaldirma_yuksekligi_m",
+          "label": "Kaldırma yüksekliği(m)",
+          "type": "text",
+          "placeholder": "Kaldırma yüksekliği(m)"
+        },
+        {
+          "id": "tipi",
+          "label": "Tipi",
+          "type": "text",
+          "placeholder": "Tipi"
+        },
+        {
+          "id": "kaldirma_hizi_mm_s",
+          "label": "Kaldırma Hızı (mm/s)",
+          "type": "text",
+          "placeholder": "Kaldırma Hızı (mm/s)"
+        },
+        {
+          "id": "seri_no",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "Seri No"
+        }
+      ]
+    },
+    {
+      "id": "elektriksel",
+      "title": "Elektriksel Yapı",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "elektrik_motor_gucu_kw",
+          "label": "Motor gücü (kw)",
+          "type": "text",
+          "placeholder": "Motor gücü (kw)"
+        },
+        {
+          "id": "elektrik_alt_ust_sinir_kesiciler_calisiyor_mu",
+          "label": "Alt-üst sınır kesiciler çalışıyor mu?",
+          "type": "text",
+          "placeholder": "Alt-üst sınır kesiciler çalışıyor mu?"
+        },
+        {
+          "id": "elektrik_motor_markasi",
+          "label": "Motor markası",
+          "type": "text",
+          "placeholder": "Motor markası"
+        },
+        {
+          "id": "elektrik_kumanda_butonlari_uygun_konumda_mi",
+          "label": "Kumanda butonları uygun konumda mı?",
+          "type": "text",
+          "placeholder": "Kumanda butonları uygun konumda mı?"
+        },
+        {
+          "id": "elektrik_motor_devri",
+          "label": "Motor devri",
+          "type": "text",
+          "placeholder": "Motor devri"
+        },
+        {
+          "id": "elektrik_kumanda_butonlari_komut_islevi_uygun_mu",
+          "label": "Kumanda butonları komut işlevi uygun mu?",
+          "type": "text",
+          "placeholder": "Kumanda butonları komut işlevi uygun mu?"
+        },
+        {
+          "id": "elektrik_motor_baglantisi",
+          "label": "Motor bağlantısı",
+          "type": "text",
+          "placeholder": "Motor bağlantısı"
+        },
+        {
+          "id": "elektrik_elektrik_panosu_kablo_baglantilari_uygun_durumda_mi",
+          "label": "Elektrik panosu kablo bağlantıları uygun durumda mı?",
+          "type": "text",
+          "placeholder": "Elektrik panosu kablo bağlantıları uygun durumda mı?"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "test_parasut_test_sonucu",
+          "label": "Paraşüt Test Sonucu",
+          "type": "text",
+          "placeholder": "Paraşüt Test Sonucu"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Alimak\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/1. Kaldırma İletme/Alimak Paraşüt/FR7.2.48 Alimak Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Kapasitesi(kg)",
+        "field": "kapasitesi_kg"
+      },
+      {
+        "label": "Modeli",
+        "field": "modeli"
+      },
+      {
+        "label": "Ayak Açıklığı (m)",
+        "field": "ayak_acikligi_m"
+      },
+      {
+        "label": "İmal yılı",
+        "field": "i_mal_yili"
+      },
+      {
+        "label": "Kaldırma yüksekliği(m)",
+        "field": "kaldirma_yuksekligi_m"
+      },
+      {
+        "label": "Tipi",
+        "field": "tipi"
+      },
+      {
+        "label": "Kaldırma Hızı (mm/s)",
+        "field": "kaldirma_hizi_mm_s"
+      },
+      {
+        "label": "Seri No",
+        "field": "seri_no"
+      },
+      {
+        "label": "Motor gücü (kw)",
+        "field": "elektrik_motor_gucu_kw"
+      },
+      {
+        "label": "Alt-üst sınır kesiciler çalışıyor mu?",
+        "field": "elektrik_alt_ust_sinir_kesiciler_calisiyor_mu"
+      },
+      {
+        "label": "Motor markası",
+        "field": "elektrik_motor_markasi"
+      },
+      {
+        "label": "Kumanda butonları uygun konumda mı?",
+        "field": "elektrik_kumanda_butonlari_uygun_konumda_mi"
+      },
+      {
+        "label": "Motor devri",
+        "field": "elektrik_motor_devri"
+      },
+      {
+        "label": "Kumanda butonları komut işlevi uygun mu?",
+        "field": "elektrik_kumanda_butonlari_komut_islevi_uygun_mu"
+      },
+      {
+        "label": "Motor bağlantısı",
+        "field": "elektrik_motor_baglantisi"
+      },
+      {
+        "label": "Elektrik panosu kablo bağlantıları uygun durumda mı?",
+        "field": "elektrik_elektrik_panosu_kablo_baglantilari_uygun_durumda_mi"
+      },
+      {
+        "label": "Paraşüt Test Sonucu",
+        "field": "test_parasut_test_sonucu"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": []
+    }
+  }
+}

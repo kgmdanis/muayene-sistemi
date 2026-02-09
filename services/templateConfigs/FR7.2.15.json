@@ -1,0 +1,508 @@
+{
+  "sablonKodu": "FR7.2.15",
+  "sablonAdi": "Yük Asansörü Muayene ve Ölçüm Raporu",
+  "kategori": "kaldırma iletme",
+  "altKategori": "kaldırma iletme",
+  "raporNoPrefix": "KI",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "VOLPİ"
+        },
+        {
+          "id": "kapasitesi_kg",
+          "label": "Kapasitesi(kg)",
+          "type": "text",
+          "placeholder": "2000"
+        },
+        {
+          "id": "modeli",
+          "label": "Modeli",
+          "type": "text",
+          "placeholder": "KABİNLİ"
+        },
+        {
+          "id": "i_sletme_beyan_yuku",
+          "label": "İşletme Beyan Yükü",
+          "type": "text",
+          "placeholder": "500"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal yılı",
+          "type": "text",
+          "placeholder": "2021"
+        },
+        {
+          "id": "ayak_acikligi_m",
+          "label": "Ayak Açıklığı (m)",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "tipi",
+          "label": "Tipi",
+          "type": "text",
+          "placeholder": "CARASKAL TİP"
+        },
+        {
+          "id": "kaldirma_yuksekligi_m",
+          "label": "Kaldırma yüksekliği(m)",
+          "type": "text",
+          "placeholder": "7"
+        },
+        {
+          "id": "seri_no",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "YA 01"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "test_dinamik_test_agirligi_kg",
+          "label": "Dinamik Test Ağırlığı(kg)",
+          "type": "text",
+          "placeholder": "Dinamik Test Ağırlığı(kg)"
+        },
+        {
+          "id": "test_statik_test_agirligi_kg",
+          "label": "Statik Test Ağırlığı(kg)",
+          "type": "text",
+          "placeholder": "Statik Test Ağırlığı(kg)"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "13 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Motor gücü (kw)",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Motor markası",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Motor devri",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Motor bağlantısı",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Uyarı levhası var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Yük asansörünün yapısı ve bağlantı elamanlarının ve swich durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Kumanda buton durumu çalışıyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Acil stop butonu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Yürüme yolu ve rayların durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Redüktör ve yağ sızıntı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "I.Yüksüz harekette kaldırma kollarının durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "II.Yük altında statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "III.Yük altında dinamik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Yük Asansörü\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/1. Kaldırma İletme/Yük Asansörü/FR7.2.15 Yük Asansörü Muayene ve Ölçüm Raporu-1.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Kapasitesi(kg)",
+        "field": "kapasitesi_kg"
+      },
+      {
+        "label": "Modeli",
+        "field": "modeli"
+      },
+      {
+        "label": "İşletme Beyan Yükü",
+        "field": "i_sletme_beyan_yuku"
+      },
+      {
+        "label": "İmal yılı",
+        "field": "i_mal_yili"
+      },
+      {
+        "label": "Ayak Açıklığı (m)",
+        "field": "ayak_acikligi_m"
+      },
+      {
+        "label": "Tipi",
+        "field": "tipi"
+      },
+      {
+        "label": "Kaldırma yüksekliği(m)",
+        "field": "kaldirma_yuksekligi_m"
+      },
+      {
+        "label": "Seri No",
+        "field": "seri_no"
+      },
+      {
+        "label": "Dinamik Test Ağırlığı(kg)",
+        "field": "test_dinamik_test_agirligi_kg"
+      },
+      {
+        "label": "Statik Test Ağırlığı(kg)",
+        "field": "test_statik_test_agirligi_kg"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Motor gücü (kw)",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Motor markası",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Motor devri",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Motor bağlantısı",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Uyarı levhası var mı?",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Yük asansörünün yapısı ve",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Kumanda buton durumu çalışıyor",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Acil stop butonu uygun",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Yürüme yolu ve rayların",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "Redüktör ve yağ sızıntı",
+          "exact": true
+        },
+        {
+          "field": "kriter11",
+          "text": "I.Yüksüz harekette kaldırma kollarının",
+          "exact": true
+        },
+        {
+          "field": "kriter12",
+          "text": "II.Yük altında statik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "III.Yük altında dinamik kontrol",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

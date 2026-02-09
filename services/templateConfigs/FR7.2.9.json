@@ -1,0 +1,368 @@
+{
+  "sablonKodu": "FR7.2.9",
+  "sablonAdi": "Mobil Vinç Muayene ve Ölçüm Raporu",
+  "kategori": "kaldırma iletme",
+  "altKategori": "kaldırma iletme",
+  "raporNoPrefix": "KI",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "aracin_markasi_tipi",
+          "label": "Aracın markası, tipi",
+          "type": "text",
+          "placeholder": "HANTAŞ"
+        },
+        {
+          "id": "vinc_kapasitesi_ton",
+          "label": "Vinç kapasitesi (Ton)",
+          "type": "text",
+          "placeholder": "1000"
+        },
+        {
+          "id": "vincin_markasi_tipi",
+          "label": "Vincin markası, tipi",
+          "type": "text",
+          "placeholder": "HANTAŞ"
+        },
+        {
+          "id": "toplam_bom_uzunlugu_m",
+          "label": "Toplam bom uzunluğu (m)",
+          "type": "text",
+          "placeholder": "5"
+        },
+        {
+          "id": "vincin_tahrik_motor_gucu",
+          "label": "Vincin tahrik motor gücü",
+          "type": "text",
+          "placeholder": "4,6"
+        },
+        {
+          "id": "bom_sayisi",
+          "label": "Bom sayısı",
+          "type": "text",
+          "placeholder": "2"
+        },
+        {
+          "id": "arac_sasi_no",
+          "label": "Araç şasi no",
+          "type": "text",
+          "placeholder": "01 NOLU"
+        },
+        {
+          "id": "destek_sayisi",
+          "label": "Destek sayısı",
+          "type": "text",
+          "placeholder": "4"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "6 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Şaside bükülme, eğilme, çatlak durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Yağ tankında sızıntı durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Boru ve hortumlarda hasar durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Bomda çatlak ve deformasyon",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Destek ayaklarının durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Dinamik Test ağırlığı (kg)",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Mobil Vinç\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/1. Kaldırma İletme/Mobil Vinç/FR7.2.9 Mobil Vinç Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Aracın markası, tipi",
+        "field": "aracin_markasi_tipi"
+      },
+      {
+        "label": "Vinç kapasitesi (Ton)",
+        "field": "vinc_kapasitesi_ton"
+      },
+      {
+        "label": "Vincin markası, tipi",
+        "field": "vincin_markasi_tipi"
+      },
+      {
+        "label": "Toplam bom uzunluğu (m)",
+        "field": "toplam_bom_uzunlugu_m"
+      },
+      {
+        "label": "Vincin tahrik motor gücü",
+        "field": "vincin_tahrik_motor_gucu"
+      },
+      {
+        "label": "Bom sayısı",
+        "field": "bom_sayisi"
+      },
+      {
+        "label": "Araç şasi no",
+        "field": "arac_sasi_no"
+      },
+      {
+        "label": "Destek sayısı",
+        "field": "destek_sayisi"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Şaside bükülme, eğilme, çatlak",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Yağ tankında sızıntı durumu",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Boru ve hortumlarda hasar",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Bomda çatlak ve deformasyon",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Destek ayaklarının durumu",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Dinamik Test ağırlığı (kg)",
+          "mode": "last",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

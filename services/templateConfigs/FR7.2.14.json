@@ -1,0 +1,569 @@
+{
+  "sablonKodu": "FR7.2.14",
+  "sablonAdi": "Eklemli Seyyar İş Platform Muayene ve Ölçüm Raporu",
+  "kategori": "iş makineleri",
+  "altKategori": "iş makineleri",
+  "raporNoPrefix": "IM",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "HOULOTTE"
+        },
+        {
+          "id": "tasiyici_ayak_tekerlek_adeti",
+          "label": "Taşıyıcı Ayak/Tekerlek Adeti",
+          "type": "text",
+          "placeholder": "4"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal Yılı",
+          "type": "text",
+          "placeholder": "2017"
+        },
+        {
+          "id": "kaldirma_yuksekligi_m",
+          "label": "Kaldırma Yüksekliği (m)",
+          "type": "text",
+          "placeholder": "20,6"
+        },
+        {
+          "id": "model",
+          "label": "Model",
+          "type": "text",
+          "placeholder": "HA20 RTJ PRO"
+        },
+        {
+          "id": "tasima_kapasitesi_kg",
+          "label": "Taşıma Kapasitesi (kg)",
+          "type": "text",
+          "placeholder": "230"
+        },
+        {
+          "id": "seri_no",
+          "label": "Seri no",
+          "type": "text",
+          "placeholder": "2022236"
+        },
+        {
+          "id": "i_sletme_kapasitesi_kg",
+          "label": "İşletme Kapasitesi (kg)",
+          "type": "text",
+          "placeholder": "230"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "test_dinamik_test_agirligi_kg",
+          "label": "Dinamik Test Ağırlığı(kg)",
+          "type": "text",
+          "placeholder": "Dinamik Test Ağırlığı(kg)"
+        },
+        {
+          "id": "test_statik_test_agirligi_kg",
+          "label": "Statik Test Ağırlığı(kg)",
+          "type": "text",
+          "placeholder": "Statik Test Ağırlığı(kg)"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "18 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Uyarı levhası ve kullanma talimatı durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Platform taşıyıcı sistemi durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Platform alt-üst sınır kesiciler durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Platform yukarı-aşağı hareket, fren ve titreme durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Hidrolik pistonlarda kaçak durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Hidrolik silindirler, kumanda valfi, hidrolik hortumların durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Kova, kepçe, kırıcı durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Kabin korkuluğu, deformasyon veya çatlaklık durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Servis freni, park freni durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Lastiklerin/paletlerin genel durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "Ön far, stop, sinyal, tepe lambası durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "Korna çalışma ve aynaların durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "Sesli ikaz durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 14,
+          "text": "Panel göstergeleri durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter15",
+          "no": 15,
+          "text": "Yangın söndürücü durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter16",
+          "no": 16,
+          "text": "I.Yüksüz hareket-fren durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter17",
+          "no": 17,
+          "text": "II.Yük altında dinamik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter18",
+          "no": 18,
+          "text": "III.Yük altında statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Eklemli Seyyar İş Platform\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/3. İş Makinesi/Eklemli Seyyar İş platformu/FR7.2.14 Eklemli Seyyar İş Platform Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header1.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Taşıyıcı Ayak/Tekerlek Adeti",
+        "field": "tasiyici_ayak_tekerlek_adeti"
+      },
+      {
+        "label": "İmal Yılı",
+        "field": "i_mal_yili"
+      },
+      {
+        "label": "Kaldırma Yüksekliği (m)",
+        "field": "kaldirma_yuksekligi_m"
+      },
+      {
+        "label": "Model",
+        "field": "model"
+      },
+      {
+        "label": "Taşıma Kapasitesi (kg)",
+        "field": "tasima_kapasitesi_kg"
+      },
+      {
+        "label": "Seri no",
+        "field": "seri_no"
+      },
+      {
+        "label": "İşletme Kapasitesi (kg)",
+        "field": "i_sletme_kapasitesi_kg"
+      },
+      {
+        "label": "Dinamik Test Ağırlığı(kg)",
+        "field": "test_dinamik_test_agirligi_kg"
+      },
+      {
+        "label": "Statik Test Ağırlığı(kg)",
+        "field": "test_statik_test_agirligi_kg"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Uyarı levhası ve kullanma",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Platform taşıyıcı sistemi durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Platform alt-üst sınır kesiciler",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Platform yukarı-aşağı hareket, fren",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Hidrolik pistonlarda kaçak durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Hidrolik silindirler, kumanda valfi,",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Kova, kepçe, kırıcı durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Kabin korkuluğu, deformasyon veya",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Servis freni, park freni",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "Lastiklerin/paletlerin genel durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter11",
+          "text": "Ön far, stop, sinyal,",
+          "exact": true
+        },
+        {
+          "field": "kriter12",
+          "text": "Korna çalışma ve aynaların",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "Sesli ikaz durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter14",
+          "text": "Panel göstergeleri durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter15",
+          "text": "Yangın söndürücü durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter16",
+          "text": "I.Yüksüz hareket-fren durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter17",
+          "text": "II.Yük altında dinamik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter18",
+          "text": "III.Yük altında statik kontrol",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

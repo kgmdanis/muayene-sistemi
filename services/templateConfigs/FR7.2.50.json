@@ -1,0 +1,437 @@
+{
+  "sablonKodu": "FR7.2.50",
+  "sablonAdi": "Beton Mikseri Muayene ve Ölçüm Raporu",
+  "kategori": "iş makineleri",
+  "altKategori": "iş makineleri",
+  "raporNoPrefix": "IM",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "MERCEDES / BENZ"
+        },
+        {
+          "id": "sase_numarasi",
+          "label": "Şase Numarası",
+          "type": "text",
+          "placeholder": "NMB9433171212143762"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal yılı",
+          "type": "text",
+          "placeholder": "2014"
+        },
+        {
+          "id": "plakasi",
+          "label": "Plakası",
+          "type": "text",
+          "placeholder": "70 F 1269"
+        },
+        {
+          "id": "kapasitesi_m3",
+          "label": "Kapasitesi(m3)",
+          "type": "text",
+          "placeholder": "12"
+        },
+        {
+          "id": "modeli",
+          "label": "Modeli",
+          "type": "text",
+          "placeholder": "LT127H"
+        },
+        {
+          "id": "guc_kw",
+          "label": "Güç (kW)",
+          "type": "text",
+          "placeholder": "72"
+        },
+        {
+          "id": "seri_numarasi",
+          "label": "Seri numarası",
+          "type": "text",
+          "placeholder": "T-6098"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "11 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Hidrolik silindirler durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Kumanda valfi durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Hidrolik hortumların durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Mikser kasası fiziksel ve çatlaklık durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Yangın söndürücü durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Operatör belgesi var mı",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Eksoz sistemi ve gaz temizleyici / tutucu durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Yüksüz hareket durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Yük altında statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Yük altında dinamik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "Yük altında yapı kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Beton Mikseri\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/3. İş Makinesi/Beton Mikseri/FR7.2.50 Beton Mikseri Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Şase Numarası",
+        "field": "sase_numarasi"
+      },
+      {
+        "label": "İmal yılı",
+        "field": "i_mal_yili"
+      },
+      {
+        "label": "Plakası",
+        "field": "plakasi"
+      },
+      {
+        "label": "Kapasitesi(m3)",
+        "field": "kapasitesi_m3"
+      },
+      {
+        "label": "Modeli",
+        "field": "modeli"
+      },
+      {
+        "label": "Güç (kW)",
+        "field": "guc_kw"
+      },
+      {
+        "label": "Seri numarası",
+        "field": "seri_numarasi"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Hidrolik silindirler durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Kumanda valfi durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Hidrolik hortumların durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Mikser kasası fiziksel ve",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Yangın söndürücü durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Operatör belgesi var mı",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Eksoz sistemi ve gaz",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Yüksüz hareket durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Yük altında statik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "Yük altında dinamik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter11",
+          "text": "Yük altında yapı kontrol",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

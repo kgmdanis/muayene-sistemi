@@ -93,13 +93,15 @@ app.post('/api/auth/logout', (req, res) => {
     res.json({ success: true });
 });
 
-// Personel Login (username ile)
+// Personel Login (email ile)
 app.post('/api/auth/personel-login', async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Kullanıcı adı ve şifre gerekli' });
+    const { email, username, password } = req.body;
+    // Hem email hem username destekle (geriye uyumluluk)
+    const loginEmail = email || username;
+    if (!loginEmail || !password) {
+        return res.status(400).json({ error: 'Email ve şifre gerekli' });
     }
-    const result = await auth.personelLogin(username, password);
+    const result = await auth.personelLogin(loginEmail, password);
     if (result.success) {
         res.json(result);
     } else {
@@ -631,8 +633,8 @@ app.delete('/api/hizmetler/:id', auth.authMiddleware('admin'), async (req, res) 
 
 // ============ TEKLİF API ============
 
-// Teklif listesi
-app.get('/api/teklifler', auth.authMiddleware(), async (req, res) => {
+// Teklif listesi (Sadece Admin)
+app.get('/api/teklifler', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const teklifler = await auth.prisma.teklif.findMany({
             include: {
@@ -648,8 +650,8 @@ app.get('/api/teklifler', auth.authMiddleware(), async (req, res) => {
     }
 });
 
-// Yeni teklif numarası oluştur (ÖNEMLİ: :id route'undan ÖNCE olmalı)
-app.get('/api/teklifler/yeni-numara', auth.authMiddleware(), async (req, res) => {
+// Yeni teklif numarası oluştur (Sadece Admin)
+app.get('/api/teklifler/yeni-numara', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const yil = new Date().getFullYear().toString().slice(-2);
         const sonTeklif = await auth.prisma.teklif.findFirst({
@@ -668,8 +670,8 @@ app.get('/api/teklifler/yeni-numara', auth.authMiddleware(), async (req, res) =>
     }
 });
 
-// Tek teklif detayı
-app.get('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
+// Tek teklif detayı (Sadece Admin)
+app.get('/api/teklifler/:id', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const teklif = await auth.prisma.teklif.findUnique({
             where: { id: parseInt(req.params.id) },
@@ -692,8 +694,8 @@ app.get('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
     }
 });
 
-// Teklif oluştur
-app.post('/api/teklifler', auth.authMiddleware(), async (req, res) => {
+// Teklif oluştur (Sadece Admin)
+app.post('/api/teklifler', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const { customerId, teklifNo, konu, detaylar, iskontoOran, kdvOrani: girilenKdvOrani, notlar, onayTelefon, sahadaOnay, gecerlilikGun } = req.body;
 
@@ -780,8 +782,8 @@ const teklifDurumMap = {
     'IPTAL': 'IPTAL'
 };
 
-// Teklif güncelle
-app.put('/api/teklifler/:id', auth.authMiddleware(), async (req, res) => {
+// Teklif güncelle (Sadece Admin)
+app.put('/api/teklifler/:id', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const { customerId, konu, detaylar, iskontoOran, kdvOrani: girilenKdvOrani, notlar, onayTelefon, sahadaOnay, durum, gecerlilikGun } = req.body;
@@ -948,7 +950,7 @@ app.delete('/api/teklifler/:id', auth.authMiddleware('admin'), async (req, res) 
 // Teklif PDF oluştur
 const teklifPdfGenerator = require('./teklifPdfGenerator');
 
-app.get('/api/teklifler/:id/pdf', auth.authMiddleware(), async (req, res) => {
+app.get('/api/teklifler/:id/pdf', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const teklif = await auth.prisma.teklif.findUnique({
             where: { id: parseInt(req.params.id) },
@@ -1006,8 +1008,8 @@ app.get('/api/teklifler/:id/pdf', auth.authMiddleware(), async (req, res) => {
     }
 });
 
-// Teklif Excel oluştur
-app.get('/api/teklifler/:id/excel', auth.authMiddleware(), async (req, res) => {
+// Teklif Excel oluştur (Sadece Admin)
+app.get('/api/teklifler/:id/excel', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const teklif = await auth.prisma.teklif.findUnique({
             where: { id: parseInt(req.params.id) },
@@ -1287,7 +1289,7 @@ app.get('/api/reports/download/:filename', auth.authMiddleware(), async (req, re
 
 // ============ DASHBOARD ============
 
-app.get('/api/dashboard', auth.authMiddleware(), async (req, res) => {
+app.get('/api/dashboard', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const thisMonth = new Date();
         thisMonth.setDate(1);
@@ -1457,8 +1459,10 @@ app.post('/api/musteriler/import', auth.authMiddleware('admin'), upload.single('
 // Personel listesi
 app.get('/api/personeller', auth.authMiddleware(), async (req, res) => {
     try {
+        // Admin tüm personelleri görsün, tekniker sadece aktif olanları
+        const where = req.user.isPersonel ? { isActive: true } : {};
         const personeller = await auth.prisma.personel.findMany({
-            where: { isActive: true },
+            where,
             orderBy: { adSoyad: 'asc' }
         });
         res.json(personeller);
@@ -1508,6 +1512,12 @@ app.get('/api/is-emirleri', auth.authMiddleware(), async (req, res) => {
     try {
         const { durum } = req.query;
         const where = durum ? { durum } : {};
+        const isTekniker = req.user.isPersonel;
+
+        // Tekniker: sadece kendisine atanmış alt görevi olan iş emirlerini görsün
+        if (isTekniker) {
+            where.altGorevler = { some: { personelId: req.user.personelId } };
+        }
 
         const isEmirleri = await auth.prisma.isEmri.findMany({
             where,
@@ -1515,11 +1525,25 @@ app.get('/api/is-emirleri', auth.authMiddleware(), async (req, res) => {
                 customer: true,
                 teklif: true,
                 altGorevler: {
-                    include: { personel: true, hizmet: true }
+                    include: { personel: { select: { id: true, adSoyad: true, unvan: true, kategori: true, email: true } }, hizmet: true }
                 }
             },
             orderBy: { createdAt: 'desc' }
         });
+
+        // Tekniker: fiyat/tutar bilgilerini gizle
+        if (isTekniker) {
+            isEmirleri.forEach(ie => {
+                if (ie.teklif) {
+                    ie.teklif.toplamTutar = undefined;
+                    ie.teklif.kdvTutar = undefined;
+                    ie.teklif.genelToplam = undefined;
+                    ie.teklif.iskonto = undefined;
+                }
+                ie.altGorevler = ie.altGorevler.filter(ag => ag.personelId === req.user.personelId);
+            });
+        }
+
         res.json(isEmirleri);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -1529,13 +1553,15 @@ app.get('/api/is-emirleri', auth.authMiddleware(), async (req, res) => {
 // Tek iş emri detay
 app.get('/api/is-emirleri/:id', auth.authMiddleware(), async (req, res) => {
     try {
+        const isTekniker = req.user.isPersonel;
+
         const isEmri = await auth.prisma.isEmri.findUnique({
             where: { id: parseInt(req.params.id) },
             include: {
                 customer: true,
                 teklif: { include: { detaylar: { include: { hizmet: true } } } },
                 altGorevler: {
-                    include: { personel: true, hizmet: true },
+                    include: { personel: { select: { id: true, adSoyad: true, unvan: true, kategori: true, email: true } }, hizmet: true },
                     orderBy: [{ kategori: 'asc' }, { siraNo: 'asc' }]
                 },
                 firmaBilgi: true
@@ -1545,6 +1571,24 @@ app.get('/api/is-emirleri/:id', auth.authMiddleware(), async (req, res) => {
         if (!isEmri) {
             return res.status(404).json({ error: 'İş emri bulunamadı' });
         }
+
+        // Tekniker: fiyat gizle, sadece kendi alt görevlerini göster
+        if (isTekniker) {
+            if (isEmri.teklif) {
+                isEmri.teklif.toplamTutar = undefined;
+                isEmri.teklif.kdvTutar = undefined;
+                isEmri.teklif.genelToplam = undefined;
+                isEmri.teklif.iskonto = undefined;
+                if (isEmri.teklif.detaylar) {
+                    isEmri.teklif.detaylar.forEach(d => {
+                        d.birimFiyat = undefined;
+                        d.toplam = undefined;
+                    });
+                }
+            }
+            isEmri.altGorevler = isEmri.altGorevler.filter(ag => ag.personelId === req.user.personelId);
+        }
+
         res.json(isEmri);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -1633,7 +1677,7 @@ app.post('/api/is-emirleri/tekliften-olustur/:teklifId', auth.authMiddleware(), 
             include: {
                 customer: true,
                 teklif: true,
-                altGorevler: { include: { personel: true } }
+                altGorevler: { include: { personel: { select: { id: true, adSoyad: true, unvan: true, kategori: true, email: true } } } }
             }
         });
 
@@ -1706,7 +1750,7 @@ app.get('/api/alt-gorevler/:id', auth.authMiddleware(), async (req, res) => {
     try {
         const altGorev = await auth.prisma.altGorev.findUnique({
             where: { id: parseInt(req.params.id) },
-            include: { personel: true, hizmet: true }
+            include: { personel: { select: { id: true, adSoyad: true, unvan: true, kategori: true, email: true } }, hizmet: true }
         });
         if (!altGorev) {
             return res.status(404).json({ error: 'Alt görev bulunamadı' });
@@ -1747,7 +1791,12 @@ app.put('/api/alt-gorevler/:id', auth.authMiddleware(), async (req, res) => {
         const altGorev = await auth.prisma.altGorev.update({
             where: { id: parseInt(req.params.id) },
             data: updateData,
-            include: { personel: true, hizmet: true }
+            include: {
+                personel: {
+                    select: { id: true, adSoyad: true, unvan: true, kategori: true, email: true }
+                },
+                hizmet: true
+            }
         });
         res.json(altGorev);
     } catch (error) {
@@ -1788,12 +1837,18 @@ app.put('/api/alt-gorevler/:id/saha-formu', auth.authMiddleware(), async (req, r
 });
 
 // Personelin görevleri (tekniker paneli için)
-app.get('/api/personel/:personelId/gorevler', async (req, res) => {
+app.get('/api/personel/:personelId/gorevler', auth.authMiddleware(), async (req, res) => {
     try {
         const { durum } = req.query; // Filtre: ATANDI, SAHADA, TAMAMLANDI veya hepsi için boş
 
+        // Tekniker sadece kendi görevlerini görebilir
+        const requestedPersonelId = parseInt(req.params.personelId);
+        if (req.user.isPersonel && req.user.personelId !== requestedPersonelId) {
+            return res.status(403).json({ error: 'Sadece kendi görevlerinizi görüntüleyebilirsiniz' });
+        }
+
         const whereClause = {
-            personelId: parseInt(req.params.personelId)
+            personelId: requestedPersonelId
         };
 
         // Durum filtresi
@@ -1820,7 +1875,7 @@ app.get('/api/personel/:personelId/gorevler', async (req, res) => {
     }
 });
 
-app.get('/api/dashboard/stats', auth.authMiddleware(), async (req, res) => {
+app.get('/api/dashboard/stats', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const thisMonth = new Date();
         thisMonth.setDate(1);
@@ -1852,7 +1907,7 @@ app.get('/api/dashboard/stats', auth.authMiddleware(), async (req, res) => {
     }
 });
 
-app.get('/api/dashboard/son-teklifler', auth.authMiddleware(), async (req, res) => {
+app.get('/api/dashboard/son-teklifler', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const teklifler = await auth.prisma.teklif.findMany({
             orderBy: { createdAt: 'desc' },
@@ -1865,35 +1920,164 @@ app.get('/api/dashboard/son-teklifler', auth.authMiddleware(), async (req, res) 
     }
 });
 
-app.get('/api/personeller', auth.authMiddleware(), async (req, res) => {
+// Personel oluştur (Personel tablosuna)
+app.post('/api/personeller', auth.authMiddleware('admin'), async (req, res) => {
     try {
-        const users = await auth.prisma.user.findMany({
-            select: { id: true, name: true, email: true, role: true, isActive: true, createdAt: true }
+        const { adSoyad, kategori, unvan, meslek, email, username, password, telefon, diplomaTarihi, diplomaNo, ekipnetNo, isActive } = req.body;
+
+        // Email kontrolü
+        if (!email) {
+            return res.status(400).json({ error: 'Email zorunludur' });
+        }
+
+        // Email benzersizlik kontrolü
+        const existingPersonel = await auth.prisma.personel.findFirst({
+            where: { email: email.toLowerCase() }
         });
-        const personeller = users.map(u => ({
-            id: u.id,
-            adSoyad: u.name,
-            email: u.email,
-            unvan: u.role,
-            aktif: u.isActive
-        }));
-        res.json(personeller);
+        if (existingPersonel) {
+            return res.status(400).json({ error: 'Bu email zaten kullanılıyor' });
+        }
+
+        // Username benzersizlik kontrolü
+        if (username) {
+            const existingUsername = await auth.prisma.personel.findFirst({
+                where: { username: username.toLowerCase() }
+            });
+            if (existingUsername) {
+                return res.status(400).json({ error: 'Bu kullanıcı adı zaten kullanılıyor' });
+            }
+        }
+
+        // Şifre hashle
+        const hashedPassword = password ? auth.hashPassword(password) : null;
+
+        const personel = await auth.prisma.personel.create({
+            data: {
+                adSoyad,
+                kategori,
+                unvan,
+                meslek: meslek || null,
+                email: email.toLowerCase(),
+                username: username ? username.toLowerCase() : null,
+                password: hashedPassword,
+                telefon: telefon || null,
+                diplomaTarihi: diplomaTarihi || null,
+                diplomaNo: diplomaNo || null,
+                ekipnetNo: ekipnetNo || null,
+                isActive: isActive !== false,
+                role: 'tekniker'
+            }
+        });
+
+        res.json({
+            id: personel.id,
+            adSoyad: personel.adSoyad,
+            email: personel.email,
+            kategori: personel.kategori,
+            unvan: personel.unvan
+        });
     } catch (error) {
-        console.error('Personel listesi hatası:', error);
-        res.status(500).json({ error: 'Personeller alınamadı' });
+        console.error('Personel oluşturma hatası:', error);
+        res.status(500).json({ error: 'Personel oluşturulamadı: ' + error.message });
     }
 });
 
-app.post('/api/personeller', auth.authMiddleware('admin'), async (req, res) => {
+// Personel güncelle
+app.put('/api/personeller/:id', auth.authMiddleware('admin'), async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
-        const hashedPassword = auth.hashPassword(password);
-        const user = await auth.prisma.user.create({
-            data: { name, email, password: hashedPassword, plainPassword: password, role: role || 'tekniker' }
+        const { id } = req.params;
+        const { adSoyad, kategori, unvan, meslek, email, username, password, telefon, diplomaTarihi, diplomaNo, ekipnetNo, isActive } = req.body;
+
+        // Email benzersizlik kontrolü (kendi emaili hariç)
+        if (email) {
+            const existingPersonel = await auth.prisma.personel.findFirst({
+                where: {
+                    email: email.toLowerCase(),
+                    NOT: { id: parseInt(id) }
+                }
+            });
+            if (existingPersonel) {
+                return res.status(400).json({ error: 'Bu email zaten kullanılıyor' });
+            }
+        }
+
+        // Username benzersizlik kontrolü (kendi username'i hariç)
+        if (username) {
+            const existingUsername = await auth.prisma.personel.findFirst({
+                where: {
+                    username: username.toLowerCase(),
+                    NOT: { id: parseInt(id) }
+                }
+            });
+            if (existingUsername) {
+                return res.status(400).json({ error: 'Bu kullanıcı adı zaten kullanılıyor' });
+            }
+        }
+
+        const updateData = {
+            adSoyad,
+            kategori,
+            unvan,
+            meslek: meslek || null,
+            email: email ? email.toLowerCase() : undefined,
+            username: username ? username.toLowerCase() : null,
+            telefon: telefon || null,
+            diplomaTarihi: diplomaTarihi || null,
+            diplomaNo: diplomaNo || null,
+            ekipnetNo: ekipnetNo || null,
+            isActive: isActive !== false
+        };
+
+        // Şifre varsa güncelle
+        if (password && password.trim()) {
+            updateData.password = auth.hashPassword(password);
+        }
+
+        const personel = await auth.prisma.personel.update({
+            where: { id: parseInt(id) },
+            data: updateData
         });
-        res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
+
+        res.json({
+            id: personel.id,
+            adSoyad: personel.adSoyad,
+            email: personel.email,
+            kategori: personel.kategori,
+            unvan: personel.unvan
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Personel oluşturulamadı' });
+        console.error('Personel güncelleme hatası:', error);
+        res.status(500).json({ error: 'Personel güncellenemedi: ' + error.message });
+    }
+});
+
+// Personel sil
+app.delete('/api/personeller/:id', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Personelin atanmış görevleri var mı kontrol et
+        const gorevler = await auth.prisma.altGorev.findMany({
+            where: { personelId: parseInt(id) }
+        });
+
+        if (gorevler.length > 0) {
+            // Soft delete yap (pasife çek)
+            await auth.prisma.personel.update({
+                where: { id: parseInt(id) },
+                data: { isActive: false }
+            });
+            return res.json({ message: 'Personel pasife alındı (atanmış görevleri var)' });
+        }
+
+        await auth.prisma.personel.delete({
+            where: { id: parseInt(id) }
+        });
+
+        res.json({ message: 'Personel silindi' });
+    } catch (error) {
+        console.error('Personel silme hatası:', error);
+        res.status(500).json({ error: 'Personel silinemedi: ' + error.message });
     }
 });
 
@@ -2021,7 +2205,7 @@ app.post('/api/email/test', auth.authMiddleware('admin'), async (req, res) => {
     }
 });
 
-app.get('/api/teklifler/:id/pdf-excel', auth.authMiddleware(), async (req, res) => {
+app.get('/api/teklifler/:id/pdf-excel', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const teklif = await auth.prisma.teklif.findUnique({
             where: { id: parseInt(req.params.id) },
@@ -2366,7 +2550,7 @@ app.post('/api/olcum-cihazlari/kalibrasyon-hatirlatma', auth.authMiddleware('adm
 // ===================== İŞ EMRİ FİRMA BİLGİLERİ =====================
 
 // Firma bilgisi getir
-app.get('/api/is-emirleri/:id/firma-bilgi', async (req, res) => {
+app.get('/api/is-emirleri/:id/firma-bilgi', auth.authMiddleware(), async (req, res) => {
     try {
         const firmaBilgi = await auth.prisma.isEmriFirmaBilgi.findUnique({
             where: { isEmriId: parseInt(req.params.id) }
@@ -2379,7 +2563,7 @@ app.get('/api/is-emirleri/:id/firma-bilgi', async (req, res) => {
 });
 
 // Firma bilgisi kaydet/güncelle
-app.post('/api/is-emirleri/:id/firma-bilgi', async (req, res) => {
+app.post('/api/is-emirleri/:id/firma-bilgi', auth.authMiddleware(), async (req, res) => {
     try {
         const isEmriId = parseInt(req.params.id);
         const firmaBilgi = await auth.prisma.isEmriFirmaBilgi.upsert({

@@ -279,6 +279,8 @@ model AltGorev {
   topraklamaOlcumler       TopraklamaOlcum[]
   elektrikTopraklamaRaporu ElektrikTopraklamaRaporu[]
   kompresorRaporlari       KompresorRaporu[]
+  havaTankiRaporlari       HavaTankiRaporu[]
+  raporlar                 Rapor[]
 }
 
 model IsEmriFirmaBilgi {
@@ -307,6 +309,7 @@ model OlcumCihazi {
   olcumAraligi          String?
   hassasiyet            String?
   kategori              String?
+  durum                 CihazDurum                 @default(AKTIF)
   isActive              Boolean                    @default(true)
   createdAt             DateTime                   @default(now())
   updatedAt             DateTime                   @updatedAt
@@ -314,10 +317,35 @@ model OlcumCihazi {
   kalibrasyonNo         String?
   kalibrasyonTarihi     DateTime?
   kalibrasyonGecerlilik DateTime?
+  sertifikaDosya        String?
+  notlar                String?
   topraklamaOlcumler    TopraklamaOlcum[]
   topraklamaRaporlari   ElektrikTopraklamaRaporu[] @relation("TopraklamaCihaz")
   devreRaporlari        ElektrikTopraklamaRaporu[] @relation("DevreCihaz")
   rcdRaporlari          ElektrikTopraklamaRaporu[] @relation("RCDCihaz")
+  kalibrasyonGecmisi    KalibrasyonGecmisi[]
+}
+
+// Kalibrasyon Geçmişi
+model KalibrasyonGecmisi {
+  id                    Int          @id @default(autoincrement())
+  cihazId               Int
+  kalibrasyonTarihi     DateTime
+  gecerlilikTarihi      DateTime
+  sertifikaNo           String?
+  sertifikaDosya        String?
+  kalibrasyonYapan      String?
+  maliyet               Decimal?     @db.Decimal(10, 2)
+  notlar                String?
+  createdAt             DateTime     @default(now())
+  cihaz                 OlcumCihazi  @relation(fields: [cihazId], references: [id], onDelete: Cascade)
+}
+
+enum CihazDurum {
+  AKTIF
+  SERVISTE
+  ARIZALI
+  PASIF
 }
 
 model TopraklamaOlcum {
@@ -560,6 +588,113 @@ model KompresorRaporu {
 
   // İlişkiler
   altGorev              AltGorev @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
+}
+
+// =============================================
+// HAVA TANKI MUAYENE RAPORU MODELİ
+// FR7.2.156 Hava Tankı Muayene ve Ölçüm Raporu
+// =============================================
+
+model HavaTankiRaporu {
+  id                       Int      @id @default(autoincrement())
+  raporNo                  String   @unique
+  altGorevId               Int
+
+  // Firma/Rapor üst bilgileri
+  bolumu                   String?
+  kontrolTarihi            String?
+  raporTarihi              String?
+  sonrakiKontrolTarihi     String?
+  sgkSicilNo               String?
+  isgKatipNo               String?
+
+  // Tarihler
+  baslangicTarihi          DateTime?
+  bitisTarihi              DateTime?
+
+  // Ekipman Teknik Özellikleri
+  markasi                  String?
+  tip                      String?
+  seriNo                   String?
+  imalatYili               String?
+  tasarimBasinci           String?
+  uretimTestBasinci        String?
+  isletmeBasinci           String?
+  testBasinci              String?
+  hacmi                    String?
+  emniyetVentilAcmaBasinci String?
+
+  // Basınç Kaynağı Bilgileri
+  basincKaynagiAdi         String?
+  basincKaynagiSeriNo      String?
+
+  // Test Değerleri
+  testTarihi               String?
+  hidrostatikTestDegeri    String?
+  emniyetValfiTestiDegeri  String?
+
+  // Kontrol Kriterleri (10 adet) - Uygun/Uygun Değil
+  kriter1                  String?
+  kriter2                  String?
+  kriter3                  String?
+  kriter4                  String?
+  kriter5                  String?
+  kriter6                  String?
+  kriter7                  String?
+  kriter8                  String?
+  kriter9                  String?
+  kriter10                 String?
+  testHidrostatik          String?
+  testEmniyetValfi         String?
+
+  // Kusur Açıklamaları
+  kusurAciklama            String?
+
+  // Notlar
+  notlar                   String?
+
+  // Sonuç
+  genelSonuc               String?
+
+  // Meta
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  // İlişkiler
+  altGorev                 AltGorev @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
+}
+
+// ============ GENERIC RAPOR SİSTEMİ ============
+
+model Rapor {
+  id              Int      @id @default(autoincrement())
+  raporNo         String   @unique
+  sablonKodu      String
+  altGorevId      Int
+  sgkSicilNo      String?
+  isgKatipNo      String?
+  baslangicTarihi DateTime?
+  bitisTarihi     DateTime?
+  genelSonuc      String?
+  formData        Json     @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  altGorev        AltGorev @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
+
+  @@index([sablonKodu])
+  @@index([altGorevId])
+}
+
+model RaporSablonu {
+  id           Int      @id @default(autoincrement())
+  sablonKodu   String   @unique
+  sablonAdi    String
+  kategori     String
+  config       Json
+  wordTemplate String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 enum WorkOrderDurum {

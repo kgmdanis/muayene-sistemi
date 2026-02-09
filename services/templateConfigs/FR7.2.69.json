@@ -1,0 +1,477 @@
+{
+  "sablonKodu": "FR7.2.69",
+  "sablonAdi": "İstif Makinesi Muayene ve Ölçüm Raporu",
+  "kategori": "kaldırma iletme",
+  "altKategori": "kaldırma iletme",
+  "raporNoPrefix": "KI",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "NETLİFT"
+        },
+        {
+          "id": "tekerlek_adeti",
+          "label": "Tekerlek Adeti",
+          "type": "text",
+          "placeholder": "4"
+        },
+        {
+          "id": "seri_numarasi",
+          "label": "Seri numarası",
+          "type": "text",
+          "placeholder": "1751-28"
+        },
+        {
+          "id": "kaldirma_yuksekligi_mm",
+          "label": "Kaldırma yüksekliği (mm)",
+          "type": "text",
+          "placeholder": "2500"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal yılı",
+          "type": "text",
+          "placeholder": "2011"
+        },
+        {
+          "id": "yuk_merkezi_uzakligi_mm",
+          "label": "Yük merkezi uzaklığı (mm)",
+          "type": "text",
+          "placeholder": "400"
+        },
+        {
+          "id": "tasicici_tekerlek_cinsi",
+          "label": "Taşıcıcı tekerlek cinsi",
+          "type": "text",
+          "placeholder": "SERT PLASTİK"
+        },
+        {
+          "id": "kaldirma_kapasite_kg",
+          "label": "Kaldırma Kapasite (kg)",
+          "type": "text",
+          "placeholder": "1500"
+        },
+        {
+          "id": "dreksiyon_tekerlek_cinsi",
+          "label": "Dreksiyon tekerlek cinsi",
+          "type": "text",
+          "placeholder": "SERT PLASTİK"
+        },
+        {
+          "id": "i_sletme_kapasitesi_kg",
+          "label": "İşletme Kapasitesi (kg)",
+          "type": "text",
+          "placeholder": "150"
+        },
+        {
+          "id": "elektrikli",
+          "label": "Elektrikli",
+          "type": "text",
+          "placeholder": "Elektrikli"
+        },
+        {
+          "id": "mekanik",
+          "label": "Mekanik",
+          "type": "text",
+          "placeholder": "Mekanik"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "11 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Piston ve kumanda valfi kaçak durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Tekerlek çatalında deformasyon ve çatlaklık durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Lastiklerin genel durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Asansör makaralarının durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Yürüyüş ve park freni durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Bağlantı cıvataları durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Gal zinciri bakla ve pimlerinin aşınma ve gerginlik durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "I. Yüksüz hareket durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "II. Yük altında statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "III.Yük altında dinanik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "III.Yük altında yapı kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"İstif Makinesi\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/1. Kaldırma İletme/İstif Makinesi/FR7.2.69 İstif Makinesi Muayene ve Ölçüm Raporu-1.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Tekerlek Adeti",
+        "field": "tekerlek_adeti"
+      },
+      {
+        "label": "Seri numarası",
+        "field": "seri_numarasi"
+      },
+      {
+        "label": "Kaldırma yüksekliği (mm)",
+        "field": "kaldirma_yuksekligi_mm"
+      },
+      {
+        "label": "İmal yılı",
+        "field": "i_mal_yili"
+      },
+      {
+        "label": "Yük merkezi uzaklığı (mm)",
+        "field": "yuk_merkezi_uzakligi_mm"
+      },
+      {
+        "label": "Taşıcıcı tekerlek cinsi",
+        "field": "tasicici_tekerlek_cinsi"
+      },
+      {
+        "label": "Kaldırma Kapasite (kg)",
+        "field": "kaldirma_kapasite_kg"
+      },
+      {
+        "label": "Dreksiyon tekerlek cinsi",
+        "field": "dreksiyon_tekerlek_cinsi"
+      },
+      {
+        "label": "İşletme Kapasitesi (kg)",
+        "field": "i_sletme_kapasitesi_kg"
+      },
+      {
+        "label": "Elektrikli",
+        "field": "elektrikli"
+      },
+      {
+        "label": "Mekanik",
+        "field": "mekanik"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Piston ve kumanda valfi",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Tekerlek çatalında deformasyon ve",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Lastiklerin genel durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Asansör makaralarının durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Yürüyüş ve park freni",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Bağlantı cıvataları durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Gal zinciri bakla ve",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "I. Yüksüz hareket durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "II. Yük altında statik",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "III.Yük altında dinanik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter11",
+          "text": "III.Yük altında yapı kontrol",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

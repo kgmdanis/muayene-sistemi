@@ -1,0 +1,482 @@
+{
+  "sablonKodu": "FR7.2.45",
+  "sablonAdi": "Dış Cephe Platform Muayene ve Ölçüm Raporu",
+  "kategori": "kaldırma iletme",
+  "altKategori": "kaldırma iletme",
+  "raporNoPrefix": "KI",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "AYYA İLERİ"
+        },
+        {
+          "id": "tasiyici_kolon_sayisi",
+          "label": "Taşıyıcı Kolon Sayısı",
+          "type": "text",
+          "placeholder": "2"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal Yılı",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "kaldirma_yuksekligi_m",
+          "label": "Kaldırma Yüksekliği (m)",
+          "type": "text",
+          "placeholder": "107"
+        },
+        {
+          "id": "seri_no",
+          "label": "Seri no",
+          "type": "text",
+          "placeholder": "MDCP 1"
+        },
+        {
+          "id": "tasima_kapasitesi_kg",
+          "label": "Taşıma Kapasitesi (kg)",
+          "type": "text",
+          "placeholder": "2000"
+        },
+        {
+          "id": "hiz_m_dk",
+          "label": "Hız (m/dk)",
+          "type": "text",
+          "placeholder": "7"
+        },
+        {
+          "id": "i_sletme_kapasitesi_kg",
+          "label": "İşletme Kapasitesi (kg)",
+          "type": "text",
+          "placeholder": "2000"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "14 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Uyarı levhası ve kullanma talimatı durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Elektrik motoru, elektrik elemanları, ana şalter ve panosu durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Platform taşıyıcı sistemi durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Otomatik ve kablolu kumanda, kablo yatakları durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Ray metal yapısı ve bağlantıları, merdivenler, ulaşım yolları ve platformların durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Platform destek ayağı bağlantı durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Platform alt-üst sınır kesiciler durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Platform hareket sağlayıcı kramiyer dişli durumu (varsa)",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Platform yukarı-aşağı hareket, fren ve titreme durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Tekerlek fren kilidi durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "Köprü ve kedi tekerlerinin durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "I.Yüksüz hareket-fren durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "II.Yük altında dinamik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 14,
+          "text": "III.Yük altında statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Dış Cephe Platform\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/1. Kaldırma İletme/Dış Cephe Platformu/FR7.2.45 Dış Cephe Platform Muayene ve Ölçüm Raporu-1.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Taşıyıcı Kolon Sayısı",
+        "field": "tasiyici_kolon_sayisi"
+      },
+      {
+        "label": "İmal Yılı",
+        "field": "i_mal_yili"
+      },
+      {
+        "label": "Kaldırma Yüksekliği (m)",
+        "field": "kaldirma_yuksekligi_m"
+      },
+      {
+        "label": "Seri no",
+        "field": "seri_no"
+      },
+      {
+        "label": "Taşıma Kapasitesi (kg)",
+        "field": "tasima_kapasitesi_kg"
+      },
+      {
+        "label": "Hız (m/dk)",
+        "field": "hiz_m_dk"
+      },
+      {
+        "label": "İşletme Kapasitesi (kg)",
+        "field": "i_sletme_kapasitesi_kg"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Uyarı levhası ve kullanma",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Elektrik motoru, elektrik elemanları,",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Platform taşıyıcı sistemi durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Otomatik ve kablolu kumanda,",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Ray metal yapısı ve",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Platform destek ayağı bağlantı",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Platform alt-üst sınır kesiciler",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Platform hareket sağlayıcı kramiyer",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Platform yukarı-aşağı hareket, fren",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "Tekerlek fren kilidi durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter11",
+          "text": "Köprü ve kedi tekerlerinin",
+          "exact": true
+        },
+        {
+          "field": "kriter12",
+          "text": "I.Yüksüz hareket-fren durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "II.Yük altında dinamik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter14",
+          "text": "III.Yük altında statik kontrol",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

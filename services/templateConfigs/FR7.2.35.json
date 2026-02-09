@@ -1,0 +1,495 @@
+{
+  "sablonKodu": "FR7.2.35",
+  "sablonAdi": "Arasöz Muayene ve Ölçüm Raporu",
+  "kategori": "iş makineleri",
+  "altKategori": "iş makineleri",
+  "raporNoPrefix": "IM",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "MERCEDES"
+        },
+        {
+          "id": "su_kapasitesi_kg",
+          "label": "Su Kapasitesi (kg)",
+          "type": "text",
+          "placeholder": "4000"
+        },
+        {
+          "id": "modeli",
+          "label": "Modeli",
+          "type": "text",
+          "placeholder": "1829"
+        },
+        {
+          "id": "sase_numarasi",
+          "label": "Şase Numarası",
+          "type": "text",
+          "placeholder": "WDB9525631L887835"
+        },
+        {
+          "id": "i_mal_yili",
+          "label": "İmal yılı",
+          "type": "text",
+          "placeholder": "2014"
+        },
+        {
+          "id": "plaka",
+          "label": "Plaka",
+          "type": "text",
+          "placeholder": "42 DMN 15"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "17 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Hidrolik silindirler, kumanda valfi, hidrolik hortumların durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Nozullar, su kanalları ve tank sistemi genel durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Kabin korkuluğu, deformasyon veya çatlaklık durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Servis freni, park freni durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Lastiklerin/paletlerin genel durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Uyarın levhaları",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Ön far, stop, sinyal, tepe lambası durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Korna çalışma ve aynaların durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Sesli ikaz durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Panel göstergeleri durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "Yangın söndürücü durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "Operatör belgesi var mı",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "Eksoz sistemi ve gaz temizleyici / tutucu durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 14,
+          "text": "Yüksüz hareket durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter15",
+          "no": 15,
+          "text": "Yük altında statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter16",
+          "no": 16,
+          "text": "Yük altında dinamik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter17",
+          "no": 17,
+          "text": "Yük altında yapı kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Arasöz\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/3. İş Makinesi/Arazöz/FR7.2.35 Arasöz Muayene ve Ölçüm Raporu-4.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Su Kapasitesi (kg)",
+        "field": "su_kapasitesi_kg"
+      },
+      {
+        "label": "Modeli",
+        "field": "modeli"
+      },
+      {
+        "label": "Şase Numarası",
+        "field": "sase_numarasi"
+      },
+      {
+        "label": "İmal yılı",
+        "field": "i_mal_yili"
+      },
+      {
+        "label": "Plaka",
+        "field": "plaka"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme",
+        "source": "firmaBilgi.isgKatipId"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Hidrolik silindirler, kumanda valfi,",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Nozullar, su kanalları ve",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Kabin korkuluğu, deformasyon veya",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Servis freni, park freni",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Lastiklerin/paletlerin genel durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Uyarın levhaları",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Ön far, stop, sinyal,",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Korna çalışma ve aynaların",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Sesli ikaz durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "Panel göstergeleri durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter11",
+          "text": "Yangın söndürücü durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter12",
+          "text": "Operatör belgesi var mı",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "Eksoz sistemi ve gaz",
+          "exact": true
+        },
+        {
+          "field": "kriter14",
+          "text": "Yüksüz hareket durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter15",
+          "text": "Yük altında statik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter16",
+          "text": "Yük altında dinamik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter17",
+          "text": "Yük altında yapı kontrol",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

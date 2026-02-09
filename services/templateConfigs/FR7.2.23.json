@@ -1,0 +1,411 @@
+{
+  "sablonKodu": "FR7.2.23",
+  "sablonAdi": "Genleşme Tankı Muayene ve Ölçüm Raporu",
+  "kategori": "basınçlı kaplar",
+  "altKategori": "basınçlı kaplar",
+  "raporNoPrefix": "BK",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "WENTA"
+        },
+        {
+          "id": "tasarim_basinci_bar",
+          "label": "Tasarım Basıncı (Bar)",
+          "type": "text",
+          "placeholder": "10"
+        },
+        {
+          "id": "tip",
+          "label": "Tip",
+          "type": "text",
+          "placeholder": "WE 300"
+        },
+        {
+          "id": "uretim_test_basinci_bar",
+          "label": "Üretim Test Basıncı (Bar)",
+          "type": "text",
+          "placeholder": "16"
+        },
+        {
+          "id": "seri_no",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "GT 01"
+        },
+        {
+          "id": "hacim_lt",
+          "label": "Hacim (lt)",
+          "type": "text",
+          "placeholder": "300"
+        },
+        {
+          "id": "i_malat_yili",
+          "label": "İmalat Yılı",
+          "type": "text",
+          "placeholder": "2021"
+        },
+        {
+          "id": "i_sletme_basinci_bar",
+          "label": "İşletme Basıncı (Bar)",
+          "type": "text",
+          "placeholder": "3"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "test_hidrostatik_test",
+          "label": "Hidrostatik Test",
+          "type": "text",
+          "placeholder": "Hidrostatik Test"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "8 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Manometre",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Emniyet ventili",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Emniyet ventili açma basıncı (Bar )",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Manometre çalışıyor, konum ve bağlantı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Emniyet ventili çalışıyor ve bağlantı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Yapılan bakım ve onarım sicil defterine işleniyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Genleşme tankında kalıcı deformasyon var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Uyarı ve kullanma talimatı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Genleşme Tankı\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/2. Basınçlı Kaplar/Genleşme Tankı/FR7.2.23 Genleşme Tankı Muayene ve Ölçüm Raporu-1.docx",
+    "headerFile": "word/header1.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Tasarım Basıncı (Bar)",
+        "field": "tasarim_basinci_bar"
+      },
+      {
+        "label": "Tip",
+        "field": "tip"
+      },
+      {
+        "label": "Üretim Test Basıncı (Bar)",
+        "field": "uretim_test_basinci_bar"
+      },
+      {
+        "label": "Seri No",
+        "field": "seri_no"
+      },
+      {
+        "label": "Hacim (lt)",
+        "field": "hacim_lt"
+      },
+      {
+        "label": "İmalat Yılı",
+        "field": "i_malat_yili"
+      },
+      {
+        "label": "İşletme Basıncı (Bar)",
+        "field": "i_sletme_basinci_bar"
+      },
+      {
+        "label": "Hidrostatik Test",
+        "field": "test_hidrostatik_test"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Manometre",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Emniyet ventili",
+          "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Emniyet ventili açma basıncı",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Manometre çalışıyor, konum ve",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Emniyet ventili çalışıyor ve",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Yapılan bakım ve onarım",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Genleşme tankında kalıcı deformasyon",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Uyarı ve kullanma talimatı",
+          "exact": true
+        }
+      ]
+    }
+  }
+}

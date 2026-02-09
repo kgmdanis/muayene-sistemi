@@ -113,6 +113,44 @@ async function verifySession(token) {
         return { success: false, error: 'Geçersiz token' };
     }
 
+    // Firma bilgilerini al
+    const firma = await prisma.firmaAyarlari.findFirst();
+
+    // Personel (tekniker) girişi mi kontrol et
+    if (decoded.personelId) {
+        const personel = await prisma.personel.findUnique({
+            where: { id: decoded.personelId }
+        });
+
+        if (!personel || !personel.isActive) {
+            return { success: false, error: 'Personel bulunamadı veya devre dışı' };
+        }
+
+        return {
+            success: true,
+            user: {
+                id: personel.id,
+                personelId: personel.id,
+                email: personel.email,
+                name: personel.adSoyad,
+                role: personel.role || 'tekniker',
+                kategori: personel.kategori,
+                unvan: personel.unvan,
+                isPersonel: true,
+                firma: firma ? {
+                    id: firma.id,
+                    name: firma.name,
+                    logo: firma.logo
+                } : null
+            }
+        };
+    }
+
+    // Normal kullanıcı (admin) girişi
+    if (!decoded.userId) {
+        return { success: false, error: 'Geçersiz token formatı' };
+    }
+
     const user = await prisma.user.findUnique({
         where: { id: decoded.userId }
     });
@@ -121,9 +159,6 @@ async function verifySession(token) {
         return { success: false, error: 'Kullanıcı bulunamadı veya devre dışı' };
     }
 
-    // Firma bilgilerini al
-    const firma = await prisma.firmaAyarlari.findFirst();
-
     return {
         success: true,
         user: {
@@ -131,6 +166,7 @@ async function verifySession(token) {
             email: user.email,
             name: user.name,
             role: user.role,
+            isPersonel: false,
             firma: firma ? {
                 id: firma.id,
                 name: firma.name,
@@ -176,16 +212,23 @@ function authMiddleware(requiredRole = null) {
     };
 }
 
-// Personel Login (username ile)
-async function personelLogin(username, password) {
+// Personel Login (email veya username ile)
+async function personelLogin(loginIdentifier, password) {
     try {
-        const personel = await prisma.personel.findUnique({
-            where: { username }
+        // Email veya username ile personel ara (case-insensitive)
+        const identifier = loginIdentifier.toLowerCase();
+        const personel = await prisma.personel.findFirst({
+            where: {
+                OR: [
+                    { email: identifier },
+                    { username: identifier }
+                ]
+            }
         });
 
         // Personel bulunamadı
         if (!personel) {
-            return { success: false, error: 'Kullanıcı bulunamadı' };
+            return { success: false, error: 'Bu email/kullanıcı adı ile kayıtlı personel bulunamadı' };
         }
 
         // Personel aktif değil
@@ -194,7 +237,11 @@ async function personelLogin(username, password) {
         }
 
         // Şifre kontrolü
-        if (!personel.password || !verifyPassword(password, personel.password)) {
+        if (!personel.password) {
+            return { success: false, error: 'Hesabınız için şifre tanımlanmamış. Yöneticiyle iletişime geçin.' };
+        }
+
+        if (!verifyPassword(password, personel.password)) {
             return { success: false, error: 'Şifre hatalı' };
         }
 
@@ -202,8 +249,8 @@ async function personelLogin(username, password) {
         const token = jwt.sign(
             {
                 personelId: personel.id,
-                username: personel.username,
-                role: personel.role,
+                email: personel.email,
+                role: personel.role || 'tekniker',
                 kategori: personel.kategori
             },
             JWT_SECRET,
@@ -216,8 +263,8 @@ async function personelLogin(username, password) {
             user: {
                 id: personel.id,
                 ad: personel.adSoyad,
-                username: personel.username,
-                role: personel.role,
+                email: personel.email,
+                role: personel.role || 'tekniker',
                 kategori: personel.kategori,
                 unvan: personel.unvan
             }
@@ -276,7 +323,6 @@ async function resetPassword(email, token, newPassword) {
         where: { id: user.id },
         data: {
             password: hashPassword(newPassword),
-            plainPassword: newPassword,
             resetToken: null,
             resetTokenExpiry: null
         }
@@ -293,7 +339,6 @@ async function createUser(userData) {
         data: {
             email: userData.email,
             password: hashedPassword,
-            plainPassword: userData.password,
             name: userData.name,
             role: userData.role || 'tekniker',
             telefon: userData.telefon,
@@ -311,7 +356,6 @@ async function updateUser(id, userData) {
 
     if (data.password) {
         data.password = hashPassword(data.password);
-        data.plainPassword = userData.password;
     }
 
     delete data.id;

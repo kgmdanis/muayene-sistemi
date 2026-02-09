@@ -141,12 +141,14 @@ function setValueByLabel(xml, labelText, newValue) {
  * Kontrol sorusu - etiketin sağındaki hücreye yaz
  * mode: 'next' = etiketin +1 hücresi (4 sütunlu tablolar)
  * mode: 'last' = satırın son hücresi (2 sütunlu tablolar)
+ * exact: true = hücre metni tam olarak soruText'e eşit olmalı (normalize edilmiş)
  */
-function setKontrolSorusu(xml, soruText, deger, mode = 'last') {
+function setKontrolSorusu(xml, soruText, deger, mode = 'last', exact = false) {
     if (!deger) return xml;
 
     const rowRegex = /<w:tr[^>]*>[\s\S]*?<\/w:tr>/g;
     const rows = xml.match(rowRegex) || [];
+    const normalizedSoru = normalizeLabel(soruText);
 
     for (const row of rows) {
         const rowText = getRowText(row);
@@ -157,14 +159,36 @@ function setKontrolSorusu(xml, soruText, deger, mode = 'last') {
 
         if (cells.length < 2) continue;
 
-        if (mode === 'next') {
-            for (let i = 0; i < cells.length; i++) {
-                const cellText = getCellText(cells[i]);
-                if (cellText.includes(soruText) && i + 1 < cells.length) {
-                    const newCell = writeToCell(cells[i + 1], deger, { stripColor: true });
-                    const newRow = row.replace(cells[i + 1], newCell);
-                    return xml.replace(row, newRow);
+        // exact modda: hücre metninin tam olarak soruText'e eşit olması gerekir
+        let foundMatchingCell = false;
+        let matchingCellIndex = -1;
+
+        for (let i = 0; i < cells.length; i++) {
+            const cellText = getCellText(cells[i]);
+            if (exact) {
+                // Normalize edilmiş tam eşleşme
+                if (normalizeLabel(cellText) === normalizedSoru) {
+                    foundMatchingCell = true;
+                    matchingCellIndex = i;
+                    break;
                 }
+            } else {
+                // Kısmi eşleşme (eski davranış)
+                if (cellText.includes(soruText)) {
+                    foundMatchingCell = true;
+                    matchingCellIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (!foundMatchingCell) continue;
+
+        if (mode === 'next') {
+            if (matchingCellIndex + 1 < cells.length) {
+                const newCell = writeToCell(cells[matchingCellIndex + 1], deger, { stripColor: true });
+                const newRow = row.replace(cells[matchingCellIndex + 1], newCell);
+                return xml.replace(row, newRow);
             }
         } else {
             const lastCell = cells[cells.length - 1];

@@ -120,7 +120,6 @@ function renderSidebar() {
     const teknikerMenuItems = [
         { icon: '✅', text: 'Görevlerim', page: 'gorevlerim' },
         { icon: '📊', text: 'Raporlar', page: 'raporlar' },
-        { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' },
         { icon: '👤', text: 'Profilim', page: 'profil' }
     ];
 
@@ -336,7 +335,7 @@ function navigateToPage(page) {
     const userRole = localStorage.getItem('userRole') || currentUser?.role || 'admin';
 
     // Tekniker kısıtlı sayfalara giremez
-    const adminOnlyPages = ['dashboard', 'musteriler', 'teklifler', 'is-emirleri', 'ayarlar'];
+    const adminOnlyPages = ['dashboard', 'musteriler', 'teklifler', 'ayarlar'];
     if (userRole === 'tekniker' && adminOnlyPages.includes(page)) {
         page = 'gorevlerim'; // Tekniker için varsayılan sayfa
     }
@@ -2100,56 +2099,65 @@ function renderPersonelListesi() {
         return;
     }
 
-    const aktifPersoneller = personeller.filter(p => p.aktif);
-    const pasifPersoneller = personeller.filter(p => !p.aktif);
+    const aktifPersoneller = personeller.filter(p => p.isActive !== false);
+    const pasifPersoneller = personeller.filter(p => p.isActive === false);
+
+    // Kategori renkleri
+    const kategoriRenk = {
+        'Mekanik': '#3498db',
+        'Elektriksel': '#e74c3c',
+        'IsHijyeni': '#2ecc71'
+    };
 
     container.innerHTML = `
-        <div style="background: #f0f7ff; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-around; text-align: center;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-around; text-align: center; color: white;">
             <div>
-                <div style="font-size: 24px; font-weight: bold; color: #2C5F8D;">${personeller.length}</div>
-                <div style="color: #666; font-size: 12px;">Toplam</div>
+                <div style="font-size: 28px; font-weight: bold;">${personeller.length}</div>
+                <div style="opacity: 0.9; font-size: 12px;">Toplam</div>
             </div>
             <div>
-                <div style="font-size: 24px; font-weight: bold; color: #28a745;">${aktifPersoneller.length}</div>
-                <div style="color: #666; font-size: 12px;">Aktif</div>
+                <div style="font-size: 28px; font-weight: bold;">${aktifPersoneller.length}</div>
+                <div style="opacity: 0.9; font-size: 12px;">Aktif</div>
             </div>
             <div>
-                <div style="font-size: 24px; font-weight: bold; color: #999;">${pasifPersoneller.length}</div>
-                <div style="color: #666; font-size: 12px;">Pasif</div>
+                <div style="font-size: 28px; font-weight: bold;">${pasifPersoneller.length}</div>
+                <div style="opacity: 0.9; font-size: 12px;">Pasif</div>
             </div>
         </div>
 
-        <table class="table" style="font-size: 13px;">
-            <thead>
-                <tr>
-                    <th>Ad Soyad</th>
-                    <th>Ünvan</th>
-                    <th>Sertifika No</th>
-                    <th>Telefon</th>
-                    <th>Durum</th>
-                    <th>İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${personeller.map(personel => `
-                    <tr style="${!personel.aktif ? 'opacity: 0.6;' : ''}">
-                        <td><strong>${personel.adSoyad}</strong></td>
-                        <td>${personel.unvan}</td>
-                        <td>${personel.sertifikaNo || '-'}</td>
-                        <td>${personel.telefon || '-'}</td>
-                        <td>
-                            <span class="badge ${personel.aktif ? 'badge-onaylandı' : 'badge-reddedildi'}">
-                                ${personel.aktif ? 'Aktif' : 'Pasif'}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-secondary" onclick="personelDuzenle(${personel.id})" title="Düzenle">✏️</button>
-                            <button class="btn btn-sm btn-danger" onclick="personelSil(${personel.id}, '${personel.adSoyad}')" title="Sil">🗑️</button>
-                        </td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+            ${personeller.map(personel => {
+                const kategoriColor = kategoriRenk[personel.kategori] || '#6c757d';
+                const isActive = personel.isActive !== false;
+                return `
+                <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; ${!isActive ? 'opacity: 0.6;' : ''}">
+                    <div style="background: ${kategoriColor}; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 600;">${personel.adSoyad}</span>
+                        <span style="background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 10px; font-size: 11px;">
+                            ${isActive ? '✓ Aktif' : '✗ Pasif'}
+                        </span>
+                    </div>
+                    <div style="padding: 14px 16px;">
+                        <div style="font-size: 13px; color: #666; margin-bottom: 8px;">
+                            <strong>${personel.unvan || '-'}</strong>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: #888;">
+                            <div>📁 ${personel.kategori || '-'}</div>
+                            <div>📧 ${personel.email || '-'}</div>
+                            <div>📱 ${personel.telefon || '-'}</div>
+                            <div>👤 ${personel.username || '-'}</div>
+                        </div>
+                        <div style="margin-top: 8px; padding: 6px 10px; background: ${personel.password ? '#e8f5e9' : '#fff3e0'}; border-radius: 4px; font-size: 11px; color: ${personel.password ? '#2e7d32' : '#e65100'};">
+                            ${personel.password ? '🔑 Giriş aktif' : '⚠️ Şifre tanımlı değil'}
+                        </div>
+                    </div>
+                    <div style="padding: 10px 16px; background: #f8f9fa; border-top: 1px solid #eee; display: flex; gap: 8px;">
+                        <button class="btn btn-sm btn-primary" onclick="personelDuzenle(${personel.id})" style="flex: 1;">✏️ Düzenle</button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="personelSil(${personel.id}, '${personel.adSoyad}')">🗑️</button>
+                    </div>
+                </div>
+            `}).join('')}
+        </div>
     `;
 }
 
@@ -2157,10 +2165,19 @@ function yeniPersonelModal() {
     document.getElementById('personel-modal-baslik').textContent = 'Yeni Personel';
     document.getElementById('personel-id').value = '';
     document.getElementById('personel-ad-soyad').value = '';
+    document.getElementById('personel-kategori').value = '';
     document.getElementById('personel-unvan').value = '';
-    document.getElementById('personel-sertifika-no').value = '';
-    document.getElementById('personel-telefon').value = '';
+    document.getElementById('personel-meslek').value = '';
     document.getElementById('personel-email').value = '';
+    document.getElementById('personel-username').value = '';
+    document.getElementById('personel-sifre').value = '';
+    document.getElementById('personel-sifre').required = true;
+    document.getElementById('personel-sifre-label').textContent = '*';
+    document.getElementById('personel-sifre-help').textContent = 'Yeni personel için şifre zorunludur';
+    document.getElementById('personel-diploma-tarihi').value = '';
+    document.getElementById('personel-diploma-no').value = '';
+    document.getElementById('personel-ekipnet-no').value = '';
+    document.getElementById('personel-telefon').value = '';
     document.getElementById('personel-aktif').checked = true;
     document.getElementById('personel-modal').style.display = 'block';
 }
@@ -2175,30 +2192,98 @@ function personelDuzenle(personelId) {
 
     document.getElementById('personel-modal-baslik').textContent = 'Personeli Düzenle';
     document.getElementById('personel-id').value = personel.id;
-    document.getElementById('personel-ad-soyad').value = personel.adSoyad;
-    document.getElementById('personel-unvan').value = personel.unvan;
-    document.getElementById('personel-sertifika-no').value = personel.sertifikaNo || '';
-    document.getElementById('personel-telefon').value = personel.telefon || '';
+    document.getElementById('personel-ad-soyad').value = personel.adSoyad || '';
+    document.getElementById('personel-kategori').value = personel.kategori || '';
+    document.getElementById('personel-unvan').value = personel.unvan || '';
+    document.getElementById('personel-meslek').value = personel.meslek || '';
     document.getElementById('personel-email').value = personel.email || '';
-    document.getElementById('personel-aktif').checked = personel.aktif;
+    document.getElementById('personel-username').value = personel.username || '';
+    document.getElementById('personel-sifre').value = '';
+    document.getElementById('personel-sifre').required = false;
+    document.getElementById('personel-sifre-label').textContent = '(Değiştirmek için)';
+    document.getElementById('personel-sifre-help').textContent = 'Boş bırakırsanız mevcut şifre korunur';
+    // Diploma tarihi formatı: DB'de "08.07.2004" şeklinde saklanıyor, input için "2004-07-08" olmalı
+    if (personel.diplomaTarihi) {
+        const parts = personel.diplomaTarihi.split('.');
+        if (parts.length === 3) {
+            document.getElementById('personel-diploma-tarihi').value = `${parts[2]}-${parts[1]}-${parts[0]}`;
+        } else {
+            document.getElementById('personel-diploma-tarihi').value = personel.diplomaTarihi;
+        }
+    } else {
+        document.getElementById('personel-diploma-tarihi').value = '';
+    }
+    document.getElementById('personel-diploma-no').value = personel.diplomaNo || '';
+    document.getElementById('personel-ekipnet-no').value = personel.ekipnetNo || '';
+    document.getElementById('personel-telefon').value = personel.telefon || '';
+    document.getElementById('personel-aktif').checked = personel.isActive !== false;
     document.getElementById('personel-modal').style.display = 'block';
 }
 
 async function personelKaydet() {
     const id = document.getElementById('personel-id').value;
     const adSoyad = document.getElementById('personel-ad-soyad').value.trim();
+    const kategori = document.getElementById('personel-kategori').value;
     const unvan = document.getElementById('personel-unvan').value.trim();
-    const sertifikaNo = document.getElementById('personel-sertifika-no').value.trim();
-    const telefon = document.getElementById('personel-telefon').value.trim();
+    const meslek = document.getElementById('personel-meslek').value.trim();
     const email = document.getElementById('personel-email').value.trim();
-    const aktif = document.getElementById('personel-aktif').checked;
+    const username = document.getElementById('personel-username').value.trim();
+    const sifre = document.getElementById('personel-sifre').value;
+    const diplomaTarihiInput = document.getElementById('personel-diploma-tarihi').value;
+    const diplomaNo = document.getElementById('personel-diploma-no').value.trim();
+    const ekipnetNo = document.getElementById('personel-ekipnet-no').value.trim();
+    const telefon = document.getElementById('personel-telefon').value.trim();
+    const isActive = document.getElementById('personel-aktif').checked;
 
-    if (!adSoyad || !unvan) {
-        showToast('Ad Soyad ve Ünvan zorunludur', 'warning');
+    // Validasyon
+    if (!adSoyad || !unvan || !kategori) {
+        showToast('Ad Soyad, Kategori ve Ünvan zorunludur', 'warning');
         return;
     }
 
-    const personelData = { adSoyad, unvan, sertifikaNo, telefon, email, aktif };
+    if (!email) {
+        showToast('Email zorunludur (sisteme giriş için kullanılacak)', 'warning');
+        return;
+    }
+
+    // Yeni personel için şifre zorunlu
+    if (!id && !sifre) {
+        showToast('Yeni personel için şifre zorunludur', 'warning');
+        return;
+    }
+
+    if (sifre && sifre.length < 6) {
+        showToast('Şifre en az 6 karakter olmalıdır', 'warning');
+        return;
+    }
+
+    // Diploma tarihi formatla (2004-07-08 -> 08.07.2004)
+    let diplomaTarihi = '';
+    if (diplomaTarihiInput) {
+        const parts = diplomaTarihiInput.split('-');
+        if (parts.length === 3) {
+            diplomaTarihi = `${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
+    }
+
+    const personelData = {
+        adSoyad,
+        kategori,
+        unvan,
+        meslek,
+        email,
+        username: username || null,
+        telefon,
+        diplomaTarihi,
+        diplomaNo,
+        ekipnetNo,
+        isActive
+    };
+
+    // Şifre varsa ekle
+    if (sifre) {
+        personelData.password = sifre;
+    }
 
     try {
         showLoading();
@@ -3238,11 +3323,9 @@ async function loadIsEmirleri() {
 }
 
 function renderIsEmriTable() {
-    const tbody = document.querySelector('#is-emri-table tbody');
-    if (!tbody) return;
-
-    const container = document.querySelector('#is-emri-table').parentElement;
-    tbody.innerHTML = '';
+    const container = document.getElementById('is-emirleri-cards');
+    const paginationContainer = document.getElementById('is-emirleri-pagination');
+    if (!container) return;
 
     // Filtre uygula
     let filteredIsEmirleri = isEmirleri;
@@ -3251,10 +3334,13 @@ function renderIsEmriTable() {
     }
 
     if (filteredIsEmirleri.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Henüz iş emri bulunmamaktadır</td></tr>';
-        // Pagination'ı temizle
-        const existingPagination = container.querySelector('.pagination-container');
-        if (existingPagination) existingPagination.remove();
+        container.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; color: #666; grid-column: 1 / -1;">
+                <div style="font-size: 48px; margin-bottom: 10px;">📋</div>
+                <p>Bu filtrede iş emri bulunmamaktadır</p>
+            </div>
+        `;
+        if (paginationContainer) paginationContainer.innerHTML = '';
         return;
     }
 
@@ -3263,75 +3349,78 @@ function renderIsEmriTable() {
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const paginatedIsEmirleri = filteredIsEmirleri.slice(startIndex, endIndex);
 
-    paginatedIsEmirleri.forEach(isEmri => {
-        // Müşteri adını al
-        const musteriAdi = isEmri.customer?.unvan ||
-                          (musteriler.find(m => m.id === isEmri.customerId)?.unvan) ||
-                          '-';
+    // Durum renkleri
+    const durumColors = {
+        'BEKLIYOR': { bg: '#6c757d', icon: '⏳' },
+        'ATANDI': { bg: '#0d6efd', icon: '👤' },
+        'SAHADA': { bg: '#fd7e14', icon: '🚀' },
+        'TAMAMLANDI': { bg: '#198754', icon: '✅' },
+        'RAPOR_YAZILDI': { bg: '#6f42c1', icon: '📝' },
+        'TESLIM_EDILDI': { bg: '#0f5132', icon: '📦' },
+        'IPTAL': { bg: '#dc3545', icon: '❌' }
+    };
 
-        // Görev sayısı
+    const durumText = {
+        'BEKLIYOR': 'Bekliyor',
+        'ATANDI': 'Atandı',
+        'SAHADA': 'Sahada',
+        'TAMAMLANDI': 'Tamamlandı',
+        'RAPOR_YAZILDI': 'Rapor Yazıldı',
+        'TESLIM_EDILDI': 'Teslim Edildi',
+        'IPTAL': 'İptal'
+    };
+
+    container.innerHTML = paginatedIsEmirleri.map(isEmri => {
+        const musteriAdi = isEmri.customer?.unvan || '-';
         const gorevSayisi = isEmri.altGorevler?.length || 0;
+        const durum = durumColors[isEmri.durum] || { bg: '#6c757d', icon: '📋' };
+        const durumLabel = durumText[isEmri.durum] || isEmri.durum;
 
-        // Durum badge renkleri (BEKLIYOR=gri, ATANDI=mavi, SAHADA=turuncu, TAMAMLANDI=yeşil, RAPOR_YAZILDI=mor, TESLIM_EDILDI=koyu yeşil)
-        const durumStyles = {
-            'BEKLIYOR': 'background: #6c757d; color: white;',
-            'ATANDI': 'background: #0d6efd; color: white;',
-            'SAHADA': 'background: #fd7e14; color: white;',
-            'TAMAMLANDI': 'background: #198754; color: white;',
-            'RAPOR_YAZILDI': 'background: #6f42c1; color: white;',
-            'TESLIM_EDILDI': 'background: #0f5132; color: white;',
-            'IPTAL': 'background: #dc3545; color: white;'
-        };
-        const durumStyle = durumStyles[isEmri.durum] || 'background: #6c757d; color: white;';
+        return `
+            <div class="is-emri-card" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; transition: all 0.2s;"
+                 onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.12)'; this.style.transform='translateY(-2px)';"
+                 onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'; this.style.transform='';">
 
-        // Durum Türkçe karşılığı
-        const durumText = {
-            'BEKLIYOR': 'Bekliyor',
-            'ATANDI': 'Atandı',
-            'SAHADA': 'Sahada',
-            'TAMAMLANDI': 'Tamamlandı',
-            'RAPOR_YAZILDI': 'Rapor Yazıldı',
-            'TESLIM_EDILDI': 'Teslim Edildi',
-            'IPTAL': 'İptal'
-        }[isEmri.durum] || isEmri.durum;
+                <!-- Header -->
+                <div style="background: ${durum.bg}; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 600; font-size: 15px;">${isEmri.isEmriNo}</span>
+                    <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px;">${durum.icon} ${durumLabel}</span>
+                </div>
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><strong>${isEmri.isEmriNo}</strong></td>
-            <td>${musteriAdi}</td>
-            <td>${isEmri.teklif?.teklifNo || '-'}</td>
-            <td>${isEmri.planliTarih ? formatTarihTR(isEmri.planliTarih) : '-'}</td>
-            <td><span class="badge badge-info">${gorevSayisi} görev</span></td>
-            <td><span class="badge" style="${durumStyle} padding: 4px 8px; border-radius: 4px;">${durumText}</span></td>
-            <td>
-                <div class="action-buttons">
-                    <button onclick="viewIsEmri(${isEmri.id})" class="btn btn-sm btn-info" title="Detay">
-                        👁️
+                <!-- Body -->
+                <div style="padding: 16px;">
+                    <div style="font-weight: 600; font-size: 14px; color: #333; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${musteriAdi}">
+                        ${musteriAdi}
+                    </div>
+                    <div style="display: flex; gap: 16px; font-size: 13px; color: #666;">
+                        <span>📄 ${isEmri.teklif?.teklifNo || '-'}</span>
+                        <span>📦 ${gorevSayisi} görev</span>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div style="padding: 12px 16px; background: #f8f9fa; border-top: 1px solid #eee; display: flex; gap: 8px;">
+                    <button onclick="viewIsEmri(${isEmri.id})" class="btn btn-sm btn-primary" style="flex: 1; padding: 8px; font-size: 13px;">
+                        Detay
                     </button>
-                    <button onclick="deleteIsEmri(${isEmri.id})" class="btn btn-sm btn-danger" title="Sil">
+                    <button onclick="deleteIsEmri(${isEmri.id})" class="btn btn-sm btn-outline-danger" style="padding: 8px 12px; font-size: 13px;" title="Sil">
                         🗑️
                     </button>
                 </div>
-            </td>
+            </div>
         `;
-        tbody.appendChild(row);
-    });
+    }).join('');
 
-    // Pagination kontrollerini ekle/güncelle
-    let paginationDiv = container.querySelector('.pagination-container');
-    if (!paginationDiv) {
-        paginationDiv = document.createElement('div');
-        paginationDiv.className = 'pagination-container';
-        container.appendChild(paginationDiv);
+    // Pagination
+    if (paginationContainer) {
+        paginationContainer.innerHTML = generatePaginationHTML(currentPageIsEmri, filteredIsEmirleri.length, 'IsEmri');
     }
-    paginationDiv.innerHTML = generatePaginationHTML(currentPageIsEmri, filteredIsEmirleri.length, 'IsEmri');
 }
 
 function changePageIsEmri(page) {
     currentPageIsEmri = page;
     renderIsEmriTable();
-    // Sayfayı en üste kaydır
-    document.querySelector('#is-emri-table').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('is-emirleri-cards')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function isEmriFiltrele(filter) {
@@ -3444,6 +3533,9 @@ async function renderIsEmriDetay(id) {
             'TESLIM_EDILDI': 'Teslim Edildi'
         };
 
+        const userRole = localStorage.getItem('userRole') || currentUser?.role || 'admin';
+        const isTekniker = userRole === 'tekniker';
+
         const content = `
             <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
@@ -3461,10 +3553,10 @@ async function renderIsEmriDetay(id) {
                     <strong>Müşteri</strong><br>
                     <span style="font-size: 14px;">${isEmri.customer?.unvan || '-'}</span>
                 </div>
-                <div class="info-card" style="padding: 15px;">
+                ${!isTekniker ? `<div class="info-card" style="padding: 15px;">
                     <strong>Teklif No</strong><br>
                     <span style="font-size: 14px;">${isEmri.teklif?.teklifNo || '-'}</span>
-                </div>
+                </div>` : ''}
                 <div class="info-card" style="padding: 15px;">
                     <strong>Planlı Tarih</strong><br>
                     <span style="font-size: 14px;">${isEmri.planliTarih ? formatTarihTR(isEmri.planliTarih) : '-'}</span>
@@ -3475,7 +3567,7 @@ async function renderIsEmriDetay(id) {
                         ${durumText[isEmri.durum] || isEmri.durum}
                     </span>
                 </div>
-                <div class="info-card" style="padding: 15px;">
+                ${!isTekniker ? `<div class="info-card" style="padding: 15px;">
                     <strong>Durum Değiştir</strong><br>
                     <select class="form-input" style="width: 100%; margin-top: 5px;" onchange="isEmriDurumDegistir(${isEmri.id}, this.value)">
                         <option value="BEKLIYOR" ${isEmri.durum === 'BEKLIYOR' ? 'selected' : ''}>Bekliyor</option>
@@ -3485,16 +3577,31 @@ async function renderIsEmriDetay(id) {
                         <option value="RAPOR_YAZILDI" ${isEmri.durum === 'RAPOR_YAZILDI' ? 'selected' : ''}>Rapor Yazıldı</option>
                         <option value="TESLIM_EDILDI" ${isEmri.durum === 'TESLIM_EDILDI' ? 'selected' : ''}>Teslim Edildi</option>
                     </select>
-                </div>
+                </div>` : ''}
             </div>
 
-            <!-- İSG-KATİP Sözleşme ID -->
-            <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
-                <label style="font-weight: 600; margin-bottom: 8px; display: block;">📋 İSG-KATİP Sözleşme ID</label>
-                <input type="text" id="isgKatipIdInput" class="form-input" style="max-width: 400px;"
-                    placeholder="İSG-KATİP Sözleşme ID giriniz..."
-                    value="${isEmri.firmaBilgi?.isgKatipId || ''}"
-                    onblur="saveIsgKatipId(${isEmri.id}, this.value)">
+            <!-- Firma Bilgileri -->
+            <div style="margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #dee2e6; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <h4 style="margin: 0 0 15px 0; color: #333; font-size: 15px;">🏢 Firma Bilgileri</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end;">
+                    <div>
+                        <label style="font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px; color: #555;">SGK Sicil No</label>
+                        <input type="text" id="sgkSicilNoInput" class="form-input"
+                            placeholder="SGK Sicil No"
+                            value="${isEmri.firmaBilgi?.sgkSicilNo || ''}">
+                    </div>
+                    <div>
+                        <label style="font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px; color: #555;">İSG-KATİP Sözleşme ID</label>
+                        <input type="text" id="isgKatipIdInput" class="form-input"
+                            placeholder="İSG-KATİP Sözleşme ID"
+                            value="${isEmri.firmaBilgi?.isgKatipId || ''}">
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="saveFirmaBilgi(${isEmri.id})" style="white-space: nowrap;">
+                            💾 Kaydet
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Alt Görevler Tablosu -->
@@ -3508,7 +3615,6 @@ async function renderIsEmriDetay(id) {
                             <th>#</th>
                             <th>Hizmet</th>
                             <th>Ekipman</th>
-                            <th>Konum</th>
                             <th>Personel</th>
                             <th>Durum</th>
                             <th>Rapor No</th>
@@ -3521,7 +3627,6 @@ async function renderIsEmriDetay(id) {
                                 <td>${index + 1}</td>
                                 <td><strong>${gorev.hizmetAdi || '-'}</strong></td>
                                 <td>${gorev.ekipmanAdi || '-'}</td>
-                                <td>${gorev.ekipmanKonum || '-'}</td>
                                 <td>${gorev.personelAdi || '<span style="color:#999;">Atanmadı</span>'}</td>
                                 <td>
                                     <span class="badge" style="background: ${durumRenk[gorev.durum] || '#6c757d'}; color: white; padding: 3px 6px; border-radius: 3px; font-size: 11px;">
@@ -3533,12 +3638,12 @@ async function renderIsEmriDetay(id) {
                                     <button class="btn btn-sm btn-success" onclick="olcumYap(${gorev.id}, '${gorev.hizmetAdi}')" title="Ölçüm Yap">
                                         📊 Ölçüm
                                     </button>
-                                    <button class="btn btn-sm btn-primary" onclick="altGorevDuzenle(${gorev.id})" title="Düzenle">
+                                    ${!isTekniker ? `<button class="btn btn-sm btn-primary" onclick="altGorevDuzenle(${gorev.id})" title="Düzenle">
                                         ✏️
-                                    </button>
+                                    </button>` : ''}
                                 </td>
                             </tr>
-                        `).join('') || '<tr><td colspan="8" class="text-center">Alt görev bulunmamaktadır</td></tr>'}
+                        `).join('') || '<tr><td colspan="7" class="text-center">Alt görev bulunmamaktadır</td></tr>'}
                     </tbody>
                 </table>
             </div>
@@ -3577,17 +3682,22 @@ async function isEmriDurumDegistir(id, durum) {
     }
 }
 
-// İSG-KATİP Sözleşme ID Kaydet
-async function saveIsgKatipId(isEmriId, value) {
+// Firma Bilgisi Kaydet (SGK Sicil No, İSG-KATİP ID)
+async function saveFirmaBilgi(isEmriId) {
     try {
+        const data = {
+            sgkSicilNo: document.getElementById('sgkSicilNoInput')?.value?.trim() || '',
+            isgKatipId: document.getElementById('isgKatipIdInput')?.value?.trim() || ''
+        };
+
         const response = await authenticatedFetch(`/api/is-emirleri/${isEmriId}/firma-bilgi`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ isgKatipId: value.trim() })
+            body: JSON.stringify(data)
         });
 
         if (response.ok) {
-            showToast('İSG-KATİP Sözleşme ID kaydedildi', 'success');
+            showToast('Firma bilgileri kaydedildi', 'success');
         } else {
             const error = await response.json();
             showToast(error.error || 'Kaydetme hatası', 'error');
@@ -3624,8 +3734,27 @@ async function olcumYap(altGorevId, hizmetAdi) {
             kategoriler[kat].push(s);
         });
 
+        // Özel formları en üstte göster
+        const ozelFormlar = [
+            { kod: 'elektrik-topraklama', ad: 'Elektrik Topraklama Raporu', icon: '⚡', arama: 'elektrik topraklama ölçüm raporu FR7.2.36' },
+            { kod: 'kompresor', ad: 'Kompresör Raporu', icon: '🔧', arama: 'kompresör kompresor basınç raporu' },
+            { kod: 'hava-tanki', ad: 'Hava Tankı Raporu', icon: '🛢️', arama: 'hava tankı basınçlı kap raporu' }
+        ];
+
+        let kategoriHTML = `
+            <div style="margin-bottom: 10px;">
+                <div style="font-weight: 600; margin-bottom: 5px; color: #555; font-size: 13px; text-transform: uppercase;">📌 ÖZEL FORMLAR (${ozelFormlar.length})</div>
+                <div style="display: grid; gap: 5px; padding-left: 10px;">
+                    ${ozelFormlar.map(s => `
+                        <button class="btn btn-outline" data-search="${s.arama}" onclick="olcumFormuAc(${altGorevId}, '${s.kod}')" style="text-align: left; padding: 10px 15px; border: 2px solid #667eea; background: #f8f9ff; cursor: pointer; font-size: 13px;">
+                            ${s.icon} <strong>${s.ad}</strong>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
         // Kategori butonlarını oluştur
-        let kategoriHTML = '';
         for (const [kat, items] of Object.entries(kategoriler)) {
             const icon = kategoriIcons[kat] || '📄';
             kategoriHTML += `
@@ -3689,7 +3818,8 @@ function sablonFiltrele(term) {
         let anyVisible = false;
         btns.forEach(btn => {
             const text = btn.textContent.toLowerCase();
-            const match = !term || text.includes(lowerTerm);
+            const searchData = (btn.getAttribute('data-search') || '').toLowerCase();
+            const match = !term || text.includes(lowerTerm) || searchData.includes(lowerTerm);
             btn.style.display = match ? '' : 'none';
             if (match) anyVisible = true;
         });
@@ -3736,18 +3866,6 @@ async function altGorevDuzenle(gorevId) {
                         <div class="form-group">
                             <label class="form-label">Ekipman Adı</label>
                             <input type="text" class="form-input" id="agEkipmanAdi" value="${gorev.ekipmanAdi || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Seri No</label>
-                            <input type="text" class="form-input" id="agSeriNo" value="${gorev.ekipmanSeriNo || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Konum</label>
-                            <input type="text" class="form-input" id="agKonum" value="${gorev.ekipmanKonum || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Kapasite</label>
-                            <input type="text" class="form-input" id="agKapasite" value="${gorev.ekipmanKapasite || ''}">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Personel</label>
@@ -3806,9 +3924,6 @@ async function altGorevKaydet(gorevId) {
 
     const data = {
         ekipmanAdi: document.getElementById('agEkipmanAdi').value,
-        ekipmanSeriNo: document.getElementById('agSeriNo').value,
-        ekipmanKonum: document.getElementById('agKonum').value,
-        ekipmanKapasite: document.getElementById('agKapasite').value,
         personelId: personelId,
         personelAdi: personelAdi,
         durum: durum,
@@ -5405,6 +5520,9 @@ async function kalibrasyonHatirlatmaGonder() {
 // ========================================
 
 let gorevlerimFilter = 'hepsi';
+let gorevlerimPage = 1;
+let gorevlerimData = [];
+const GOREVLER_PER_PAGE = 12;
 
 async function loadGorevlerim() {
     const personelId = localStorage.getItem('userId');
@@ -5424,9 +5542,10 @@ async function loadGorevlerim() {
             : `${API_BASE}/personel/${personelId}/gorevler?durum=${gorevlerimFilter}`;
 
         const response = await authenticatedFetch(url);
-        const gorevler = await response.json();
+        gorevlerimData = await response.json();
+        gorevlerimPage = 1; // Filtre değişince sayfa 1'e dön
 
-        renderGorevCards(gorevler);
+        renderGorevCards();
     } catch (error) {
         console.error('Görevler yükleme hatası:', error);
         document.getElementById('gorevlerim-list').innerHTML = `
@@ -5439,8 +5558,9 @@ async function loadGorevlerim() {
     }
 }
 
-function renderGorevCards(gorevler) {
+function renderGorevCards() {
     const container = document.getElementById('gorevlerim-list');
+    const gorevler = gorevlerimData;
 
     if (!gorevler || gorevler.length === 0) {
         container.innerHTML = `
@@ -5452,59 +5572,106 @@ function renderGorevCards(gorevler) {
         return;
     }
 
+    // İş emirlerine göre grupla
+    const isEmirleriMap = {};
+    gorevler.forEach(gorev => {
+        const isEmriId = gorev.isEmriId;
+        if (!isEmirleriMap[isEmriId]) {
+            isEmirleriMap[isEmriId] = {
+                isEmri: gorev.isEmri,
+                gorevler: []
+            };
+        }
+        isEmirleriMap[isEmriId].gorevler.push(gorev);
+    });
+
+    const isEmirleri = Object.values(isEmirleriMap);
+
+    // Özet bilgi
+    const summaryHtml = `
+        <div style="grid-column: 1 / -1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 20px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <span style="font-size: 24px; font-weight: 700;">${isEmirleri.length}</span>
+                <span style="margin-left: 8px; opacity: 0.9;">iş emri</span>
+                <span style="margin-left: 15px; font-size: 16px;">${gorevler.length}</span>
+                <span style="opacity: 0.9;">görev</span>
+            </div>
+            <div style="display: flex; gap: 15px; font-size: 13px;">
+                <span>⏳ ${gorevler.filter(g => g.durum === 'BEKLIYOR' || g.durum === 'ATANDI').length} bekliyor</span>
+                <span>🚀 ${gorevler.filter(g => g.durum === 'SAHADA').length} sahada</span>
+                <span>✅ ${gorevler.filter(g => g.durum === 'TAMAMLANDI').length} tamamlandı</span>
+            </div>
+        </div>
+    `;
+
     const durumRenk = {
-        'BEKLIYOR': { bg: '#6c757d', text: 'Bekliyor' },
-        'ATANDI': { bg: '#0d6efd', text: 'Atandı' },
-        'SAHADA': { bg: '#fd7e14', text: 'Sahada' },
-        'TAMAMLANDI': { bg: '#198754', text: 'Tamamlandı' }
+        'BEKLIYOR': { bg: '#6c757d', text: 'Bekliyor', icon: '⏳' },
+        'ATANDI': { bg: '#0d6efd', text: 'Atandı', icon: '👤' },
+        'SAHADA': { bg: '#fd7e14', text: 'Sahada', icon: '🚀' },
+        'TAMAMLANDI': { bg: '#198754', text: 'Tamamlandı', icon: '✅' }
     };
 
-    container.innerHTML = gorevler.map(gorev => {
-        const durum = durumRenk[gorev.durum] || { bg: '#6c757d', text: gorev.durum };
-        const musteriAdi = gorev.isEmri?.customer?.unvan || '-';
-        const isEmriNo = gorev.isEmri?.isEmriNo || '-';
-        const planliTarih = gorev.isEmri?.planliTarih ? formatTarihTR(gorev.isEmri.planliTarih) : '-';
+    // İş Emri Kartları
+    const cardsHtml = isEmirleri.map(item => {
+        const isEmri = item.isEmri;
+        const gorevlerList = item.gorevler;
+        const musteriAdi = isEmri?.customer?.unvan || '-';
+        const isEmriNo = isEmri?.isEmriNo || '-';
+
+        // İş emri durumu (en kötü duruma göre)
+        const durumOncelik = { 'BEKLIYOR': 1, 'ATANDI': 2, 'SAHADA': 3, 'TAMAMLANDI': 4 };
+        const enKotuDurum = gorevlerList.reduce((min, g) => {
+            return durumOncelik[g.durum] < durumOncelik[min] ? g.durum : min;
+        }, 'TAMAMLANDI');
+        const headerColor = durumRenk[enKotuDurum]?.bg || '#6c757d';
+
+        // Görev listesi HTML
+        const gorevListHtml = gorevlerList.map(gorev => {
+            const durum = durumRenk[gorev.durum] || { bg: '#6c757d', text: gorev.durum, icon: '📋' };
+            return `
+                <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f0f0f0;">
+                    <span style="background: ${durum.bg}; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; white-space: nowrap;">${durum.icon} ${durum.text}</span>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${gorev.hizmetAdi}">${gorev.hizmetAdi}</div>
+                        ${gorev.ekipmanAdi ? `<div style="font-size: 11px; color: #888;">🔧 ${gorev.ekipmanAdi}</div>` : ''}
+                    </div>
+                    <div style="display: flex; gap: 4px;">
+                        ${gorev.durum === 'ATANDI' ? `<button onclick="gorevDurumDegistir(${gorev.id}, 'SAHADA'); event.stopPropagation();" class="btn btn-sm btn-warning" style="padding: 4px 8px; font-size: 11px;">🚀</button>` : ''}
+                        ${gorev.durum === 'SAHADA' ? `<button onclick="gorevDurumDegistir(${gorev.id}, 'TAMAMLANDI'); event.stopPropagation();" class="btn btn-sm btn-success" style="padding: 4px 8px; font-size: 11px;">✅</button>` : ''}
+                        <button onclick="gorevDetayGoster(${gorev.id}); event.stopPropagation();" class="btn btn-sm btn-outline-primary" style="padding: 4px 8px; font-size: 11px;">📝</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
 
         return `
-            <div class="gorev-card" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';" onmouseout="this.style.transform=''; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';">
-                <div style="background: ${durum.bg}; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-weight: 600;">${gorev.hizmetAdi || 'Görev'}</span>
-                    <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px;">${durum.text}</span>
-                </div>
-                <div style="padding: 16px;">
-                    <div style="margin-bottom: 12px;">
-                        <div style="color: #666; font-size: 12px; margin-bottom: 2px;">Müşteri</div>
-                        <div style="font-weight: 500;">${musteriAdi}</div>
+            <div class="is-emri-card" style="background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden; grid-column: 1 / -1;">
+                <div style="background: ${headerColor}; color: white; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 16px;">${isEmriNo}</div>
+                        <div style="opacity: 0.9; font-size: 13px; margin-top: 2px;">${musteriAdi}</div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div>
-                            <div style="color: #666; font-size: 12px; margin-bottom: 2px;">İş Emri No</div>
-                            <div style="font-weight: 500;">${isEmriNo}</div>
-                        </div>
-                        <div>
-                            <div style="color: #666; font-size: 12px; margin-bottom: 2px;">Planlı Tarih</div>
-                            <div style="font-weight: 500;">${planliTarih}</div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button onclick="navigateToPage('is-emirleri'); setTimeout(() => viewIsEmri(${isEmri?.id}), 300);" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 4px 10px; font-size: 11px; border-radius: 15px;">
+                            🏢 Firma Bilgi
+                        </button>
+                        <div style="background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 13px;">
+                            ${gorevlerList.length} görev
                         </div>
                     </div>
-                    ${gorev.ekipmanAdi ? `
-                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee;">
-                        <div style="color: #666; font-size: 12px; margin-bottom: 2px;">Ekipman</div>
-                        <div style="font-weight: 500;">${gorev.ekipmanAdi}</div>
-                    </div>
-                    ` : ''}
                 </div>
-                <div style="padding: 12px 16px; background: #f8f9fa; border-top: 1px solid #eee; display: flex; gap: 8px;">
-                    ${gorev.durum === 'ATANDI' ? `
-                        <button onclick="gorevDurumDegistir(${gorev.id}, 'SAHADA')" class="btn btn-sm btn-warning" style="flex: 1;">🚀 İşe Başla</button>
-                    ` : ''}
-                    ${gorev.durum === 'SAHADA' ? `
-                        <button onclick="gorevDurumDegistir(${gorev.id}, 'TAMAMLANDI')" class="btn btn-sm btn-success" style="flex: 1;">✅ Tamamla</button>
-                    ` : ''}
-                    <button onclick="gorevDetayGoster(${gorev.id})" class="btn btn-sm btn-info" style="${gorev.durum === 'TAMAMLANDI' ? 'flex: 1;' : ''}">📄 Detay</button>
+                <div style="padding: 10px 18px;">
+                    ${gorevListHtml}
                 </div>
             </div>
         `;
     }).join('');
+
+    container.innerHTML = summaryHtml + cardsHtml;
+}
+
+function gorevlerimSayfaDegistir(sayfa) {
+    // Artık pagination yok, iş emri bazlı gruplama var
 }
 
 function gorevlerimFiltrele(durum) {
@@ -5547,44 +5714,90 @@ async function gorevDetayGoster(gorevId) {
         const response = await authenticatedFetch(`${API_BASE}/alt-gorevler/${gorevId}`);
         const gorev = await response.json();
 
+        // Şablonları yükle
+        const sablonlarRes = await authenticatedFetch(`${API_BASE}/rapor-sablonu`);
+        const sablonlar = await sablonlarRes.json();
+
+        // Özel formlar (en üstte göster)
+        const ozelFormlar = [
+            { kod: 'elektrik-topraklama', ad: '⚡ Elektrik Topraklama Raporu' },
+            { kod: 'kompresor', ad: '🔧 Kompresör Raporu' },
+            { kod: 'hava-tanki', ad: '🛢️ Hava Tankı Raporu' }
+        ];
+
+        // Şablon seçeneklerini oluştur
+        const ozelOptions = ozelFormlar.map(s =>
+            `<option value="${s.kod}">${s.ad}</option>`
+        ).join('');
+
+        const genericOptions = sablonlar.map(s =>
+            `<option value="${s.sablonKodu}">${s.sablonAdi}</option>`
+        ).join('');
+
+        const sablonOptions = `
+            <optgroup label="📌 Özel Formlar">
+                ${ozelOptions}
+            </optgroup>
+            <optgroup label="📋 Genel Şablonlar">
+                ${genericOptions}
+            </optgroup>
+        `;
+
         const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal" onclick="event.stopPropagation()" style="max-width: 500px;">
-                    <div class="modal-header">
-                        <h3>📋 Görev Detayı</h3>
-                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                <div class="modal" onclick="event.stopPropagation()" style="max-width: 550px;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <h3 style="color: white;">📋 Görev Detayı</h3>
+                        <button class="modal-close" onclick="closeModal()" style="color: white;">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label class="form-label">Hizmet</label>
-                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.hizmetAdi || '-'}</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px; color: #666;">Hizmet</label>
+                                <div style="padding: 8px 10px; background: #f8f9fa; border-radius: 6px; font-weight: 500;">${gorev.hizmetAdi || '-'}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px; color: #666;">Kategori</label>
+                                <div style="padding: 8px 10px; background: #f8f9fa; border-radius: 6px;">${gorev.kategori || '-'}</div>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Kategori</label>
-                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.kategori || '-'}</div>
+                            <label class="form-label" style="font-size: 12px; color: #666;">Ekipman</label>
+                            <div style="padding: 8px 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanAdi || '-'}</div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Ekipman Adı</label>
-                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanAdi || '-'}</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px; color: #666;">Seri No</label>
+                                <div style="padding: 8px 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanSeriNo || '-'}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px; color: #666;">Konum</label>
+                                <div style="padding: 8px 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanKonum || '-'}</div>
+                            </div>
                         </div>
+                        ${gorev.notlar ? `
                         <div class="form-group">
-                            <label class="form-label">Seri No</label>
-                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanSeriNo || '-'}</div>
+                            <label class="form-label" style="font-size: 12px; color: #666;">Notlar</label>
+                            <div style="padding: 8px 10px; background: #fff3cd; border-radius: 6px; border-left: 3px solid #ffc107;">${gorev.notlar}</div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Konum</label>
-                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanKonum || '-'}</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Kapasite</label>
-                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.ekipmanKapasite || '-'}</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Notlar</label>
-                            <div style="padding: 10px; background: #f8f9fa; border-radius: 6px;">${gorev.notlar || '-'}</div>
+                        ` : ''}
+
+                        <!-- Rapor Oluşturma Bölümü -->
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #eee;">
+                            <h4 style="margin: 0 0 12px 0; color: #333; font-size: 14px;">📝 Rapor Oluştur</h4>
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px; color: #666;">Rapor Şablonu Seçin</label>
+                                <select id="sablon-secim" class="form-input" style="width: 100%;">
+                                    <option value="">-- Şablon Seçin --</option>
+                                    ${sablonOptions}
+                                </select>
+                            </div>
+                            <button onclick="raporFormAc(${gorev.id})" class="btn btn-success" style="width: 100%; padding: 12px; font-size: 15px; font-weight: 600;">
+                                📄 Rapor Formunu Aç
+                            </button>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer" style="background: #f8f9fa;">
                         <button class="btn btn-secondary" onclick="closeModal()">Kapat</button>
                     </div>
                 </div>
@@ -5595,6 +5808,32 @@ async function gorevDetayGoster(gorevId) {
         console.error('Görev detay hatası:', error);
         showToast('Detay yüklenemedi', 'error');
     }
+}
+
+// Rapor formunu aç
+function raporFormAc(altGorevId) {
+    const sablonKodu = document.getElementById('sablon-secim').value;
+    if (!sablonKodu) {
+        showToast('Lütfen bir rapor şablonu seçin', 'warning');
+        return;
+    }
+
+    let formUrl;
+
+    // Özel formlar için yönlendirme
+    if (sablonKodu === 'elektrik-topraklama') {
+        formUrl = `/forms/elektrik-topraklama-form-v2.html?altGorevId=${altGorevId}`;
+    } else if (sablonKodu === 'kompresor') {
+        formUrl = `/forms/kompresor-form.html?altGorevId=${altGorevId}`;
+    } else if (sablonKodu === 'hava-tanki') {
+        formUrl = `/forms/hava-tanki-form.html?altGorevId=${altGorevId}`;
+    } else {
+        // Generic rapor formunu şablon koduyla aç
+        formUrl = `/forms/generic-rapor-form.html?sablon=${sablonKodu}&altGorevId=${altGorevId}`;
+    }
+
+    window.open(formUrl, '_blank');
+    closeModal();
 }
 
 // ========================================
@@ -6006,7 +6245,7 @@ console.log(`
 %cv1.0.0 - ÖNDER MUAYENE KURULUŞU
 
 %cMüşteri, Teklif ve Muayene Modülü
-%cGeliştirici: Claude Code
+%cGeliştirici: KGM Dijital - Abdulkadir IŞIK
 %cDurum: Aktif ✅
 `,
     'color: #2C5F8D; font-size: 20px; font-weight: bold;',

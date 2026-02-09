@@ -4,25 +4,92 @@
   "kategori": "mekanik",
   "altKategori": "basınçlı malzemeler",
   "raporNoPrefix": "MK",
-
   "sections": [
     {
       "id": "firma",
       "title": "Firma & Rapor Bilgileri",
       "layout": "row-2",
       "fields": [
-        { "id": "firmaAdi", "label": "Firma Adı", "type": "text", "source": "customer.unvan", "readonly": true, "autoFill": true },
-        { "id": "bolumu", "label": "Bölümü", "type": "text", "placeholder": "Üretim, Bakım vb." },
-        { "id": "firmaAdres", "label": "Adresi", "type": "text", "source": "customer.adres", "readonly": true, "autoFill": true },
-        { "id": "kontrolTarihi", "label": "Kontrol Tarihi", "type": "date" },
-        { "id": "firmaTelefon", "label": "Tel/Fax", "type": "text", "source": "customer.telefon", "readonly": true, "autoFill": true },
-        { "id": "raporTarihi", "label": "Rapor Tarihi", "type": "date" },
-        { "id": "firmaEmail", "label": "E-mail", "type": "text", "source": "customer.email", "readonly": true, "autoFill": true },
-        { "id": "sonrakiKontrolTarihi", "label": "Sonraki Kontrol Tarihi", "type": "date" },
-        { "id": "firmaWeb", "label": "Web", "type": "text", "source": "customer.web", "readonly": true, "autoFill": true },
-        { "id": "raporNo", "label": "Rapor No", "type": "text", "readonly": true, "autoFill": true },
-        { "id": "sgkSicilNo", "label": "SGK Sicil No", "type": "text", "placeholder": "SGK Sicil No" },
-        { "id": "isgKatipNo", "label": "İSG-KATİP Sözleşme ID", "type": "text", "placeholder": "İSG-KATİP No" }
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
       ]
     },
     {
@@ -30,13 +97,48 @@
       "title": "İş Ekipmanına Ait Teknik Özellikler",
       "layout": "row-2",
       "fields": [
-        { "id": "markasi", "label": "Markası", "type": "text", "placeholder": "Kompresör markası" },
-        { "id": "tip", "label": "Tip", "type": "text", "placeholder": "Kompresör tipi" },
-        { "id": "seriNo", "label": "Seri No", "type": "text", "placeholder": "Seri numarası" },
-        { "id": "imalatYili", "label": "İmalat Yılı", "type": "text", "placeholder": "Örn: 2020" },
-        { "id": "maksBasinc", "label": "Maksimum Basınç (Bar)", "type": "text", "placeholder": "Örn: 10" },
-        { "id": "durmaBasinci", "label": "Durma Basıncı (Bar)", "type": "text", "placeholder": "Örn: 8" },
-        { "id": "tekrarCalismaBasinci", "label": "Tekrar Çalışma Basıncı (Bar)", "type": "text", "placeholder": "Örn: 6" }
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "Kompresör markası"
+        },
+        {
+          "id": "tip",
+          "label": "Tip",
+          "type": "text",
+          "placeholder": "Kompresör tipi"
+        },
+        {
+          "id": "seriNo",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "Seri numarası"
+        },
+        {
+          "id": "imalatYili",
+          "label": "İmalat Yılı",
+          "type": "text",
+          "placeholder": "Örn: 2020"
+        },
+        {
+          "id": "maksBasinc",
+          "label": "Maksimum Basınç (Bar)",
+          "type": "text",
+          "placeholder": "Örn: 10"
+        },
+        {
+          "id": "durmaBasinci",
+          "label": "Durma Basıncı (Bar)",
+          "type": "text",
+          "placeholder": "Örn: 8"
+        },
+        {
+          "id": "tekrarCalismaBasinci",
+          "label": "Tekrar Çalışma Basıncı (Bar)",
+          "type": "text",
+          "placeholder": "Örn: 6"
+        }
       ]
     },
     {
@@ -45,30 +147,132 @@
       "type": "control-questions",
       "badge": "10 Kontrol",
       "questions": [
-        { "id": "soru1ArizaKarti", "no": 1, "text": "Arıza kartı var mı?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "soru2TseCe", "no": 2, "text": "TSE/CE işareti var mı?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "soru3YagToz", "no": 3, "text": "Yağ/toz sızıntısı var mı?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "soru4BasincAyar", "no": 4, "text": "Basınç ayar otomatiği çalışıyor mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "soru5KayisKasnak", "no": 5, "text": "Kayış-kasnak koruyucu sacı var mı?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "soru6ElektrikMotor", "no": 6, "text": "Elektrik motor bağlantılarında gevşeklik var mı?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "soru7VanaHortum", "no": 7, "text": "Vana-hortum bağlantılarında hava kaçağı var mı?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "soru8HavaFiltresi", "no": 8, "text": "Hava filtresi temiz mi?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "soru9YanginSondurucu", "no": 9, "text": "Yangın söndürücü yeri uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "soru10UyariTalimat", "no": 10, "text": "Uyarı ve kullanma talimatı durumu uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" }
+        {
+          "id": "soru1ArizaKarti",
+          "no": 1,
+          "text": "Arıza kartı var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "soru2TseCe",
+          "no": 2,
+          "text": "TSE/CE işareti var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "soru3YagToz",
+          "no": 3,
+          "text": "Yağ/toz sızıntısı var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "soru4BasincAyar",
+          "no": 4,
+          "text": "Basınç ayar otomatiği çalışıyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "soru5KayisKasnak",
+          "no": 5,
+          "text": "Kayış-kasnak koruyucu sacı var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "soru6ElektrikMotor",
+          "no": 6,
+          "text": "Elektrik motor bağlantılarında gevşeklik var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "soru7VanaHortum",
+          "no": 7,
+          "text": "Vana-hortum bağlantılarında hava kaçağı var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "soru8HavaFiltresi",
+          "no": 8,
+          "text": "Hava filtresi temiz mi?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "soru9YanginSondurucu",
+          "no": 9,
+          "text": "Yangın söndürücü yeri uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "soru10UyariTalimat",
+          "no": 10,
+          "text": "Uyarı ve kullanma talimatı durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        }
       ]
     },
     {
       "id": "kusur",
       "title": "Kusur Açıklamaları",
       "fields": [
-        { "id": "kusurAciklama", "label": "Kusur Açıklaması", "type": "textarea", "rows": 3, "placeholder": "Tespit edilen kusurları açıklayın..." }
+        {
+          "id": "kusurAciklama",
+          "label": "Kusur Açıklaması",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusurları açıklayın..."
+        }
       ]
     },
     {
       "id": "notlar",
       "title": "Notlar",
       "fields": [
-        { "id": "notlar", "label": "Ek Notlar", "type": "textarea", "rows": 3, "placeholder": "Varsa ek açıklamalar..." }
+        {
+          "id": "notlar",
+          "label": "Ek Notlar",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Varsa ek açıklamalar..."
+        }
       ]
     },
     {
@@ -78,46 +282,143 @@
       "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Kompresör\" mevcut şartlar altında"
     }
   ],
-
   "wordMapping": {
     "templatePath": "templates/mekanik/basınçlı malzemeler/FR7.2.21 Kompresör Muayene ve Ölçüm Raporu-1.docx",
     "headerFile": "word/header2.xml",
-
     "fields": [
-      { "label": "Firma Adı", "source": "firma.unvan" },
-      { "label": "Adresi", "source": "firma.adres" },
-      { "label": "Tel/Fax", "source": "firma.telefon" },
-      { "label": "E-mail", "source": "firma.email" },
-      { "label": "Web", "source": "firma.web" },
-      { "label": "Bölümü", "field": "bolumu" },
-      { "label": "Kontrol Tarihi", "field": "kontrolTarihi", "format": "date" },
-      { "label": "Rapor Tarihi", "field": "raporTarihi", "format": "date" },
-      { "label": "Sonraki Kontrol Tarihi", "field": "sonrakiKontrolTarihi", "format": "date" },
-      { "label": "Rapor No", "source": "rapor.raporNo" },
-      { "label": "SGK Sicil No", "field": "sgkSicilNo" },
-      { "label": "İSG-KATİP Sözleşme ID", "field": "isgKatipNo" },
-      { "label": "Markası", "field": "markasi" },
-      { "label": "Tip", "field": "tip" },
-      { "label": "Seri No", "field": "seriNo" },
-      { "label": "İmalat Yılı", "field": "imalatYili" },
-      { "label": "Maksimum Basınç", "field": "maksBasinc" },
-      { "label": "Durma Basıncı (Bar)", "field": "durmaBasinci" },
-      { "label": "Tekrar Çalışma (Bar)", "field": "tekrarCalismaBasinci" }
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "İSG-KATİP Sözleşme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Tip",
+        "field": "tip"
+      },
+      {
+        "label": "Seri No",
+        "field": "seriNo"
+      },
+      {
+        "label": "İmalat Yılı",
+        "field": "imalatYili"
+      },
+      {
+        "label": "Maksimum Basınç",
+        "field": "maksBasinc"
+      },
+      {
+        "label": "Durma Basıncı (Bar)",
+        "field": "durmaBasinci"
+      },
+      {
+        "label": "Tekrar Çalışma (Bar)",
+        "field": "tekrarCalismaBasinci"
+      }
     ],
-
     "controlQuestions": {
       "mode": "last",
       "questions": [
-        { "field": "soru1ArizaKarti", "text": "arıza kartı var mı" },
-        { "field": "soru2TseCe", "text": "TSE/CE işareti var mı" },
-        { "field": "soru3YagToz", "text": "yağ/toz var mı" },
-        { "field": "soru4BasincAyar", "text": "otomatiği çalışıyor mu" },
-        { "field": "soru5KayisKasnak", "text": "koruyucu sacı var mı" },
-        { "field": "soru6ElektrikMotor", "text": "gevşeklik var mı" },
-        { "field": "soru7VanaHortum", "text": "hava kaçağı var mı" },
-        { "field": "soru8HavaFiltresi", "text": "Filtresi temiz mi" },
-        { "field": "soru9YanginSondurucu", "text": "söndürücü yeri" },
-        { "field": "soru10UyariTalimat", "text": "kullanma talimatı durumu" }
+        {
+          "field": "soru1ArizaKarti",
+          "text": "arıza kartı var mı",
+          "exact": true
+        },
+        {
+          "field": "soru2TseCe",
+          "text": "TSE/CE işareti var mı",
+          "exact": true
+        },
+        {
+          "field": "soru3YagToz",
+          "text": "yağ/toz var mı",
+          "exact": true
+        },
+        {
+          "field": "soru4BasincAyar",
+          "text": "otomatiği çalışıyor mu",
+          "exact": true
+        },
+        {
+          "field": "soru5KayisKasnak",
+          "text": "koruyucu sacı var mı",
+          "exact": true
+        },
+        {
+          "field": "soru6ElektrikMotor",
+          "text": "gevşeklik var mı",
+          "exact": true
+        },
+        {
+          "field": "soru7VanaHortum",
+          "text": "hava kaçağı var mı",
+          "exact": true
+        },
+        {
+          "field": "soru8HavaFiltresi",
+          "text": "Filtresi temiz mi",
+          "exact": true
+        },
+        {
+          "field": "soru9YanginSondurucu",
+          "text": "söndürücü yeri",
+          "exact": true
+        },
+        {
+          "field": "soru10UyariTalimat",
+          "text": "kullanma talimatı durumu",
+          "exact": true
+        }
       ]
     }
   }
