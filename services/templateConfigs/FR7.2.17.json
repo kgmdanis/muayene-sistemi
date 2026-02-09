@@ -3,7 +3,7 @@
   "sablonAdi": "Buhar Kazanı Muayene ve Ölçüm Raporu",
   "kategori": "basınçlı kaplar",
   "altKategori": "basınçlı kaplar",
-  "raporNoPrefix": "BK",
+  "raporNoPrefix": "MT",
   "sections": [
     {
       "id": "firma",

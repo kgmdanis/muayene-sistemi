@@ -3,6 +3,8 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { execSync } = require('child_process');
+const mammoth = require('mammoth');
 const auth = require('./auth');
 const reportEngine = require('./reports');
 const emailService = require('./emailService');
@@ -2773,7 +2775,53 @@ app.get('/api/raporlar', async (req, res) => {
             isEmriNo: r.altGorev?.isEmri?.isEmriNo || '-'
         }));
 
-        const formattedRaporlar = [...formattedElektrik, ...formattedKompresor, ...formattedHavaTanki]
+        // Generic raporlar (Rapor modeli - config-driven şablonlar)
+        const whereGeneric = {};
+        if (role === 'tekniker' && kategori) {
+            whereGeneric.altGorev = {
+                hizmetAdi: { contains: kategori, mode: 'insensitive' }
+            };
+        }
+
+        const genericRaporlar = await auth.prisma.rapor.findMany({
+            where: whereGeneric,
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        const formattedGeneric = genericRaporlar.map(r => {
+            let raporTipi = r.sablonKodu;
+            try {
+                const config = genericWordService.loadConfig(r.sablonKodu);
+                raporTipi = config.sablonAdi || r.sablonKodu;
+            } catch(e) {}
+
+            return {
+                id: r.id,
+                raporNo: r.raporNo,
+                raporTipi,
+                sablonKodu: r.sablonKodu,
+                firmaAdi: r.altGorev?.isEmri?.customer?.unvan || '-',
+                tarih: r.createdAt,
+                baslangicTarihi: r.baslangicTarihi,
+                bitisTarihi: r.bitisTarihi,
+                sonuc: r.genelSonuc || '-',
+                durum: r.genelSonuc ? 'Tamamlandı' : 'Taslak',
+                altGorevId: r.altGorevId,
+                isEmriNo: r.altGorev?.isEmri?.isEmriNo || '-',
+                isGeneric: true
+            };
+        });
+
+        const formattedRaporlar = [...formattedElektrik, ...formattedKompresor, ...formattedHavaTanki, ...formattedGeneric]
             .sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
 
         res.json(formattedRaporlar);
@@ -3199,13 +3247,13 @@ app.post('/api/kompresor-raporu', async (req, res) => {
             return new Date(dateStr + 'T00:00:00.000Z');
         };
 
-        // Rapor numarası: MK-{TeklifNo}-{sıra}
+        // Rapor numarası: MT-{TeklifNo}-{sıra}
         const altGorev = await auth.prisma.altGorev.findUnique({
             where: { id: parseInt(altGorevId) },
             include: { isEmri: { include: { teklif: true } } }
         });
         const teklifNo = altGorev?.isEmri?.teklif?.teklifNo || new Date().getFullYear().toString();
-        const prefix = `MK-${teklifNo}`;
+        const prefix = `MT-${teklifNo}`;
         const mevcutRaporlar = await auth.prisma.kompresorRaporu.findMany({
             where: { raporNo: { startsWith: prefix } },
             orderBy: { raporNo: 'desc' }
@@ -3424,13 +3472,13 @@ app.post('/api/hava-tanki-raporu', async (req, res) => {
             return new Date(dateStr + 'T00:00:00.000Z');
         };
 
-        // Rapor numarası: MK-{TeklifNo}-{sıra}
+        // Rapor numarası: MT-{TeklifNo}-{sıra}
         const altGorev = await auth.prisma.altGorev.findUnique({
             where: { id: parseInt(altGorevId) },
             include: { isEmri: { include: { teklif: true } } }
         });
         const teklifNo = altGorev?.isEmri?.teklif?.teklifNo || new Date().getFullYear().toString();
-        const prefix = `MK-${teklifNo}`;
+        const prefix = `MT-${teklifNo}`;
         const mevcutRaporlar = await auth.prisma.havaTankiRaporu.findMany({
             where: { raporNo: { startsWith: prefix } },
             orderBy: { raporNo: 'desc' }
@@ -3710,11 +3758,11 @@ app.post('/api/rapor/:sablonKodu', async (req, res) => {
         });
         const teklifNo = altGorev?.isEmri?.teklif?.teklifNo || new Date().getFullYear().toString();
 
-        // Config'den prefix al
-        let prefix = 'MK';
+        // Config'den prefix al (varsayılan: MT)
+        let prefix = 'MT';
         try {
             const config = genericWordService.loadConfig(req.params.sablonKodu);
-            prefix = config.raporNoPrefix || 'MK';
+            prefix = config.raporNoPrefix || 'MT';
         } catch (e) {}
 
         const raporNoPrefix = `${prefix}-${teklifNo}`;
@@ -3860,6 +3908,160 @@ app.post('/api/rapor/:sablonKodu/:id/word', async (req, res) => {
         res.send(wordBuffer);
     } catch (error) {
         console.error('Generic Word oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ RAPOR ÖNİZLEME & PDF ============
+
+// Rapor tipine göre Word buffer oluştur (ortak yardımcı fonksiyon)
+async function generateWordBuffer(raporTipi, raporId, body) {
+    const tipLower = (raporTipi || '').toLowerCase();
+    const isKompresor = tipLower.includes('kompres') || tipLower === 'kompresor';
+    const isHavaTanki = tipLower.includes('hava') || tipLower === 'hava-tanki';
+    const isElektrik = tipLower.includes('elektrik');
+
+    if (isKompresor) {
+        const rapor = await auth.prisma.kompresorRaporu.findUnique({
+            where: { id: parseInt(raporId) },
+            include: { altGorev: { include: { isEmri: { include: { customer: true, firmaBilgi: true } } } } }
+        });
+        if (!rapor) throw new Error('Rapor bulunamadı');
+        const kompresorWordService = require('./services/kompresorWordService');
+        return await kompresorWordService.generateKompresorWord(rapor, rapor.altGorev?.isEmri, { tekniker: body.tekniker || {} });
+    } else if (isHavaTanki) {
+        const rapor = await auth.prisma.havaTankiRaporu.findUnique({
+            where: { id: parseInt(raporId) },
+            include: { altGorev: { include: { isEmri: { include: { customer: true, firmaBilgi: true } } } } }
+        });
+        if (!rapor) throw new Error('Rapor bulunamadı');
+        const havaTankiWordService = require('./services/havaTankiWordService');
+        return await havaTankiWordService.generateHavaTankiWord(rapor, rapor.altGorev?.isEmri, { tekniker: body.tekniker || {} });
+    } else if (isElektrik) {
+        const rapor = await auth.prisma.elektrikTopraklamaRaporu.findUnique({
+            where: { id: parseInt(raporId) },
+            include: {
+                altGorev: { include: { isEmri: { include: { customer: true, firmaBilgi: true } } } },
+                topraklamaCihaz: true, devreCihaz: true, rcdCihaz: true,
+                ekipmanBilgi: true,
+                detayliOlcumler: { orderBy: { siraNo: 'asc' } },
+                rcdSecicilik: { orderBy: { siraNo: 'asc' } }
+            }
+        });
+        if (!rapor) throw new Error('Rapor bulunamadı');
+        const elektrikWordService = require('./services/elektrikTopraklamaWordService');
+        return await elektrikWordService.generateElektrikTopraklamaWord(rapor, rapor.altGorev?.isEmri, { ...body, tekniker: body.tekniker || {} });
+    } else {
+        // Generic rapor (sablonKodu ile)
+        const sablonKodu = raporTipi;
+        const rapor = await auth.prisma.rapor.findUnique({
+            where: { id: parseInt(raporId) },
+            include: { altGorev: { include: { isEmri: { include: { customer: true, firmaBilgi: true } } } } }
+        });
+        if (!rapor) throw new Error('Rapor bulunamadı');
+        return await genericWordService.generateGenericWord(rapor, rapor.altGorev?.isEmri, { tekniker: body.tekniker || {} });
+    }
+}
+
+// Rapor önizleme (Word → HTML via mammoth)
+app.post('/api/rapor-onizleme/:raporTipi/:id', async (req, res) => {
+    try {
+        const wordBuffer = await generateWordBuffer(req.params.raporTipi, req.params.id, req.body);
+        const result = await mammoth.convertToHtml({ buffer: wordBuffer });
+        res.json({ html: result.value, warnings: result.messages });
+    } catch (error) {
+        console.error('Önizleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor PDF (Word → PDF via LibreOffice)
+app.post('/api/rapor-pdf/:raporTipi/:id', async (req, res) => {
+    try {
+        const wordBuffer = await generateWordBuffer(req.params.raporTipi, req.params.id, req.body);
+
+        // PDF uyumluluğu: docx içindeki fontları değiştir, font boyutlarını %5 küçült, marjinleri ayarla
+        const JSZip = require('jszip');
+        const zip = await JSZip.loadAsync(wordBuffer);
+        const fontMap = {
+            'Tahoma': 'Carlito',
+            'Segoe UI': 'Carlito',
+            'Comic Sans MS': 'Carlito',
+            'Helvetica': 'Liberation Sans'
+        };
+
+        for (const fileName of Object.keys(zip.files)) {
+            if (fileName.endsWith('.xml')) {
+                let content = await zip.file(fileName).async('string');
+
+                // Font değiştirme
+                for (const [oldFont, newFont] of Object.entries(fontMap)) {
+                    if (content.includes(oldFont)) {
+                        content = content.split(oldFont).join(newFont);
+                    }
+                }
+
+                // Font boyutlarını %5 küçült (LibreOffice'un farklı font metrikleri için)
+                content = content.replace(/w:sz="(\d+)"/g, (m, size) => {
+                    return 'w:sz="' + Math.max(8, Math.round(parseInt(size) * 0.95)) + '"';
+                });
+                content = content.replace(/w:szCs="(\d+)"/g, (m, size) => {
+                    return 'w:szCs="' + Math.max(8, Math.round(parseInt(size) * 0.95)) + '"';
+                });
+
+                // Sayfa marjinlerini minimize et (1 sayfaya sığdırma)
+                if (fileName === 'word/document.xml') {
+                    content = content.replace(/<w:pgMar([^/]*)\/>/,(match, attrs) => {
+                        attrs = attrs.replace(/w:bottom="\d+"/, 'w:bottom="0"');
+                        attrs = attrs.replace(/w:top="\d+"/, 'w:top="284"');
+                        attrs = attrs.replace(/w:header="\d+"/, 'w:header="0"');
+                        attrs = attrs.replace(/w:footer="\d+"/, 'w:footer="0"');
+                        return '<w:pgMar' + attrs + '/>';
+                    });
+                }
+
+                zip.file(fileName, content);
+            }
+        }
+
+        const fixedBuffer = await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
+
+        // Temp dosyaları oluştur
+        const tmpDir = path.join(__dirname, 'tmp');
+        if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+        const tmpFile = path.join(tmpDir, `rapor-${req.params.id}-${Date.now()}.docx`);
+        fs.writeFileSync(tmpFile, fixedBuffer);
+
+        // LibreOffice ile PDF'e dönüştür
+        try {
+            execSync(`libreoffice --headless --norestore --convert-to pdf --outdir "${tmpDir}" "${tmpFile}"`, {
+                timeout: 60000,
+                stdio: 'pipe',
+                env: { ...process.env, HOME: '/tmp' }
+            });
+        } catch (loError) {
+            // Cleanup
+            if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+            throw new Error('PDF dönüştürme hatası: ' + loError.message);
+        }
+
+        const pdfFile = tmpFile.replace('.docx', '.pdf');
+        if (!fs.existsSync(pdfFile)) {
+            if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+            throw new Error('PDF dosyası oluşturulamadı');
+        }
+
+        const pdfBuffer = fs.readFileSync(pdfFile);
+
+        // Cleanup
+        fs.unlinkSync(tmpFile);
+        fs.unlinkSync(pdfFile);
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="Rapor_${req.params.id}.pdf"`);
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error('PDF oluşturma hatası:', error);
         res.status(500).json({ error: error.message });
     }
 });

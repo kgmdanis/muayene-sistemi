@@ -3,7 +3,7 @@
   "sablonAdi": "Gezer Köprülü Vinç Muayene ve Ölçüm Raporu",
   "kategori": "kaldırma iletme",
   "altKategori": "kaldırma iletme",
-  "raporNoPrefix": "KI",
+  "raporNoPrefix": "MT",
   "sections": [
     {
       "id": "firma",

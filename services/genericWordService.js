@@ -17,14 +17,12 @@ const { fillTableFromConfig, fillSingleCellTable } = require('./wordTableHandler
 const configCache = new Map();
 
 function loadConfig(sablonKodu) {
-    if (configCache.has(sablonKodu)) return configCache.get(sablonKodu);
-
     const configPath = path.join(__dirname, 'templateConfigs', `${sablonKodu}.json`);
     if (!fs.existsSync(configPath)) {
         throw new Error(`Şablon config bulunamadı: ${sablonKodu}`);
     }
+    // Her seferinde diskten oku - config değişikliklerinin hemen yansıması için
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    configCache.set(sablonKodu, config);
     return config;
 }
 

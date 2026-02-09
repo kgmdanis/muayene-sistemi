@@ -3,7 +3,7 @@
   "sablonAdi": "Boyler Tankı Muayene ve Ölçüm Raporu 1",
   "kategori": "basınçlı kaplar",
   "altKategori": "basınçlı kaplar",
-  "raporNoPrefix": "BK",
+  "raporNoPrefix": "MT",
   "sections": [
     {
       "id": "firma",

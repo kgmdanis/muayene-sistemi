@@ -3,7 +3,7 @@
   "sablonAdi": "Forklift Kaldırma Ataşmanı Muayene ve Ölçüm Raporu - 1",
   "kategori": "kaldırma iletme",
   "altKategori": "kaldırma iletme",
-  "raporNoPrefix": "KI",
+  "raporNoPrefix": "MT",
   "sections": [
     {
       "id": "firma",

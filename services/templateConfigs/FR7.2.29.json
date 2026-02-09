@@ -3,7 +3,7 @@
   "sablonAdi": "Loader(Yükleyici) Muayene ve Ölçüm Raporu  9",
   "kategori": "iş makineleri",
   "altKategori": "iş makineleri",
-  "raporNoPrefix": "IM",
+  "raporNoPrefix": "MT",
   "sections": [
     {
       "id": "firma",

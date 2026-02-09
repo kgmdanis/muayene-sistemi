@@ -3,7 +3,7 @@
   "sablonAdi": "Hava Tankı Muayene ve Ölçüm Raporu",
   "kategori": "mekanik",
   "altKategori": "basınçlı malzemeler",
-  "raporNoPrefix": "MK",
+  "raporNoPrefix": "MT",
   "sections": [
     {
       "id": "firma",

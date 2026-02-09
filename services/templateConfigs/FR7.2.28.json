@@ -3,7 +3,7 @@
   "sablonAdi": "Dozer Muayene ve Ölçüm Raporu 2",
   "kategori": "iş makineleri",
   "altKategori": "iş makineleri",
-  "raporNoPrefix": "IM",
+  "raporNoPrefix": "MT",
   "sections": [
     {
       "id": "firma",

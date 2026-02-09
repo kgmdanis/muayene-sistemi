@@ -3,7 +3,7 @@
   "sablonAdi": "Skreyper Muayene ve Ölçüm Raporu",
   "kategori": "iş makineleri",
   "altKategori": "iş makineleri",
-  "raporNoPrefix": "IM",
+  "raporNoPrefix": "MT",
   "sections": [
     {
       "id": "firma",

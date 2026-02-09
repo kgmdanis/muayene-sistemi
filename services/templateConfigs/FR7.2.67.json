@@ -3,7 +3,7 @@
   "sablonAdi": "Endüstriyel Kapı Muayene ve Ölçüm Raporu",
   "kategori": "endüstriyel",
   "altKategori": "endüstriyel raf ve kapılar",
-  "raporNoPrefix": "ER",
+  "raporNoPrefix": "MT",
   "sections": [
     {
       "id": "firma",

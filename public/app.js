@@ -3282,7 +3282,10 @@ function closeModal(eventOrId) {
     }
     // Event ile çağrıldıysa veya parametresiz
     if (!eventOrId || !eventOrId.target || eventOrId.target.classList.contains('modal-overlay')) {
-        document.getElementById('modal-container').innerHTML = '';
+        const container = document.getElementById('modal-container');
+        if (container) container.innerHTML = '';
+        // Body'ye eklenen overlay'leri de temizle
+        document.querySelectorAll('body > .modal-overlay').forEach(el => el.remove());
     }
 }
 
@@ -3302,19 +3305,23 @@ async function loadIsEmirleri() {
         // Müşterileri yükle (tabloda müşteri adı göstermek için gerekli)
         if (musteriler.length === 0) {
             const musteriResponse = await authenticatedFetch('/api/musteriler');
-            musteriler = await musteriResponse.json();
-            console.log('✅ Müşteriler yüklendi:', musteriler.length);
+            if (musteriResponse.ok) {
+                musteriler = await musteriResponse.json();
+            }
         }
 
         // Personelleri de yükle (kalem personel ataması için gerekli)
         if (personeller.length === 0) {
             const personelResponse = await authenticatedFetch('/api/personeller');
-            personeller = await personelResponse.json();
-            console.log('✅ Personeller yüklendi:', personeller.length);
+            if (personelResponse.ok) {
+                personeller = await personelResponse.json();
+            }
         }
 
         const response = await authenticatedFetch(`${API_BASE}/is-emirleri`);
-        isEmirleri = await response.json();
+        if (response.ok) {
+            isEmirleri = await response.json();
+        }
         renderIsEmriTable();
     } catch (error) {
         console.error('İş emri yükleme hatası:', error);
@@ -3446,12 +3453,9 @@ async function viewIsEmri(isEmriId) {
 
 // İş Emirleri liste sayfasına geri dön
 function isEmriListeyeDon() {
-    const mainContent = document.getElementById('page-is-emirleri');
-    if (mainContent && isEmriListeHTML) {
-        mainContent.innerHTML = isEmriListeHTML;
-    }
     currentIsEmriId = null;
-    loadIsEmirleri();
+    isEmriListeHTML = null;
+    navigateToPage('is-emirleri');
 }
 
 // İş Emirleri orijinal sayfa yapısını oluştur
@@ -3507,13 +3511,12 @@ async function renderIsEmriDetay(id) {
 
     try {
         const response = await authenticatedFetch(`/api/is-emirleri/${id}`);
-        const isEmri = await response.json();
-
         if (!response.ok) {
             showToast('İş emri bulunamadı', 'error');
             hideLoading();
             return;
         }
+        const isEmri = await response.json();
 
         const durumRenk = {
             'BEKLIYOR': '#6c757d',
@@ -3664,6 +3667,7 @@ async function renderIsEmriDetay(id) {
 // İş Emri Durum Değiştir
 async function isEmriDurumDegistir(id, durum) {
     try {
+        showLoading();
         const response = await authenticatedFetch(`/api/is-emirleri/${id}/durum`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -3672,13 +3676,15 @@ async function isEmriDurumDegistir(id, durum) {
 
         if (response.ok) {
             showToast('Durum güncellendi', 'success');
-            renderIsEmriDetay(id);
+            await renderIsEmriDetay(id);
         } else {
             const error = await response.json();
             showToast(error.error || 'Hata oluştu', 'error');
+            hideLoading();
         }
     } catch (error) {
         showToast('Hata: ' + error.message, 'error');
+        hideLoading();
     }
 }
 
@@ -4276,10 +4282,8 @@ async function updateKalemDurum(isEmriId, kalemIndex, durum) {
 
         if (response.ok) {
             const result = await response.json();
-            showToast(`Kalem durumu güncellendi. İş emri durumu: ${result.isEmriDurum}`, 'success');
-            // Liste ve detayı yenile
-            await loadIsEmirleri();
-            await viewIsEmri(isEmriId);
+            showToast(`Kalem durumu güncellendi`, 'success');
+            await renderIsEmriDetay(isEmriId);
         } else {
             const error = await response.json();
             showToast('Hata: ' + error.error, 'error');
@@ -6095,8 +6099,11 @@ function raporTablosuGuncelle(raporlar) {
         const sonucClass = rapor.sonuc === 'UYGUN' ? 'color: #27ae60; background: #e8f5e9;' :
             rapor.sonuc === 'UYGUN DEĞİL' ? 'color: #e74c3c; background: #ffebee;' : 'color: #666;';
         const durumClass = rapor.durum === 'Tamamlandı' ? 'background: #27ae60;' : 'background: #f39c12;';
-        const tipIcon = (rapor.raporTipi || '').toLowerCase().includes('kompres') ? '🔧' : (rapor.raporTipi || '').toLowerCase().includes('hava') ? '🫙' : '⚡';
+        const tipLower = (rapor.raporTipi || '').toLowerCase();
+        const tipIcon = tipLower.includes('kompres') ? '🔧' : tipLower.includes('hava') ? '🫙' : tipLower.includes('elektrik') ? '⚡' : '📋';
         const tipEscaped = (rapor.raporTipi || '').replace(/'/g, "\\'");
+        const sablonKodu = rapor.sablonKodu || '';
+        const isGeneric = rapor.isGeneric ? 'true' : 'false';
 
         return `
             <tr style="border-bottom: 1px solid #eee;">
@@ -6120,14 +6127,20 @@ function raporTablosuGuncelle(raporlar) {
                     </span>
                 </td>
                 <td style="padding: 15px; text-align: center;">
-                    <div style="display: flex; gap: 8px; justify-content: center;">
-                        <button onclick="raporDuzenle(${rapor.id}, ${rapor.altGorevId}, '${tipEscaped}')" class="btn btn-sm" style="padding: 8px 12px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;" title="Düzenle">
-                            ✏️ Düzenle
+                    <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+                        <button onclick="raporDuzenle(${rapor.id}, ${rapor.altGorevId}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Düzenle">
+                            ✏️
                         </button>
-                        <button onclick="raporWordIndir(${rapor.id}, '${tipEscaped}')" class="btn btn-sm" style="padding: 8px 12px; background: #1a5d3a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;" title="Word İndir">
-                            📥 Word
+                        <button onclick="raporOnizle(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #8e44ad; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Önizle">
+                            👁️
                         </button>
-                        <button onclick="raporSil(${rapor.id}, '${tipEscaped}')" class="btn btn-sm" style="padding: 8px 12px; background: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;" title="Sil">
+                        <button onclick="raporWordIndir(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #1a5d3a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Word İndir">
+                            📄
+                        </button>
+                        <button onclick="raporPdfIndir(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #e67e22; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="PDF İndir">
+                            📕
+                        </button>
+                        <button onclick="raporSil(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Sil">
                             🗑️
                         </button>
                     </div>
@@ -6138,39 +6151,49 @@ function raporTablosuGuncelle(raporlar) {
 }
 
 // Rapor düzenle
-function raporDuzenle(raporId, altGorevId, raporTipi) {
+function raporDuzenle(raporId, altGorevId, raporTipi, sablonKodu) {
     const tip = (raporTipi || '').toLowerCase();
+
+    // Özel form tipleri
     if (tip.includes('kompres')) {
         window.open(`/forms/kompresor-form.html?altGorevId=${altGorevId}`, '_blank');
-    } else if (tip.includes('hava')) {
+    } else if (tip.includes('hava') && tip.includes('tank')) {
         window.open(`/forms/hava-tanki-form.html?altGorevId=${altGorevId}`, '_blank');
-    } else {
+    } else if (tip.includes('elektrik') && tip.includes('topraklama')) {
         window.open(`/forms/elektrik-topraklama-form-v2.html?altGorevId=${altGorevId}`, '_blank');
+    } else if (sablonKodu) {
+        // Generic rapor - şablon koduna göre form aç
+        window.open(`/forms/generic-rapor-form.html?sablon=${sablonKodu}&altGorevId=${altGorevId}`, '_blank');
+    } else {
+        showToast('Bu rapor tipi için düzenleme formu bulunamadı', 'error');
     }
 }
 
 // Rapor Word indir
-async function raporWordIndir(raporId, raporTipi) {
+async function raporWordIndir(raporId, raporTipi, sablonKodu) {
     try {
         showToast('Word dosyası hazırlanıyor...', 'info');
 
         const tipLower = (raporTipi || '').toLowerCase();
         const isKompresor = tipLower.includes('kompres');
         const isHavaTanki = tipLower.includes('hava');
-        const apiPath = isKompresor ? 'kompresor-raporu' : isHavaTanki ? 'hava-tanki-raporu' : 'elektrik-topraklama-raporu';
-        const isMekanik = isKompresor || isHavaTanki;
-        const res = await fetch(`${API_BASE}/${apiPath}/${raporId}/word`, {
+        const isElektrik = tipLower.includes('elektrik');
+        const isGeneric = sablonKodu && !isKompresor && !isHavaTanki && !isElektrik;
+
+        let apiUrl;
+        if (isGeneric) {
+            apiUrl = `${API_BASE}/rapor/${sablonKodu}/${raporId}/word`;
+        } else {
+            const apiPath = isKompresor ? 'kompresor-raporu' : isHavaTanki ? 'hava-tanki-raporu' : 'elektrik-topraklama-raporu';
+            apiUrl = `${API_BASE}/${apiPath}/${raporId}/word`;
+        }
+
+        const isMekanik = isKompresor || isHavaTanki || isGeneric;
+        const res = await authenticatedFetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                tekniker: {
-                    adSoyad: 'AHMET MAVUŞ',
-                    unvan: isMekanik ? 'Mekanik Kontrol Sorumlusu' : 'Elektriksel Ölçümler Sorumlusu',
-                    meslek: isMekanik ? 'Makine Teknikeri' : 'Elektrik Teknikeri',
-                    diplomaTarihi: '2004-09-15',
-                    diplomaNo: '0454050027',
-                    ekipnetNo: 'K19020540'
-                }
+                tekniker: currentUser || {}
             })
         });
 
@@ -6179,7 +6202,7 @@ async function raporWordIndir(raporId, raporTipi) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            const dosyaAdi = isKompresor ? 'Kompresor_Muayene_Raporu' : isHavaTanki ? 'Hava_Tanki_Muayene_Raporu' : 'Elektrik_Topraklama_Raporu';
+            const dosyaAdi = isGeneric ? (sablonKodu + '_Raporu') : isKompresor ? 'Kompresor_Muayene_Raporu' : isHavaTanki ? 'Hava_Tanki_Muayene_Raporu' : 'Elektrik_Topraklama_Raporu';
             a.download = `${dosyaAdi}_${raporId}.docx`;
             a.click();
             URL.revokeObjectURL(url);
@@ -6195,13 +6218,20 @@ async function raporWordIndir(raporId, raporTipi) {
 }
 
 // Rapor sil
-async function raporSil(raporId, raporTipi) {
+async function raporSil(raporId, raporTipi, sablonKodu) {
     if (!confirm('Bu raporu silmek istediğinize emin misiniz?\nBu işlem geri alınamaz!')) return;
 
     try {
         const tipL = (raporTipi || '').toLowerCase();
-        const apiPath = tipL.includes('kompres') ? 'kompresor-raporu' : tipL.includes('hava') ? 'hava-tanki-raporu' : 'elektrik-topraklama-raporu';
-        const res = await fetch(`${API_BASE}/${apiPath}/${raporId}`, {
+        const isGeneric = sablonKodu && !tipL.includes('kompres') && !tipL.includes('hava') && !tipL.includes('elektrik');
+        let apiUrl;
+        if (isGeneric) {
+            apiUrl = `${API_BASE}/rapor/${sablonKodu}/${raporId}`;
+        } else {
+            const apiPath = tipL.includes('kompres') ? 'kompresor-raporu' : tipL.includes('hava') ? 'hava-tanki-raporu' : 'elektrik-topraklama-raporu';
+            apiUrl = `${API_BASE}/${apiPath}/${raporId}`;
+        }
+        const res = await authenticatedFetch(apiUrl, {
             method: 'DELETE'
         });
 
@@ -6215,6 +6245,102 @@ async function raporSil(raporId, raporTipi) {
     } catch (error) {
         console.error('Rapor silme hatası:', error);
         showToast('Silme hatası: ' + error.message, 'error');
+    }
+}
+
+// Rapor önizleme (Word → HTML)
+async function raporOnizle(raporId, raporTipi, sablonKodu) {
+    try {
+        showLoading();
+
+        const tipLower = (raporTipi || '').toLowerCase();
+        const isGeneric = sablonKodu && !tipLower.includes('kompres') && !tipLower.includes('hava') && !tipLower.includes('elektrik');
+        const apiTipi = isGeneric ? sablonKodu : (tipLower.includes('kompres') ? 'kompresor' : tipLower.includes('hava') ? 'hava-tanki' : 'elektrik');
+
+        const res = await authenticatedFetch(`${API_BASE}/rapor-onizleme/${apiTipi}/${raporId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tekniker: currentUser || {} })
+        });
+
+        hideLoading();
+
+        if (!res.ok) {
+            const err = await res.json();
+            showToast('Önizleme hatası: ' + (err.error || 'Bilinmeyen hata'), 'error');
+            return;
+        }
+
+        const data = await res.json();
+
+        // Önizleme modalı oluştur
+        const modalHtml = `
+            <div class="modal-overlay" onclick="closeModal(event)" style="z-index: 10000;">
+                <div class="modal" onclick="event.stopPropagation()" style="max-width: 900px; max-height: 90vh; display: flex; flex-direction: column;">
+                    <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>📄 Rapor Önizleme</h3>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <button onclick="raporPdfIndir(${raporId}, '${(raporTipi || '').replace(/'/g, "\\'")}', '${sablonKodu}')" class="btn btn-sm" style="background: #e67e22; color: white; border: none; border-radius: 6px; padding: 6px 14px; cursor: pointer;">
+                                📕 PDF İndir
+                            </button>
+                            <button onclick="raporWordIndir(${raporId}, '${(raporTipi || '').replace(/'/g, "\\'")}', '${sablonKodu}')" class="btn btn-sm" style="background: #1a5d3a; color: white; border: none; border-radius: 6px; padding: 6px 14px; cursor: pointer;">
+                                📄 Word İndir
+                            </button>
+                            <button class="modal-close" onclick="closeModal()" style="font-size: 24px; cursor: pointer; background: none; border: none;">&times;</button>
+                        </div>
+                    </div>
+                    <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 20px;">
+                        <div id="rapor-onizleme-content" style="background: white; padding: 30px; border: 1px solid #ddd; border-radius: 4px; font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 1.6;">
+                            ${data.html}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    } catch (error) {
+        hideLoading();
+        console.error('Önizleme hatası:', error);
+        showToast('Önizleme hatası: ' + error.message, 'error');
+    }
+}
+
+// Rapor PDF indir (Word → PDF sunucuda dönüştürme)
+async function raporPdfIndir(raporId, raporTipi, sablonKodu) {
+    try {
+        showToast('PDF hazırlanıyor...', 'info');
+        showLoading();
+
+        const tipLower = (raporTipi || '').toLowerCase();
+        const isGeneric = sablonKodu && !tipLower.includes('kompres') && !tipLower.includes('hava') && !tipLower.includes('elektrik');
+        const apiTipi = isGeneric ? sablonKodu : (tipLower.includes('kompres') ? 'kompresor' : tipLower.includes('hava') ? 'hava-tanki' : 'elektrik');
+
+        const res = await authenticatedFetch(`${API_BASE}/rapor-pdf/${apiTipi}/${raporId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tekniker: currentUser || {} })
+        });
+
+        hideLoading();
+
+        if (res.ok) {
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Rapor_${raporId}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('PDF indirildi!', 'success');
+        } else {
+            const err = await res.json();
+            showToast('PDF hatası: ' + (err.error || 'Oluşturulamadı'), 'error');
+        }
+    } catch (error) {
+        hideLoading();
+        console.error('PDF indirme hatası:', error);
+        showToast('PDF hatası: ' + error.message, 'error');
     }
 }
 
