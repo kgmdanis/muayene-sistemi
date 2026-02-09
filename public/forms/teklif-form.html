@@ -51,6 +51,10 @@
         .col-aksiyon { width: 4%; text-align: center; }
         
         .miktar-input { width: 50px; text-align: center; padding: 4px; border: 1px solid #ccc; border-radius: 3px; }
+        .edit-input { padding: 4px 6px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; }
+        .edit-input:focus { outline: 2px solid #1a5f7a; border-color: #1a5f7a; }
+        .birim-select { padding: 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; width: 100%; }
+        .birim-select:focus { outline: 2px solid #1a5f7a; border-color: #1a5f7a; }
         .ekle-btn { background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 14px; }
         .sil-btn { background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
         
@@ -191,6 +195,32 @@
             margin-left: 5px;
         }
         .hizmet-sil-btn:hover { background: #c82333; }
+
+        /* Hizmet Düzenle Butonu */
+        .hizmet-duzenle-btn {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+        .hizmet-duzenle-btn:hover { background: #e0a800; }
+
+        /* Kategori Düzenle/Sil Butonları */
+        .kategori-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-left: 3px;
+        }
+        .kategori-btn.duzenle { background: #ffc107; color: #333; }
+        .kategori-btn.sil { background: #dc3545; color: white; }
+        .kategori-btn:hover { opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -277,8 +307,9 @@
             </div>
             
             <!-- Arama -->
-            <div class="search-box">
-                <input type="text" id="aramaInput" placeholder="Hizmet ara... (örn: topraklama, vinç, yangın)" oninput="hizmetAra()">
+            <div class="search-box" style="display:flex;gap:10px;align-items:center;">
+                <input type="text" id="aramaInput" placeholder="Hizmet ara... (örn: topraklama, vinç, yangın)" oninput="hizmetAra()" style="flex:1;">
+                <button id="kategoriYonetimBtn" class="btn btn-primary" onclick="kategoriModalAc()" style="display:none;white-space:nowrap;">Kategori Yönetimi</button>
             </div>
             
             <!-- Hizmet Kategorileri -->
@@ -333,6 +364,7 @@
                 <strong>Konu:</strong> Periyodik Kontrol ve İş Hijyeni Ölçüm Fiyat Teklifi
             </div>
             <div class="footer-actions">
+                <button class="btn" style="background:#6c757d;color:white;" onclick="geriDon()">← Vazgeç</button>
                 <button class="btn btn-danger" onclick="sepetiTemizle()">🗑️ Temizle</button>
                 <button class="btn btn-success" onclick="teklifKaydet()">💾 Teklifi Kaydet</button>
             </div>
@@ -343,10 +375,11 @@
     <div class="modal-overlay" id="yeniHizmetModal">
         <div class="modal">
             <div class="modal-header">
-                <h3>Yeni Hizmet Ekle</h3>
+                <h3 id="hizmetModalTitle">Yeni Hizmet Ekle</h3>
                 <button class="modal-close" onclick="modalKapat()">&times;</button>
             </div>
             <div class="modal-body">
+                <input type="hidden" id="editingHizmetId">
                 <div class="form-group">
                     <label>Kategori</label>
                     <select id="hizmetKategori" disabled>
@@ -380,7 +413,35 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light" onclick="modalKapat()">İptal</button>
-                <button class="btn btn-success" onclick="yeniHizmetKaydet()">Kaydet</button>
+                <button class="btn btn-success" onclick="hizmetKaydet()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kategori Yönetimi Modal -->
+    <div class="modal-overlay" id="kategoriModal">
+        <div class="modal" style="max-width:600px;">
+            <div class="modal-header">
+                <h3>Kategori Yönetimi</h3>
+                <button class="modal-close" onclick="kategoriModalKapat()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom:15px;">
+                    <button class="btn btn-success" onclick="yeniKategoriEkle()" style="padding:8px 16px;">+ Yeni Kategori</button>
+                </div>
+                <table class="hizmet-table" id="kategoriTable">
+                    <thead>
+                        <tr>
+                            <th style="width:50px;">Sıra</th>
+                            <th>Kategori Adı</th>
+                            <th style="width:120px;">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="kategoriListesi"></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" onclick="kategoriModalKapat()">Kapat</button>
             </div>
         </div>
     </div>
@@ -393,6 +454,16 @@
         let editingTeklifId = null; // Düzenleme modu için
         let secilenKategoriId = null; // Modal için seçilen kategori
         let isAdmin = false; // Admin kontrolü
+
+        function geriDon() {
+            if (sepet.length > 0) {
+                if (confirm('Sepetteki hizmetler kaybolacak. Çıkmak istediğinize emin misiniz?')) {
+                    window.location.href = '/index.html';
+                }
+            } else {
+                window.location.href = '/index.html';
+            }
+        }
 
         // Sayfa yüklendiğinde
         document.addEventListener('DOMContentLoaded', async () => {
@@ -408,6 +479,11 @@
                 isAdmin = payload.role === 'admin' || payload.role === 'ADMIN';
             } catch (e) {
                 isAdmin = false;
+            }
+
+            // Admin ise kategori yönetimi butonunu göster
+            if (isAdmin) {
+                document.getElementById('kategoriYonetimBtn').style.display = 'inline-block';
             }
 
             // Bugünün tarihini ayarla
@@ -580,7 +656,10 @@
                                     <tr>
                                         <td>
                                             ${h.ad}
-                                            ${isAdmin ? `<button class="hizmet-sil-btn" onclick="hizmetSil(${h.id}, '${h.ad.replace(/'/g, "\\'")}')">Sil</button>` : ''}
+                                            ${isAdmin ? `
+                                                <button class="hizmet-duzenle-btn" onclick="hizmetDuzenle(${h.id})" title="Düzenle">✏️</button>
+                                                <button class="hizmet-sil-btn" onclick="hizmetSil(${h.id}, '${h.ad.replace(/'/g, "\\'")}')">Sil</button>
+                                            ` : ''}
                                         </td>
                                         <td class="col-metod">${h.metodKapsam || h.standartYonetmelik || ''}</td>
                                         <td class="col-miktar"><input type="number" class="miktar-input" id="mik-${h.id}" value="1" min="1"></td>
@@ -684,27 +763,43 @@
             const box = document.getElementById('secilenBox');
             const tbody = document.getElementById('secilenTbody');
             const toplamBox = document.getElementById('toplamBox');
-            
+
             if (sepet.length === 0) {
                 box.style.display = 'none';
                 toplamBox.style.display = 'none';
                 return;
             }
-            
+
             box.style.display = 'block';
             toplamBox.style.display = 'block';
-            
+
             tbody.innerHTML = sepet.map((item, i) => {
                 const toplam = item.miktar * item.birimFiyat;
                 return `
                     <tr>
-                        <td>${item.ad}</td>
-                        <td class="col-metod">${item.metodKapsam || ''}</td>
+                        <td>
+                            <input type="text" class="edit-input" value="${item.ad}"
+                                   onchange="adDegistir(${i}, this.value)" style="width:100%;">
+                        </td>
+                        <td class="col-metod">
+                            <input type="text" class="edit-input" value="${item.metodKapsam || ''}"
+                                   onchange="metodDegistir(${i}, this.value)" style="width:100%;font-size:11px;">
+                        </td>
                         <td class="col-miktar">
                             <input type="number" class="miktar-input" value="${item.miktar}" min="1"
                                    onchange="miktarDegistir(${i}, parseInt(this.value))">
                         </td>
-                        <td class="col-birim">${item.birim}</td>
+                        <td class="col-birim">
+                            <select class="birim-select" onchange="birimDegistir(${i}, this.value)">
+                                <option value="Adet" ${item.birim === 'Adet' ? 'selected' : ''}>Adet</option>
+                                <option value="Nokta" ${item.birim === 'Nokta' ? 'selected' : ''}>Nokta</option>
+                                <option value="m²" ${item.birim === 'm²' ? 'selected' : ''}>m²</option>
+                                <option value="m³" ${item.birim === 'm³' ? 'selected' : ''}>m³</option>
+                                <option value="Ölçüm" ${item.birim === 'Ölçüm' ? 'selected' : ''}>Ölçüm</option>
+                                <option value="Saat" ${item.birim === 'Saat' ? 'selected' : ''}>Saat</option>
+                                <option value="Gün" ${item.birim === 'Gün' ? 'selected' : ''}>Gün</option>
+                            </select>
+                        </td>
                         <td class="col-fiyat">
                             <input type="number" class="miktar-input" value="${item.birimFiyat}" min="0" step="0.01"
                                    style="width:70px;text-align:right;"
@@ -715,8 +810,20 @@
                     </tr>
                 `;
             }).join('');
-            
+
             hesaplaToplamlar();
+        }
+
+        function adDegistir(index, yeniAd) {
+            sepet[index].ad = yeniAd;
+        }
+
+        function metodDegistir(index, yeniMetod) {
+            sepet[index].metodKapsam = yeniMetod;
+        }
+
+        function birimDegistir(index, yeniBirim) {
+            sepet[index].birim = yeniBirim;
         }
         
         function hesaplaToplamlar() {
@@ -852,10 +959,12 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // ============ YENİ HİZMET MODAL FONKSİYONLARI ============
+        // ============ HİZMET MODAL FONKSİYONLARI ============
 
         function yeniHizmetModalAc(kategoriId, kategoriAd) {
             secilenKategoriId = kategoriId;
+            document.getElementById('editingHizmetId').value = '';
+            document.getElementById('hizmetModalTitle').textContent = 'Yeni Hizmet Ekle';
 
             // Kategori select'ini doldur
             const kategoriSelect = document.getElementById('hizmetKategori');
@@ -878,28 +987,68 @@
             document.getElementById('yeniHizmetModal').classList.add('active');
         }
 
+        function hizmetDuzenle(hizmetId) {
+            // Hizmeti bul
+            let hizmet = null;
+            let kategoriId = null;
+            for (const kat of kategoriler) {
+                const found = kat.hizmetler.find(h => h.id === hizmetId);
+                if (found) {
+                    hizmet = found;
+                    kategoriId = kat.id;
+                    break;
+                }
+            }
+            if (!hizmet) {
+                showToast('Hizmet bulunamadı', 'error');
+                return;
+            }
+
+            secilenKategoriId = kategoriId;
+            document.getElementById('editingHizmetId').value = hizmetId;
+            document.getElementById('hizmetModalTitle').textContent = 'Hizmet Düzenle';
+
+            // Kategori select'ini doldur
+            const kategoriSelect = document.getElementById('hizmetKategori');
+            kategoriSelect.innerHTML = '';
+            kategoriler.forEach(k => {
+                const opt = document.createElement('option');
+                opt.value = k.id;
+                opt.textContent = k.ad;
+                if (k.id === kategoriId) opt.selected = true;
+                kategoriSelect.appendChild(opt);
+            });
+
+            // Formu doldur
+            document.getElementById('hizmetAd').value = hizmet.ad || '';
+            document.getElementById('hizmetMevzuat').value = hizmet.metodKapsam || hizmet.standartYonetmelik || '';
+            document.getElementById('hizmetBirim').value = hizmet.birim || 'Adet';
+            document.getElementById('hizmetFiyat').value = hizmet.birimFiyat || '';
+
+            // Modalı aç
+            document.getElementById('yeniHizmetModal').classList.add('active');
+        }
+
         function modalKapat() {
             document.getElementById('yeniHizmetModal').classList.remove('active');
+            document.getElementById('editingHizmetId').value = '';
             secilenKategoriId = null;
         }
 
-        async function yeniHizmetKaydet() {
+        async function hizmetKaydet() {
             const ad = document.getElementById('hizmetAd').value.trim();
             if (!ad) {
                 showToast('Hizmet adı zorunludur', 'error');
                 return;
             }
 
+            const editingId = document.getElementById('editingHizmetId').value;
             const kategoriId = secilenKategoriId || parseInt(document.getElementById('hizmetKategori').value);
             const mevzuat = document.getElementById('hizmetMevzuat').value.trim();
             const birim = document.getElementById('hizmetBirim').value;
             const birimFiyat = parseFloat(document.getElementById('hizmetFiyat').value) || 0;
 
-            // Benzersiz kod oluştur (kategori id + timestamp)
-            const kod = `HZM-${kategoriId}-${Date.now()}`;
-
             const data = {
-                kod: kod,
                 ad: ad,
                 standartYonetmelik: mevzuat || null,
                 metodKapsam: mevzuat || null,
@@ -910,25 +1059,146 @@
             };
 
             try {
-                const res = await fetch(API_BASE + '/api/hizmetler', {
-                    method: 'POST',
-                    headers: getHeaders(),
-                    body: JSON.stringify(data)
-                });
+                let res;
+                if (editingId) {
+                    // Güncelleme
+                    res = await fetch(API_BASE + '/api/hizmetler/' + editingId, {
+                        method: 'PUT',
+                        headers: getHeaders(),
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // Yeni ekleme
+                    data.kod = `HZM-${kategoriId}-${Date.now()}`;
+                    res = await fetch(API_BASE + '/api/hizmetler', {
+                        method: 'POST',
+                        headers: getHeaders(),
+                        body: JSON.stringify(data)
+                    });
+                }
 
                 if (res.ok) {
-                    const yeniHizmet = await res.json();
-                    showToast('Hizmet başarıyla eklendi: ' + ad, 'success');
+                    showToast(editingId ? 'Hizmet güncellendi' : 'Hizmet eklendi', 'success');
                     modalKapat();
-
-                    // Kategorileri yeniden yükle
                     await loadKategoriler();
                 } else {
                     const err = await res.json();
-                    showToast(err.error || 'Hizmet eklenemedi', 'error');
+                    showToast(err.error || 'İşlem başarısız', 'error');
                 }
             } catch (e) {
-                console.error('Hizmet ekleme hatası:', e);
+                console.error('Hizmet kaydetme hatası:', e);
+                showToast('Bir hata oluştu', 'error');
+            }
+        }
+
+        // ============ KATEGORİ YÖNETİMİ FONKSİYONLARI ============
+
+        function kategoriModalAc() {
+            kategoriListesiniYukle();
+            document.getElementById('kategoriModal').classList.add('active');
+        }
+
+        function kategoriModalKapat() {
+            document.getElementById('kategoriModal').classList.remove('active');
+        }
+
+        function kategoriListesiniYukle() {
+            const tbody = document.getElementById('kategoriListesi');
+            tbody.innerHTML = kategoriler.map((k, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>
+                        <span id="kat-text-${k.id}">${k.ad}</span>
+                        <input type="text" id="kat-input-${k.id}" value="${k.ad}" style="display:none;width:100%;padding:5px;">
+                    </td>
+                    <td>
+                        <button class="kategori-btn duzenle" id="kat-edit-${k.id}" onclick="kategoriDuzenleBasla(${k.id})">Düzenle</button>
+                        <button class="kategori-btn duzenle" id="kat-save-${k.id}" onclick="kategoriKaydet(${k.id})" style="display:none;background:#28a745;color:white;">Kaydet</button>
+                        <button class="kategori-btn sil" onclick="kategoriSil(${k.id}, '${k.ad.replace(/'/g, "\\'")}')">Sil</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function kategoriDuzenleBasla(id) {
+            document.getElementById('kat-text-' + id).style.display = 'none';
+            document.getElementById('kat-input-' + id).style.display = 'inline-block';
+            document.getElementById('kat-edit-' + id).style.display = 'none';
+            document.getElementById('kat-save-' + id).style.display = 'inline-block';
+            document.getElementById('kat-input-' + id).focus();
+        }
+
+        async function kategoriKaydet(id) {
+            const yeniAd = document.getElementById('kat-input-' + id).value.trim();
+            if (!yeniAd) {
+                showToast('Kategori adı boş olamaz', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + '/api/kategoriler/' + id, {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ ad: yeniAd })
+                });
+
+                if (res.ok) {
+                    showToast('Kategori güncellendi', 'success');
+                    await loadKategoriler();
+                    kategoriListesiniYukle();
+                } else {
+                    const err = await res.json();
+                    showToast(err.error || 'Güncelleme başarısız', 'error');
+                }
+            } catch (e) {
+                showToast('Bir hata oluştu', 'error');
+            }
+        }
+
+        async function yeniKategoriEkle() {
+            const ad = prompt('Yeni kategori adı:');
+            if (!ad || !ad.trim()) return;
+
+            try {
+                const res = await fetch(API_BASE + '/api/kategoriler', {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ ad: ad.trim() })
+                });
+
+                if (res.ok) {
+                    showToast('Kategori eklendi', 'success');
+                    await loadKategoriler();
+                    kategoriListesiniYukle();
+                } else {
+                    const err = await res.json();
+                    showToast(err.error || 'Ekleme başarısız', 'error');
+                }
+            } catch (e) {
+                showToast('Bir hata oluştu', 'error');
+            }
+        }
+
+        async function kategoriSil(id, ad) {
+            if (!confirm(`"${ad}" kategorisini silmek istediğinize emin misiniz?\n\nKategorideki tüm hizmetler de silinecek!`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASE + '/api/kategoriler/' + id, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+
+                if (res.ok) {
+                    showToast('Kategori silindi', 'success');
+                    await loadKategoriler();
+                    kategoriListesiniYukle();
+                } else {
+                    const err = await res.json();
+                    showToast(err.error || 'Silme başarısız', 'error');
+                }
+            } catch (e) {
                 showToast('Bir hata oluştu', 'error');
             }
         }

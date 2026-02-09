@@ -1,14 +1,14 @@
 /**
- * Kompresör Muayene Raporu Word Oluşturma Servisi
- * FR7.2.21 Kompresör Muayene ve Ölçüm Raporu
- * Etiket bazlı akıllı değiştirme (checkbox yok, metin olarak Uygun/Uygun Değil)
+ * Hava Tankı Muayene Raporu Word Oluşturma Servisi
+ * FR7.2.156 Hava Tankı Muayene ve Ölçüm Raporu
+ * kompresorWordService.js pattern'i takip edilir
  */
 
 const JSZip = require('jszip');
 const fs = require('fs');
 const path = require('path');
 
-const TEMPLATE_PATH = path.join(__dirname, '../templates/mekanik/basınçlı malzemeler/FR7.2.21 Kompresör Muayene ve Ölçüm Raporu-1.docx');
+const TEMPLATE_PATH = path.join(__dirname, '../templates/mekanik/basınçlı malzemeler/FR7.2.156 Hava Tankı Muayene ve Ölçüm Raporu-1.docx');
 
 // ============ YARDIMCI FONKSİYONLAR ============
 
@@ -17,19 +17,6 @@ function formatDate(dateStr) {
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return '-';
     return date.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-}
-
-function formatDateTime(dateStr, time = '09:00') {
-    if (!dateStr) return '-';
-    return `${formatDate(dateStr)} / ${time}`;
-}
-
-function getNextYearDate(dateStr) {
-    if (!dateStr) return '-';
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return '-';
-    date.setFullYear(date.getFullYear() + 1);
-    return formatDate(date);
 }
 
 function escapeXml(str) {
@@ -48,10 +35,8 @@ function writeToCell(cellXml, newText, opts = {}) {
     const escapedText = escapeXml(newText || '-');
 
     if (!/<w:t[ >]/.test(cellXml)) {
-        // Extract rPr from pPr to inherit font formatting (size, bold, etc.)
         const rPrMatch = cellXml.match(/<w:pPr>[\s\S]*?<w:rPr>([\s\S]*?)<\/w:rPr>[\s\S]*?<\/w:pPr>/);
         let rPrInner = rPrMatch ? rPrMatch[1] : '';
-        // Strip color if requested
         if (opts.stripColor) {
             rPrInner = rPrInner.replace(/<w:color[^/]*\/>/g, '');
         }
@@ -120,8 +105,9 @@ function setValueByLabel(xml, labelText, newValue) {
 }
 
 /**
- * Kontrol sorusu satırında "Uygun" veya "Uygun Değil" hücresine değer yaz.
- * Kontrol tablosunda soru metni ilk hücrede, sonuç son hücrede bulunur.
+ * Kontrol kriteri satırında, etiketin hemen sağındaki hücreye değer yaz.
+ * Şablonda 4 sütunlu satırlar var: [kriter1][değer1][kriter2][değer2]
+ * Bu yüzden "son hücre" değil, etiketin bulunduğu hücrenin +1'ine yazmak gerekir.
  */
 function setKontrolSorusu(xml, soruText, deger) {
     if (!deger) return xml;
@@ -136,11 +122,52 @@ function setKontrolSorusu(xml, soruText, deger) {
         const cellRegex = /<w:tc[^>]*>[\s\S]*?<\/w:tc>/g;
         const cells = row.match(cellRegex) || [];
 
-        if (cells.length >= 2) {
-            // Son hücreye sonucu yaz
-            const lastCell = cells[cells.length - 1];
-            const newCell = writeToCell(lastCell, deger, { stripColor: true });
-            const newRow = row.replace(lastCell, newCell);
+        // Etiketin bulunduğu hücreyi bul, sağındakine yaz
+        for (let i = 0; i < cells.length; i++) {
+            const cellText = getCellText(cells[i]);
+            if (cellText.includes(soruText) && i + 1 < cells.length) {
+                const newCell = writeToCell(cells[i + 1], deger, { stripColor: true });
+                const newRow = row.replace(cells[i + 1], newCell);
+                return xml.replace(row, newRow);
+            }
+        }
+    }
+
+    return xml;
+}
+
+/**
+ * Test değerleri tablosu için: satırda belirli bir hücre index'ine yaz.
+ * R10: [Hidrostatik Test] [tarih] [değer]
+ * R11: [Emniyet Valfi Testi] [tarih] [değer]
+ */
+function setTestRow(xml, soruText, tarih, deger) {
+    const rowRegex = /<w:tr[^>]*>[\s\S]*?<\/w:tr>/g;
+    const rows = xml.match(rowRegex) || [];
+
+    for (const row of rows) {
+        const rowText = getRowText(row);
+        if (!rowText.includes(soruText)) continue;
+
+        const cellRegex = /<w:tc[^>]*>[\s\S]*?<\/w:tc>/g;
+        const cells = row.match(cellRegex) || [];
+
+        if (cells.length >= 3) {
+            let newRow = row;
+            // 2. hücre = test tarihi
+            if (tarih) {
+                const newCell1 = writeToCell(cells[1], tarih);
+                newRow = newRow.replace(cells[1], newCell1);
+            }
+            // 3. hücre = test değeri
+            if (deger) {
+                // cells[2] referansı değişmiş olabilir, tekrar parse et
+                const updatedCells = newRow.match(cellRegex) || [];
+                if (updatedCells.length >= 3) {
+                    const newCell2 = writeToCell(updatedCells[2], deger);
+                    newRow = newRow.replace(updatedCells[2], newCell2);
+                }
+            }
             return xml.replace(row, newRow);
         }
     }
@@ -150,7 +177,7 @@ function setKontrolSorusu(xml, soruText, deger) {
 
 // ============ ANA FONKSİYON ============
 
-async function generateKompresorWord(rapor, isEmri, options = {}) {
+async function generateHavaTankiWord(rapor, isEmri, options = {}) {
     const templateContent = fs.readFileSync(TEMPLATE_PATH);
     const zip = await JSZip.loadAsync(templateContent);
     let docXml = await zip.file('word/document.xml').async('string');
@@ -177,61 +204,76 @@ async function generateKompresorWord(rapor, isEmri, options = {}) {
         zip.file('word/header2.xml', headerXml);
     }
 
-    // === 2. EKİPMAN BİLGİLERİ (document.xml Table 1) ===
+    // === 2. EKİPMAN TEKNİK ÖZELLİKLERİ ===
+    // R1-R5: 4 sütunlu satırlar [label][value][label][value]
     docXml = setValueByLabel(docXml, 'Markası', rapor.markasi || options.markasi);
+    docXml = setValueByLabel(docXml, 'Tasarım Basıncı', rapor.tasarimBasinci || options.tasarimBasinci);
     docXml = setValueByLabel(docXml, 'Tip', rapor.tip || options.tip);
+    docXml = setValueByLabel(docXml, 'Üretim Test Basıncı', rapor.uretimTestBasinci || options.uretimTestBasinci);
     docXml = setValueByLabel(docXml, 'Seri No', rapor.seriNo || options.seriNo);
+    docXml = setValueByLabel(docXml, 'İşletme Basıncı', rapor.isletmeBasinci || options.isletmeBasinci);
     docXml = setValueByLabel(docXml, 'İmalat Yılı', rapor.imalatYili || options.imalatYili);
-    docXml = setValueByLabel(docXml, 'Maksimum Basınç', rapor.maksBasinc || options.maksBasinc);
-    docXml = setValueByLabel(docXml, 'Durma Basıncı', rapor.durmaBasinci || options.durmaBasinci);
-    docXml = setValueByLabel(docXml, 'Tekrar Çalışma', rapor.tekrarCalismaBasinci || options.tekrarCalismaBasinci);
+    docXml = setValueByLabel(docXml, 'Test Basıncı', rapor.testBasinci || options.testBasinci);
+    docXml = setValueByLabel(docXml, 'Hacmi (lt)', rapor.hacmi || options.hacmi);
+    docXml = setValueByLabel(docXml, 'Emniyet Ventilleri Açma Basıncı', rapor.emniyetVentilAcmaBasinci || options.emniyetVentilAcmaBasinci);
 
-    // === 3. KONTROL SORULARI (document.xml Table 4, 10 adet) ===
-    // Daha spesifik eşleşme metinleri - Tablo 1'deki "Basınç ayar otomatiği" ile çakışmayı önler
-    const sorular = [
-        { field: 'soru1ArizaKarti', text: 'arıza kartı var mı' },
-        { field: 'soru2TseCe', text: 'TSE/CE işareti var mı' },
-        { field: 'soru3YagToz', text: 'yağ/toz var mı' },
-        { field: 'soru4BasincAyar', text: 'otomatiği çalışıyor mu' },
-        { field: 'soru5KayisKasnak', text: 'koruyucu sacı var mı' },
-        { field: 'soru6ElektrikMotor', text: 'gevşeklik var mı' },
-        { field: 'soru7VanaHortum', text: 'hava kaçağı var mı' },
-        { field: 'soru8HavaFiltresi', text: 'Filtresi temiz mi' },
-        { field: 'soru9YanginSondurucu', text: 'söndürücü yeri' },
-        { field: 'soru10UyariTalimat', text: 'kullanma talimatı durumu' }
+    // === 3. BASINÇ KAYNAĞI BİLGİLERİ ===
+    // R7: [Basınç kaynağı adı][değer][Basınç kaynağı seri numarası][değer]
+    docXml = setValueByLabel(docXml, 'Basınç kaynağı adı', rapor.basincKaynagiAdi || options.basincKaynagiAdi);
+    docXml = setValueByLabel(docXml, 'Basınç kaynağı seri numarası', rapor.basincKaynagiSeriNo || options.basincKaynagiSeriNo);
+
+    // === 4. TEST DEĞERLERİ ===
+    // R10: [Hidrostatik Test][tarih][değer(bar)]
+    // R11: [Emniyet Valfi Testi][tarih][değer(bar)]
+    const testTarihi = formatDate(rapor.testTarihi || options.testTarihi);
+    docXml = setTestRow(docXml, 'Hidrostatik Test', testTarihi, rapor.hidrostatikTestDegeri || options.hidrostatikTestDegeri);
+    docXml = setTestRow(docXml, 'Emniyet Valfi Testi', testTarihi, rapor.emniyetValfiTestiDegeri || options.emniyetValfiTestiDegeri);
+
+    // === 5. KONTROL KRİTERLERİ VE TESTLER ===
+    // R19-R23: 4 sütunlu satırlar [kriter][değerlendirme][kriter][değerlendirme]
+    // R25: 4 sütunlu [test][değerlendirme][test][değerlendirme]
+    const kriterler = [
+        { field: 'kriter1', text: 'Bilgi etiketi' },
+        { field: 'kriter2', text: 'İşletme talimatları' },
+        { field: 'kriter3', text: 'Tank üzerinde işlemler' },
+        { field: 'kriter4', text: 'Tank yüzeyleri' },
+        { field: 'kriter5', text: 'giriş açıklıkları' },
+        { field: 'kriter6', text: 'Boşaltma tertibatları' },
+        { field: 'kriter7', text: 'titreşimden korunması' },
+        { field: 'kriter8', text: 'manometre' },
+        { field: 'kriter9', text: 'Emniyet valfleri' },
+        { field: 'kriter10', text: 'mekanik darbelere' },
+        { field: 'testHidrostatik', text: 'Hidrostatik test' },
+        { field: 'testEmniyetValfi', text: 'Emniyet valfi testi' }
     ];
 
-    for (const soru of sorular) {
-        const deger = rapor[soru.field] || options[soru.field];
+    for (const kriter of kriterler) {
+        const deger = rapor[kriter.field] || options[kriter.field];
         if (deger) {
-            docXml = setKontrolSorusu(docXml, soru.text, deger);
+            docXml = setKontrolSorusu(docXml, kriter.text, deger);
         }
     }
 
-    // === 4. KUSUR AÇIKLAMALARI ===
+    // === 6. KUSUR AÇIKLAMALARI ===
     if (rapor.kusurAciklama || options.kusurAciklama) {
         docXml = fillKusurTable(docXml, rapor.kusurAciklama || options.kusurAciklama);
     }
 
-    // === 5. NOTLAR ===
+    // === 7. NOTLAR ===
     if (rapor.notlar || options.notlar) {
         docXml = fillNotlarTable(docXml, rapor.notlar || options.notlar);
     }
 
-    // === 6. SONUÇ (renkli) ===
-    // Şablondaki "uygundur" kelimesi ayrı bir <w:t> tag'inde (index 74)
-    // Bunu bulup hem metni hem rengini değiştiriyoruz
+    // === 8. SONUÇ (renkli) ===
     const sonucUygun = (rapor.genelSonuc || options.genelSonuc) === 'UYGUN';
     const sonucMetni = sonucUygun ? 'uygundur' : 'uygun değildir';
     const sonucRenk = sonucUygun ? '059669' : 'DC2626';
 
-    // "uygundur" tam eşleşme ile <w:r> bloğunu bul ve değiştir
     docXml = docXml.replace(
         /(<w:r\b[^>]*>)([\s\S]*?)(<w:t[^>]*>)\s*(uygundur)\s*(<\/w:t>)/i,
         (match, rOpen, rContent, tOpen, oldText, tClose) => {
             const colorTag = `<w:color w:val="${sonucRenk}"/>`;
             const boldTag = '<w:b/>';
-            // rPr varsa renk ekle/değiştir, yoksa oluştur
             if (rContent.includes('<w:rPr>')) {
                 let newContent = rContent;
                 if (newContent.includes('<w:color')) {
@@ -246,7 +288,7 @@ async function generateKompresorWord(rapor, isEmri, options = {}) {
         }
     );
 
-    // === 7. YETKİLİ KİŞİ ===
+    // === 9. YETKİLİ KİŞİ ===
     if (options.tekniker) {
         docXml = setValueByLabel(docXml, 'Adı, Soyadı', options.tekniker.adSoyad);
         docXml = setValueByLabel(docXml, 'Unvanı', options.tekniker.unvan || 'Mekanik Kontrol Sorumlusu');
@@ -256,7 +298,6 @@ async function generateKompresorWord(rapor, isEmri, options = {}) {
         docXml = setValueByLabel(docXml, 'Ekipnet Kayıt No', options.tekniker.ekipnetNo);
     }
 
-    // Güncellenmiş XML'leri kaydet
     zip.file('word/document.xml', docXml);
 
     return await zip.generateAsync({
@@ -266,9 +307,6 @@ async function generateKompresorWord(rapor, isEmri, options = {}) {
     });
 }
 
-/**
- * Kusur açıklamalarını doldur
- */
 function fillKusurTable(docXml, kusurText) {
     if (!kusurText) return docXml;
 
@@ -295,9 +333,6 @@ function fillKusurTable(docXml, kusurText) {
     return docXml;
 }
 
-/**
- * Notlar tablosunu doldur
- */
 function fillNotlarTable(docXml, notlarText) {
     if (!notlarText) return docXml;
 
@@ -324,20 +359,6 @@ function fillNotlarTable(docXml, notlarText) {
     return docXml;
 }
 
-async function saveWordToFile(rapor, isEmri, options, outputPath) {
-    const buffer = await generateKompresorWord(rapor, isEmri, options);
-    fs.writeFileSync(outputPath, buffer);
-    return outputPath;
-}
-
 module.exports = {
-    generateKompresorWord,
-    saveWordToFile,
-    formatDate,
-    formatDateTime,
-    getNextYearDate,
-    setValueByLabel,
-    setKontrolSorusu,
-    fillKusurTable,
-    fillNotlarTable
+    generateHavaTankiWord
 };

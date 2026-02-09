@@ -68,14 +68,22 @@ function formatMoney(amount) {
  * Email transporter oluştur
  */
 function createTransporter(config) {
+    const port = parseInt(config.port) || 587;
+    // Port 465 ise secure true olmalı, yoksa config'den al
+    const secure = port === 465 ? true : (config.secure === true || config.secure === 'true');
+
+    console.log('SMTP Config:', { host: config.host, port, secure, user: config.user });
+
     return nodemailer.createTransport({
         host: config.host || 'smtp.gmail.com',
-        port: config.port || 587,
-        secure: config.secure || false,
+        port: port,
+        secure: secure,
         auth: {
             user: config.user,
             pass: config.pass
-        }
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000
     });
 }
 
@@ -346,7 +354,34 @@ Akredite kapsamında yapılan ölçümler, İŞ HİJYENİ (ORTAM ÖLÇÜMÜ) par
 async function sendTeklifEmail(teklif, smtpConfig, customMessage = '') {
     const transporter = createTransporter(smtpConfig);
     const pdfBuffer = await createTeklifPDFBuffer(teklif);
-    const formatDate = (date) => new Date(date).toLocaleDateString('tr-TR');
+
+    // Tarih formatlama
+    const formatDate = (date) => {
+        if (!date) return '-';
+        const d = new Date(date);
+        if (isNaN(d.getTime())) return '-';
+        return d.toLocaleDateString('tr-TR');
+    };
+
+    // Teklif tarihi
+    const teklifTarihi = teklif.teklifTarihi || teklif.tarih || teklif.createdAt;
+
+    // Geçerlilik süresi (varsayılan 30 gün)
+    const gecerlilikGunu = teklif.gecerlilikGunu || teklif.gecerlilik || 30;
+
+    // Firma bilgileri (.env'den veya tenant'tan)
+    const firmaAdi = teklif.tenant?.name || process.env.FIRMA_ADI || 'ÖNDER MUAYENE TEST VE ÖLÇÜM LABORATUVARI';
+    const firmaAdres = teklif.tenant?.adres || process.env.FIRMA_ADRES || 'Akabe Mahallesi Aslanlı Kışla Caddesi No:144S/1 Karatay/KONYA';
+    const firmaTelefon = teklif.tenant?.telefon || process.env.FIRMA_TELEFON || '0332 300 00 20';
+    const firmaEmail = teklif.tenant?.email || process.env.FIRMA_EMAIL || 'info@ondermuayene.com.tr';
+
+    // Detaylar için satır toplamı hesapla
+    const detaylarHtml = teklif.detaylar.map(d => {
+        const miktar = parseFloat(d.miktar) || 0;
+        const birimFiyat = parseFloat(d.birimFiyat) || 0;
+        const satirToplam = d.toplam || (miktar * birimFiyat);
+        return `<tr><td>${d.hizmet?.ad || ''}</td><td>${miktar}</td><td>${formatMoney(birimFiyat)} TL</td><td>${formatMoney(satirToplam)} TL</td></tr>`;
+    }).join('');
 
     const htmlContent = `<!DOCTYPE html>
 <html><head><meta charset="UTF-8">
@@ -363,35 +398,35 @@ th{background:#1a5f7a;color:white}
 </style></head>
 <body>
 <div class="header">
-    <h1>${teklif.tenant?.name || 'ÖNDER MUAYENE'}</h1>
+    <h1>${firmaAdi}</h1>
     <p>Periyodik Kontrol ve Muayene Hizmetleri</p>
 </div>
 <div class="content">
-    <p>Sayın <strong>${teklif.customer?.yetkili || 'Yetkili'}</strong>,</p>
+    <p>Sayın <strong>${teklif.customer?.yetkiliKisi || teklif.customer?.yetkili || teklif.customer?.unvan || 'Yetkili'}</strong>,</p>
     <p>Tarafınızdan talep edilen periyodik kontrol ve muayene hizmetlerine ilişkin fiyat teklifimiz ekte sunulmuştur.</p>
     ${customMessage ? '<p>' + customMessage + '</p>' : ''}
     <div class="info-box">
         <p><strong>Teklif No:</strong> ${teklif.teklifNo}</p>
-        <p><strong>Teklif Tarihi:</strong> ${formatDate(teklif.tarih)}</p>
-        <p><strong>Geçerlilik Süresi:</strong> ${teklif.gecerlilikGunu} gün</p>
+        <p><strong>Teklif Tarihi:</strong> ${formatDate(teklifTarihi)}</p>
+        <p><strong>Geçerlilik Süresi:</strong> ${gecerlilikGunu} gün</p>
         <p><strong>Firma:</strong> ${teklif.customer?.unvan || ''}</p>
     </div>
     <h3>Teklif Özeti</h3>
     <table>
         <tr><th>Hizmet</th><th>Miktar</th><th>Birim Fiyat</th><th>Toplam</th></tr>
-        ${teklif.detaylar.map(d => `<tr><td>${d.hizmet?.ad || ''}</td><td>${d.miktar}</td><td>${formatMoney(d.birimFiyat)} TL</td><td>${formatMoney(d.toplam)} TL</td></tr>`).join('')}
+        ${detaylarHtml}
         <tr style="background:#f5f5f5;"><td colspan="3" style="text-align:right;"><strong>Ara Toplam:</strong></td><td><strong>${formatMoney(teklif.toplamTutar)} TL</strong></td></tr>
-        <tr style="background:#f5f5f5;"><td colspan="3" style="text-align:right;"><strong>KDV (%${teklif.kdvOrani}):</strong></td><td><strong>${formatMoney(teklif.kdvTutar)} TL</strong></td></tr>
+        <tr style="background:#f5f5f5;"><td colspan="3" style="text-align:right;"><strong>KDV (%${teklif.kdvOrani || 20}):</strong></td><td><strong>${formatMoney(teklif.kdvTutar)} TL</strong></td></tr>
         <tr style="background:#1a5f7a;color:white;"><td colspan="3" style="text-align:right;"><strong>GENEL TOPLAM:</strong></td><td style="color:white;font-weight:bold;">${formatMoney(teklif.genelToplam)} TL</td></tr>
     </table>
     <p>Teklifimizin detayları ve genel şartlar ekteki PDF dosyasında mevcuttur.</p>
     <p>Teklifimizin uygun bulunması halinde bizimle iletişime geçmenizi rica ederiz.</p>
-    <p>Saygılarımızla,<br><strong>${teklif.tenant?.yetkili || ''}</strong><br>${teklif.tenant?.yetkiliUnvan || ''}</p>
+    <p>Saygılarımızla,<br><strong>${firmaAdi}</strong></p>
 </div>
 <div class="footer">
-    <p>${teklif.tenant?.name || 'ÖNDER MUAYENE'}</p>
-    <p>${teklif.tenant?.adres || ''}</p>
-    <p>Tel: ${teklif.tenant?.telefon || ''} | E-mail: ${teklif.tenant?.email || ''}</p>
+    <p><strong>${firmaAdi}</strong></p>
+    <p>${firmaAdres}</p>
+    <p>Tel: ${firmaTelefon} | E-mail: ${firmaEmail}</p>
 </div>
 </body></html>`;
 
