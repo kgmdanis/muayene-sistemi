@@ -198,13 +198,20 @@
             const disabled = f.readonly ? 'disabled' : '';
             let input = '';
 
+            // ISG Katip alanini dropdown olarak render et
+            if (f.id === 'isgKatipNo') {
+                input = `<select id="${f.id}" class="form-control"><option value="">Seçiniz...</option></select>`;
+                return `<div class="form-group"><label class="form-label">${f.label}${autoFillBadge}</label>${input}</div>`;
+            }
+
             switch (f.type) {
                 case 'textarea':
                     input = `<textarea id="${f.id}" class="form-control" rows="${f.rows || 3}" placeholder="${f.placeholder || ''}" ${disabled}></textarea>`;
                     break;
+                case 'select':
                 case 'dropdown':
                     const opts = (f.options || []).map(o => `<option value="${o}">${o}</option>`).join('');
-                    input = `<select id="${f.id}" class="form-control" ${disabled}>${opts}</select>`;
+                    input = `<select id="${f.id}" class="form-control" ${disabled}><option value="">Seçiniz...</option>${opts}</select>`;
                     break;
                 default:
                     input = `<input type="${f.type || 'text'}" id="${f.id}" class="form-control" placeholder="${f.placeholder || ''}" ${disabled}>`;
@@ -332,13 +339,32 @@
             setFieldValue('firmaWeb', customer.web);
         }
 
+        function isgKatipSecenekleriniDoldur(firmaBilgi, seciliDeger) {
+            const sel = document.getElementById('isgKatipNo');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Seçiniz...</option>';
+            if (!firmaBilgi) return;
+            const katipIds = [
+                firmaBilgi.isgKatipId,
+                firmaBilgi.isgKatipId2,
+                firmaBilgi.isgKatipId3,
+                firmaBilgi.isgKatipId4
+            ].filter(v => v && v.trim());
+            katipIds.forEach((id, i) => {
+                sel.innerHTML += `<option value="${id}">${id}</option>`;
+            });
+            if (seciliDeger) sel.value = seciliDeger;
+        }
+
         function raporuFormaYukle(rapor) {
             firmaBilgileriniDoldur(rapor.altGorev?.isEmri?.customer);
             setFieldValue('raporNo', rapor.raporNo);
 
             // Ortak alanlar
             if (rapor.sgkSicilNo) setFieldValue('sgkSicilNo', rapor.sgkSicilNo);
-            if (rapor.isgKatipNo) setFieldValue('isgKatipNo', rapor.isgKatipNo);
+            // ISG Katip dropdown'ını firmaBilgi'den doldur
+            const firmaBilgi = rapor.altGorev?.isEmri?.firmaBilgi;
+            isgKatipSecenekleriniDoldur(firmaBilgi, rapor.isgKatipNo);
 
             // formData alanlarini doldur
             const fd = rapor.formData || {};
@@ -379,6 +405,7 @@
                 const res = await fetch(`${API_BASE}/is-emirleri/${id}`);
                 const ie = await res.json();
                 firmaBilgileriniDoldur(ie.customer);
+                isgKatipSecenekleriniDoldur(ie.firmaBilgi, null);
                 const sel = document.getElementById('altGorevSelect');
                 sel.innerHTML = '<option value="">Alt Gorev Secin...</option>';
                 (ie.altGorevler || []).forEach(g => { sel.innerHTML += `<option value="${g.id}">${g.siraNo}. ${g.hizmetAdi}</option>`; });
@@ -410,6 +437,7 @@
                 if (res.ok) {
                     const ag = await res.json();
                     firmaBilgileriniDoldur(ag.isEmri?.customer);
+                    isgKatipSecenekleriniDoldur(ag.isEmri?.firmaBilgi, null);
                 }
             } catch (e) { console.error(e); }
         }

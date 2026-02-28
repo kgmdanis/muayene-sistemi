@@ -328,6 +328,37 @@ async function loadDashboardStats() {
 }
 
 // ========================================
+// SAYFA YENİLE
+// ========================================
+async function sayfaYenile(sayfa) {
+    try {
+        showToast('Veriler yenileniyor...', 'info');
+        if (sayfa === 'dashboard') {
+            await loadDashboardStats();
+        } else if (sayfa === 'musteriler') {
+            await loadMusteriler();
+        } else if (sayfa === 'teklifler') {
+            await loadTeklifler();
+        } else if (sayfa === 'is-emirleri') {
+            await loadIsEmirleri();
+        } else if (sayfa === 'gorevlerim') {
+            await loadGorevlerim();
+        } else if (sayfa === 'sertifikalar') {
+            await loadSertifikalar();
+        } else if (sayfa === 'raporlar') {
+            await raporlariYukle();
+        } else if (sayfa === 'ayarlar') {
+            await loadFirmaBilgi();
+            await loadPersoneller();
+        }
+        showToast('Veriler yenilendi', 'success');
+    } catch (error) {
+        console.error('Yenileme hatası:', error);
+        showToast('Yenileme sırasında hata oluştu', 'error');
+    }
+}
+
+// ========================================
 // SAYFA NAVİGASYONU
 // ========================================
 
@@ -812,7 +843,6 @@ function renderTeklifTable() {
             'ONAYLANDI': 'Onaylandı',
             'REDDEDILDI': 'Reddedildi',
             'IPTAL': 'İptal',
-            'Bekleyen': 'Bekleyen'
         };
         const durumText = durumMap[teklif.durum] || teklif.durum;
 
@@ -822,14 +852,13 @@ function renderTeklifTable() {
             'GONDERILDI': 'info',
             'ONAYLANDI': 'success',
             'REDDEDILDI': 'danger',
-            'IPTAL': 'secondary',
-            'Bekleyen': 'warning'
+            'IPTAL': 'secondary'
         }[teklif.durum] || 'primary';
 
         return `
             <tr>
                 <td><strong>${teklif.teklifNo}</strong></td>
-                <td>${formatTarihTR(teklif.tarih || teklif.createdAt)}</td>
+                <td>${formatTarihTR(teklif.teklifTarihi || teklif.createdAt)}</td>
                 <td>${musteriAdi}</td>
                 <td><strong>${formatParaTR(parseFloat(teklif.genelToplam) || 0)}</strong></td>
                 <td>
@@ -928,7 +957,7 @@ function openTeklifModal(teklif = null, preSelectedMusteriId = null) {
                             </div>
                             <div class="form-group">
                                 <label class="form-label required">Teklif Tarihi</label>
-                                <input type="date" class="form-input" id="teklif-tarih" value="${teklif ? teklif.teklifTarihi : today}" required>
+                                <input type="date" class="form-input" id="teklif-tarih" value="${teklif ? (teklif.teklifTarihi || '').substring(0, 10) : today}" required>
                             </div>
                         </div>
 
@@ -940,9 +969,10 @@ function openTeklifModal(teklif = null, preSelectedMusteriId = null) {
                             <div class="form-group">
                                 <label class="form-label">Durum</label>
                                 <select class="form-select" id="teklif-durum">
-                                    <option value="Bekleyen" ${(!teklif || teklif.durum === 'Bekleyen') ? 'selected' : ''}>Bekleyen</option>
-                                    <option value="Onaylandı" ${teklif && teklif.durum === 'Onaylandı' ? 'selected' : ''}>Onaylandı</option>
-                                    <option value="Reddedildi" ${teklif && teklif.durum === 'Reddedildi' ? 'selected' : ''}>Reddedildi</option>
+                                    <option value="Taslak" ${(!teklif || teklif.durum === 'TASLAK') ? 'selected' : ''}>Taslak</option>
+                                    <option value="Gönderildi" ${teklif && teklif.durum === 'GONDERILDI' ? 'selected' : ''}>Gönderildi</option>
+                                    <option value="Onaylandı" ${teklif && teklif.durum === 'ONAYLANDI' ? 'selected' : ''}>Onaylandı</option>
+                                    <option value="Reddedildi" ${teklif && teklif.durum === 'REDDEDILDI' ? 'selected' : ''}>Reddedildi</option>
                                 </select>
                             </div>
                         </div>
@@ -1136,6 +1166,7 @@ async function teklifKaydet(event) {
 
     const teklifData = {
         customerId: parseInt(document.getElementById('teklif-musteri').value),
+        teklifTarihi: document.getElementById('teklif-tarih').value,
         gecerlilikGunu: parseInt(document.getElementById('teklif-gecerlilik').value) || 30,
         kdvOrani: kdvOrani,
         notlar: document.getElementById('teklif-konu')?.value || '',
@@ -1921,7 +1952,7 @@ function renderSonTeklifler(sonTeklifler) {
         return `
             <tr>
                 <td><strong>${teklif.teklifNo}</strong></td>
-                <td>${formatTarihTR(teklif.tarih || teklif.createdAt)}</td>
+                <td>${formatTarihTR(teklif.teklifTarihi || teklif.createdAt)}</td>
                 <td>${musteriAdi}</td>
                 <td><strong>${formatParaTR(parseFloat(teklif.genelToplam) || 0)}</strong></td>
                 <td><span class="badge badge-${badgeClass}">${durumText}</span></td>
@@ -2864,9 +2895,10 @@ function teklifDurumDegistirModal(teklifId) {
                             <label class="form-label required">Yeni Durum</label>
                             <select class="form-select" id="yeni-durum" required>
                                 <option value="">Seçiniz</option>
-                                <option value="Bekleyen" ${teklif.durum === 'Bekleyen' ? 'disabled' : ''}>Bekleyen</option>
-                                <option value="Onaylandı" ${teklif.durum === 'Onaylandı' ? 'disabled' : ''}>Onaylandı ✅</option>
-                                <option value="Reddedildi" ${teklif.durum === 'Reddedildi' ? 'disabled' : ''}>Reddedildi ❌</option>
+                                <option value="Taslak" ${teklif.durum === 'TASLAK' ? 'disabled' : ''}>Taslak</option>
+                                <option value="Gönderildi" ${teklif.durum === 'GONDERILDI' ? 'disabled' : ''}>Gönderildi</option>
+                                <option value="Onaylandı" ${teklif.durum === 'ONAYLANDI' ? 'disabled' : ''}>Onaylandı ✅</option>
+                                <option value="Reddedildi" ${teklif.durum === 'REDDEDILDI' ? 'disabled' : ''}>Reddedildi ❌</option>
                             </select>
                         </div>
 
@@ -2875,11 +2907,11 @@ function teklifDurumDegistirModal(teklifId) {
                             <textarea class="form-textarea" id="durum-not" rows="3" placeholder="Durum değişikliği ile ilgili not ekleyebilirsiniz..."></textarea>
                         </div>
 
-                        ${teklif.durum === 'Bekleyen' && `
+                        ${teklif.durum === 'TASLAK' ? `
                             <div class="alert alert-info">
                                 <strong>💡 İpucu:</strong> Teklifi onaylamadan önce müşteri ile görüşmenizi öneririz.
                             </div>
-                        `}
+                        ` : ''}
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -3455,6 +3487,11 @@ async function viewIsEmri(isEmriId) {
 function isEmriListeyeDon() {
     currentIsEmriId = null;
     isEmriListeHTML = null;
+    // Orijinal liste HTML yapısını geri yükle
+    const mainContent = document.getElementById('page-is-emirleri');
+    if (mainContent) {
+        mainContent.innerHTML = getIsEmriListeHTML();
+    }
     navigateToPage('is-emirleri');
 }
 
@@ -3462,40 +3499,26 @@ function isEmriListeyeDon() {
 function getIsEmriListeHTML() {
     return `
         <div class="page-header">
-            <h2>İş Emri Yönetimi</h2>
-            <p>Onaylanan tekliflerden oluşturulan iş emirleri</p>
+            <h2>İş Emirleri</h2>
+            <button class="btn btn-outline" onclick="sayfaYenile('is-emirleri')" title="Yenile">🔄 Yenile</button>
         </div>
 
-        <div class="table-container">
-            <div class="table-header">
-                <h3>İş Emirleri</h3>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" onclick="isEmriFiltrele('all')">Tümü</button>
-                    <button class="filter-btn" onclick="isEmriFiltrele('BEKLIYOR')">Bekliyor</button>
-                    <button class="filter-btn" onclick="isEmriFiltrele('SAHADA')">Sahada</button>
-                    <button class="filter-btn" onclick="isEmriFiltrele('TAMAMLANDI')">Tamamlandı</button>
-                    <button class="filter-btn" onclick="isEmriFiltrele('TESLIM_EDILDI')">Teslim Edildi</button>
-                </div>
-            </div>
-            <table id="is-emri-table">
-                <thead>
-                    <tr>
-                        <th>İş Emri No</th>
-                        <th>Müşteri</th>
-                        <th>Teklif No</th>
-                        <th>Planlı Tarih</th>
-                        <th>Görev</th>
-                        <th>Durum</th>
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="7" class="text-center">Yükleniyor...</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Filtreler -->
+        <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button class="filter-btn active" onclick="isEmriFiltrele('all')" style="padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px;">Tümü</button>
+            <button class="filter-btn" onclick="isEmriFiltrele('BEKLIYOR')" style="padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px;">⏳ Bekliyor</button>
+            <button class="filter-btn" onclick="isEmriFiltrele('SAHADA')" style="padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px;">🚀 Sahada</button>
+            <button class="filter-btn" onclick="isEmriFiltrele('TAMAMLANDI')" style="padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px;">✅ Tamamlandı</button>
+            <button class="filter-btn" onclick="isEmriFiltrele('TESLIM_EDILDI')" style="padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px;">📦 Teslim Edildi</button>
         </div>
+
+        <!-- İş Emirleri Kartları -->
+        <div id="is-emirleri-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
+            <div style="text-align: center; padding: 40px; color: #666; grid-column: 1 / -1;">Yükleniyor...</div>
+        </div>
+
+        <!-- Pagination -->
+        <div id="is-emirleri-pagination" style="margin-top: 20px;"></div>
     `;
 }
 
@@ -3510,6 +3533,14 @@ async function renderIsEmriDetay(id) {
     }
 
     try {
+        // Personel listesini yükle (inline dropdown için)
+        if (personeller.length === 0) {
+            try {
+                const pRes = await authenticatedFetch('/api/personeller');
+                personeller = await pRes.json();
+            } catch(e) { console.error('Personel yükleme hatası:', e); }
+        }
+
         const response = await authenticatedFetch(`/api/is-emirleri/${id}`);
         if (!response.ok) {
             showToast('İş emri bulunamadı', 'error');
@@ -3586,7 +3617,7 @@ async function renderIsEmriDetay(id) {
             <!-- Firma Bilgileri -->
             <div style="margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #dee2e6; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                 <h4 style="margin: 0 0 15px 0; color: #333; font-size: 15px;">🏢 Firma Bilgileri</h4>
-                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                     <div>
                         <label style="font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px; color: #555;">SGK Sicil No</label>
                         <input type="text" id="sgkSicilNoInput" class="form-input"
@@ -3594,12 +3625,30 @@ async function renderIsEmriDetay(id) {
                             value="${isEmri.firmaBilgi?.sgkSicilNo || ''}">
                     </div>
                     <div>
-                        <label style="font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px; color: #555;">İSG-KATİP Sözleşme ID</label>
+                        <label style="font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px; color: #555;">İSG-KATİP Sözleşme ID - 1</label>
                         <input type="text" id="isgKatipIdInput" class="form-input"
-                            placeholder="İSG-KATİP Sözleşme ID"
+                            placeholder="İSG-KATİP Sözleşme ID 1"
                             value="${isEmri.firmaBilgi?.isgKatipId || ''}">
                     </div>
                     <div>
+                        <label style="font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px; color: #555;">İSG-KATİP Sözleşme ID - 2</label>
+                        <input type="text" id="isgKatipId2Input" class="form-input"
+                            placeholder="İSG-KATİP Sözleşme ID 2"
+                            value="${isEmri.firmaBilgi?.isgKatipId2 || ''}">
+                    </div>
+                    <div>
+                        <label style="font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px; color: #555;">İSG-KATİP Sözleşme ID - 3</label>
+                        <input type="text" id="isgKatipId3Input" class="form-input"
+                            placeholder="İSG-KATİP Sözleşme ID 3"
+                            value="${isEmri.firmaBilgi?.isgKatipId3 || ''}">
+                    </div>
+                    <div>
+                        <label style="font-weight: 500; margin-bottom: 6px; display: block; font-size: 13px; color: #555;">İSG-KATİP Sözleşme ID - 4</label>
+                        <input type="text" id="isgKatipId4Input" class="form-input"
+                            placeholder="İSG-KATİP Sözleşme ID 4"
+                            value="${isEmri.firmaBilgi?.isgKatipId4 || ''}">
+                    </div>
+                    <div style="display: flex; align-items: end;">
                         <button class="btn btn-primary" onclick="saveFirmaBilgi(${isEmri.id})" style="white-space: nowrap;">
                             💾 Kaydet
                         </button>
@@ -3630,7 +3679,12 @@ async function renderIsEmriDetay(id) {
                                 <td>${index + 1}</td>
                                 <td><strong>${gorev.hizmetAdi || '-'}</strong></td>
                                 <td>${gorev.ekipmanAdi || '-'}</td>
-                                <td>${gorev.personelAdi || '<span style="color:#999;">Atanmadı</span>'}</td>
+                                <td>${!isTekniker ? `
+                                    <select class="inline-personel-select" onchange="altGorevPersonelDegistir(${gorev.id}, this)" style="padding: 3px 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; max-width: 150px; background: white; cursor: pointer;">
+                                        <option value="">Atanmadı</option>
+                                        ${personeller.filter(p => p.isActive !== false).map(p => `<option value="${p.id}" ${gorev.personelId === p.id ? 'selected' : ''}>${p.adSoyad}</option>`).join('')}
+                                    </select>
+                                ` : (gorev.personelAdi || '<span style="color:#999;">Atanmadı</span>')}</td>
                                 <td>
                                     <span class="badge" style="background: ${durumRenk[gorev.durum] || '#6c757d'}; color: white; padding: 3px 6px; border-radius: 3px; font-size: 11px;">
                                         ${durumText[gorev.durum] || gorev.durum}
@@ -3650,12 +3704,31 @@ async function renderIsEmriDetay(id) {
                     </tbody>
                 </table>
             </div>
+
+            <!-- Dosyalar & PDF Birleştirme -->
+            <div style="margin-top: 20px; padding: 20px; background: #fff; border-radius: 10px; border: 1px solid #dee2e6; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h4 style="margin: 0; color: #333; font-size: 16px;">📎 Dosyalar & PDF Birleştirme</h4>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-sm" onclick="dosyaYukleModal(${isEmri.id})" style="padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            📤 Dosya Yükle
+                        </button>
+                        <button class="btn btn-sm" onclick="pdfBirlestirModal(${isEmri.id})" style="padding: 8px 16px; background: #8e44ad; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            📑 PDF Birleştir
+                        </button>
+                    </div>
+                </div>
+                <div id="isemri-dosyalar-container" style="color: #666;">Dosyalar yükleniyor...</div>
+            </div>
         `;
 
         // Ana içerik alanını güncelle
         if (mainContent) {
             mainContent.innerHTML = content;
         }
+
+        // Dosyaları yükle
+        loadIsEmriDosyalar(id);
     } catch (error) {
         console.error('İş emri detay hatası:', error);
         showToast('Hata: ' + error.message, 'error');
@@ -3693,7 +3766,10 @@ async function saveFirmaBilgi(isEmriId) {
     try {
         const data = {
             sgkSicilNo: document.getElementById('sgkSicilNoInput')?.value?.trim() || '',
-            isgKatipId: document.getElementById('isgKatipIdInput')?.value?.trim() || ''
+            isgKatipId: document.getElementById('isgKatipIdInput')?.value?.trim() || '',
+            isgKatipId2: document.getElementById('isgKatipId2Input')?.value?.trim() || '',
+            isgKatipId3: document.getElementById('isgKatipId3Input')?.value?.trim() || '',
+            isgKatipId4: document.getElementById('isgKatipId4Input')?.value?.trim() || ''
         };
 
         const response = await authenticatedFetch(`/api/is-emirleri/${isEmriId}/firma-bilgi`, {
@@ -3956,6 +4032,48 @@ async function altGorevKaydet(gorevId) {
         }
     } catch (error) {
         showToast('Hata: ' + error.message, 'error');
+    }
+}
+
+// Alt Görev Personel Inline Değiştir
+async function altGorevPersonelDegistir(gorevId, selectEl) {
+    const personelId = selectEl.value ? parseInt(selectEl.value) : null;
+    const personelAdi = personelId ? selectEl.options[selectEl.selectedIndex].text : null;
+
+    // Durum mantığı: personel atandıysa ATANDI, kaldırıldıysa BEKLIYOR
+    let durum = personelId ? 'ATANDI' : 'BEKLIYOR';
+
+    try {
+        selectEl.disabled = true;
+        selectEl.style.opacity = '0.6';
+        const response = await authenticatedFetch(`/api/alt-gorevler/${gorevId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ personelId, personelAdi, durum })
+        });
+
+        if (response.ok) {
+            showToast(`${personelAdi ? personelAdi + ' atandı' : 'Personel kaldırıldı'}`, 'success');
+            // Durum badge'ini güncelle - sayfayı yenilemeden
+            const row = selectEl.closest('tr');
+            if (row) {
+                const durumCell = row.querySelector('.badge');
+                if (durumCell) {
+                    const durumRenk = { 'BEKLIYOR': '#f39c12', 'ATANDI': '#3498db', 'SAHADA': '#9b59b6', 'TAMAMLANDI': '#27ae60', 'RAPOR_YAZILDI': '#2980b9', 'TESLIM_EDILDI': '#16a085' };
+                    const durumText = { 'BEKLIYOR': 'Bekliyor', 'ATANDI': 'Atandı', 'SAHADA': 'Sahada', 'TAMAMLANDI': 'Tamamlandı', 'RAPOR_YAZILDI': 'Rapor Yazıldı', 'TESLIM_EDILDI': 'Teslim Edildi' };
+                    durumCell.style.background = durumRenk[durum] || '#6c757d';
+                    durumCell.textContent = durumText[durum] || durum;
+                }
+            }
+        } else {
+            const error = await response.json();
+            showToast(error.error || 'Hata oluştu', 'error');
+        }
+    } catch (error) {
+        showToast('Hata: ' + error.message, 'error');
+    } finally {
+        selectEl.disabled = false;
+        selectEl.style.opacity = '1';
     }
 }
 
@@ -6018,31 +6136,66 @@ async function bildirimAyarlariKaydet() {
 
 let tumRaporlar = [];
 let filtrelenmisRaporlar = [];
+let tumRaporlarGrouped = [];
+let filtrelenmisGruplar = [];
+let raporGorunum = 'grouped';
+let acikGruplar = {};
 
 // Raporları yükle
+function raporGorunumDegistir(mode) {
+    raporGorunum = mode;
+    document.getElementById('rapor-view-grouped')?.classList.toggle('active', mode === 'grouped');
+    document.getElementById('rapor-view-flat')?.classList.toggle('active', mode === 'flat');
+    document.getElementById('rapor-accordion-container').style.display = mode === 'grouped' ? 'block' : 'none';
+    document.getElementById('rapor-flat-container').style.display = mode === 'flat' ? 'block' : 'none';
+    if (mode === 'grouped') {
+        raporAccordionGuncelle(filtrelenmisGruplar);
+    } else {
+        raporTablosuGuncelle(filtrelenmisRaporlar);
+    }
+}
+
 async function raporlariYukle() {
     try {
         const userRole = localStorage.getItem('userRole') || 'admin';
         const userKategori = localStorage.getItem('userKategori') || '';
 
-        // API'den raporları getir
-        let url = `${API_BASE}/raporlar?role=${userRole}`;
+        let baseUrl = `${API_BASE}/raporlar?role=${userRole}`;
         if (userRole === 'tekniker' && userKategori) {
-            url += `&kategori=${encodeURIComponent(userKategori)}`;
+            baseUrl += `&kategori=${encodeURIComponent(userKategori)}`;
         }
 
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Raporlar yüklenemedi');
+        const [flatRes, groupedRes] = await Promise.all([
+            authenticatedFetch(baseUrl),
+            authenticatedFetch(baseUrl + '&grouped=true')
+        ]);
 
-        tumRaporlar = await res.json();
-        filtrelenmisRaporlar = [...tumRaporlar];
+        if (flatRes.ok) {
+            tumRaporlar = await flatRes.json();
+            filtrelenmisRaporlar = [...tumRaporlar];
+        }
 
-        // Filtreleri uygula
+        if (groupedRes.ok) {
+            tumRaporlarGrouped = await groupedRes.json();
+            filtrelenmisGruplar = [...tumRaporlarGrouped];
+
+            const isEmriFiltre = document.getElementById('rapor-is-emri-filtre');
+            if (isEmriFiltre) {
+                const currentVal = isEmriFiltre.value;
+                isEmriFiltre.innerHTML = '<option value="">Tüm İş Emirleri</option>';
+                tumRaporlarGrouped.forEach(g => {
+                    isEmriFiltre.innerHTML += `<option value="${g.isEmriNo}">${g.isEmriNo} - ${g.musteri}</option>`;
+                });
+                isEmriFiltre.value = currentVal;
+            }
+        }
+
         raporFiltrele();
     } catch (error) {
         console.error('Rapor yükleme hatası:', error);
         showToast('Raporlar yüklenirken hata oluştu', 'error');
         raporTablosuGuncelle([]);
+        raporAccordionGuncelle([]);
     }
 }
 
@@ -6056,27 +6209,187 @@ function raporFiltrele() {
     const aramaMetni = document.getElementById('rapor-arama')?.value?.toLowerCase() || '';
     const tipFiltre = document.getElementById('rapor-tipi-filtre')?.value || '';
     const durumFiltre = document.getElementById('rapor-durum-filtre')?.value || '';
+    const isEmriFiltreDeger = document.getElementById('rapor-is-emri-filtre')?.value || '';
 
+    // Flat filtre
     filtrelenmisRaporlar = tumRaporlar.filter(rapor => {
-        // Arama filtresi
         const aramaUygun = !aramaMetni ||
             rapor.raporNo?.toLowerCase().includes(aramaMetni) ||
             rapor.firmaAdi?.toLowerCase().includes(aramaMetni) ||
             rapor.isEmriNo?.toLowerCase().includes(aramaMetni);
-
-        // Tip filtresi
         const tipUygun = !tipFiltre || rapor.raporTipi?.toLowerCase().includes(tipFiltre.replace('-', ' '));
-
-        // Durum filtresi
         const durumUygun = !durumFiltre || rapor.durum === durumFiltre;
-
-        return aramaUygun && tipUygun && durumUygun;
+        const isEmriUygun = !isEmriFiltreDeger || rapor.isEmriNo === isEmriFiltreDeger;
+        return aramaUygun && tipUygun && durumUygun && isEmriUygun;
     });
 
-    raporTablosuGuncelle(filtrelenmisRaporlar);
+    // Grouped filtre
+    filtrelenmisGruplar = tumRaporlarGrouped.filter(grup => {
+        const isEmriUygun = !isEmriFiltreDeger || grup.isEmriNo === isEmriFiltreDeger;
+        const aramaGrupUygun = !aramaMetni ||
+            grup.isEmriNo?.toLowerCase().includes(aramaMetni) ||
+            grup.musteri?.toLowerCase().includes(aramaMetni) ||
+            grup.raporlar.some(r => r.raporNo?.toLowerCase().includes(aramaMetni));
+        return isEmriUygun && aramaGrupUygun;
+    }).map(grup => {
+        const filteredRaporlar = grup.raporlar.filter(rapor => {
+            const tipUygun = !tipFiltre || rapor.raporTipi?.toLowerCase().includes(tipFiltre.replace('-', ' '));
+            const durumUygun = !durumFiltre || rapor.durum === durumFiltre;
+            return tipUygun && durumUygun;
+        });
+        return { ...grup, raporlar: filteredRaporlar };
+    }).filter(grup => grup.raporlar.length > 0);
+
+    if (raporGorunum === 'grouped') {
+        raporAccordionGuncelle(filtrelenmisGruplar);
+    } else {
+        raporTablosuGuncelle(filtrelenmisRaporlar);
+    }
 }
 
-// Rapor tablosunu güncelle
+// Rapor satir HTML helper
+function raporSatirHTML(rapor) {
+    const tarih = rapor.tarih ? new Date(rapor.tarih).toLocaleDateString('tr-TR') : '-';
+    const sonucClass = rapor.sonuc === 'UYGUN' ? 'color: #27ae60; background: #e8f5e9;' :
+        rapor.sonuc === 'UYGUN DEĞİL' ? 'color: #e74c3c; background: #ffebee;' : 'color: #666;';
+    const durumClass = rapor.durum === 'Tamamlandı' ? 'background: #27ae60;' : 'background: #f39c12;';
+    const tipLower = (rapor.raporTipi || '').toLowerCase();
+    const tipIcon = tipLower.includes('kompres') ? '🔧' : tipLower.includes('hava') ? '🫙' : tipLower.includes('elektrik') ? '⚡' : '📋';
+    const tipEscaped = (rapor.raporTipi || '').replace(/'/g, "\\'");
+    const sablonKodu = rapor.sablonKodu || '';
+
+    return `
+        <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 12px 15px; font-weight: 600; color: #1a5d3a;">${rapor.raporNo || '-'}</td>
+            <td style="padding: 12px 15px;">
+                ${rapor.isEmriId ? `<a href="#" onclick="event.preventDefault(); navigateToPage('is-emirleri'); setTimeout(() => viewIsEmri(${rapor.isEmriId}), 300);" style="color: #3498db; text-decoration: none; font-weight: 500;" title="İş Emrine Git">${rapor.isEmriNo || '-'}</a>` : (rapor.isEmriNo || '-')}
+            </td>
+            <td style="padding: 12px 15px;">
+                <span style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 18px;">${tipIcon}</span>
+                    ${rapor.raporTipi || '-'}
+                </span>
+            </td>
+            <td style="padding: 12px 15px;">${rapor.firmaAdi || '-'}</td>
+            <td style="padding: 12px 15px;">${tarih}</td>
+            <td style="padding: 12px 15px; text-align: center;">
+                <span style="padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; ${sonucClass}">
+                    ${rapor.sonuc || '-'}
+                </span>
+            </td>
+            <td style="padding: 12px 15px; text-align: center;">
+                <span style="padding: 5px 12px; border-radius: 20px; font-size: 12px; color: white; ${durumClass}">
+                    ${rapor.durum || '-'}
+                </span>
+            </td>
+            <td style="padding: 12px 15px; text-align: center;">
+                <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="raporDuzenle(${rapor.id}, ${rapor.altGorevId}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Düzenle">
+                        ✏️
+                    </button>
+                    <button onclick="raporOnizle(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #8e44ad; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Önizle">
+                        👁️
+                    </button>
+                    <button onclick="raporWordIndir(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #1a5d3a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Word İndir">
+                        📄
+                    </button>
+                    <button onclick="raporPdfIndir(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #e67e22; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="PDF İndir">
+                        📕
+                    </button>
+                    <button onclick="raporSil(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Sil">
+                        🗑️
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `;
+}
+
+// Accordion goruntuleme
+function raporAccordionGuncelle(gruplar) {
+    const container = document.getElementById('rapor-accordion-container');
+    if (!container) return;
+
+    if (!gruplar || gruplar.length === 0) {
+        container.innerHTML = `
+            <div style="padding: 60px; text-align: center; color: #666; background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+                <div style="font-size: 64px; margin-bottom: 15px;">📁</div>
+                <h3 style="margin: 0 0 10px 0; color: #333;">Henüz rapor bulunmuyor</h3>
+                <p style="margin: 0; color: #888;">İş emirlerinden ölçüm yaparak rapor oluşturabilirsiniz.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = gruplar.map((grup, index) => {
+        const isOpen = acikGruplar[grup.isEmriNo] || false;
+        const raporSayisi = grup.raporlar.length;
+        const durumRenk = {
+            'BEKLIYOR': '#6c757d', 'ATANDI': '#0d6efd', 'SAHADA': '#fd7e14',
+            'TAMAMLANDI': '#198754', 'RAPOR_YAZILDI': '#6f42c1', 'TESLIM_EDILDI': '#0f5132'
+        };
+        const tarih = grup.planliTarih ? new Date(grup.planliTarih).toLocaleDateString('tr-TR') : '';
+        const durumText = { 'BEKLIYOR': 'Bekliyor', 'ATANDI': 'Atandı', 'SAHADA': 'Sahada', 'TAMAMLANDI': 'Tamamlandı', 'RAPOR_YAZILDI': 'Rapor Yazıldı', 'TESLIM_EDILDI': 'Teslim Edildi' };
+
+        return `
+            <div style="margin-bottom: 8px; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div onclick="toggleRaporGrup('${grup.isEmriNo}')" style="display: flex; align-items: center; gap: 15px; padding: 16px 20px; background: linear-gradient(135deg, #f8f9fa, #fff); cursor: pointer; border-left: 4px solid ${durumRenk[grup.durum] || '#6c757d'}; transition: background 0.2s;">
+                    <span id="rapor-arrow-${grup.isEmriNo}" style="font-size: 18px; transition: transform 0.3s; transform: rotate(${isOpen ? '90' : '0'}deg);">&#9654;</span>
+                    <div style="flex: 1; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <strong style="font-size: 15px; color: #1a5d3a;">${grup.isEmriNo}</strong>
+                        <span style="color: #555;">|</span>
+                        <span style="color: #333;">${grup.musteri}</span>
+                        <span style="color: #555;">|</span>
+                        <span style="background: ${durumRenk[grup.durum] || '#6c757d'}; color: white; padding: 2px 10px; border-radius: 12px; font-size: 12px;">${durumText[grup.durum] || grup.durum}</span>
+                        <span style="background: #e3f2fd; color: #1565c0; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">${raporSayisi} rapor</span>
+                        ${tarih ? `<span style="color: #888; font-size: 13px;">${tarih}</span>` : ''}
+                    </div>
+                    <div style="display: flex; gap: 6px;" onclick="event.stopPropagation();">
+                        ${grup.isEmriId ? `<button onclick="raporlarPdfBirlestirModal(${grup.isEmriId}, '${grup.isEmriNo}')" class="btn btn-sm" style="padding: 5px 12px; background: #8e44ad; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;" title="PDF Birleştir">
+                            📑 PDF Birleştir
+                        </button>` : ''}
+                        ${grup.isEmriId ? `<button onclick="dosyaYukleModal(${grup.isEmriId})" class="btn btn-sm" style="padding: 5px 12px; background: #3498db; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;" title="Dosya Yükle">
+                            📤 Yükle
+                        </button>` : ''}
+                        ${grup.isEmriId ? `<button onclick="renderIsEmriDetay(${grup.isEmriId}); navigateToPage('is-emirleri');" class="btn btn-sm" style="padding: 5px 12px; background: #1a5d3a; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;" title="İş Emri Detay">
+                            📋 Detay
+                        </button>` : ''}
+                    </div>
+                </div>
+                <div id="rapor-grup-${grup.isEmriNo}" style="display: ${isOpen ? 'block' : 'none'}; background: white;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #1a5d3a; color: white;">
+                                <th style="padding: 10px 15px; text-align: left; font-size: 13px;">Rapor No</th>
+                                <th style="padding: 10px 15px; text-align: left; font-size: 13px;">Rapor Tipi</th>
+                                <th style="padding: 10px 15px; text-align: left; font-size: 13px;">Firma</th>
+                                <th style="padding: 10px 15px; text-align: left; font-size: 13px;">Tarih</th>
+                                <th style="padding: 10px 15px; text-align: center; font-size: 13px;">Sonuç</th>
+                                <th style="padding: 10px 15px; text-align: center; font-size: 13px;">Durum</th>
+                                <th style="padding: 10px 15px; text-align: center; font-size: 13px;">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${grup.raporlar.map(r => raporSatirHTML(r)).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function toggleRaporGrup(isEmriNo) {
+    acikGruplar[isEmriNo] = !acikGruplar[isEmriNo];
+    const el = document.getElementById('rapor-grup-' + isEmriNo);
+    if (el) {
+        el.style.display = acikGruplar[isEmriNo] ? 'block' : 'none';
+        const arrow = document.getElementById('rapor-arrow-' + isEmriNo);
+        if (arrow) arrow.style.transform = 'rotate(' + (acikGruplar[isEmriNo] ? '90' : '0') + 'deg)';
+    }
+}
+
+// Rapor tablosunu güncelle (flat goruntuleme)
 function raporTablosuGuncelle(raporlar) {
     const tbody = document.getElementById('rapor-table-body');
     if (!tbody) return;
@@ -6094,60 +6407,7 @@ function raporTablosuGuncelle(raporlar) {
         return;
     }
 
-    tbody.innerHTML = raporlar.map(rapor => {
-        const tarih = rapor.tarih ? new Date(rapor.tarih).toLocaleDateString('tr-TR') : '-';
-        const sonucClass = rapor.sonuc === 'UYGUN' ? 'color: #27ae60; background: #e8f5e9;' :
-            rapor.sonuc === 'UYGUN DEĞİL' ? 'color: #e74c3c; background: #ffebee;' : 'color: #666;';
-        const durumClass = rapor.durum === 'Tamamlandı' ? 'background: #27ae60;' : 'background: #f39c12;';
-        const tipLower = (rapor.raporTipi || '').toLowerCase();
-        const tipIcon = tipLower.includes('kompres') ? '🔧' : tipLower.includes('hava') ? '🫙' : tipLower.includes('elektrik') ? '⚡' : '📋';
-        const tipEscaped = (rapor.raporTipi || '').replace(/'/g, "\\'");
-        const sablonKodu = rapor.sablonKodu || '';
-        const isGeneric = rapor.isGeneric ? 'true' : 'false';
-
-        return `
-            <tr style="border-bottom: 1px solid #eee;">
-                <td style="padding: 15px; font-weight: 600; color: #1a5d3a;">${rapor.raporNo || '-'}</td>
-                <td style="padding: 15px;">
-                    <span style="display: inline-flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 18px;">${tipIcon}</span>
-                        ${rapor.raporTipi || '-'}
-                    </span>
-                </td>
-                <td style="padding: 15px;">${rapor.firmaAdi || '-'}</td>
-                <td style="padding: 15px;">${tarih}</td>
-                <td style="padding: 15px; text-align: center;">
-                    <span style="padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; ${sonucClass}">
-                        ${rapor.sonuc || '-'}
-                    </span>
-                </td>
-                <td style="padding: 15px; text-align: center;">
-                    <span style="padding: 5px 12px; border-radius: 20px; font-size: 12px; color: white; ${durumClass}">
-                        ${rapor.durum || '-'}
-                    </span>
-                </td>
-                <td style="padding: 15px; text-align: center;">
-                    <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
-                        <button onclick="raporDuzenle(${rapor.id}, ${rapor.altGorevId}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Düzenle">
-                            ✏️
-                        </button>
-                        <button onclick="raporOnizle(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #8e44ad; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Önizle">
-                            👁️
-                        </button>
-                        <button onclick="raporWordIndir(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #1a5d3a; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Word İndir">
-                            📄
-                        </button>
-                        <button onclick="raporPdfIndir(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #e67e22; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="PDF İndir">
-                            📕
-                        </button>
-                        <button onclick="raporSil(${rapor.id}, '${tipEscaped}', '${sablonKodu}')" class="btn btn-sm" style="padding: 6px 10px; background: #e74c3c; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;" title="Sil">
-                            🗑️
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }).join('');
+    tbody.innerHTML = raporlar.map(rapor => raporSatirHTML(rapor)).join('');
 }
 
 // Rapor düzenle
@@ -6341,6 +6601,508 @@ async function raporPdfIndir(raporId, raporTipi, sablonKodu) {
         hideLoading();
         console.error('PDF indirme hatası:', error);
         showToast('PDF hatası: ' + error.message, 'error');
+    }
+}
+
+// ===================== DOSYA YÖNETİMİ & PDF BİRLEŞTİRME =====================
+
+let isEmriDosyaData = null;
+
+async function loadIsEmriDosyalar(isEmriId) {
+    const container = document.getElementById('isemri-dosyalar-container');
+    if (!container) return;
+
+    try {
+        const res = await authenticatedFetch(`${API_BASE}/is-emirleri/${isEmriId}/dosyalar`);
+        if (!res.ok) throw new Error('Dosyalar yüklenemedi');
+        isEmriDosyaData = await res.json();
+
+        let html = '';
+
+        // Kapak dosyaları
+        if (isEmriDosyaData.kapaklar?.length > 0) {
+            html += `<div style="margin-bottom: 12px;">
+                <strong style="color: #8e44ad;">📄 Kapak Dosyaları:</strong>
+                ${isEmriDosyaData.kapaklar.map(d => `
+                    <span style="display: inline-flex; align-items: center; gap: 4px; background: #f3e5f5; padding: 4px 10px; border-radius: 15px; margin: 2px 4px; font-size: 13px;">
+                        ${d.dosyaAdi}
+                        <a href="${d.dosyaYolu}" target="_blank" style="color: #8e44ad;" title="Görüntüle">👁️</a>
+                        <button onclick="sistemDosyaSil(${d.id}, ${isEmriId})" style="background: none; border: none; cursor: pointer; color: #e74c3c; font-size: 12px;" title="Sil">✕</button>
+                    </span>
+                `).join('')}
+            </div>`;
+        }
+
+        // Raporlar
+        if (isEmriDosyaData.raporlar?.length > 0) {
+            html += `<div style="margin-bottom: 12px;">
+                <strong style="color: #1a5d3a;">📋 Raporlar:</strong>
+                ${isEmriDosyaData.raporlar.map(r => `
+                    <span style="display: inline-flex; align-items: center; gap: 4px; background: #e8f5e9; padding: 4px 10px; border-radius: 15px; margin: 2px 4px; font-size: 13px;">
+                        ${r.raporNo} (${r.tip})
+                    </span>
+                `).join('')}
+            </div>`;
+        }
+
+        // Kalibrasyon sertifikaları
+        if (isEmriDosyaData.kalibrasyonlar?.length > 0) {
+            html += `<div style="margin-bottom: 12px;">
+                <strong style="color: #e67e22;">🔧 Kalibrasyon Sertifikaları:</strong>
+                ${isEmriDosyaData.kalibrasyonlar.map(k => `
+                    <span style="display: inline-flex; align-items: center; gap: 4px; background: #fff3e0; padding: 4px 10px; border-radius: 15px; margin: 2px 4px; font-size: 13px;">
+                        ${k.cihazAdi} ${k.marka || ''} - Seri:${k.seriNo || '-'}
+                        <a href="${k.dosyaYolu}" target="_blank" style="color: #e67e22;" title="Sertifika">📎</a>
+                    </span>
+                `).join('')}
+            </div>`;
+        }
+
+        // Eğitim sertifikaları
+        if (isEmriDosyaData.egitimSertifikalari?.length > 0) {
+            html += `<div style="margin-bottom: 12px;">
+                <strong style="color: #2196f3;">🎓 Eğitim Sertifikaları:</strong>
+                ${isEmriDosyaData.egitimSertifikalari.map(e => `
+                    <span style="display: inline-flex; align-items: center; gap: 4px; background: #e3f2fd; padding: 4px 10px; border-radius: 15px; margin: 2px 4px; font-size: 13px;">
+                        ${e.personel?.adSoyad || '-'} - ${e.dosyaAdi}
+                        <a href="${e.dosyaYolu}" target="_blank" style="color: #2196f3;" title="Görüntüle">👁️</a>
+                        <button onclick="sistemDosyaSil(${e.id}, ${isEmriId})" style="background: none; border: none; cursor: pointer; color: #e74c3c; font-size: 12px;" title="Sil">✕</button>
+                    </span>
+                `).join('')}
+            </div>`;
+        }
+
+        // Diğer dosyalar
+        if (isEmriDosyaData.digerDosyalar?.length > 0) {
+            html += `<div style="margin-bottom: 12px;">
+                <strong style="color: #666;">📂 Diğer Dosyalar:</strong>
+                ${isEmriDosyaData.digerDosyalar.map(d => `
+                    <span style="display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; padding: 4px 10px; border-radius: 15px; margin: 2px 4px; font-size: 13px;">
+                        ${d.dosyaAdi} <span style="color:#999; font-size:11px;">(${d.dosyaTipi})</span>
+                        <a href="${d.dosyaYolu}" target="_blank" style="color: #666;" title="Görüntüle">👁️</a>
+                        <button onclick="sistemDosyaSil(${d.id}, ${isEmriId})" style="background: none; border: none; cursor: pointer; color: #e74c3c; font-size: 12px;" title="Sil">✕</button>
+                    </span>
+                `).join('')}
+            </div>`;
+        }
+
+        if (!html) {
+            html = '<p style="color: #999; font-style: italic;">Henüz dosya eklenmemiş. Kapak, eğitim sertifikası veya diğer dosyaları yükleyebilirsiniz.</p>';
+        }
+
+        container.innerHTML = html;
+    } catch (error) {
+        console.error('Dosya yükleme hatası:', error);
+        container.innerHTML = '<p style="color: #e74c3c;">Dosyalar yüklenirken hata oluştu</p>';
+    }
+}
+
+async function sistemDosyaSil(dosyaId, isEmriId) {
+    if (!confirm('Bu dosyayı silmek istediğinize emin misiniz?')) return;
+    try {
+        const res = await authenticatedFetch(`${API_BASE}/sistem-dosya/${dosyaId}`, { method: 'DELETE' });
+        if (res.ok) {
+            showToast('Dosya silindi', 'success');
+            loadIsEmriDosyalar(isEmriId);
+        } else {
+            showToast('Dosya silinemedi', 'error');
+        }
+    } catch (error) {
+        showToast('Hata: ' + error.message, 'error');
+    }
+}
+
+function dosyaYukleModal(isEmriId) {
+    const modalHtml = `
+        <div class="modal-overlay" id="dosya-yukle-modal-overlay" onclick="closeDosyaYukleModal(event)" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 10000;">
+            <div onclick="event.stopPropagation()" style="background: white; border-radius: 12px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: #333;">📤 Dosya Yükle</h3>
+                    <button onclick="closeDosyaYukleModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 5px;">Dosya Tipi:</label>
+                    <select id="dosya-yukle-tip" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <option value="kapak">Kapak Dosyası</option>
+                        <option value="egitim">Eğitim Sertifikası</option>
+                        <option value="diger">Diğer</option>
+                    </select>
+                </div>
+
+                <div id="dosya-yukle-personel-div" class="form-group" style="margin-bottom: 15px; display: none;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 5px;">Personel (Eğitim Sertifikası için):</label>
+                    <select id="dosya-yukle-personel" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <option value="">Seçiniz...</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 5px;">Kategori:</label>
+                    <select id="dosya-yukle-kategori" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <option value="">Genel</option>
+                        <option value="elektrik">Elektrik</option>
+                        <option value="mekanik">Mekanik</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 5px;">Açıklama:</label>
+                    <input type="text" id="dosya-yukle-aciklama" class="form-input" placeholder="Opsiyonel açıklama..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 5px;">Dosya Seç (PDF/JPEG/PNG, max 20MB):</label>
+                    <input type="file" id="dosya-yukle-input" accept=".pdf,.jpg,.jpeg,.png" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="dosyaYukleGonder(${isEmriId})" class="btn btn-primary" style="flex: 1; padding: 12px; font-weight: 600; background: #27ae60; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        📤 Yükle
+                    </button>
+                    <button onclick="closeDosyaYukleModal()" class="btn btn-secondary" style="padding: 12px 24px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: #f5f5f5;">
+                        İptal
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Tip değişince personel alanını göster/gizle
+    document.getElementById('dosya-yukle-tip').addEventListener('change', function() {
+        const personelDiv = document.getElementById('dosya-yukle-personel-div');
+        personelDiv.style.display = this.value === 'egitim' ? 'block' : 'none';
+    });
+
+    // Personel listesini yükle
+    loadPersonelListForDosya();
+}
+
+async function loadPersonelListForDosya() {
+    try {
+        const res = await authenticatedFetch(`${API_BASE}/personel`);
+        if (res.ok) {
+            const personeller = await res.json();
+            const select = document.getElementById('dosya-yukle-personel');
+            if (select) {
+                personeller.forEach(p => {
+                    select.innerHTML += `<option value="${p.id}">${p.adSoyad}</option>`;
+                });
+            }
+        }
+    } catch (e) { console.error(e); }
+}
+
+function closeDosyaYukleModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    const modal = document.getElementById('dosya-yukle-modal-overlay');
+    if (modal) modal.remove();
+}
+
+async function dosyaYukleGonder(isEmriId) {
+    const fileInput = document.getElementById('dosya-yukle-input');
+    const dosyaTipi = document.getElementById('dosya-yukle-tip')?.value || 'diger';
+    const kategori = document.getElementById('dosya-yukle-kategori')?.value || '';
+    const aciklama = document.getElementById('dosya-yukle-aciklama')?.value || '';
+    const personelId = document.getElementById('dosya-yukle-personel')?.value || '';
+
+    if (!fileInput?.files?.length) {
+        showToast('Lütfen bir dosya seçin', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('dosya', fileInput.files[0]);
+    formData.append('dosyaTipi', dosyaTipi);
+    formData.append('isEmriId', isEmriId);
+    if (kategori) formData.append('kategori', kategori);
+    if (aciklama) formData.append('aciklama', aciklama);
+    if (personelId && dosyaTipi === 'egitim') formData.append('personelId', personelId);
+
+    try {
+        showLoading();
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_BASE}/sistem-dosya`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData
+        });
+
+        hideLoading();
+
+        if (res.ok) {
+            showToast('Dosya başarıyla yüklendi', 'success');
+            closeDosyaYukleModal();
+            loadIsEmriDosyalar(isEmriId);
+        } else {
+            const err = await res.json();
+            showToast('Yükleme hatası: ' + (err.error || 'Bilinmeyen hata'), 'error');
+        }
+    } catch (error) {
+        hideLoading();
+        showToast('Yükleme hatası: ' + error.message, 'error');
+    }
+}
+
+// ============ PDF BİRLEŞTİRME MODAL ============
+
+let birlestirmeListesi = [];
+
+function pdfBirlestirModal(isEmriId) {
+    birlestirmeListesi = [];
+
+    // Eğer dosya verisi henüz yüklenmediyse yükle
+    if (!isEmriDosyaData) {
+        showToast('Dosya bilgileri yükleniyor, lütfen bekleyin...', 'info');
+        loadIsEmriDosyalar(isEmriId).then(() => pdfBirlestirModalRender(isEmriId));
+        return;
+    }
+
+    pdfBirlestirModalRender(isEmriId);
+}
+
+function pdfBirlestirModalRender(isEmriId) {
+    const data = isEmriDosyaData;
+    if (!data) return;
+
+    const modalHtml = `
+        <div class="modal-overlay" id="pdf-birlestir-modal-overlay" onclick="closePdfBirlestirModal(event)" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 10000;">
+            <div onclick="event.stopPropagation()" style="background: white; border-radius: 12px; padding: 30px; max-width: 900px; width: 95%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin: 0; color: #333;">📑 PDF Birleştirme - ${data.isEmriNo || ''}</h3>
+                    <button onclick="closePdfBirlestirModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <!-- Sol Panel: Mevcut Dosyalar -->
+                    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; max-height: 400px; overflow-y: auto;">
+                        <h4 style="margin: 0 0 12px 0; color: #555; font-size: 14px;">Mevcut Dosyalar</h4>
+
+                        ${data.kapaklar?.length > 0 ? `
+                            <div style="margin-bottom: 10px;">
+                                <strong style="font-size: 12px; color: #8e44ad;">📄 Kapak Dosyaları</strong>
+                                ${data.kapaklar.map(d => `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; margin: 4px 0; background: #f9f9f9; border-radius: 6px; font-size: 13px;">
+                                        <span>${d.dosyaAdi}</span>
+                                        <button onclick="birlestirmeEkle('kapak', ${d.id}, '${d.dosyaAdi.replace(/'/g, "\\'")}')" style="background: #27ae60; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 12px;">+</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+
+                        ${data.raporlar?.length > 0 ? `
+                            <div style="margin-bottom: 10px;">
+                                <strong style="font-size: 12px; color: #1a5d3a;">📋 Raporlar</strong>
+                                ${data.raporlar.map(r => `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; margin: 4px 0; background: #f9f9f9; border-radius: 6px; font-size: 13px;">
+                                        <span>${r.raporNo} (${r.tip})</span>
+                                        <button onclick="birlestirmeEkle('rapor', ${r.id}, '${r.raporNo}', '${r.raporTipi}')" style="background: #27ae60; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 12px;">+</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+
+                        ${data.kalibrasyonlar?.length > 0 ? `
+                            <div style="margin-bottom: 10px;">
+                                <strong style="font-size: 12px; color: #e67e22;">🔧 Kalibrasyon Sertifikaları</strong>
+                                ${data.kalibrasyonlar.map(k => `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; margin: 4px 0; background: #f9f9f9; border-radius: 6px; font-size: 13px;">
+                                        <span>${k.cihazAdi} ${k.marka || ''}</span>
+                                        <button onclick="birlestirmeEkle('kalibrasyon', ${k.cihazId}, '${(k.cihazAdi || '').replace(/'/g, "\\'")}')" style="background: #27ae60; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 12px;">+</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+
+                        ${data.egitimSertifikalari?.length > 0 ? `
+                            <div style="margin-bottom: 10px;">
+                                <strong style="font-size: 12px; color: #2196f3;">🎓 Eğitim Sertifikaları</strong>
+                                ${data.egitimSertifikalari.map(e => `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; margin: 4px 0; background: #f9f9f9; border-radius: 6px; font-size: 13px;">
+                                        <span>${e.personel?.adSoyad || '-'} - ${e.dosyaAdi}</span>
+                                        <button onclick="birlestirmeEkle('egitim', ${e.id}, '${(e.dosyaAdi || '').replace(/'/g, "\\'")}')" style="background: #27ae60; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 12px;">+</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+
+                        ${data.digerDosyalar?.length > 0 ? `
+                            <div style="margin-bottom: 10px;">
+                                <strong style="font-size: 12px; color: #666;">📂 Diğer Dosyalar</strong>
+                                ${data.digerDosyalar.map(d => `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; margin: 4px 0; background: #f9f9f9; border-radius: 6px; font-size: 13px;">
+                                        <span>${d.dosyaAdi}</span>
+                                        <button onclick="birlestirmeEkle('dosya', ${d.id}, '${(d.dosyaAdi || '').replace(/'/g, "\\'")}')" style="background: #27ae60; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 12px;">+</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+
+                        ${(!data.kapaklar?.length && !data.raporlar?.length && !data.kalibrasyonlar?.length && !data.egitimSertifikalari?.length && !data.digerDosyalar?.length) ? '<p style="color: #999; font-size: 13px;">Henüz dosya bulunmuyor</p>' : ''}
+                    </div>
+
+                    <!-- Sağ Panel: Birleştirme Sırası -->
+                    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px;">
+                        <h4 style="margin: 0 0 12px 0; color: #555; font-size: 14px;">Birleştirme Sırası</h4>
+                        <div id="birlestirme-listesi" style="min-height: 200px; max-height: 400px; overflow-y: auto;">
+                            <p style="color: #bbb; font-size: 13px; text-align: center; padding: 40px 0;">Soldaki dosyalardan "+" butonuyla ekleyin</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button onclick="closePdfBirlestirModal()" style="padding: 12px 24px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: #f5f5f5;">
+                        İptal
+                    </button>
+                    <button onclick="pdfBirlestirGonder(${isEmriId})" style="padding: 12px 24px; background: #8e44ad; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        📑 Birleştir & İndir
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closePdfBirlestirModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    const modal = document.getElementById('pdf-birlestir-modal-overlay');
+    if (modal) modal.remove();
+}
+
+function birlestirmeEkle(tip, id, label, raporTipi) {
+    birlestirmeListesi.push({ tip, id, label, raporTipi: raporTipi || '', raporId: tip === 'rapor' ? id : undefined, dosyaId: tip !== 'rapor' ? id : undefined, cihazId: tip === 'kalibrasyon' ? id : undefined });
+    birlestirmeListesiGuncelle();
+}
+
+function birlestirmeCikar(index) {
+    birlestirmeListesi.splice(index, 1);
+    birlestirmeListesiGuncelle();
+}
+
+function birlestirmeYukari(index) {
+    if (index <= 0) return;
+    [birlestirmeListesi[index - 1], birlestirmeListesi[index]] = [birlestirmeListesi[index], birlestirmeListesi[index - 1]];
+    birlestirmeListesiGuncelle();
+}
+
+function birlestirmeAsagi(index) {
+    if (index >= birlestirmeListesi.length - 1) return;
+    [birlestirmeListesi[index], birlestirmeListesi[index + 1]] = [birlestirmeListesi[index + 1], birlestirmeListesi[index]];
+    birlestirmeListesiGuncelle();
+}
+
+function birlestirmeListesiGuncelle() {
+    const container = document.getElementById('birlestirme-listesi');
+    if (!container) return;
+
+    if (birlestirmeListesi.length === 0) {
+        container.innerHTML = '<p style="color: #bbb; font-size: 13px; text-align: center; padding: 40px 0;">Soldaki dosyalardan "+" butonuyla ekleyin</p>';
+        return;
+    }
+
+    const tipRenk = { kapak: '#8e44ad', rapor: '#1a5d3a', kalibrasyon: '#e67e22', egitim: '#2196f3', dosya: '#666' };
+    const tipIcon = { kapak: '📄', rapor: '📋', kalibrasyon: '🔧', egitim: '🎓', dosya: '📂' };
+
+    container.innerHTML = birlestirmeListesi.map((item, index) => `
+        <div style="display: flex; align-items: center; gap: 8px; padding: 8px; margin-bottom: 4px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid ${tipRenk[item.tip] || '#666'};">
+            <span style="font-weight: 600; color: #999; min-width: 20px; font-size: 12px;">${index + 1}</span>
+            <span style="font-size: 16px;">${tipIcon[item.tip] || '📄'}</span>
+            <span style="flex: 1; font-size: 13px;">${item.label}</span>
+            <div style="display: flex; gap: 2px;">
+                <button onclick="birlestirmeYukari(${index})" style="background: none; border: none; cursor: pointer; font-size: 14px; opacity: ${index === 0 ? '0.3' : '1'};" ${index === 0 ? 'disabled' : ''}>⬆️</button>
+                <button onclick="birlestirmeAsagi(${index})" style="background: none; border: none; cursor: pointer; font-size: 14px; opacity: ${index === birlestirmeListesi.length - 1 ? '0.3' : '1'};" ${index === birlestirmeListesi.length - 1 ? 'disabled' : ''}>⬇️</button>
+                <button onclick="birlestirmeCikar(${index})" style="background: none; border: none; cursor: pointer; color: #e74c3c; font-size: 14px;">✕</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function pdfBirlestirGonder(isEmriId) {
+    if (birlestirmeListesi.length === 0) {
+        showToast('Lütfen birleştirilecek dosyaları seçin', 'error');
+        return;
+    }
+
+    try {
+        showLoading();
+        showToast('PDF birleştiriliyor, bu birkaç dakika sürebilir...', 'info');
+
+        const dosyaSirasi = birlestirmeListesi.map(item => {
+            if (item.tip === 'rapor') {
+                return { tip: 'rapor', raporId: item.id, raporTipi: item.raporTipi, id: item.id };
+            } else if (item.tip === 'kalibrasyon') {
+                return { tip: 'kalibrasyon', cihazId: item.id };
+            } else {
+                return { tip: item.tip, id: item.id, dosyaId: item.id };
+            }
+        });
+
+        const res = await authenticatedFetch(`${API_BASE}/is-emirleri/${isEmriId}/pdf-birlestir`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dosyaSirasi })
+        });
+
+        hideLoading();
+
+        if (res.ok) {
+            const contentType = res.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+                // Sunucu hata döndü JSON olarak
+                const err = await res.json();
+                showToast('Birleştirme hatası: ' + (err.error || 'Bilinmeyen hata'), 'error');
+                return;
+            }
+            const blob = await res.blob();
+            if (blob.size === 0) {
+                showToast('Birleştirme sonucu boş döndü', 'error');
+                return;
+            }
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Birlesik_Rapor_${isEmriId}_${Date.now()}.pdf`;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 1000);
+            showToast('PDF başarıyla birleştirildi ve indirildi!', 'success');
+            closePdfBirlestirModal();
+        } else {
+            let errMsg = 'Bilinmeyen hata';
+            try {
+                const err = await res.json();
+                errMsg = err.error || errMsg;
+            } catch(e) {
+                errMsg = 'HTTP ' + res.status;
+            }
+            showToast('Birleştirme hatası: ' + errMsg, 'error');
+        }
+    } catch (error) {
+        hideLoading();
+        console.error('PDF birleştirme hatası:', error);
+        showToast('Birleştirme hatası: ' + error.message, 'error');
+    }
+}
+
+// Raporlar sayfasından PDF birleştir (iş emri dosyalarını yükleyip modalı aç)
+async function raporlarPdfBirlestirModal(isEmriId, isEmriNo) {
+    try {
+        showLoading();
+        const res = await authenticatedFetch(`${API_BASE}/is-emirleri/${isEmriId}/dosyalar`);
+        if (!res.ok) throw new Error('Dosyalar yüklenemedi');
+        isEmriDosyaData = await res.json();
+        hideLoading();
+        pdfBirlestirModalRender(isEmriId);
+    } catch (error) {
+        hideLoading();
+        console.error('Dosya yükleme hatası:', error);
+        showToast('Dosyalar yüklenirken hata: ' + error.message, 'error');
     }
 }
 

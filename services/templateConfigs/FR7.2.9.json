@@ -144,6 +144,67 @@
           "label": "Destek sayısı",
           "type": "text",
           "placeholder": "4"
+        },
+        {
+          "id": "imal_yili",
+          "label": "İmal yılı",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "halat_capi_mm",
+          "label": "Halat çapı (mm)",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "kullanim_amaci",
+          "label": "Kullanım amacı",
+          "type": "text",
+          "placeholder": "YÜK TAŞIMA"
+        },
+        {
+          "id": "halat_uzunlugu_m",
+          "label": "Halat uzunluğu (m)",
+          "type": "text",
+          "placeholder": "-"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "test_dinamik_test_agirligi_kg",
+          "label": "Dinamik Test ağırlığı (kg)",
+          "type": "text",
+          "placeholder": "770"
+        },
+        {
+          "id": "test_statik_test_agirligi_kg",
+          "label": "Statik Test ağırlığı (kg)",
+          "type": "text",
+          "placeholder": "875"
+        },
+        {
+          "id": "test_oncesi_kanca_agiz_acikligi_mm",
+          "label": "Test öncesi kanca ağız açıklığı (mm)",
+          "type": "text",
+          "placeholder": "53"
+        },
+        {
+          "id": "test_bom_acikligi_m",
+          "label": "Statik/Dinamik Testleri Bom Açıklığı (m)",
+          "type": "text",
+          "placeholder": "5"
+        },
+        {
+          "id": "test_sonrasi_kanca_agiz_acikligi_mm",
+          "label": "Test sonrası kanca ağız açıklığı (mm)",
+          "type": "text",
+          "placeholder": "53"
         }
       ]
     },
@@ -151,66 +212,167 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "6 Kontrol",
+      "badge": "23 Kontrol",
       "questions": [
         {
           "id": "kriter1",
           "no": 1,
-          "text": "Şaside bükülme, eğilme, çatlak durumu",
-          "options": [
-            "Uygun",
-            "Uygun Değil"
-          ],
+          "text": "Uyarı levhası durumu",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         },
         {
           "id": "kriter2",
           "no": 2,
-          "text": "Yağ tankında sızıntı durumu",
-          "options": [
-            "Uygun",
-            "Uygun Değil"
-          ],
+          "text": "Vinç kancasının durumu",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         },
         {
           "id": "kriter3",
           "no": 3,
-          "text": "Boru ve hortumlarda hasar durumu",
-          "options": [
-            "Uygun",
-            "Uygun Değil"
-          ],
+          "text": "Şaside bükülme, eğilme, çatlak durumu",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         },
         {
           "id": "kriter4",
           "no": 4,
-          "text": "Bomda çatlak ve deformasyon",
-          "options": [
-            "Uygun",
-            "Uygun Değil"
-          ],
+          "text": "Vinç makaralarının durumu",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         },
         {
           "id": "kriter5",
           "no": 5,
-          "text": "Destek ayaklarının durumu",
-          "options": [
-            "Uygun",
-            "Uygun Değil"
-          ],
+          "text": "Bom kayıcı yüzeylerde çettik ve yağlanma",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         },
         {
           "id": "kriter6",
           "no": 6,
-          "text": "Dinamik Test ağırlığı (kg)",
-          "options": [
-            "Uygun",
-            "Uygun Değil"
-          ],
+          "text": "Kanca emniyet mandalı",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Yağ tankında sızıntı durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Moment Swici",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Hidrolik pompada gürültü, aşırı ısınma",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Tamburda çatlak ve düzensiz halat sarımı",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "Hidrolik pompada sızıntı",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "Halatta kalıcı uzama",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "Kaldırma silindirinin durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 14,
+          "text": "Halatta hasar, yıpranma durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter15",
+          "no": 15,
+          "text": "Boru ve hortumlarda hasar durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter16",
+          "no": 16,
+          "text": "Hidrolik bağlantılarında kaçak durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter17",
+          "no": 17,
+          "text": "Bomda çatlak ve deformasyon",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter18",
+          "no": 18,
+          "text": "Yağ tankı seviye göstergesi",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter19",
+          "no": 19,
+          "text": "Destek ayaklarının durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter20",
+          "no": 20,
+          "text": "Yük altında Statik Kontrol Durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter21",
+          "no": 21,
+          "text": "Yük kanca bloğu durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter22",
+          "no": 22,
+          "text": "Yük altında Dinamik Kontrol Durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter23",
+          "no": 23,
+          "text": "Yük altında Kararlılık Kontrol Durumu",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         }
       ]
@@ -303,7 +465,7 @@
         "field": "vincin_markasi_tipi"
       },
       {
-        "label": "Toplam bom uzunluğu (m)",
+        "label": "Toplam bom uzunluğu",
         "field": "toplam_bom_uzunlugu_m"
       },
       {
@@ -315,12 +477,48 @@
         "field": "bom_sayisi"
       },
       {
-        "label": "Araç şasi no",
+        "label": "Araç şasi",
         "field": "arac_sasi_no"
       },
       {
         "label": "Destek sayısı",
         "field": "destek_sayisi"
+      },
+      {
+        "label": "İmal yılı",
+        "field": "imal_yili"
+      },
+      {
+        "label": "Halat çapı",
+        "field": "halat_capi_mm"
+      },
+      {
+        "label": "Kullanım amacı",
+        "field": "kullanim_amaci"
+      },
+      {
+        "label": "Halat uzunluğu",
+        "field": "halat_uzunlugu_m"
+      },
+      {
+        "label": "Dinamik Test ağırlığı (kg)",
+        "field": "test_dinamik_test_agirligi_kg"
+      },
+      {
+        "label": "Statik Test ağırlığı (kg)",
+        "field": "test_statik_test_agirligi_kg"
+      },
+      {
+        "label": "Test öncesi kanca ağız açıklığı (mm)",
+        "field": "test_oncesi_kanca_agiz_acikligi_mm"
+      },
+      {
+        "label": "Bom Açıklığı",
+        "field": "test_bom_acikligi_m"
+      },
+      {
+        "label": "Test sonrası kanca ağız açıklığı (mm)",
+        "field": "test_sonrasi_kanca_agiz_acikligi_mm"
       }
     ],
     "controlQuestions": {
@@ -328,38 +526,118 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Şaside bükülme, eğilme, çatlak",
-          "mode": "last",
+          "text": "Uyarı levhası durumu",
           "exact": true
         },
         {
           "field": "kriter2",
-          "text": "Yağ tankında sızıntı durumu",
-          "mode": "last",
+          "text": "Vinç kancasının durumu",
           "exact": true
         },
         {
           "field": "kriter3",
-          "text": "Boru ve hortumlarda hasar",
-          "mode": "last",
+          "text": "Şaside bükülme, eğilme, çatlak",
           "exact": true
         },
         {
           "field": "kriter4",
-          "text": "Bomda çatlak ve deformasyon",
-          "mode": "last",
+          "text": "Vinç makaralarının durumu",
           "exact": true
         },
         {
           "field": "kriter5",
-          "text": "Destek ayaklarının durumu",
-          "mode": "last",
+          "text": "Bom kayıcı yüzeylerde",
           "exact": true
         },
         {
           "field": "kriter6",
-          "text": "Dinamik Test ağırlığı (kg)",
+          "text": "Kanca emniyet mandalı",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Yağ tankında sızıntı durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Moment",
           "mode": "last",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "Hidrolik pompada gürültü",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "Tamburda çatlak ve düzensiz",
+          "exact": true
+        },
+        {
+          "field": "kriter11",
+          "text": "Hidrolik pompada sızıntı",
+          "exact": true
+        },
+        {
+          "field": "kriter12",
+          "text": "Halatta kalıcı uzama",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "Kaldırma silindirinin durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter14",
+          "text": "Halatta hasar, yıpranma",
+          "exact": true
+        },
+        {
+          "field": "kriter15",
+          "text": "Boru ve hortumlarda hasar",
+          "exact": true
+        },
+        {
+          "field": "kriter16",
+          "text": "Hidrolik bağlantılarında kaçak",
+          "exact": true
+        },
+        {
+          "field": "kriter17",
+          "text": "Bomda çatlak ve deformasyon",
+          "exact": true
+        },
+        {
+          "field": "kriter18",
+          "text": "Yağ tankı seviye göstergesi",
+          "exact": true
+        },
+        {
+          "field": "kriter19",
+          "text": "Destek ayaklarının durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter20",
+          "text": "Yük altında Statik Kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter21",
+          "text": "Yük kanca bloğu durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter22",
+          "text": "Yük altında Dinamik Kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter23",
+          "text": "Yük altında Kararlılık Kontrol",
           "exact": true
         }
       ]

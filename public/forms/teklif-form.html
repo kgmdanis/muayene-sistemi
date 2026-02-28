@@ -237,8 +237,8 @@
                 <div class="firma-grid">
                     <div>
                         <div class="firma-row">
-                            <div class="firma-label">TEKLİF TARİHİ</div>
-                            <div class="firma-value"><input type="date" id="teklifTarihi"></div>
+                            <div class="firma-label">TEKLİF TARİHİ <span style="color:#dc3545;">*</span></div>
+                            <div class="firma-value"><input type="date" id="teklifTarihi" required></div>
                         </div>
                         <div class="firma-row">
                             <div class="firma-label">TEKLİF NO</div>
@@ -485,9 +485,6 @@
             if (isAdmin) {
                 document.getElementById('kategoriYonetimBtn').style.display = 'inline-block';
             }
-
-            // Bugünün tarihini ayarla
-            document.getElementById('teklifTarihi').value = new Date().toISOString().split('T')[0];
 
             await Promise.all([loadMusteriler(), loadKategoriler()]);
 
@@ -878,6 +875,11 @@
         }
         
         async function teklifKaydet() {
+            const teklifTarihi = document.getElementById('teklifTarihi').value;
+            if (!teklifTarihi) {
+                showToast('Lütfen teklif tarihini girin', 'error');
+                return;
+            }
             const musteriId = document.getElementById('musteriSelect').value;
             if (!musteriId) {
                 showToast('Lütfen müşteri seçin', 'error');
@@ -900,6 +902,7 @@
 
             const data = {
                 customerId: parseInt(musteriId),
+                teklifTarihi: teklifTarihi,
                 gecerlilikGunu: 30,
                 kdvOrani: parseInt(document.getElementById('kdvOrani').value),
                 iskontoOran: iskontoOran,

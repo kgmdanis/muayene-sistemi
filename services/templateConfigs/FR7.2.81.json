@@ -1,8 +1,8 @@
 {
   "sablonKodu": "FR7.2.81",
   "sablonAdi": "Konveyör Bant Muayene ve Ölçüm Raporu",
-  "kategori": "makine tezgahlar",
-  "altKategori": "makine tezgahlar",
+  "kategori": "kaldırma iletme",
+  "altKategori": "kaldırma iletme",
   "raporNoPrefix": "MT",
   "sections": [
     {
@@ -280,7 +280,7 @@
     }
   ],
   "wordMapping": {
-    "templatePath": "templates/şablonlar/6- Makine Tezgahlar/FR7.2.81 Konveyör Bant Muayene ve Ölçüm Raporu.docx",
+    "templatePath": "templates/şablonlar/1. Kaldırma İletme/Konveyör Bant/FR7.2.81 Konveyör Bant Muayene ve Ölçüm Raporu-güncel.docx",
     "headerFile": "word/header2.xml",
     "fields": [
       {

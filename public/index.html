@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Periyodik Muayene Yönetim Sistemi - ÖNDER MUAYENE</title>
-    <link rel="stylesheet" href="/css/style.css?v=6">
+    <link rel="stylesheet" href="/css/style.css?v=7">
 </head>
 <body>
     <!-- Toast Bildirimleri -->
@@ -41,8 +41,11 @@
             <!-- Dashboard Sayfası -->
             <div id="page-dashboard" class="page-content active">
                 <div class="page-header">
-                    <h2>Dashboard</h2>
-                    <p>Genel Bakış ve İstatistikler</p>
+                    <div>
+                        <h2>Dashboard</h2>
+                        <p>Genel Bakış ve İstatistikler</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="sayfaYenile('dashboard')" title="Yenile">🔄 Yenile</button>
                 </div>
 
                 <!-- İstatistik Kartları -->
@@ -125,6 +128,7 @@
                         <p>Müşteri Yönetimi</p>
                     </div>
                     <div class="page-actions">
+                        <button class="btn btn-outline" onclick="sayfaYenile('musteriler')" title="Yenile">🔄 Yenile</button>
                         <button class="btn btn-outline" onclick="sablonIndir()">📥 Şablon İndir</button>
                         <button class="btn btn-secondary" onclick="excelIceAktar()">📤 Excel İçe Aktar</button>
                         <button class="btn btn-primary" onclick="yeniMusteriModal()">➕ Yeni Müşteri</button>
@@ -165,7 +169,10 @@
                         <h2 style="margin: 0; font-size: 32px; font-weight: 700; color: white;">📄 Teklifler</h2>
                         <p style="margin: 8px 0 0 0; font-size: 15px; opacity: 0.95; color: white;">Profesyonel teklif yönetimi ve takip sistemi</p>
                     </div>
-                    <div class="page-actions">
+                    <div class="page-actions" style="display:flex;gap:10px;">
+                        <button class="btn" onclick="sayfaYenile('teklifler')" title="Yenile" style="background: rgba(255,255,255,0.2); color: white; font-weight: 600; padding: 12px 20px;">
+                            🔄 Yenile
+                        </button>
                         <button class="btn btn-primary" onclick="yeniTeklifModal()" style="background: white; color: #667eea; font-weight: 600; padding: 12px 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                             ➕ Yeni Teklif Oluştur
                         </button>
@@ -209,6 +216,7 @@
             <div id="page-is-emirleri" class="page-content">
                 <div class="page-header">
                     <h2>İş Emirleri</h2>
+                    <button class="btn btn-outline" onclick="sayfaYenile('is-emirleri')" title="Yenile">🔄 Yenile</button>
                 </div>
 
                 <!-- Filtreler -->
@@ -232,8 +240,11 @@
             <!-- Görevlerim Sayfası (Tekniker için) -->
             <div id="page-gorevlerim" class="page-content">
                 <div class="page-header">
-                    <h2>📋 Görevlerim</h2>
-                    <p>Size atanan görevleri görüntüleyin ve yönetin</p>
+                    <div>
+                        <h2>📋 Görevlerim</h2>
+                        <p>Size atanan görevleri görüntüleyin ve yönetin</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="sayfaYenile('gorevlerim')" title="Yenile">🔄 Yenile</button>
                 </div>
 
                 <!-- Tab Filtreleri -->
@@ -260,8 +271,11 @@
             <!-- Sertifikalar Sayfası -->
             <div id="page-sertifikalar" class="page-content">
                 <div class="page-header">
-                    <h2>Sertifika Yönetimi</h2>
-                    <p>Muayene sertifikaları ve raporlar</p>
+                    <div>
+                        <h2>Sertifika Yönetimi</h2>
+                        <p>Muayene sertifikaları ve raporlar</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="sayfaYenile('sertifikalar')" title="Yenile">🔄 Yenile</button>
                 </div>
 
                 <div class="table-container">
@@ -312,46 +326,61 @@
                         <h2 style="margin: 0; font-size: 28px; font-weight: 700; color: white;">Raporlar</h2>
                         <p style="margin: 8px 0 0 0; font-size: 14px; opacity: 0.9; color: white;">Oluşturulan tüm raporları görüntüleyin ve yönetin</p>
                     </div>
+                    <button class="btn" onclick="sayfaYenile('raporlar')" title="Yenile" style="background: rgba(255,255,255,0.2); color: white; font-weight: 600; padding: 10px 20px;">🔄 Yenile</button>
+                </div>
+
+                <!-- Görünüm Seçici -->
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button id="rapor-view-grouped" class="filter-btn active" onclick="raporGorunumDegistir('grouped')" style="padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px;">📁 Klasörlü Görünüm</button>
+                    <button id="rapor-view-flat" class="filter-btn" onclick="raporGorunumDegistir('flat')" style="padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px;">📋 Liste Görünümü</button>
                 </div>
 
                 <!-- Filtreler -->
                 <div class="search-bar" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
-                    <input type="text" id="rapor-arama" placeholder="Rapor no, firma adı ile ara..." onkeyup="raporAra()" style="flex: 1; min-width: 250px;">
-                    <select id="rapor-tipi-filtre" onchange="raporlariYukle()" style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px;">
+                    <input type="text" id="rapor-arama" placeholder="Rapor no, firma adı, iş emri no ile ara..." onkeyup="raporAra()" style="flex: 1; min-width: 250px;">
+                    <select id="rapor-is-emri-filtre" onchange="raporFiltrele()" style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px;">
+                        <option value="">Tüm İş Emirleri</option>
+                    </select>
+                    <select id="rapor-tipi-filtre" onchange="raporFiltrele()" style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px;">
                         <option value="">Tüm Rapor Tipleri</option>
                         <option value="elektrik-topraklama">Elektrik Topraklama</option>
                         <option value="kompresör">Kompresör</option>
                     </select>
-                    <select id="rapor-durum-filtre" onchange="raporlariYukle()" style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px;">
+                    <select id="rapor-durum-filtre" onchange="raporFiltrele()" style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px;">
                         <option value="">Tüm Durumlar</option>
                         <option value="Tamamlandı">Tamamlandı</option>
                         <option value="Taslak">Taslak</option>
                     </select>
                 </div>
 
-                <!-- Rapor Listesi -->
-                <div class="table-container" style="background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden;">
-                    <table id="rapor-table" style="width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr style="background: #1a5d3a; color: white;">
-                                <th style="padding: 15px; text-align: left;">Rapor No</th>
-                                <th style="padding: 15px; text-align: left;">Rapor Tipi</th>
-                                <th style="padding: 15px; text-align: left;">Firma</th>
-                                <th style="padding: 15px; text-align: left;">Tarih</th>
-                                <th style="padding: 15px; text-align: center;">Sonuç</th>
-                                <th style="padding: 15px; text-align: center;">Durum</th>
-                                <th style="padding: 15px; text-align: center;">İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rapor-table-body">
-                            <tr>
-                                <td colspan="7" style="padding: 40px; text-align: center; color: #666;">
-                                    <div style="font-size: 48px; margin-bottom: 10px;">📋</div>
-                                    Yükleniyor...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Accordion Görünüm (Grouped) -->
+                <div id="rapor-accordion-container" style="display: block;"></div>
+
+                <!-- Düz Liste Görünümü (Flat) -->
+                <div id="rapor-flat-container" style="display: none;">
+                    <div class="table-container" style="background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); overflow: hidden;">
+                        <table id="rapor-table" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #1a5d3a; color: white;">
+                                    <th style="padding: 15px; text-align: left;">Rapor No</th>
+                                    <th style="padding: 15px; text-align: left;">Rapor Tipi</th>
+                                    <th style="padding: 15px; text-align: left;">Firma</th>
+                                    <th style="padding: 15px; text-align: left;">Tarih</th>
+                                    <th style="padding: 15px; text-align: center;">Sonuç</th>
+                                    <th style="padding: 15px; text-align: center;">Durum</th>
+                                    <th style="padding: 15px; text-align: center;">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rapor-table-body">
+                                <tr>
+                                    <td colspan="7" style="padding: 40px; text-align: center; color: #666;">
+                                        <div style="font-size: 48px; margin-bottom: 10px;">📋</div>
+                                        Yükleniyor...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Pagination -->
@@ -451,8 +480,11 @@
             <!-- Ayarlar Sayfası -->
             <div id="page-ayarlar" class="page-content">
                 <div class="page-header">
-                    <h2>Ayarlar</h2>
-                    <p>Sistem Ayarları ve Bilgileri</p>
+                    <div>
+                        <h2>Ayarlar</h2>
+                        <p>Sistem Ayarları ve Bilgileri</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="sayfaYenile('ayarlar')" title="Yenile">🔄 Yenile</button>
                 </div>
 
                 <div class="settings-container">
@@ -774,6 +806,6 @@
     <!-- Hidden File Input for Excel -->
     <input type="file" id="excel-file-input" accept=".xlsx,.xls" style="display: none;" onchange="excelDosyaYukle(event)">
 
-    <script src="app.js?v=6"></script>
+    <script src="app.js?v=8"></script>
 </body>
 </html>

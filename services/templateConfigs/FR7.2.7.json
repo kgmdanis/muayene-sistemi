@@ -200,6 +200,18 @@
           "label": "Deney sonrası ağız açıklığı(mm)",
           "type": "text",
           "placeholder": "Deney sonrası ağız açıklığı(mm)"
+        },
+        {
+          "id": "halat_kanca_tipi",
+          "label": "Kanca Tipi",
+          "type": "text",
+          "placeholder": "Tek kancalı / Çift kancalı"
+        },
+        {
+          "id": "halat_kanca_numarasi",
+          "label": "Kanca Numarası",
+          "type": "text",
+          "placeholder": "Kanca No"
         }
       ]
     },
@@ -219,6 +231,18 @@
           "label": "Statik Test Ağırlığı(kg)",
           "type": "text",
           "placeholder": "Statik Test Ağırlığı(kg)"
+        },
+        {
+          "id": "test_oncesi_kanca_agiz_acikligi_mm",
+          "label": "Test öncesi kanca ağız açıklığı (mm)",
+          "type": "text",
+          "placeholder": "Test öncesi kanca ağız açıklığı"
+        },
+        {
+          "id": "test_sonrasi_kanca_agiz_acikligi_mm",
+          "label": "Test sonrası kanca ağız açıklığı (mm)",
+          "type": "text",
+          "placeholder": "Test sonrası kanca ağız açıklığı"
         }
       ]
     },
@@ -226,7 +250,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "7 Kontrol",
+      "badge": "9 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -269,9 +293,9 @@
           "default": "Uygun"
         },
         {
-          "id": "kriter5",
+          "id": "kriter_kanca_durumu",
           "no": 5,
-          "text": "I.Yüksüz hareket",
+          "text": "Vinç kancasının durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -279,9 +303,9 @@
           "default": "Uygun"
         },
         {
-          "id": "kriter6",
+          "id": "kriter_kanca_mandali",
           "no": 6,
-          "text": "II. Yükte statik kontrol durumu",
+          "text": "Kanca emniyet mandalı durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -291,6 +315,26 @@
         {
           "id": "kriter7",
           "no": 7,
+          "text": "I.Yüksüz hareket",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "II. Yükte statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
           "text": "III.Yükte dinamik kontrol durumu",
           "options": [
             "Uygun",
@@ -436,6 +480,22 @@
         "field": "halat_deney_sonrasi_agiz_acikligi_mm"
       },
       {
+        "label": "Kanca Tipi",
+        "field": "halat_kanca_tipi"
+      },
+      {
+        "label": "Kanca Numarası",
+        "field": "halat_kanca_numarasi"
+      },
+      {
+        "label": "Test öncesi kanca ağız açıklığı (mm)",
+        "field": "test_oncesi_kanca_agiz_acikligi_mm"
+      },
+      {
+        "label": "Test sonrası kanca ağız açıklığı (mm)",
+        "field": "test_sonrasi_kanca_agiz_acikligi_mm"
+      },
+      {
         "label": "Dinamik Test Ağırlığı(kg)",
         "field": "test_dinamik_test_agirligi_kg"
       },
@@ -468,17 +528,27 @@
           "exact": true
         },
         {
-          "field": "kriter5",
-          "text": "I.Yüksüz hareket",
+          "field": "kriter_kanca_durumu",
+          "text": "Vinç kancasının durumu",
           "exact": true
         },
         {
-          "field": "kriter6",
-          "text": "II. Yükte statik kontrol",
+          "field": "kriter_kanca_mandali",
+          "text": "Kanca emniyet mandalı",
           "exact": true
         },
         {
           "field": "kriter7",
+          "text": "I.Yüksüz hareket",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "II. Yükte statik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
           "text": "III.Yükte dinamik kontrol durumu",
           "exact": true
         }

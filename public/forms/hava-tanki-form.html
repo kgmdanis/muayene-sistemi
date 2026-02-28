@@ -105,7 +105,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">SGK Sicil No</label><input type="text" id="sgkSicilNo" class="form-control" placeholder="SGK Sicil No"></div>
-                    <div class="form-group"><label class="form-label">ISG-KATIP Sozlesme ID</label><input type="text" id="isgKatipNo" class="form-control" placeholder="ISG-KATIP No"></div>
+                    <div class="form-group"><label class="form-label">ISG-KATIP Sozlesme ID</label><select id="isgKatipNo" class="form-control"><option value="">Seçiniz...</option></select></div>
                 </div>
             </div>
         </div>
@@ -441,6 +441,23 @@
             document.getElementById('firmaTelefon').value = customer.telefon || '';
             document.getElementById('firmaEmail').value = customer.email || '';
             document.getElementById('firmaWeb').value = customer.web || '';
+        }
+
+        function isgKatipSecenekleriniDoldur(firmaBilgi, seciliDeger) {
+            const sel = document.getElementById('isgKatipNo');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Seçiniz...</option>';
+            if (!firmaBilgi) return;
+            const katipIds = [
+                firmaBilgi.isgKatipId,
+                firmaBilgi.isgKatipId2,
+                firmaBilgi.isgKatipId3,
+                firmaBilgi.isgKatipId4
+            ].filter(v => v && v.trim());
+            katipIds.forEach((id, i) => {
+                sel.innerHTML += `<option value="${id}">${id}</option>`;
+            });
+            if (seciliDeger) sel.value = seciliDeger;
         }
 
         async function altGorevBilgileriniYukle(altGorevId) {

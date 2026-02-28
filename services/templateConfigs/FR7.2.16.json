@@ -128,16 +128,17 @@
           "placeholder": "-"
         },
         {
-          "id": "tekerlekli",
-          "label": "Tekerlekli",
+          "id": "kaldirma_yuksekligi_mm",
+          "label": "Kaldırma Yüksekliği (mm)",
           "type": "text",
-          "placeholder": "Tekerlekli"
+          "placeholder": "Kaldırma yüksekliği"
         },
         {
-          "id": "tekerleksiz",
-          "label": "Tekerleksiz",
-          "type": "text",
-          "placeholder": "Tekerleksiz"
+          "id": "kriko_tipi",
+          "label": "Kriko Tipi",
+          "type": "select",
+          "options": ["Tekerlekli", "Tekerleksiz"],
+          "placeholder": "Seçiniz"
         }
       ]
     },
@@ -179,7 +180,7 @@
         {
           "id": "kriter2",
           "no": 2,
-          "text": "Piston deformasyon ve çatlaklık durumu durumu",
+          "text": "Piston deformasyon ve çatlaklık durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -239,7 +240,7 @@
         {
           "id": "kriter8",
           "no": 8,
-          "text": "III.Yük altında dinanik kontrol durumu",
+          "text": "III.Yük altında dinamik kontrol durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -344,12 +345,12 @@
         "field": "i_mal_yili"
       },
       {
-        "label": "Tekerlekli",
-        "field": "tekerlekli"
+        "label": "Kaldırma Yüksekliği (mm)",
+        "field": "kaldirma_yuksekligi_mm"
       },
       {
-        "label": "Tekerleksiz",
-        "field": "tekerleksiz"
+        "label": "Tekerlekli",
+        "field": "kriko_tipi"
       },
       {
         "label": "Dinamik Test Ağırlığı(kg)",
@@ -400,7 +401,7 @@
         },
         {
           "field": "kriter8",
-          "text": "III.Yük altında dinanik kontrol",
+          "text": "III.Yük altında dinamik kontrol",
           "exact": true
         }
       ]

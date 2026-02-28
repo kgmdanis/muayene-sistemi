@@ -106,7 +106,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">SGK Sicil No</label><input type="text" id="sgkSicilNo" class="form-control" placeholder="SGK Sicil No"></div>
-                    <div class="form-group"><label class="form-label">İSG-KATİP Sözleşme ID</label><input type="text" id="isgKatipNo" class="form-control" placeholder="İSG-KATİP No"></div>
+                    <div class="form-group"><label class="form-label">İSG-KATİP Sözleşme ID</label><select id="isgKatipNo" class="form-control"><option value="">Seçiniz...</option></select></div>
                 </div>
             </div>
         </div>
@@ -343,6 +343,7 @@
                 const res = await fetch(`${API_BASE}/is-emirleri/${id}`);
                 const ie = await res.json();
                 firmaBilgileriniDoldur(ie.customer);
+                isgKatipSecenekleriniDoldur(ie.firmaBilgi, null);
                 const sel = document.getElementById('altGorevSelect');
                 sel.innerHTML = '<option value="">Alt Görev Seçin...</option>';
                 (ie.altGorevler || []).forEach(g => { sel.innerHTML += `<option value="${g.id}">${g.siraNo}. ${g.hizmetAdi}</option>`; });

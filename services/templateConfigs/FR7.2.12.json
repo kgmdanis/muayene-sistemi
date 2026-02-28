@@ -172,6 +172,36 @@
       ]
     },
     {
+      "id": "test",
+      "title": "Test Değerleri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "test_dinamik_test_agirligi_kg",
+          "label": "Dinamik Test Ağırlığı (kg)",
+          "type": "text",
+          "placeholder": "Dinamik Test Ağırlığı"
+        },
+        {
+          "id": "test_statik_test_agirligi_kg",
+          "label": "Statik Test Ağırlığı (kg)",
+          "type": "text",
+          "placeholder": "Statik Test Ağırlığı"
+        },
+        {
+          "id": "test_tarihi",
+          "label": "Test Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "test_suresi_dk",
+          "label": "Test Süresi (dk)",
+          "type": "text",
+          "placeholder": "Test süresi"
+        }
+      ]
+    },
+    {
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
@@ -250,7 +280,7 @@
         {
           "id": "kriter8",
           "no": 8,
-          "text": "III.Yük altında dinanik kontrol durumu",
+          "text": "III.Yük altında dinamik kontrol durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -391,6 +421,23 @@
       {
         "label": "Mekanik",
         "field": "mekanik"
+      },
+      {
+        "label": "Dinamik Test Ağırlığı (kg)",
+        "field": "test_dinamik_test_agirligi_kg"
+      },
+      {
+        "label": "Statik Test Ağırlığı (kg)",
+        "field": "test_statik_test_agirligi_kg"
+      },
+      {
+        "label": "Test Tarihi",
+        "field": "test_tarihi",
+        "format": "date"
+      },
+      {
+        "label": "Test Süresi (dk)",
+        "field": "test_suresi_dk"
       }
     ],
     "controlQuestions": {
@@ -433,7 +480,7 @@
         },
         {
           "field": "kriter8",
-          "text": "III.Yük altında dinanik kontrol",
+          "text": "III.Yük altında dinamik kontrol",
           "exact": true
         },
         {

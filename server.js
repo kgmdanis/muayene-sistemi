@@ -56,6 +56,34 @@ const sertifikaUpload = multer({
     }
 });
 
+// Sistem dosyaları için multer konfigürasyonu
+const dosyaStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadDir = path.join(__dirname, 'public', 'uploads', 'dosyalar');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        cb(null, 'dosya-' + uniqueSuffix + ext);
+    }
+});
+const dosyaUpload = multer({
+    storage: dosyaStorage,
+    limits: { fileSize: 20 * 1024 * 1024 }, // 20MB limit
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Sadece PDF ve resim dosyaları yüklenebilir'));
+        }
+    }
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -699,7 +727,7 @@ app.get('/api/teklifler/:id', auth.authMiddleware('admin'), async (req, res) => 
 // Teklif oluştur (Sadece Admin)
 app.post('/api/teklifler', auth.authMiddleware('admin'), async (req, res) => {
     try {
-        const { customerId, teklifNo, konu, detaylar, iskontoOran, kdvOrani: girilenKdvOrani, notlar, onayTelefon, sahadaOnay, gecerlilikGun } = req.body;
+        const { customerId, teklifNo, teklifTarihi, konu, detaylar, iskontoOran, kdvOrani: girilenKdvOrani, notlar, onayTelefon, sahadaOnay, gecerlilikGun } = req.body;
 
         if (!customerId) {
             return res.status(400).json({ error: 'Müşteri seçilmedi' });
@@ -743,6 +771,7 @@ app.post('/api/teklifler', auth.authMiddleware('admin'), async (req, res) => {
         const teklif = await auth.prisma.teklif.create({
             data: {
                 teklifNo: finalTeklifNo,
+                teklifTarihi: teklifTarihi ? new Date(teklifTarihi) : new Date(),
                 customerId: parseInt(customerId),
                 konu: konu || 'PERİYODİK KONTROL VE İŞ HİJYENİ ÖLÇÜM FİYAT TEKLİFİ',
                 gecerlilikGun: gecerlilikGun || 30,
@@ -772,6 +801,7 @@ app.post('/api/teklifler', auth.authMiddleware('admin'), async (req, res) => {
 // Durum Türkçe → Enum dönüşümü
 const teklifDurumMap = {
     'Taslak': 'TASLAK',
+    'Bekleyen': 'TASLAK',
     'Gönderildi': 'GONDERILDI',
     'Onaylandı': 'ONAYLANDI',
     'Reddedildi': 'REDDEDILDI',
@@ -788,7 +818,7 @@ const teklifDurumMap = {
 app.put('/api/teklifler/:id', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const { customerId, konu, detaylar, iskontoOran, kdvOrani: girilenKdvOrani, notlar, onayTelefon, sahadaOnay, durum, gecerlilikGun } = req.body;
+        const { customerId, teklifTarihi, konu, detaylar, iskontoOran, kdvOrani: girilenKdvOrani, notlar, onayTelefon, sahadaOnay, durum, gecerlilikGun } = req.body;
 
         // Önce mevcut detayları sil
         await auth.prisma.teklifDetay.deleteMany({ where: { teklifId: id } });
@@ -825,6 +855,7 @@ app.put('/api/teklifler/:id', auth.authMiddleware('admin'), async (req, res) => 
             where: { id },
             data: {
                 customerId: customerId ? parseInt(customerId) : undefined,
+                teklifTarihi: teklifTarihi ? new Date(teklifTarihi) : undefined,
                 konu: konu || undefined,
                 gecerlilikGun: gecerlilikGun || undefined,
                 araToplam,
@@ -1032,7 +1063,7 @@ app.get('/api/teklifler/:id/excel', auth.authMiddleware('admin'), async (req, re
             ['TEKLİF FORMU'],
             [],
             ['Teklif No:', teklif.teklifNo],
-            ['Tarih:', new Date(teklif.tarih).toLocaleDateString('tr-TR')],
+            ['Tarih:', new Date(teklif.teklifTarihi).toLocaleDateString('tr-TR')],
             ['Müşteri:', teklif.customer.unvan],
             [],
             ['HİZMETLER'],
@@ -1752,7 +1783,7 @@ app.get('/api/alt-gorevler/:id', auth.authMiddleware(), async (req, res) => {
     try {
         const altGorev = await auth.prisma.altGorev.findUnique({
             where: { id: parseInt(req.params.id) },
-            include: { personel: { select: { id: true, adSoyad: true, unvan: true, kategori: true, email: true } }, hizmet: true }
+            include: { personel: { select: { id: true, adSoyad: true, unvan: true, kategori: true, email: true } }, hizmet: true, isEmri: { include: { customer: true, firmaBilgi: true } } }
         });
         if (!altGorev) {
             return res.status(404).json({ error: 'Alt görev bulunamadı' });
@@ -2823,6 +2854,31 @@ app.get('/api/raporlar', async (req, res) => {
 
         const formattedRaporlar = [...formattedElektrik, ...formattedKompresor, ...formattedHavaTanki, ...formattedGeneric]
             .sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
+
+        // Grouped mode: iş emri bazlı gruplama
+        if (req.query.grouped === 'true') {
+            const grouped = {};
+            for (const rapor of formattedRaporlar) {
+                const key = rapor.isEmriNo || 'Bilinmiyor';
+                if (!grouped[key]) {
+                    // İlgili iş emri bilgilerini al
+                    const isEmriData = rapor.isEmriNo !== '-' ? await auth.prisma.isEmri.findFirst({
+                        where: { isEmriNo: rapor.isEmriNo },
+                        include: { customer: { select: { unvan: true } } }
+                    }) : null;
+                    grouped[key] = {
+                        isEmriNo: rapor.isEmriNo,
+                        isEmriId: isEmriData?.id || null,
+                        musteri: isEmriData?.customer?.unvan || rapor.firmaAdi || '-',
+                        durum: isEmriData?.durum || '-',
+                        planliTarih: isEmriData?.planliTarih || null,
+                        raporlar: []
+                    };
+                }
+                grouped[key].raporlar.push(rapor);
+            }
+            return res.json(Object.values(grouped));
+        }
 
         res.json(formattedRaporlar);
     } catch (error) {
@@ -3963,6 +4019,81 @@ async function generateWordBuffer(raporTipi, raporId, body) {
     }
 }
 
+// Word buffer'ı PDF'e çevir (font fix + margin fix + LibreOffice)
+async function wordBufferToPdf(wordBuffer, label) {
+    const JSZip = require('jszip');
+    const zip = await JSZip.loadAsync(wordBuffer);
+    const fontMap = {
+        'Tahoma': 'Carlito',
+        'Segoe UI': 'Carlito',
+        'Comic Sans MS': 'Carlito',
+        'Helvetica': 'Liberation Sans'
+    };
+
+    for (const fileName of Object.keys(zip.files)) {
+        if (fileName.endsWith('.xml')) {
+            let content = await zip.file(fileName).async('string');
+
+            // Font değiştirme
+            for (const [oldFont, newFont] of Object.entries(fontMap)) {
+                if (content.includes(oldFont)) {
+                    content = content.split(oldFont).join(newFont);
+                }
+            }
+
+            // Font boyutlarını %5 küçült
+            content = content.replace(/w:sz="(\d+)"/g, (m, size) => {
+                return 'w:sz="' + Math.max(8, Math.round(parseInt(size) * 0.95)) + '"';
+            });
+            content = content.replace(/w:szCs="(\d+)"/g, (m, size) => {
+                return 'w:szCs="' + Math.max(8, Math.round(parseInt(size) * 0.95)) + '"';
+            });
+
+            // Sayfa marjinlerini minimize et
+            if (fileName === 'word/document.xml') {
+                content = content.replace(/<w:pgMar([^/]*)\/>/,(match, attrs) => {
+                    attrs = attrs.replace(/w:bottom="\d+"/, 'w:bottom="0"');
+                    attrs = attrs.replace(/w:top="\d+"/, 'w:top="284"');
+                    attrs = attrs.replace(/w:header="\d+"/, 'w:header="0"');
+                    attrs = attrs.replace(/w:footer="\d+"/, 'w:footer="0"');
+                    return '<w:pgMar' + attrs + '/>';
+                });
+            }
+
+            zip.file(fileName, content);
+        }
+    }
+
+    const fixedBuffer = await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
+
+    const tmpDir = path.join(__dirname, 'tmp');
+    if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+    const tmpFile = path.join(tmpDir, `pdf-${label || 'doc'}-${Date.now()}.docx`);
+    fs.writeFileSync(tmpFile, fixedBuffer);
+
+    try {
+        execSync(`libreoffice --headless --norestore --convert-to pdf --outdir "${tmpDir}" "${tmpFile}"`, {
+            timeout: 60000,
+            stdio: 'pipe',
+            env: { ...process.env, HOME: '/tmp' }
+        });
+    } catch (loError) {
+        if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+        throw new Error('PDF dönüştürme hatası: ' + loError.message);
+    }
+
+    const pdfFile = tmpFile.replace('.docx', '.pdf');
+    if (!fs.existsSync(pdfFile)) {
+        if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+        throw new Error('PDF dosyası oluşturulamadı');
+    }
+
+    const pdfBuffer = fs.readFileSync(pdfFile);
+    fs.unlinkSync(tmpFile);
+    fs.unlinkSync(pdfFile);
+    return pdfBuffer;
+}
+
 // Rapor önizleme (Word → HTML via mammoth)
 app.post('/api/rapor-onizleme/:raporTipi/:id', async (req, res) => {
     try {
@@ -3975,87 +4106,11 @@ app.post('/api/rapor-onizleme/:raporTipi/:id', async (req, res) => {
     }
 });
 
-// Rapor PDF (Word → PDF via LibreOffice)
+// Rapor PDF (Word → PDF via LibreOffice) - ortak fonksiyon kullanır
 app.post('/api/rapor-pdf/:raporTipi/:id', async (req, res) => {
     try {
         const wordBuffer = await generateWordBuffer(req.params.raporTipi, req.params.id, req.body);
-
-        // PDF uyumluluğu: docx içindeki fontları değiştir, font boyutlarını %5 küçült, marjinleri ayarla
-        const JSZip = require('jszip');
-        const zip = await JSZip.loadAsync(wordBuffer);
-        const fontMap = {
-            'Tahoma': 'Carlito',
-            'Segoe UI': 'Carlito',
-            'Comic Sans MS': 'Carlito',
-            'Helvetica': 'Liberation Sans'
-        };
-
-        for (const fileName of Object.keys(zip.files)) {
-            if (fileName.endsWith('.xml')) {
-                let content = await zip.file(fileName).async('string');
-
-                // Font değiştirme
-                for (const [oldFont, newFont] of Object.entries(fontMap)) {
-                    if (content.includes(oldFont)) {
-                        content = content.split(oldFont).join(newFont);
-                    }
-                }
-
-                // Font boyutlarını %5 küçült (LibreOffice'un farklı font metrikleri için)
-                content = content.replace(/w:sz="(\d+)"/g, (m, size) => {
-                    return 'w:sz="' + Math.max(8, Math.round(parseInt(size) * 0.95)) + '"';
-                });
-                content = content.replace(/w:szCs="(\d+)"/g, (m, size) => {
-                    return 'w:szCs="' + Math.max(8, Math.round(parseInt(size) * 0.95)) + '"';
-                });
-
-                // Sayfa marjinlerini minimize et (1 sayfaya sığdırma)
-                if (fileName === 'word/document.xml') {
-                    content = content.replace(/<w:pgMar([^/]*)\/>/,(match, attrs) => {
-                        attrs = attrs.replace(/w:bottom="\d+"/, 'w:bottom="0"');
-                        attrs = attrs.replace(/w:top="\d+"/, 'w:top="284"');
-                        attrs = attrs.replace(/w:header="\d+"/, 'w:header="0"');
-                        attrs = attrs.replace(/w:footer="\d+"/, 'w:footer="0"');
-                        return '<w:pgMar' + attrs + '/>';
-                    });
-                }
-
-                zip.file(fileName, content);
-            }
-        }
-
-        const fixedBuffer = await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
-
-        // Temp dosyaları oluştur
-        const tmpDir = path.join(__dirname, 'tmp');
-        if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
-        const tmpFile = path.join(tmpDir, `rapor-${req.params.id}-${Date.now()}.docx`);
-        fs.writeFileSync(tmpFile, fixedBuffer);
-
-        // LibreOffice ile PDF'e dönüştür
-        try {
-            execSync(`libreoffice --headless --norestore --convert-to pdf --outdir "${tmpDir}" "${tmpFile}"`, {
-                timeout: 60000,
-                stdio: 'pipe',
-                env: { ...process.env, HOME: '/tmp' }
-            });
-        } catch (loError) {
-            // Cleanup
-            if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
-            throw new Error('PDF dönüştürme hatası: ' + loError.message);
-        }
-
-        const pdfFile = tmpFile.replace('.docx', '.pdf');
-        if (!fs.existsSync(pdfFile)) {
-            if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
-            throw new Error('PDF dosyası oluşturulamadı');
-        }
-
-        const pdfBuffer = fs.readFileSync(pdfFile);
-
-        // Cleanup
-        fs.unlinkSync(tmpFile);
-        fs.unlinkSync(pdfFile);
+        const pdfBuffer = await wordBufferToPdf(wordBuffer, `rapor-${req.params.id}`);
 
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename="Rapor_${req.params.id}.pdf"`);
@@ -4245,6 +4300,285 @@ app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
     } catch (error) {
         console.error('Word dosyası oluşturma hatası:', error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ SİSTEM DOSYA API ============
+
+const pdfMergeService = require('./services/pdfMergeService');
+
+// Dosya yükle
+app.post('/api/sistem-dosya', dosyaUpload.single('dosya'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'Dosya yüklenmedi' });
+        }
+
+        const { dosyaTipi, kategori, aciklama, personelId, isEmriId } = req.body;
+
+        const dosya = await auth.prisma.sistemDosya.create({
+            data: {
+                dosyaAdi: req.file.originalname,
+                dosyaYolu: '/uploads/dosyalar/' + req.file.filename,
+                dosyaTipi: dosyaTipi || 'diger',
+                kategori: kategori || null,
+                aciklama: aciklama || null,
+                personelId: personelId ? parseInt(personelId) : null,
+                isEmriId: isEmriId ? parseInt(isEmriId) : null
+            }
+        });
+
+        res.json(dosya);
+    } catch (error) {
+        console.error('Dosya yükleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Dosya listele (filtrelenebilir)
+app.get('/api/sistem-dosya', async (req, res) => {
+    try {
+        const { dosyaTipi, personelId, isEmriId } = req.query;
+        const where = {};
+        if (dosyaTipi) where.dosyaTipi = dosyaTipi;
+        if (personelId) where.personelId = parseInt(personelId);
+        if (isEmriId) where.isEmriId = parseInt(isEmriId);
+
+        const dosyalar = await auth.prisma.sistemDosya.findMany({
+            where,
+            include: {
+                personel: { select: { id: true, adSoyad: true } },
+                isEmri: { select: { id: true, isEmriNo: true } }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        res.json(dosyalar);
+    } catch (error) {
+        console.error('Dosya listeleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Dosya sil
+app.delete('/api/sistem-dosya/:id', async (req, res) => {
+    try {
+        const dosya = await auth.prisma.sistemDosya.findUnique({
+            where: { id: parseInt(req.params.id) }
+        });
+
+        if (!dosya) {
+            return res.status(404).json({ error: 'Dosya bulunamadı' });
+        }
+
+        // Fiziksel dosyayı sil
+        const filePath = path.join(__dirname, 'public', dosya.dosyaYolu);
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+
+        // DB kaydını sil
+        await auth.prisma.sistemDosya.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Dosya silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ İŞ EMRİ DOSYA TOPLAMA ============
+
+// İş emrine ait tüm dosyaları topla
+app.get('/api/is-emirleri/:id/dosyalar', async (req, res) => {
+    try {
+        const isEmriId = parseInt(req.params.id);
+
+        // İş emri ve alt görevlerini getir
+        const isEmri = await auth.prisma.isEmri.findUnique({
+            where: { id: isEmriId },
+            include: {
+                customer: true,
+                altGorevler: {
+                    include: {
+                        personel: true,
+                        elektrikTopraklamaRaporu: true,
+                        kompresorRaporlari: true,
+                        havaTankiRaporlari: true,
+                        raporlar: true
+                    }
+                }
+            }
+        });
+
+        if (!isEmri) {
+            return res.status(404).json({ error: 'İş emri bulunamadı' });
+        }
+
+        // 1. Kapak dosyaları
+        const kapaklar = await auth.prisma.sistemDosya.findMany({
+            where: { dosyaTipi: 'kapak', isEmriId }
+        });
+
+        // 2. Raporlar - tüm alt görevlerdeki raporları topla
+        const raporlar = [];
+        for (const ag of isEmri.altGorevler) {
+            for (const r of (ag.elektrikTopraklamaRaporu || [])) {
+                raporlar.push({ id: r.id, raporNo: r.raporNo, raporTipi: 'elektrik-topraklama', tip: 'Elektrik Topraklama', altGorevId: ag.id });
+            }
+            for (const r of (ag.kompresorRaporlari || [])) {
+                raporlar.push({ id: r.id, raporNo: r.raporNo, raporTipi: 'kompresor', tip: 'Kompresör', altGorevId: ag.id });
+            }
+            for (const r of (ag.havaTankiRaporlari || [])) {
+                raporlar.push({ id: r.id, raporNo: r.raporNo, raporTipi: 'hava-tanki', tip: 'Hava Tankı', altGorevId: ag.id });
+            }
+            for (const r of (ag.raporlar || [])) {
+                raporlar.push({ id: r.id, raporNo: r.raporNo, raporTipi: r.sablonKodu, tip: r.sablonKodu, altGorevId: ag.id, isGeneric: true });
+            }
+        }
+
+        // 3. Kalibrasyon sertifikaları - raporlarda kullanılan cihazlar
+        const cihazIds = new Set();
+        for (const ag of isEmri.altGorevler) {
+            for (const r of (ag.elektrikTopraklamaRaporu || [])) {
+                if (r.topraklamaCihazId) cihazIds.add(r.topraklamaCihazId);
+                if (r.devreCihazId) cihazIds.add(r.devreCihazId);
+                if (r.rcdCihazId) cihazIds.add(r.rcdCihazId);
+            }
+        }
+
+        const kalibrasyonlar = [];
+        if (cihazIds.size > 0) {
+            const cihazlar = await auth.prisma.olcumCihazi.findMany({
+                where: { id: { in: Array.from(cihazIds) } }
+            });
+            for (const c of cihazlar) {
+                if (c.sertifikaDosya) {
+                    kalibrasyonlar.push({
+                        cihazId: c.id,
+                        cihazAdi: c.cihazAdi,
+                        marka: c.marka,
+                        model: c.model,
+                        seriNo: c.seriNo,
+                        dosyaYolu: c.sertifikaDosya
+                    });
+                }
+            }
+        }
+
+        // 4. Eğitim sertifikaları - alt görevlere atanan personellerin dosyaları
+        const personelIds = [...new Set(isEmri.altGorevler.map(ag => ag.personelId).filter(Boolean))];
+        const egitimSertifikalari = personelIds.length > 0 ? await auth.prisma.sistemDosya.findMany({
+            where: { dosyaTipi: 'egitim', personelId: { in: personelIds } },
+            include: { personel: { select: { id: true, adSoyad: true } } }
+        }) : [];
+
+        // 5. İş emrine bağlı diğer dosyalar
+        const digerDosyalar = await auth.prisma.sistemDosya.findMany({
+            where: { isEmriId, dosyaTipi: { notIn: ['kapak'] } }
+        });
+
+        res.json({
+            isEmriNo: isEmri.isEmriNo,
+            musteri: isEmri.customer?.unvan,
+            kapaklar,
+            raporlar,
+            kalibrasyonlar,
+            egitimSertifikalari,
+            digerDosyalar
+        });
+    } catch (error) {
+        console.error('İş emri dosya toplama hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ PDF BİRLEŞTİRME ============
+
+// PDF birleştir
+app.post('/api/is-emirleri/:id/pdf-birlestir', async (req, res) => {
+    try {
+        // Uzun sürebilir, timeout'u artır (5 dk)
+        req.setTimeout(300000);
+        res.setTimeout(300000);
+
+        const isEmriId = parseInt(req.params.id);
+        const { dosyaSirasi } = req.body;
+
+        console.log(`PDF birleştirme başladı - İş Emri: ${isEmriId}, Dosya sayısı: ${dosyaSirasi?.length || 0}`);
+
+        if (!dosyaSirasi || !Array.isArray(dosyaSirasi) || dosyaSirasi.length === 0) {
+            return res.status(400).json({ error: 'Birleştirilecek dosya listesi gerekli' });
+        }
+
+        const pdfBuffers = [];
+
+        for (let i = 0; i < dosyaSirasi.length; i++) {
+            const item = dosyaSirasi[i];
+            console.log(`  [${i+1}/${dosyaSirasi.length}] İşleniyor: tip=${item.tip}, id=${item.id || item.raporId || item.dosyaId || item.cihazId}`);
+            try {
+                if (item.tip === 'rapor') {
+                    // Rapor → Word → PDF (font fix + margin fix + LibreOffice)
+                    const wordBuffer = await generateWordBuffer(item.raporTipi, item.raporId || item.id, { tekniker: {} });
+                    pdfBuffers.push(await wordBufferToPdf(wordBuffer, `merge-rapor-${item.id || item.raporId}`));
+                } else if (item.tip === 'kalibrasyon') {
+                    // Kalibrasyon sertifikası - cihazdan dosya yolu al
+                    const cihaz = await auth.prisma.olcumCihazi.findUnique({
+                        where: { id: parseInt(item.cihazId) }
+                    });
+                    if (cihaz?.sertifikaDosya) {
+                        const filePath = path.join(__dirname, 'public', cihaz.sertifikaDosya);
+                        if (fs.existsSync(filePath)) {
+                            pdfBuffers.push(await pdfMergeService.fileToPdfBuffer(filePath));
+                        }
+                    }
+                } else if (item.tip === 'kapak' || item.tip === 'egitim' || item.tip === 'dosya') {
+                    // SistemDosya tablosundan
+                    const dosyaId = item.dosyaId || item.id;
+                    const dosya = await auth.prisma.sistemDosya.findUnique({
+                        where: { id: parseInt(dosyaId) }
+                    });
+                    if (dosya?.dosyaYolu) {
+                        const filePath = path.join(__dirname, 'public', dosya.dosyaYolu);
+                        if (fs.existsSync(filePath)) {
+                            pdfBuffers.push(await pdfMergeService.fileToPdfBuffer(filePath));
+                        }
+                    }
+                }
+            } catch (itemErr) {
+                console.error(`Dosya birleştirme hatası (${item.tip}):`, itemErr.message);
+                // Hatalı dosyayı atla, devam et
+            }
+        }
+
+        console.log(`  Toplam ${pdfBuffers.length} PDF buffer hazır`);
+
+        if (pdfBuffers.length === 0) {
+            return res.status(400).json({ error: 'Birleştirilecek geçerli dosya bulunamadı' });
+        }
+
+        const mergedPdf = await pdfMergeService.mergePdfs(pdfBuffers);
+        console.log(`  Birleştirilmiş PDF boyutu: ${mergedPdf.length} bytes`);
+
+        // İş emri no'yu al
+        const isEmri = await auth.prisma.isEmri.findUnique({
+            where: { id: isEmriId },
+            select: { isEmriNo: true }
+        });
+        const filename = `${isEmri?.isEmriNo || 'Rapor'}_Birlesik_${Date.now()}.pdf`;
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.setHeader('Content-Length', mergedPdf.length);
+        res.send(mergedPdf);
+        console.log(`PDF birleştirme tamamlandı: ${filename}`);
+    } catch (error) {
+        console.error('PDF birleştirme hatası:', error);
+        if (!res.headersSent) {
+            res.status(500).json({ error: error.message });
+        }
     }
 });
 
