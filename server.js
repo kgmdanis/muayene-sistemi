@@ -2599,10 +2599,20 @@ app.get('/api/is-emirleri/:id/firma-bilgi', auth.authMiddleware(), async (req, r
 app.post('/api/is-emirleri/:id/firma-bilgi', auth.authMiddleware(), async (req, res) => {
     try {
         const isEmriId = parseInt(req.params.id);
+        // Sadece IsEmriFirmaBilgi modeline ait alanları filtrele
+        const allowedFields = [
+            'sgkSicilNo', 'isgKatipId', 'isgKatipId2', 'isgKatipId3', 'isgKatipId4',
+            'enerjiKurulusu', 'basvuruNo', 'makineOperatoru', 'kaynak',
+            'ortamNemi', 'ortamSicaklik', 'olcumYapanAdi', 'olcumTarihi'
+        ];
+        const data = {};
+        allowedFields.forEach(field => {
+            if (req.body[field] !== undefined) data[field] = req.body[field];
+        });
         const firmaBilgi = await auth.prisma.isEmriFirmaBilgi.upsert({
             where: { isEmriId: isEmriId },
-            update: req.body,
-            create: { ...req.body, isEmriId: isEmriId }
+            update: data,
+            create: { ...data, isEmriId: isEmriId }
         });
         res.json(firmaBilgi);
     } catch (error) {
@@ -2806,6 +2816,42 @@ app.get('/api/raporlar', async (req, res) => {
             isEmriNo: r.altGorev?.isEmri?.isEmriNo || '-'
         }));
 
+        // İç tesisat raporları
+        const whereIcTesisat = {};
+        if (role === 'tekniker' && kategori) {
+            whereIcTesisat.altGorev = {
+                hizmetAdi: { contains: kategori, mode: 'insensitive' }
+            };
+        }
+
+        const icTesisatRaporlar = await auth.prisma.elektrikIcTesisatRaporu.findMany({
+            where: whereIcTesisat,
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: { customer: true }
+                        }
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        const formattedIcTesisat = icTesisatRaporlar.map(r => ({
+            id: r.id,
+            raporNo: r.raporNo,
+            raporTipi: 'Elektrik İç Tesisat',
+            firmaAdi: r.altGorev?.isEmri?.customer?.unvan || '-',
+            tarih: r.createdAt,
+            baslangicTarihi: r.baslangicTarihi,
+            bitisTarihi: r.bitisTarihi,
+            sonuc: r.genelSonuc || '-',
+            durum: r.genelSonuc ? 'Tamamlandı' : 'Taslak',
+            altGorevId: r.altGorevId,
+            isEmriNo: r.altGorev?.isEmri?.isEmriNo || '-'
+        }));
+
         // Generic raporlar (Rapor modeli - config-driven şablonlar)
         const whereGeneric = {};
         if (role === 'tekniker' && kategori) {
@@ -2852,7 +2898,7 @@ app.get('/api/raporlar', async (req, res) => {
             };
         });
 
-        const formattedRaporlar = [...formattedElektrik, ...formattedKompresor, ...formattedHavaTanki, ...formattedGeneric]
+        const formattedRaporlar = [...formattedElektrik, ...formattedIcTesisat, ...formattedKompresor, ...formattedHavaTanki, ...formattedGeneric]
             .sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
 
         // Grouped mode: iş emri bazlı gruplama
@@ -3074,23 +3120,24 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/ekipman-bilgi', async (req, r
 app.post('/api/elektrik-topraklama-raporu/:raporId/olcum', async (req, res) => {
     try {
         const raporId = parseInt(req.params.raporId);
-        const { anmaAkimi, sigortaTipi, zx, ...data } = req.body;
+        const { anmaAkimi, sigortaTipi, zx, yerTipi, sebekeTipi, ...data } = req.body;
 
-        // Formül hesaplamaları
+        // Formül hesaplamaları (TS HD 60364-4-41)
         let ia = null, zs = null, ra = null, ik = null;
 
         if (anmaAkimi && sigortaTipi) {
             const In = parseFloat(anmaAkimi);
-            // Ia hesapla: B=In×5, C=In×10, D=In×20
+            // Ia hesapla: B=In×5, C=In×10, D=In×20, TMS=In×10
             if (sigortaTipi === 'B') ia = In * 5;
             else if (sigortaTipi === 'C') ia = In * 10;
             else if (sigortaTipi === 'D') ia = In * 20;
+            else if (sigortaTipi === 'TMS') ia = In * 10;
 
             if (ia) {
                 // Zs = 230 / Ia (TN sistemi için)
                 zs = 230 / ia;
-                // RA = 50 / Ia (TT sistemi için)
-                ra = 50 / ia;
+                // RA = 50/Ia veya 25/Ia (TT sistemi, yer tipine göre)
+                ra = (yerTipi === 'TEHLIKELI') ? 25 / ia : 50 / ia;
             }
         }
 
@@ -3106,10 +3153,19 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/olcum', async (req, res) => {
         });
         const siraNo = sonOlcum ? sonOlcum.siraNo + 1 : 1;
 
-        // Sonuç hesapla
+        // RCD bazlı RA hesaplama
+        const { rcdVarMi: rcdVarBody, rcdIAn: rcdIAnBody } = data;
+        if (rcdVarBody && rcdIAnBody && parseFloat(rcdIAnBody) > 0) {
+            const ideltaA = parseFloat(rcdIAnBody) / 1000;
+            ra = (yerTipi === 'TEHLIKELI') ? 25 / ideltaA : 50 / ideltaA;
+        }
+
         let sonuc = null;
-        if (zx && zs) {
-            sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
+        const isTT = (sebekeTipi || '').toUpperCase() === 'TT';
+        if (isTT) {
+            if (zx && ra) sonuc = parseFloat(zx) <= ra ? 'UYGUN' : 'UYGUN_DEGIL';
+        } else {
+            if (zx && zs) sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
         }
 
         // Sadece geçerli alanları al - HTML'den gelen olcumNoktasi'nı tabloAdi'ye map et
@@ -3147,9 +3203,9 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/olcum', async (req, res) => {
 // Detaylı ölçüm güncelle
 app.put('/api/elektrik-topraklama-olcum/:id', async (req, res) => {
     try {
-        const { anmaAkimi, sigortaTipi, zx, ...data } = req.body;
+        const { anmaAkimi, sigortaTipi, zx, yerTipi, sebekeTipi, ...data } = req.body;
 
-        // Formül hesaplamaları
+        // Formül hesaplamaları (TS HD 60364-4-41)
         let ia = null, zs = null, ra = null, ik = null;
 
         if (anmaAkimi && sigortaTipi) {
@@ -3157,10 +3213,11 @@ app.put('/api/elektrik-topraklama-olcum/:id', async (req, res) => {
             if (sigortaTipi === 'B') ia = In * 5;
             else if (sigortaTipi === 'C') ia = In * 10;
             else if (sigortaTipi === 'D') ia = In * 20;
+            else if (sigortaTipi === 'TMS') ia = In * 10;
 
             if (ia) {
                 zs = 230 / ia;
-                ra = 50 / ia;
+                ra = (yerTipi === 'TEHLIKELI') ? 25 / ia : 50 / ia;
             }
         }
 
@@ -3168,9 +3225,19 @@ app.put('/api/elektrik-topraklama-olcum/:id', async (req, res) => {
             ik = 230 / parseFloat(zx);
         }
 
+        // RCD bazlı RA hesaplama
+        const { rcdVarMi: rcdVarBody2, rcdIAn: rcdIAnBody2 } = data;
+        if (rcdVarBody2 && rcdIAnBody2 && parseFloat(rcdIAnBody2) > 0) {
+            const ideltaA = parseFloat(rcdIAnBody2) / 1000;
+            ra = (yerTipi === 'TEHLIKELI') ? 25 / ideltaA : 50 / ideltaA;
+        }
+
         let sonuc = null;
-        if (zx && zs) {
-            sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
+        const isTT2 = (sebekeTipi || '').toUpperCase() === 'TT';
+        if (isTT2) {
+            if (zx && ra) sonuc = parseFloat(zx) <= ra ? 'UYGUN' : 'UYGUN_DEGIL';
+        } else {
+            if (zx && zs) sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
         }
 
         // Sadece geçerli alanları al
@@ -3265,6 +3332,64 @@ app.delete('/api/elektrik-topraklama-raporu/:id', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.error('Elektrik topraklama raporu silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ ELEKTRİK HESAPLAMA API ============
+
+// POST /api/elektrik/hesapla - TS HD 60364-4-41 formülleri
+app.post('/api/elektrik/hesapla', (req, res) => {
+    try {
+        const { sebekeTipi, sigortaTipi, sigortaIn, zxOlculen, rcdVar, rcdIdelta, yerTipi } = req.body;
+
+        const In = parseFloat(sigortaIn) || 0;
+        const Zx = parseFloat(zxOlculen) || 0;
+
+        // 1. Açma akımı Ia hesaplama
+        let ia = 0;
+        if (sigortaTipi === 'B') ia = In * 5;
+        else if (sigortaTipi === 'C') ia = In * 10;
+        else if (sigortaTipi === 'D') ia = In * 20;
+        else if (sigortaTipi === 'TMS') ia = In * 10;
+
+        // 2. Sınır değer Zs/RA hesaplama
+        let zsRa = 0;
+        const isTT = (sebekeTipi || '').toUpperCase() === 'TT';
+        const isTehlikeli = yerTipi === 'TEHLIKELI';
+
+        if (rcdVar && rcdIdelta && parseFloat(rcdIdelta) > 0) {
+            // RCD varsa: RA = (50 veya 25) / IΔn (mA -> A dönüşümü)
+            const ideltaA = parseFloat(rcdIdelta) / 1000;
+            zsRa = ideltaA > 0 ? (isTehlikeli ? 25 : 50) / ideltaA : 0;
+        } else if (ia > 0) {
+            if (isTT) {
+                zsRa = isTehlikeli ? 25 / ia : 50 / ia;
+            } else {
+                zsRa = 230 / ia;
+            }
+        }
+
+        // 3. Kısa devre akımı Ik1 = 230 / Zx
+        const ik1 = Zx > 0 ? 230 / Zx : 0;
+
+        // 4. Uygunluk ve Not kodu
+        let uygunluk = 'UYGUN_DEGIL';
+        let notKodu = 'Not-2';
+
+        if (Zx > 0 && zsRa > 0) {
+            if (rcdVar && rcdIdelta && parseFloat(rcdIdelta) > 0 && Zx <= zsRa) {
+                uygunluk = 'UYGUN';
+                notKodu = 'Not-4';
+            } else if (Zx <= zsRa) {
+                uygunluk = 'UYGUN';
+                notKodu = 'Not-1';
+            }
+        }
+
+        res.json({ ia, zsRa, ik1, uygunluk, notKodu });
+    } catch (error) {
+        console.error('Hesaplama hatası:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -3975,9 +4100,25 @@ async function generateWordBuffer(raporTipi, raporId, body) {
     const tipLower = (raporTipi || '').toLowerCase();
     const isKompresor = tipLower.includes('kompres') || tipLower === 'kompresor';
     const isHavaTanki = tipLower.includes('hava') || tipLower === 'hava-tanki';
-    const isElektrik = tipLower.includes('elektrik');
+    const isIcTesisat = tipLower.includes('ic-tesisat') || tipLower.includes('ictesisat');
+    const isElektrik = tipLower.includes('elektrik') && !isIcTesisat;
 
-    if (isKompresor) {
+    if (isIcTesisat) {
+        const rapor = await auth.prisma.elektrikIcTesisatRaporu.findUnique({
+            where: { id: parseInt(raporId) },
+            include: {
+                altGorev: { include: { isEmri: { include: { customer: true, firmaBilgi: true } } } },
+                panolar: { orderBy: { siraNo: 'asc' } },
+                linyeler: { orderBy: { siraNo: 'asc' } },
+                potansiyelDengeleme: { orderBy: { siraNo: 'asc' } },
+                zeminIzolasyon: { orderBy: { siraNo: 'asc' } },
+                fotograflar: { orderBy: { siraNo: 'asc' } }
+            }
+        });
+        if (!rapor) throw new Error('Rapor bulunamadı');
+        const icTesisatWordService = require('./services/elektrikIcTesisatWordService');
+        return await icTesisatWordService.generateElektrikIcTesisatWord(rapor, rapor.altGorev?.isEmri, { ...body, tekniker: body.tekniker || {} });
+    } else if (isKompresor) {
         const rapor = await auth.prisma.kompresorRaporu.findUnique({
             where: { id: parseInt(raporId) },
             include: { altGorev: { include: { isEmri: { include: { customer: true, firmaBilgi: true } } } } }
@@ -4006,7 +4147,8 @@ async function generateWordBuffer(raporTipi, raporId, body) {
         });
         if (!rapor) throw new Error('Rapor bulunamadı');
         const elektrikWordService = require('./services/elektrikTopraklamaWordService');
-        return await elektrikWordService.generateElektrikTopraklamaWord(rapor, rapor.altGorev?.isEmri, { ...body, tekniker: body.tekniker || {} });
+        const olcumler = rapor.detayliOlcumler || [];
+        return await elektrikWordService.generateElektrikTopraklamaWord(rapor, rapor.altGorev?.isEmri, olcumler, { ...body, tekniker: body.tekniker || {}, rcdSelektivite: rapor.rcdSecicilik || [] });
     } else {
         // Generic rapor (sablonKodu ile)
         const sablonKodu = raporTipi;
@@ -4148,7 +4290,7 @@ app.get('/api/word-templates/:filename/analyze', (req, res) => {
 // Elektrik Topraklama Raporu için Word dosyası oluştur
 app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
     try {
-        const { uygunlukNotu, kusurlar, kusurAciklama, notlar, tekniker } = req.body;
+        const { uygunlukNotu, kusurlar, kusurAciklama, notlar, tekniker, isgKatipNo } = req.body;
 
         // Raporu getir
         const rapor = await auth.prisma.elektrikTopraklamaRaporu.findUnique({
@@ -4223,6 +4365,9 @@ app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
             panoTanimi,
             baslangicSaati,
             bitisSaati,
+            // Ortam koşulları
+            havaDurumu,
+            zeminNem,
             // Ölçüm verileri
             olcumler: formOlcumler,
             // RCD Selektivite verileri
@@ -4235,6 +4380,7 @@ app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
             kusurAciklama,
             notlar,
             tekniker: tekniker || {},
+            isgKatipNo: isgKatipNo || rapor.isgKatipNo,
             // Sistem tipi (formdan veya DB'den)
             sistemTipi: sistemTipi || rapor.sistemTipi,
             // Checkbox parametreleri
@@ -4273,6 +4419,9 @@ app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
             panoTanimi,
             baslangicSaati,
             bitisSaati,
+            // Ortam koşulları
+            havaDurumu,
+            zeminNem,
             // RCD Selektivite
             rcdSelektivite: formRcdSelektivite && formRcdSelektivite.length > 0
                 ? formRcdSelektivite
@@ -4299,6 +4448,946 @@ app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
 
     } catch (error) {
         console.error('Word dosyası oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============ ELEKTRİK İÇ TESİSAT RAPORU API ============
+
+// Rapor oluştur
+// İç tesisat raporu - DB'ye yazılacak alan listesi
+const IC_TESISAT_DB_FIELDS = [
+    'raporTipiTopraklama', 'raporTipiIcTesisat',
+    'sgkSicilNo', 'isgKatipNo',
+    'sicaklik', 'nem',
+    'sistemTipi', 'sebekeTipi', 'yerTipi',
+    'enerjiFirma', 'dkdSpd', 'ilaveTopraklamaElektrotu',
+    'kullanimAmaci', 'genelNotlar',
+    'koruyucuOnlemler', 'olcumMetodu',
+    'fazIletkenSayisiTipi', 'temelTopraklamaDirenci',
+    'sistemTopraklamaIletkeni', 'anaEspotansiyelIletkeni',
+    'nominalGerilim', 'nominalFrekans', 'hataAkimi', 'cevrimEmpedansi',
+    'anaRcdAnmaAkimi', 'anaKesiciTipi', 'anaKesiciNominalAkim', 'anaRcdTestAkimi',
+    'genelSonuc', 'sonucAciklama'
+];
+
+function extractIcTesisatDbFields(body) {
+    const dbData = {};
+    IC_TESISAT_DB_FIELDS.forEach(field => {
+        if (body[field] !== undefined) dbData[field] = body[field];
+    });
+    // Tüm form verisini formData JSON'a yaz (yedek + ekstra alanlar)
+    const { panolar, linyeler, potansiyeller, zeminler, ...formRest } = body;
+    dbData.formData = formRest;
+    return dbData;
+}
+
+app.post('/api/elektrik-ic-tesisat', async (req, res) => {
+    try {
+        const body = req.body;
+        const altGorevId = parseInt(body.altGorevId);
+
+        const convertDate = (dateStr) => {
+            if (!dateStr) return null;
+            return new Date(dateStr + 'T00:00:00.000Z');
+        };
+
+        // Rapor numarası: EIT-{TeklifNo}-{sıra}
+        const altGorev = await auth.prisma.altGorev.findUnique({
+            where: { id: altGorevId },
+            include: { isEmri: { include: { teklif: true } } }
+        });
+        const teklifNo = altGorev?.isEmri?.teklif?.teklifNo || new Date().getFullYear().toString();
+        const prefix = `EIT-${teklifNo}`;
+        const mevcutRaporlar = await auth.prisma.elektrikIcTesisatRaporu.findMany({
+            where: { raporNo: { startsWith: prefix } },
+            orderBy: { raporNo: 'desc' }
+        });
+        let sira = 1;
+        if (mevcutRaporlar.length > 0) {
+            const sonSira = parseInt(mevcutRaporlar[0].raporNo.split('-').pop());
+            if (!isNaN(sonSira)) sira = sonSira + 1;
+        }
+        const raporNo = `${prefix}-${sira.toString().padStart(3, '0')}`;
+
+        const dbData = extractIcTesisatDbFields(body);
+
+        const rapor = await auth.prisma.elektrikIcTesisatRaporu.create({
+            data: {
+                raporNo,
+                altGorevId,
+                baslangicTarihi: convertDate(body.baslangicTarihi),
+                bitisTarihi: convertDate(body.bitisTarihi),
+                sonKontrolTarihi: convertDate(body.sonKontrolTarihi),
+                topraklamaRaporuId: body.topraklamaRaporuId ? parseInt(body.topraklamaRaporuId) : undefined,
+                ...dbData
+            },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: { include: { customer: true } }
+                    }
+                },
+                panolar: { orderBy: { siraNo: 'asc' } },
+                linyeler: { orderBy: { siraNo: 'asc' } },
+                potansiyelDengeleme: { orderBy: { siraNo: 'asc' } },
+                zeminIzolasyon: { orderBy: { siraNo: 'asc' } }
+            }
+        });
+
+        // Alt görevin raporNo alanını güncelle
+        await auth.prisma.altGorev.update({
+            where: { id: altGorevId },
+            data: { raporNo }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('İç tesisat raporu oluşturma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// İş emrindeki topraklama raporundan veri çek (iç tesisat için ön doldurma)
+app.get('/api/elektrik-ic-tesisat/topraklama-verileri/:altGorevId', async (req, res) => {
+    try {
+        const altGorevId = parseInt(req.params.altGorevId);
+        // Alt görevin bağlı olduğu iş emrini bul
+        const altGorev = await auth.prisma.altGorev.findUnique({
+            where: { id: altGorevId },
+            include: { isEmri: true }
+        });
+        if (!altGorev) return res.json({});
+
+        // Aynı iş emrindeki topraklama raporlarını bul
+        const topraklamaRaporlari = await auth.prisma.elektrikTopraklamaRaporu.findMany({
+            where: {
+                altGorev: { isEmriId: altGorev.isEmriId }
+            },
+            include: {
+                topraklamaCihaz: true,
+                devreCihaz: true,
+                rcdCihaz: true,
+                ekipmanBilgi: true
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 1
+        });
+
+        if (topraklamaRaporlari.length === 0) return res.json({});
+
+        const tr = topraklamaRaporlari[0];
+
+        // İç tesisat formuna aktarılacak veriler
+        // Artık checkbox verileri doğrudan rapor modelinde tutuluyor
+        res.json({
+            topraklamaRaporuId: tr.id,
+            sistemTipi: tr.sistemTipi,
+            baslangicTarihi: tr.baslangicTarihi,
+            bitisTarihi: tr.bitisTarihi,
+            ortamSicaklik: tr.ortamSicaklik,
+            ortamNem: tr.ortamNem,
+            havaDurumu: tr.havaDurumu,
+            zeminNem: tr.zeminNem,
+            // Ekipman bilgileri (rapor modelinden)
+            enerjiSaglayan: tr.enerjiSaglayan,
+            sebekeGerilimi: tr.sebekeGerilimi,
+            kullanimAmaci: tr.ekipmanKullanimAmaci,
+            sonKontrolTarihi: tr.sonKontrolTarihi,
+            // Checkbox veriler (rapor modelinden)
+            kontrolNedeni: tr.kontrolNedeni,
+            projeVar: tr.projeVar,
+            tekHatSemasiVar: tr.tekHatSemasiVar,
+            kapsamliDegisiklik: tr.kapsamliDegisiklik,
+            oncekiKontrolEtiketi: tr.oncekiKontrolEtiketi,
+            yapiEv: tr.yapiEv,
+            yapiTicari: tr.yapiTicari,
+            yapiEndustri: tr.yapiEndustri,
+            yapiDiger: tr.yapiDiger,
+            toprakRing: tr.toprakRing,
+            toprakYuzeysel: tr.toprakYuzeysel,
+            toprakTemel: tr.toprakTemel,
+            toprakDerin: tr.toprakDerin,
+            toprakBelirlenemedi: tr.toprakBelirlenemedi,
+            korumaEspotansiyel: tr.korumaEspotansiyel,
+            korumaYalitma: tr.korumaYalitma,
+            korumaAyirma: tr.korumaAyirma,
+            korumaKucukGerilim: tr.korumaKucukGerilim,
+            // Ölçüm metodu
+            olcumCevrimEmpedansi: tr.olcumCevrimEmpedansi,
+            olcum3UcluTopraklama: tr.olcum3UcluTopraklama,
+            olcumKlamp: tr.olcumKlamp,
+            // Cihaz bilgileri
+            cihaz: tr.topraklamaCihaz ? {
+                cihazAdi: tr.topraklamaCihaz.cihazAdi,
+                seriNo: tr.topraklamaCihaz.seriNo,
+                kalibrasyonTarihi: tr.topraklamaCihaz.kalibrasyonTarihi,
+                kalibrasyonGecerlilikTarihi: tr.topraklamaCihaz.kalibrasyonGecerlilik,
+                kalibrasyonNo: tr.topraklamaCihaz.kalibrasyonNo
+            } : null
+        });
+    } catch (error) {
+        console.error('Topraklama verileri getirme hatası:', error);
+        res.json({});
+    }
+});
+
+// Rapor getir (ID ile)
+app.get('/api/elektrik-ic-tesisat/:id', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.elektrikIcTesisatRaporu.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                },
+                panolar: { orderBy: { siraNo: 'asc' } },
+                linyeler: { orderBy: { siraNo: 'asc' } },
+                potansiyelDengeleme: { orderBy: { siraNo: 'asc' } },
+                zeminIzolasyon: { orderBy: { siraNo: 'asc' } },
+                fotograflar: { orderBy: { siraNo: 'asc' } }
+            }
+        });
+
+        if (!rapor) {
+            return res.status(404).json({ error: 'Rapor bulunamadı' });
+        }
+
+        // formData'daki ekstra alanları rapor objesine merge et
+        const fd = rapor.formData && typeof rapor.formData === 'object' ? rapor.formData : {};
+        res.json({ ...fd, ...rapor });
+    } catch (error) {
+        console.error('İç tesisat raporu getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Alt görev için rapor getir
+app.get('/api/elektrik-ic-tesisat/alt-gorev/:altGorevId', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.elektrikIcTesisatRaporu.findFirst({
+            where: { altGorevId: parseInt(req.params.altGorevId) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                },
+                panolar: { orderBy: { siraNo: 'asc' } },
+                linyeler: { orderBy: { siraNo: 'asc' } },
+                potansiyelDengeleme: { orderBy: { siraNo: 'asc' } },
+                zeminIzolasyon: { orderBy: { siraNo: 'asc' } },
+                fotograflar: { orderBy: { siraNo: 'asc' } }
+            }
+        });
+
+        if (rapor) {
+            const fd = rapor.formData && typeof rapor.formData === 'object' ? rapor.formData : {};
+            return res.json({ ...fd, ...rapor });
+        }
+        res.json(rapor);
+    } catch (error) {
+        console.error('İç tesisat raporu getirme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor güncelle
+app.put('/api/elektrik-ic-tesisat/:id', async (req, res) => {
+    try {
+        const body = req.body;
+
+        const convertDate = (dateStr) => {
+            if (!dateStr) return null;
+            if (dateStr instanceof Date) return dateStr;
+            if (typeof dateStr === 'string' && dateStr.includes('T')) return new Date(dateStr);
+            return new Date(dateStr + 'T00:00:00.000Z');
+        };
+
+        const dbData = extractIcTesisatDbFields(body);
+
+        const rapor = await auth.prisma.elektrikIcTesisatRaporu.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                ...dbData,
+                baslangicTarihi: convertDate(body.baslangicTarihi),
+                bitisTarihi: convertDate(body.bitisTarihi),
+                sonKontrolTarihi: convertDate(body.sonKontrolTarihi)
+            }
+        });
+
+        res.json(rapor);
+    } catch (error) {
+        console.error('İç tesisat raporu güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Rapor sil
+app.delete('/api/elektrik-ic-tesisat/:id', async (req, res) => {
+    try {
+        await auth.prisma.elektrikIcTesisatRaporu.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('İç tesisat raporu silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ---- PANO KAYITLARI ----
+
+// Pano DB field listesi
+const PANO_DB_FIELDS = [
+    'panoAdi',
+    'kriter1','kriter2','kriter3','kriter4','kriter5','kriter6','kriter7','kriter8','kriter9',
+    'kriter10','kriter11','kriter12','kriter13','kriter14','kriter15','kriter16','kriter17','kriter18',
+    'kriter19','kriter20','kriter21','kriter22','kriter23','kriter24','kriter25','kriter26','kriter27',
+    'panoZx', 'panoZln', 'panoVff', 'panoVln', 'panoVnpe',
+    'panoIkk', 'panoDkdTipi', 'panoDkdAkim',
+    'termalFotografTarihi', 'termalFotografNo', 'aciklama'
+];
+
+function extractPanoDbFields(body) {
+    const dbData = {};
+    PANO_DB_FIELDS.forEach(field => {
+        if (body[field] !== undefined) dbData[field] = body[field];
+    });
+    return dbData;
+}
+
+// Pano ekle
+app.post('/api/elektrik-ic-tesisat/:raporId/pano', async (req, res) => {
+    try {
+        const raporId = parseInt(req.params.raporId);
+
+        const sonPano = await auth.prisma.icTesisatPano.findFirst({
+            where: { raporId },
+            orderBy: { siraNo: 'desc' }
+        });
+        const siraNo = sonPano ? sonPano.siraNo + 1 : 1;
+
+        const pano = await auth.prisma.icTesisatPano.create({
+            data: {
+                rapor: { connect: { id: raporId } },
+                siraNo,
+                ...extractPanoDbFields(req.body)
+            }
+        });
+
+        res.json(pano);
+    } catch (error) {
+        console.error('Pano ekleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Pano güncelle
+app.put('/api/elektrik-ic-tesisat-pano/:id', async (req, res) => {
+    try {
+        const pano = await auth.prisma.icTesisatPano.update({
+            where: { id: parseInt(req.params.id) },
+            data: extractPanoDbFields(req.body)
+        });
+        res.json(pano);
+    } catch (error) {
+        console.error('Pano güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Pano sil
+app.delete('/api/elektrik-ic-tesisat-pano/:id', async (req, res) => {
+    try {
+        await auth.prisma.icTesisatPano.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Pano silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ---- LİNYE KAYITLARI ----
+
+// Linye ekle (hesaplama dahil)
+app.post('/api/elektrik-ic-tesisat/:raporId/linye', async (req, res) => {
+    try {
+        const raporId = parseInt(req.params.raporId);
+        const { panoLinyeAdi, egriTipi, kutupSayisi, inA, icuKA,
+                fazKesiti, nKesiti, peKesiti, ibA, izA, zxOhm, rcdIAn, rcdTSuresi } = req.body;
+
+        // Rapor bilgisini al (yerTipi ve sebekeTipi için)
+        const rapor = await auth.prisma.elektrikIcTesisatRaporu.findUnique({
+            where: { id: raporId },
+            select: { yerTipi: true, sebekeTipi: true, sistemTipi: true }
+        });
+
+        const In = parseFloat(inA) || 0;
+        const Zx = parseFloat(zxOhm) || 0;
+        const Ib = parseFloat(ibA) || 0;
+        const Iz = parseFloat(izA) || 0;
+        const RcdIAnVal = parseFloat(rcdIAn) || 0;
+
+        // Ia hesaplama
+        let ia = 0;
+        if (egriTipi === 'B') ia = In * 5;
+        else if (egriTipi === 'C') ia = In * 10;
+        else if (egriTipi === 'D') ia = In * 20;
+        else if (egriTipi === 'TMS') ia = In * 10;
+
+        // Zs/RA hesaplama
+        let zsRa = 0;
+        const isTT = (rapor?.sebekeTipi || rapor?.sistemTipi || '').toUpperCase() === 'TT';
+        const isTehlikeli = rapor?.yerTipi === 'TEHLIKELI';
+
+        if (RcdIAnVal > 0) {
+            const ideltaA = RcdIAnVal / 1000;
+            zsRa = (isTehlikeli ? 25 : 50) / ideltaA;
+        } else if (ia > 0) {
+            if (isTT) {
+                zsRa = isTehlikeli ? 25 / ia : 50 / ia;
+            } else {
+                zsRa = 230 / ia;
+            }
+        }
+
+        // Ik1 hesaplama
+        const ik1 = Zx > 0 ? 230 / Zx : 0;
+
+        // Uygunluk kontrolü
+        let sonuc = null;
+        let notKodu = null;
+        if (Zx > 0 && zsRa > 0) {
+            if (RcdIAnVal > 0 && Zx <= zsRa) {
+                sonuc = 'UYGUN';
+                notKodu = 'Not-4';
+            } else if (Zx <= zsRa) {
+                sonuc = 'UYGUN';
+                notKodu = 'Not-1';
+            } else {
+                sonuc = 'UYGUN_DEGIL';
+                notKodu = 'Not-2';
+            }
+        }
+
+        // Koordinasyon kontrolü: Ib <= In <= Iz
+        let koordinasyonSonuc = null;
+        if (Ib > 0 && In > 0 && Iz > 0) {
+            koordinasyonSonuc = (Ib <= In && In <= Iz) ? 'UYGUN' : 'UYGUN_DEGIL';
+        }
+
+        // PE kesit kontrolü
+        let peKesitSonuc = null;
+        const fazKesit = parseFloat(fazKesiti) || 0;
+        const peKesit = parseFloat(peKesiti) || 0;
+        if (fazKesit > 0 && peKesit > 0) {
+            let gerekliPE;
+            if (fazKesit <= 16) gerekliPE = fazKesit;
+            else if (fazKesit <= 35) gerekliPE = 16;
+            else gerekliPE = fazKesit / 2;
+            peKesitSonuc = peKesit >= gerekliPE ? 'UYGUN' : 'UYGUN_DEGIL';
+        }
+
+        // Sıra no
+        const sonLinye = await auth.prisma.icTesisatLinye.findFirst({
+            where: { raporId },
+            orderBy: { siraNo: 'desc' }
+        });
+        const siraNo = sonLinye ? sonLinye.siraNo + 1 : 1;
+
+        const linye = await auth.prisma.icTesisatLinye.create({
+            data: {
+                rapor: { connect: { id: raporId } },
+                siraNo,
+                panoLinyeAdi: panoLinyeAdi || null,
+                egriTipi: egriTipi || null,
+                kutupSayisi: kutupSayisi || null,
+                inA: inA ? parseFloat(inA) : null,
+                icuKA: icuKA ? parseFloat(icuKA) : null,
+                fazKesiti: fazKesiti || null,
+                nKesiti: nKesiti || null,
+                peKesiti: peKesiti || null,
+                ibA: ibA ? parseFloat(ibA) : null,
+                izA: izA ? parseFloat(izA) : null,
+                zxOhm: zxOhm ? parseFloat(zxOhm) : null,
+                rcdIAn: rcdIAn ? parseFloat(rcdIAn) : null,
+                rcdTSuresi: rcdTSuresi ? parseFloat(rcdTSuresi) : null,
+                ia: ia || null,
+                zsRa: zsRa || null,
+                ik1: ik1 || null,
+                koordinasyonSonuc,
+                peKesitSonuc,
+                sonuc,
+                notKodu
+            }
+        });
+
+        res.json(linye);
+    } catch (error) {
+        console.error('Linye ekleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Linye güncelle
+app.put('/api/elektrik-ic-tesisat-linye/:id', async (req, res) => {
+    try {
+        const { panoLinyeAdi, egriTipi, kutupSayisi, inA, icuKA,
+                fazKesiti, nKesiti, peKesiti, ibA, izA, zxOhm, rcdIAn, rcdTSuresi } = req.body;
+
+        // Mevcut linye'yi al (raporId için)
+        const mevcutLinye = await auth.prisma.icTesisatLinye.findUnique({
+            where: { id: parseInt(req.params.id) },
+            select: { raporId: true }
+        });
+
+        // Rapor bilgisi
+        const rapor = await auth.prisma.elektrikIcTesisatRaporu.findUnique({
+            where: { id: mevcutLinye.raporId },
+            select: { yerTipi: true, sebekeTipi: true, sistemTipi: true }
+        });
+
+        const In = parseFloat(inA) || 0;
+        const Zx = parseFloat(zxOhm) || 0;
+        const Ib = parseFloat(ibA) || 0;
+        const Iz = parseFloat(izA) || 0;
+        const RcdIAnVal = parseFloat(rcdIAn) || 0;
+
+        let ia = 0;
+        if (egriTipi === 'B') ia = In * 5;
+        else if (egriTipi === 'C') ia = In * 10;
+        else if (egriTipi === 'D') ia = In * 20;
+        else if (egriTipi === 'TMS') ia = In * 10;
+
+        let zsRa = 0;
+        const isTT = (rapor?.sebekeTipi || rapor?.sistemTipi || '').toUpperCase() === 'TT';
+        const isTehlikeli = rapor?.yerTipi === 'TEHLIKELI';
+
+        if (RcdIAnVal > 0) {
+            const ideltaA = RcdIAnVal / 1000;
+            zsRa = (isTehlikeli ? 25 : 50) / ideltaA;
+        } else if (ia > 0) {
+            if (isTT) {
+                zsRa = isTehlikeli ? 25 / ia : 50 / ia;
+            } else {
+                zsRa = 230 / ia;
+            }
+        }
+
+        const ik1 = Zx > 0 ? 230 / Zx : 0;
+
+        let sonuc = null;
+        let notKodu = null;
+        if (Zx > 0 && zsRa > 0) {
+            if (RcdIAnVal > 0 && Zx <= zsRa) {
+                sonuc = 'UYGUN';
+                notKodu = 'Not-4';
+            } else if (Zx <= zsRa) {
+                sonuc = 'UYGUN';
+                notKodu = 'Not-1';
+            } else {
+                sonuc = 'UYGUN_DEGIL';
+                notKodu = 'Not-2';
+            }
+        }
+
+        let koordinasyonSonuc = null;
+        if (Ib > 0 && In > 0 && Iz > 0) {
+            koordinasyonSonuc = (Ib <= In && In <= Iz) ? 'UYGUN' : 'UYGUN_DEGIL';
+        }
+
+        let peKesitSonuc = null;
+        const fazKesit = parseFloat(fazKesiti) || 0;
+        const peKesit = parseFloat(peKesiti) || 0;
+        if (fazKesit > 0 && peKesit > 0) {
+            let gerekliPE;
+            if (fazKesit <= 16) gerekliPE = fazKesit;
+            else if (fazKesit <= 35) gerekliPE = 16;
+            else gerekliPE = fazKesit / 2;
+            peKesitSonuc = peKesit >= gerekliPE ? 'UYGUN' : 'UYGUN_DEGIL';
+        }
+
+        const linye = await auth.prisma.icTesisatLinye.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                panoLinyeAdi: panoLinyeAdi || null,
+                egriTipi: egriTipi || null,
+                kutupSayisi: kutupSayisi || null,
+                inA: inA ? parseFloat(inA) : null,
+                icuKA: icuKA ? parseFloat(icuKA) : null,
+                fazKesiti: fazKesiti || null,
+                nKesiti: nKesiti || null,
+                peKesiti: peKesiti || null,
+                ibA: ibA ? parseFloat(ibA) : null,
+                izA: izA ? parseFloat(izA) : null,
+                zxOhm: zxOhm ? parseFloat(zxOhm) : null,
+                rcdIAn: rcdIAn ? parseFloat(rcdIAn) : null,
+                rcdTSuresi: rcdTSuresi ? parseFloat(rcdTSuresi) : null,
+                ia: ia || null,
+                zsRa: zsRa || null,
+                ik1: ik1 || null,
+                koordinasyonSonuc,
+                peKesitSonuc,
+                sonuc,
+                notKodu
+            }
+        });
+
+        res.json(linye);
+    } catch (error) {
+        console.error('Linye güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Linye sil
+app.delete('/api/elektrik-ic-tesisat-linye/:id', async (req, res) => {
+    try {
+        await auth.prisma.icTesisatLinye.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Linye silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ---- POTANSİYEL DENGELEME KAYITLARI ----
+
+// Potansiyel dengeleme ekle
+app.post('/api/elektrik-ic-tesisat/:raporId/potansiyel', async (req, res) => {
+    try {
+        const raporId = parseInt(req.params.raporId);
+
+        const sonKayit = await auth.prisma.icTesisatPotansiyelDengeleme.findFirst({
+            where: { raporId },
+            orderBy: { siraNo: 'desc' }
+        });
+        const siraNo = sonKayit ? sonKayit.siraNo + 1 : 1;
+
+        const { olcumNoktasi, iletkenKesiti, sureklillikOhm, tamamlayiciKesit, tamamlayiciSureklilik } = req.body;
+
+        // Süreklilik sonucu: <= 1 ohm uygun
+        let sonuc = null;
+        const sureklilik = parseFloat(sureklillikOhm);
+        if (!isNaN(sureklilik)) {
+            sonuc = sureklilik <= 1 ? 'UYGUN' : 'UYGUN_DEGIL';
+        }
+
+        const kayit = await auth.prisma.icTesisatPotansiyelDengeleme.create({
+            data: {
+                rapor: { connect: { id: raporId } },
+                siraNo,
+                olcumNoktasi: olcumNoktasi || null,
+                iletkenKesiti: iletkenKesiti || null,
+                sureklillikOhm: sureklillikOhm ? parseFloat(sureklillikOhm) : null,
+                tamamlayiciKesit: tamamlayiciKesit || null,
+                tamamlayiciSureklilik: tamamlayiciSureklilik ? parseFloat(tamamlayiciSureklilik) : null,
+                sonuc
+            }
+        });
+
+        res.json(kayit);
+    } catch (error) {
+        console.error('Potansiyel dengeleme ekleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Potansiyel dengeleme güncelle
+app.put('/api/elektrik-ic-tesisat-potansiyel/:id', async (req, res) => {
+    try {
+        const { olcumNoktasi, iletkenKesiti, sureklillikOhm, tamamlayiciKesit, tamamlayiciSureklilik } = req.body;
+
+        let sonuc = null;
+        const sureklilik = parseFloat(sureklillikOhm);
+        if (!isNaN(sureklilik)) {
+            sonuc = sureklilik <= 1 ? 'UYGUN' : 'UYGUN_DEGIL';
+        }
+
+        const kayit = await auth.prisma.icTesisatPotansiyelDengeleme.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                olcumNoktasi: olcumNoktasi || null,
+                iletkenKesiti: iletkenKesiti || null,
+                sureklillikOhm: sureklillikOhm ? parseFloat(sureklillikOhm) : null,
+                tamamlayiciKesit: tamamlayiciKesit || null,
+                tamamlayiciSureklilik: tamamlayiciSureklilik ? parseFloat(tamamlayiciSureklilik) : null,
+                sonuc
+            }
+        });
+
+        res.json(kayit);
+    } catch (error) {
+        console.error('Potansiyel dengeleme güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Potansiyel dengeleme sil
+app.delete('/api/elektrik-ic-tesisat-potansiyel/:id', async (req, res) => {
+    try {
+        await auth.prisma.icTesisatPotansiyelDengeleme.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Potansiyel dengeleme silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ---- ZEMİN İZOLASYON KAYITLARI ----
+
+// Zemin izolasyon ekle
+app.post('/api/elektrik-ic-tesisat/:raporId/zemin', async (req, res) => {
+    try {
+        const raporId = parseInt(req.params.raporId);
+
+        const sonKayit = await auth.prisma.icTesisatZeminIzolasyon.findFirst({
+            where: { raporId },
+            orderBy: { siraNo: 'desc' }
+        });
+        const siraNo = sonKayit ? sonKayit.siraNo + 1 : 1;
+
+        const { olcumNoktasi, eni, boyu, izolasyonDirenciKOhm } = req.body;
+
+        // Zemin izolasyon sonucu: >= 50 kOhm uygun
+        let sonuc = null;
+        const direnc = parseFloat(izolasyonDirenciKOhm);
+        if (!isNaN(direnc)) {
+            sonuc = direnc >= 50 ? 'UYGUN' : 'UYGUN_DEGIL';
+        }
+
+        const kayit = await auth.prisma.icTesisatZeminIzolasyon.create({
+            data: {
+                rapor: { connect: { id: raporId } },
+                siraNo,
+                olcumNoktasi: olcumNoktasi || null,
+                eni: eni ? parseFloat(eni) : null,
+                boyu: boyu ? parseFloat(boyu) : null,
+                izolasyonDirenciKOhm: izolasyonDirenciKOhm ? parseFloat(izolasyonDirenciKOhm) : null,
+                sonuc
+            }
+        });
+
+        res.json(kayit);
+    } catch (error) {
+        console.error('Zemin izolasyon ekleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Zemin izolasyon güncelle
+app.put('/api/elektrik-ic-tesisat-zemin/:id', async (req, res) => {
+    try {
+        const { olcumNoktasi, eni, boyu, izolasyonDirenciKOhm } = req.body;
+
+        let sonuc = null;
+        const direnc = parseFloat(izolasyonDirenciKOhm);
+        if (!isNaN(direnc)) {
+            sonuc = direnc >= 50 ? 'UYGUN' : 'UYGUN_DEGIL';
+        }
+
+        const kayit = await auth.prisma.icTesisatZeminIzolasyon.update({
+            where: { id: parseInt(req.params.id) },
+            data: {
+                olcumNoktasi: olcumNoktasi || null,
+                eni: eni ? parseFloat(eni) : null,
+                boyu: boyu ? parseFloat(boyu) : null,
+                izolasyonDirenciKOhm: izolasyonDirenciKOhm ? parseFloat(izolasyonDirenciKOhm) : null,
+                sonuc
+            }
+        });
+
+        res.json(kayit);
+    } catch (error) {
+        console.error('Zemin izolasyon güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Zemin izolasyon sil
+app.delete('/api/elektrik-ic-tesisat-zemin/:id', async (req, res) => {
+    try {
+        await auth.prisma.icTesisatZeminIzolasyon.delete({
+            where: { id: parseInt(req.params.id) }
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Zemin izolasyon silme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ---- İÇ TESİSAT WORD RAPOR ----
+
+// Word rapor oluştur
+app.post('/api/elektrik-ic-tesisat/:id/word-rapor', async (req, res) => {
+    try {
+        const rapor = await auth.prisma.elektrikIcTesisatRaporu.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                altGorev: {
+                    include: {
+                        isEmri: {
+                            include: {
+                                customer: true,
+                                firmaBilgi: true
+                            }
+                        }
+                    }
+                },
+                panolar: { orderBy: { siraNo: 'asc' } },
+                linyeler: { orderBy: { siraNo: 'asc' } },
+                potansiyelDengeleme: { orderBy: { siraNo: 'asc' } },
+                zeminIzolasyon: { orderBy: { siraNo: 'asc' } },
+                fotograflar: { orderBy: { siraNo: 'asc' } }
+            }
+        });
+
+        if (!rapor) {
+            return res.status(404).json({ error: 'Rapor bulunamadı' });
+        }
+
+        const elektrikIcTesisatWordService = require('./services/elektrikIcTesisatWordService');
+        const isEmri = rapor.altGorev?.isEmri;
+
+        const wordBuffer = await elektrikIcTesisatWordService.generateElektrikIcTesisatWord(
+            rapor,
+            isEmri,
+            req.body
+        );
+
+        const filename = `${rapor.raporNo || 'IcTesisat'}_${Date.now()}.docx`;
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(wordBuffer);
+
+    } catch (error) {
+        console.error('İç tesisat Word rapor hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ---- İÇ TESİSAT FOTOĞRAF ----
+
+// Fotoğraf yükle
+app.post('/api/elektrik-ic-tesisat/:raporId/foto', dosyaUpload.single('dosya'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'Dosya yüklenmedi' });
+        }
+
+        const raporId = parseInt(req.params.raporId);
+        const { fotoTipi, panoId, aciklama } = req.body;
+
+        const sonFoto = await auth.prisma.icTesisatFoto.findFirst({
+            where: { raporId, fotoTipi: fotoTipi || 'ekipman' },
+            orderBy: { siraNo: 'desc' }
+        });
+        const siraNo = sonFoto ? sonFoto.siraNo + 1 : 1;
+
+        const foto = await auth.prisma.icTesisatFoto.create({
+            data: {
+                raporId,
+                panoId: panoId ? parseInt(panoId) : null,
+                fotoTipi: fotoTipi || 'ekipman',
+                dosyaYolu: '/uploads/dosyalar/' + req.file.filename,
+                dosyaAdi: req.file.originalname,
+                aciklama: aciklama || null,
+                siraNo
+            }
+        });
+
+        res.json(foto);
+    } catch (error) {
+        console.error('Fotoğraf yükleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Fotoğraf listele
+app.get('/api/elektrik-ic-tesisat/:raporId/foto', async (req, res) => {
+    try {
+        const raporId = parseInt(req.params.raporId);
+        const where = { raporId };
+        if (req.query.fotoTipi) where.fotoTipi = req.query.fotoTipi;
+        if (req.query.panoId) where.panoId = parseInt(req.query.panoId);
+
+        const fotograflar = await auth.prisma.icTesisatFoto.findMany({
+            where,
+            orderBy: { siraNo: 'asc' }
+        });
+
+        res.json(fotograflar);
+    } catch (error) {
+        console.error('Fotoğraf listeleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Fotoğraf güncelle
+app.put('/api/elektrik-ic-tesisat-foto/:id', async (req, res) => {
+    try {
+        const fotoId = parseInt(req.params.id);
+        const mevcut = await auth.prisma.icTesisatFoto.findUnique({ where: { id: fotoId } });
+        if (!mevcut) return res.status(404).json({ error: 'Fotoğraf bulunamadı' });
+
+        const { aciklama, siraNo } = req.body;
+        const data = {};
+        if (aciklama !== undefined) data.aciklama = aciklama;
+        if (siraNo !== undefined) data.siraNo = parseInt(siraNo);
+
+        const foto = await auth.prisma.icTesisatFoto.update({
+            where: { id: fotoId },
+            data
+        });
+        res.json(foto);
+    } catch (error) {
+        console.error('Fotoğraf güncelleme hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Fotoğraf sil (dosyayı da sil)
+app.delete('/api/elektrik-ic-tesisat-foto/:id', async (req, res) => {
+    try {
+        const foto = await auth.prisma.icTesisatFoto.findUnique({
+            where: { id: parseInt(req.params.id) }
+        });
+
+        if (foto) {
+            // Disk'ten sil
+            const dosyaPath = path.join(__dirname, 'public', foto.dosyaYolu);
+            if (fs.existsSync(dosyaPath)) {
+                fs.unlinkSync(dosyaPath);
+            }
+
+            await auth.prisma.icTesisatFoto.delete({
+                where: { id: parseInt(req.params.id) }
+            });
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Fotoğraf silme hatası:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -4405,6 +5494,7 @@ app.get('/api/is-emirleri/:id/dosyalar', async (req, res) => {
                     include: {
                         personel: true,
                         elektrikTopraklamaRaporu: true,
+                        icTesisatRaporlari: true,
                         kompresorRaporlari: true,
                         havaTankiRaporlari: true,
                         raporlar: true
@@ -4427,6 +5517,9 @@ app.get('/api/is-emirleri/:id/dosyalar', async (req, res) => {
         for (const ag of isEmri.altGorevler) {
             for (const r of (ag.elektrikTopraklamaRaporu || [])) {
                 raporlar.push({ id: r.id, raporNo: r.raporNo, raporTipi: 'elektrik-topraklama', tip: 'Elektrik Topraklama', altGorevId: ag.id });
+            }
+            for (const r of (ag.icTesisatRaporlari || [])) {
+                raporlar.push({ id: r.id, raporNo: r.raporNo, raporTipi: 'elektrik-ic-tesisat', tip: 'Elektrik İç Tesisat', altGorevId: ag.id });
             }
             for (const r of (ag.kompresorRaporlari || [])) {
                 raporlar.push({ id: r.id, raporNo: r.raporNo, raporTipi: 'kompresor', tip: 'Kompresör', altGorevId: ag.id });

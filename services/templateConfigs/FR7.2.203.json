@@ -1,0 +1,107 @@
+{
+  "sablonKodu": "FR7.2.203",
+  "sablonAdi": "Merkezi İklimlendirme Sistemi Muayene ve Ölçüm Raporu",
+  "kategori": "tesisat kontrolü",
+  "altKategori": "iklimlendirme",
+  "raporNoPrefix": "TK",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        { "id": "firmaAdi", "label": "Firma Adı", "type": "text", "source": "customer.unvan", "readonly": true, "autoFill": true },
+        { "id": "bolumu", "label": "Bölümü", "type": "text", "placeholder": "İşletme, Üretim vb." },
+        { "id": "firmaAdres", "label": "Adresi", "type": "text", "source": "customer.adres", "readonly": true, "autoFill": true },
+        { "id": "kontrolTarihi", "label": "Kontrol Tarihi", "type": "date" },
+        { "id": "firmaTelefon", "label": "Tel/Fax", "type": "text", "source": "customer.telefon", "readonly": true, "autoFill": true },
+        { "id": "raporTarihi", "label": "Rapor Tarihi", "type": "date" },
+        { "id": "firmaEmail", "label": "E-mail", "type": "text", "source": "customer.email", "readonly": true, "autoFill": true },
+        { "id": "sonrakiKontrolTarihi", "label": "Sonraki Kontrol Tarihi", "type": "date" },
+        { "id": "firmaWeb", "label": "Web", "type": "text", "source": "customer.web", "readonly": true, "autoFill": true },
+        { "id": "raporNo", "label": "Rapor No", "type": "text", "readonly": true, "autoFill": true },
+        { "id": "sgkSicilNo", "label": "SGK Sicil No", "type": "text" },
+        { "id": "isgKatipNo", "label": "İSG-KATİP Sözleşme ID", "type": "text" }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        { "id": "markasi", "label": "Markası", "type": "text" },
+        { "id": "ortamSicakligi", "label": "Ortam Sıcaklığı", "type": "text", "placeholder": "°C" },
+        { "id": "seriNo", "label": "Seri Numarası", "type": "text" },
+        { "id": "ortamNemi", "label": "Ortam Nemi", "type": "text", "placeholder": "%" }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "10 Kontrol",
+      "questions": [
+        { "id": "kriter1", "no": 1, "text": "Filtreler durumu uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter2", "no": 2, "text": "Isı değiştirici seperatörler uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter3", "no": 3, "text": "Klima genel temizliği uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter4", "no": 4, "text": "Gaz kaçağı var mı?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter5", "no": 5, "text": "İç ve Dış Ünite sağlam monte edilmiş mi?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter6", "no": 6, "text": "Klima bağlantı kablosu uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter7", "no": 7, "text": "Buat içinde paletli ısıya dayanıklı klemens kullanılmış mı?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter8", "no": 8, "text": "Klima kablolarında ezilme, kararma ve yıpranma var mı?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter9", "no": 9, "text": "Dış ünite duvara monte edilmiş mi?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter10", "no": 10, "text": "Bakır boru izolasyonu ve elektrik kablosu yalıtımı uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        { "id": "ikazOneriler", "label": "İkaz ve Öneriler", "type": "textarea", "rows": 3 }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Merkezi İklimlendirme Sistemi\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/tesisat/FR7.2.203 Merkezi İklimlendirme Sistemi Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header1.xml",
+    "fields": [
+      { "label": "Firma Adı", "source": "firma.unvan" },
+      { "label": "Bölümü", "field": "bolumu" },
+      { "label": "Adresi", "source": "firma.adres" },
+      { "label": "Kontrol Tarihi", "field": "kontrolTarihi", "format": "date" },
+      { "label": "Tel/Fax", "source": "firma.telefon" },
+      { "label": "Rapor Tarihi", "field": "raporTarihi", "format": "date" },
+      { "label": "E-mail", "source": "firma.email" },
+      { "label": "Sonraki Kontrol Tarihi", "field": "sonrakiKontrolTarihi", "format": "date" },
+      { "label": "Web", "source": "firma.web" },
+      { "label": "Rapor No", "source": "rapor.raporNo" },
+      { "label": "SGK Sicil No", "source": "firmaBilgi.sgkSicilNo" },
+      { "label": "Sözlesme ID", "source": "firmaBilgi.isgKatipId" },
+      { "label": "Markası", "field": "markasi" },
+      { "label": "Ortam Sıcaklığı", "field": "ortamSicakligi" },
+      { "label": "Seri Numarası", "field": "seriNo" },
+      { "label": "Ortam Nemi", "field": "ortamNemi" }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        { "field": "kriter1", "text": "Filtreler durumu uygun" },
+        { "field": "kriter2", "text": "değiştirici seperatör" },
+        { "field": "kriter3", "text": "Klima genel temizliği" },
+        { "field": "kriter4", "text": "Gaz kaçağı var mı" },
+        { "field": "kriter5", "text": "Dış Ünite sağlam monte" },
+        { "field": "kriter6", "text": "Klima bağlantı kablosu" },
+        { "field": "kriter7", "text": "paletli ısıya dayanıklı" },
+        { "field": "kriter8", "text": "kablolarında ezilme" },
+        { "field": "kriter9", "text": "Dış ünite duvara monte" },
+        { "field": "kriter10", "text": "Bakır boru izolasyonu" }
+      ]
+    }
+  }
+}

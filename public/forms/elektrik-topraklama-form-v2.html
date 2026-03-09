@@ -113,7 +113,7 @@
             <div class="card-body" id="isEmriSection">
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">İş Emri</label><select id="isEmriSelect" class="form-control" onchange="isEmriSecildi()"><option value="">İş Emri Seçin...</option></select></div>
-                    <div class="form-group"><label class="form-label">Alt Görev</label><select id="altGorevSelect" class="form-control"><option value="">Önce İş Emri Seçin...</option></select></div>
+                    <div class="form-group"><label class="form-label">Alt Görev</label><select id="altGorevSelect" class="form-control" onchange="altGorevSecildi()"><option value="">Önce İş Emri Seçin...</option></select></div>
                 </div>
             </div>
         </div>
@@ -137,7 +137,9 @@
             <div class="card-body" id="tarihSection">
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">Başlangıç Tarihi</label><input type="date" id="baslangicTarihi" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Başlangıç Saati</label><input type="time" id="baslangicSaati" class="form-control" value="09:00"></div>
                     <div class="form-group"><label class="form-label">Bitiş Tarihi</label><input type="date" id="bitisTarihi" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Bitiş Saati</label><input type="time" id="bitisSaati" class="form-control" value="17:00"></div>
                 </div>
             </div>
         </div>
@@ -169,6 +171,15 @@
                         <label class="checkbox-item"><input type="radio" name="sistemTipi" value="TN-CS"><span>TN-C-S</span></label>
                         <label class="checkbox-item"><input type="radio" name="sistemTipi" value="TN-C"><span>TN-C</span></label>
                         <label class="checkbox-item"><input type="radio" name="sistemTipi" value="TN-S"><span>TN-S</span></label>
+                    </div>
+                </div>
+
+                <!-- YER TİPİ (RA hesabı için) -->
+                <div class="form-group">
+                    <label class="form-label">Yer Tipi (RA Hesabı)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="yerTipi" value="NORMAL" checked><span>Normal Yer, Kuru (RA = 50/Ia)</span></label>
+                        <label class="checkbox-item"><input type="radio" name="yerTipi" value="TEHLIKELI"><span>Tehlikeli / Islak Yer (RA = 25/Ia)</span></label>
                     </div>
                 </div>
 
@@ -325,7 +336,7 @@
                                 <th rowspan="2">Ölçüm Noktası / Etiketi</th>
                                 <th colspan="2">Koruma Elemanı</th>
                                 <th colspan="4" class="group-header">Ölçüm Değerleri</th>
-                                <th colspan="3" class="group-header">RCD Bilgileri</th>
+                                <th colspan="4" class="group-header">RCD Bilgileri</th>
                                 <th rowspan="2">Sonuç</th>
                                 <th rowspan="2">Sil</th>
                             </tr>
@@ -336,6 +347,7 @@
                                 <th>Zx/Rx (Ω)</th>
                                 <th>Zs/RA (Ω)</th>
                                 <th>Ik (A)</th>
+                                <th>RCD In (A)</th>
                                 <th>IΔn (mA)</th>
                                 <th>IΔ (mA)</th>
                                 <th>TΔ (ms)</th>
@@ -492,6 +504,12 @@
             el.classList.add('active');
         }
 
+        // Not seçenekleri HTML
+        function notSecenekleri(secili) {
+            const notlar = ['Not-1','Not-2','Not-3','Not-4','Not-5','Not-6','Not-7','Not-8','Not-9','Not-10','Not-11'];
+            return notlar.map(n => `<option value="${n}" ${secili === n ? 'selected' : ''}>${n}</option>`).join('');
+        }
+
         // 5.1 ÖLÇÜM TABLOSU - YENİ SATIR
         function yeniOlcumSatiri() {
             olcumSayac++;
@@ -501,15 +519,16 @@
                 <td>${olcumSayac}</td>
                 <td><input type="text" value="Pano-${olcumSayac} / Q${olcumSayac}" style="min-width:150px;"></td>
                 <td><input type="number" value="16" onchange="hesaplamaYap()"></td>
-                <td><select onchange="hesaplamaYap()"><option value="B">B</option><option value="C" selected>C</option><option value="D">D</option></select></td>
+                <td><select onchange="hesaplamaYap()"><option value="B">B</option><option value="C" selected>C</option><option value="D">D</option><option value="TMS">TMŞ</option></select></td>
                 <td class="ia">-</td>
                 <td><input type="number" step="0.01" value="0.5" onchange="hesaplamaYap()"></td>
                 <td class="zsra">-</td>
                 <td class="ik">-</td>
-                <td><input type="number" value="30"></td>
-                <td><input type="number" value="30"></td>
-                <td><input type="number" value="25"></td>
-                <td class="sonuc">-</td>
+                <td><input type="number" value="25" style="width:50px"></td>
+                <td><input type="number" value="30" style="width:50px"></td>
+                <td><input type="number" step="0.1" value="" style="width:50px"></td>
+                <td><input type="number" step="0.1" value="" style="width:50px"></td>
+                <td><select class="sonuc-select" style="width:70px;font-size:11px">${notSecenekleri()}</select></td>
                 <td><button class="btn-delete" onclick="this.closest('tr').remove();updateOlcumSayisi()">×</button></td>
             `;
             document.getElementById('olcumTableBody').appendChild(tr);
@@ -525,15 +544,15 @@
             tr.innerHTML = `
                 <td>${rcdSayac}</td>
                 <td><input type="text" value="Ana Pano" style="min-width:100px;"></td>
-                <td><select><option value="AC">AC</option><option value="A">A</option><option value="B">B</option><option value="S" selected>S (Selektif)</option></select></td>
+                <td><select><option value="AC">AC</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="S" selected>S (Selektif)</option></select></td>
                 <td><input type="number" value="63"></td>
                 <td><input type="number" value="300"></td>
                 <td><input type="number" value="60"></td>
                 <td><input type="text" value="Tali Pano-${rcdSayac}" style="min-width:100px;"></td>
-                <td><select><option value="AC" selected>AC</option><option value="A">A</option><option value="B">B></select></td>
+                <td><select><option value="AC" selected>AC</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></td>
                 <td><input type="number" value="30"></td>
                 <td><input type="number" value="25"></td>
-                <td class="sonuc sonuc-uygun">UYGUN</td>
+                <td><select class="sonuc-select" style="width:70px;font-size:11px">${notSecenekleri('Not-7')}</select></td>
                 <td><button class="btn-delete" onclick="this.closest('tr').remove();updateRcdSayisi()">×</button></td>
             `;
             document.getElementById('rcdTableBody').appendChild(tr);
@@ -543,33 +562,64 @@
         function updateOlcumSayisi() { document.getElementById('olcumSayisi').textContent = document.querySelectorAll('#olcumTableBody tr').length + ' Ölçüm'; }
         function updateRcdSayisi() { document.getElementById('rcdSayisi').textContent = document.querySelectorAll('#rcdTableBody tr').length + ' Kayıt'; }
 
-        // Sistem tipi değiştiğinde hesaplamayı güncelle
+        // Sistem tipi ve yer tipi değiştiğinde hesaplamayı güncelle
         document.querySelectorAll('input[name="sistemTipi"]').forEach(radio => {
+            radio.addEventListener('change', hesaplamaYap);
+        });
+        document.querySelectorAll('input[name="yerTipi"]').forEach(radio => {
             radio.addEventListener('change', hesaplamaYap);
         });
 
         function hesaplamaYap() {
             const sistemTipi = document.querySelector('input[name="sistemTipi"]:checked')?.value || 'TN';
+            const yerTipi = document.querySelector('input[name="yerTipi"]:checked')?.value || 'NORMAL';
             const isTT = sistemTipi === 'TT';
-            
+            const isTehlikeli = yerTipi === 'TEHLIKELI';
+
             document.querySelectorAll('#olcumTableBody tr').forEach(row => {
                 const inputs = row.querySelectorAll('input, select');
                 const inA = parseFloat(inputs[1]?.value) || 0;
                 const tip = inputs[2]?.value || 'C';
                 const zx = parseFloat(inputs[3]?.value) || 0;
-                
-                let ia = tip === 'B' ? inA * 5 : tip === 'C' ? inA * 10 : inA * 20;
-                let zsra = ia > 0 ? (isTT ? 50 / ia : 230 / ia) : 0;
+                const rcdIn = parseFloat(inputs[4]?.value) || 0;
+                const rcdIdn = parseFloat(inputs[5]?.value) || 0;
+                const rcdVar = rcdIdn > 0;
+
+                // Ia hesaplama: B=In×5, C=In×10, D=In×20, TMS=In×10
+                let ia = 0;
+                if (tip === 'B') ia = inA * 5;
+                else if (tip === 'C') ia = inA * 10;
+                else if (tip === 'D') ia = inA * 20;
+                else if (tip === 'TMS') ia = inA * 10;
+
+                // Zs/RA hesaplama: Sınır değer = UL(mV) / Ia
+                const UL = isTehlikeli ? 25000 : 50000;
+                let zsra = ia > 0 ? UL / ia : 0;
+
+                // Ik1 = U₀ / Zx
                 let ik = zx > 0 ? 230 / zx : 0;
-                const sonuc = (zx > 0 && zsra > 0 && zx <= zsra) ? 'UYGUN' : 'UYGUN DEĞİL';
-                
+
+                // Uygunluk kontrolü - otomatik öneri
+                let suggestedNot = 'Not-1';
+                if (zx > 0 && zsra > 0) {
+                    if (zx <= zsra) {
+                        suggestedNot = 'Not-1';
+                    } else if (rcdVar) {
+                        suggestedNot = 'Not-4';
+                    } else {
+                        suggestedNot = 'Not-2';
+                    }
+                }
+
                 row.querySelector('.ia').textContent = ia > 0 ? ia.toFixed(0) : '-';
-                row.querySelector('.zsra').textContent = zsra > 0 ? zsra.toFixed(3) : '-';
+                row.querySelector('.zsra').textContent = zsra > 0 ? (zsra % 1 === 0 ? zsra.toFixed(0) : zsra.toFixed(2)) : '-';
                 row.querySelector('.ik').textContent = ik > 0 ? ik.toFixed(0) : '-';
-                
-                const sonucEl = row.querySelector('.sonuc');
-                sonucEl.textContent = sonuc;
-                sonucEl.className = 'sonuc ' + (sonuc === 'UYGUN' ? 'sonuc-uygun' : 'sonuc-uygunsuz');
+
+                // Sonuç dropdown - sadece boşsa veya ilk hesaplamaysa otomatik seç
+                const sonucSelect = row.querySelector('.sonuc-select');
+                if (sonucSelect && !sonucSelect.dataset.userSet) {
+                    sonucSelect.value = suggestedNot;
+                }
             });
         }
 
@@ -579,6 +629,8 @@
                 // ===== CHECKBOX DEĞERLERİ (32 adet) =====
                 // 1. Sistem Tipi (6 seçenek)
                 sistemTipi: document.querySelector('input[name="sistemTipi"]:checked')?.value || 'TN',
+                sebekeTipi: document.querySelector('input[name="sistemTipi"]:checked')?.value || 'TN',
+                yerTipi: document.querySelector('input[name="yerTipi"]:checked')?.value || 'NORMAL',
                 
                 // 2. Tesise Ait Proje (2 seçenek)
                 projeVar: document.querySelector('input[name="projeVar"]:checked')?.value === 'true',
@@ -619,6 +671,13 @@
                 olcum3UcluTopraklama: document.querySelector('input[name="olcum3UcluTopraklama"]')?.checked || false,
                 olcumKlamp: document.querySelector('input[name="olcumKlamp"]')?.checked || false,
                 
+                // ===== ISG-KATİP =====
+                isgKatipNo: document.getElementById('isgKatipNo')?.value || '',
+
+                // ===== SAAT BİLGİLERİ =====
+                baslangicSaati: document.getElementById('baslangicSaati')?.value || '09:00',
+                bitisSaati: document.getElementById('bitisSaati')?.value || '17:00',
+
                 // ===== YAZI ALANLARI (7 adet) =====
                 enerjiSaglayan: document.getElementById('enerjiSaglayan')?.value || 'MEDAŞ',
                 sebekeGerilimi: document.getElementById('sebekeGerilimi')?.value || '380',
@@ -658,10 +717,11 @@
                     zxRx: inputs[3]?.value || '',
                     zsRa: row.querySelector('.zsra')?.textContent || '-',
                     ik: row.querySelector('.ik')?.textContent || '-',
-                    rcdIdn: inputs[4]?.value || '',
-                    rcdId: inputs[5]?.value || '',
-                    rcdTd: inputs[6]?.value || '',
-                    sonuc: row.querySelector('.sonuc')?.textContent || '-'
+                    rcdIn: inputs[4]?.value || '',
+                    rcdIdn: inputs[5]?.value || '',
+                    rcdId: inputs[6]?.value || '',
+                    rcdTd: inputs[7]?.value || '',
+                    sonuc: row.querySelector('.sonuc-select')?.value || 'Not-1'
                 };
             });
         }
@@ -682,7 +742,7 @@
                     sonRcdTipi: inputs[6]?.value || '',
                     sonIdn: inputs[7]?.value || '',
                     sonTd: inputs[8]?.value || '',
-                    sonuc: row.querySelector('.sonuc')?.textContent || '-'
+                    sonuc: inputs[9]?.value || 'Not-7'
                 };
             });
         }
@@ -708,7 +768,15 @@
                 const sel = document.getElementById('altGorevSelect');
                 sel.innerHTML = '<option value="">Alt Görev Seçin...</option>';
                 (ie.altGorevler || []).forEach(g => { sel.innerHTML += `<option value="${g.id}">${g.siraNo}. ${g.hizmetAdi}</option>`; });
+                // ISG-KATİP seçeneklerini doldur
+                isgKatipSecenekleriniDoldur(ie.firmaBilgi, null);
             } catch (e) { console.error(e); }
+        }
+
+        async function altGorevSecildi() {
+            const altGorevId = document.getElementById('altGorevSelect').value;
+            if (!altGorevId) return;
+            await mevcutRaporuYukle(altGorevId);
         }
 
         // Bildirim göster
@@ -775,6 +843,8 @@
                         document.getElementById('firmaAdi').value = altGorev.isEmri.customer.unvan || '';
                         document.getElementById('firmaAdres').value = altGorev.isEmri.customer.adres || '';
                     }
+                    // ISG-KATİP seçeneklerini doldur
+                    isgKatipSecenekleriniDoldur(altGorev.isEmri?.firmaBilgi, null);
                 }
             } catch (e) { console.error(e); }
         }
@@ -803,10 +873,14 @@
                 document.getElementById('firmaAdi').value = rapor.altGorev.isEmri.customer.unvan || '';
                 document.getElementById('firmaAdres').value = rapor.altGorev.isEmri.customer.adres || '';
             }
+            // ISG-KATİP seçeneklerini doldur
+            isgKatipSecenekleriniDoldur(rapor.altGorev?.isEmri?.firmaBilgi, rapor.isgKatipNo);
 
-            // Tarihler
+            // Tarihler ve saatler
             if (rapor.baslangicTarihi) document.getElementById('baslangicTarihi').value = rapor.baslangicTarihi.split('T')[0];
             if (rapor.bitisTarihi) document.getElementById('bitisTarihi').value = rapor.bitisTarihi.split('T')[0];
+            if (rapor.baslangicSaati) document.getElementById('baslangicSaati').value = rapor.baslangicSaati;
+            if (rapor.bitisSaati) document.getElementById('bitisSaati').value = rapor.bitisSaati;
 
             // Sistem tipi
             if (rapor.sistemTipi) {
@@ -842,15 +916,17 @@
                             <option value="B" ${olcum.sigortaTipi === 'B' ? 'selected' : ''}>B</option>
                             <option value="C" ${olcum.sigortaTipi === 'C' ? 'selected' : ''}>C</option>
                             <option value="D" ${olcum.sigortaTipi === 'D' ? 'selected' : ''}>D</option>
+                            <option value="TMS" ${olcum.sigortaTipi === 'TMS' ? 'selected' : ''}>TMŞ</option>
                         </select></td>
                         <td class="ia">-</td>
                         <td><input type="number" step="0.01" value="${olcum.zx || 0.5}" onchange="hesaplamaYap()"></td>
                         <td class="zsra">-</td>
                         <td class="ik">-</td>
-                        <td><input type="number" value="${olcum.rcdIdn || 30}"></td>
-                        <td><input type="number" value="${olcum.rcdId || 30}"></td>
-                        <td><input type="number" value="${olcum.rcdTd || 25}"></td>
-                        <td class="sonuc">-</td>
+                        <td><input type="number" value="${olcum.rcdIn || 25}" style="width:50px"></td>
+                        <td><input type="number" value="${olcum.rcdIdn || 30}" style="width:50px"></td>
+                        <td><input type="number" step="0.1" value="${olcum.rcdId || ''}" style="width:50px"></td>
+                        <td><input type="number" step="0.1" value="${olcum.rcdTd || ''}" style="width:50px"></td>
+                        <td><select class="sonuc-select" style="width:70px;font-size:11px" data-user-set="true">${notSecenekleri(olcum.sonuc || olcum.uygunlukNotu)}</select></td>
                         <td><button class="btn-delete" onclick="this.closest('tr').remove();updateOlcumSayisi()">×</button></td>
                     `;
                     document.getElementById('olcumTableBody').appendChild(tr);
@@ -875,6 +951,8 @@
                             <option value="AC" ${rcd.oncekiRcdTipi === 'AC' ? 'selected' : ''}>AC</option>
                             <option value="A" ${rcd.oncekiRcdTipi === 'A' ? 'selected' : ''}>A</option>
                             <option value="B" ${rcd.oncekiRcdTipi === 'B' ? 'selected' : ''}>B</option>
+                            <option value="C" ${rcd.oncekiRcdTipi === 'C' ? 'selected' : ''}>C</option>
+                            <option value="D" ${rcd.oncekiRcdTipi === 'D' ? 'selected' : ''}>D</option>
                             <option value="S" ${rcd.oncekiRcdTipi === 'S' ? 'selected' : ''}>S (Selektif)</option>
                         </select></td>
                         <td><input type="number" value="${rcd.oncekiIn || 63}"></td>
@@ -885,10 +963,12 @@
                             <option value="AC" ${rcd.sonRcdTipi === 'AC' ? 'selected' : ''}>AC</option>
                             <option value="A" ${rcd.sonRcdTipi === 'A' ? 'selected' : ''}>A</option>
                             <option value="B" ${rcd.sonRcdTipi === 'B' ? 'selected' : ''}>B</option>
+                            <option value="C" ${rcd.sonRcdTipi === 'C' ? 'selected' : ''}>C</option>
+                            <option value="D" ${rcd.sonRcdTipi === 'D' ? 'selected' : ''}>D</option>
                         </select></td>
                         <td><input type="number" value="${rcd.sonIdn || 30}"></td>
                         <td><input type="number" value="${rcd.sonTd || 25}"></td>
-                        <td class="sonuc sonuc-uygun">${rcd.sonuc || 'UYGUN'}</td>
+                        <td><select class="sonuc-select" style="width:70px;font-size:11px">${notSecenekleri(rcd.sonuc || 'Not-7')}</select></td>
                         <td><button class="btn-delete" onclick="this.closest('tr').remove();updateRcdSayisi()">×</button></td>
                     `;
                     document.getElementById('rcdTableBody').appendChild(tr);
@@ -911,8 +991,13 @@
                 const payload = {
                     altGorevId: parseInt(altGorevId),
                     baslangicTarihi: document.getElementById('baslangicTarihi')?.value,
+                    baslangicSaati: document.getElementById('baslangicSaati')?.value || '09:00',
                     bitisTarihi: document.getElementById('bitisTarihi')?.value,
+                    bitisSaati: document.getElementById('bitisSaati')?.value || '17:00',
+                    isgKatipNo: document.getElementById('isgKatipNo')?.value || null,
                     sistemTipi: formData.sistemTipi,
+                    sebekeTipi: formData.sebekeTipi,
+                    yerTipi: formData.yerTipi,
                     genelSonuc: formData.genelSonuc,
                     aciklama: formData.notlar
                 };
@@ -968,9 +1053,9 @@
                             anmaAkimi: parseFloat(olcum.inA) || 0,
                             sigortaTipi: olcum.tip,
                             zx: parseFloat(olcum.zxRx) || 0,
-                            rcdIdn: parseFloat(olcum.rcdIdn) || 0,
-                            rcdId: parseFloat(olcum.rcdId) || 0,
-                            rcdTd: parseFloat(olcum.rcdTd) || 0,
+                            rcdVarMi: !!(parseFloat(olcum.rcdIdn) > 0),
+                            rcdIAn: parseFloat(olcum.rcdIdn) || 0,
+                            rcdSure: parseFloat(olcum.rcdTd) || 0,
                             sonuc: olcum.sonuc
                         })
                     });

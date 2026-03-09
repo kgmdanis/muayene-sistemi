@@ -1,0 +1,148 @@
+{
+  "sablonKodu": "FR7.2.36",
+  "sablonAdi": "Elektrik Topraklama Ölçüm Raporu",
+  "kategori": "elektrik",
+  "altKategori": "elektrik",
+  "raporNoPrefix": "MT",
+  "ozelForm": true,
+  "formUrl": "/forms/elektrik-topraklama-form-v2.html",
+  "wordServiceType": "elektrikTopraklama",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP No",
+          "type": "text"
+        },
+        {
+          "id": "baslangicTarihi",
+          "label": "Başlangıç Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "bitisTarihi",
+          "label": "Bitiş Tarihi",
+          "type": "date"
+        }
+      ]
+    },
+    {
+      "id": "ortam",
+      "title": "Ortam Koşulları",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "havaDurumu",
+          "label": "Hava Durumu ve Sıcaklığı",
+          "type": "text",
+          "placeholder": "Örn: Açık, 25°C"
+        },
+        {
+          "id": "zeminNem",
+          "label": "Zemin Nem Durumu",
+          "type": "text",
+          "placeholder": "Kuru, Nemli, Islak"
+        }
+      ]
+    },
+    {
+      "id": "sistem",
+      "title": "Sistem Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "enerjiSaglayan",
+          "label": "Enerji Sağlayan Kuruluş",
+          "type": "text",
+          "placeholder": "MEDAŞ"
+        },
+        {
+          "id": "sebekeGerilimi",
+          "label": "Şebeke Gerilimi (V)",
+          "type": "text",
+          "placeholder": "380"
+        },
+        {
+          "id": "sistemTipi",
+          "label": "Sistem Tipi",
+          "type": "radio",
+          "options": ["TN", "TN-S", "TN-C", "TN-CS", "TT", "IT"]
+        },
+        {
+          "id": "yerTipi",
+          "label": "Yer Tipi",
+          "type": "radio",
+          "options": ["NORMAL", "TEHLIKELI"]
+        }
+      ]
+    },
+    {
+      "id": "olcumMetodu",
+      "title": "Ölçüm Metodu",
+      "fields": [
+        {
+          "id": "olcumCevrimEmpedansi",
+          "label": "Çevrim Empedansı",
+          "type": "checkbox"
+        },
+        {
+          "id": "olcum3UcluTopraklama",
+          "label": "3 Uçlu Topraklama",
+          "type": "checkbox"
+        },
+        {
+          "id": "olcumKlamp",
+          "label": "Klamp Metodu",
+          "type": "checkbox"
+        }
+      ]
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/elektrik/FR7.2.36 Elektrik Topraklama Ölçüm Raporu şablon.docx",
+    "fields": [
+      { "label": "Firma Adı", "source": "firma.unvan" },
+      { "label": "Rapor Numarası", "source": "rapor.raporNo" },
+      { "label": "Periyodik Kontrol Adresi", "source": "firma.adres" },
+      { "label": "Rapor Tarihi", "field": "bitisTarihi", "format": "date" },
+      { "label": "İSG-KATİP Sözleşme ID", "source": "firmaBilgi.isgKatipId" },
+      { "label": "SGK Sicil Numarası", "source": "firmaBilgi.sgkSicilNo" },
+      { "label": "Periyodik Kontrol Başlangıç Tarihi ve Saati", "field": "baslangicTarihi", "format": "dateTime" },
+      { "label": "Periyodik Kontrol Bitiş Tarihi ve Saati", "field": "bitisTarihi", "format": "dateTime" },
+      { "label": "Bir Sonraki Periyodik Kontrol Tarihi", "field": "bitisTarihi", "format": "nextYear" },
+      { "label": "Enerji sağlayan kuruluş", "field": "enerjiSaglayan" },
+      { "label": "Şebeke gerilimi", "field": "sebekeGerilimi" },
+      { "label": "Proje bilgileri", "field": "projeBilgileri" },
+      { "label": "Ekipmanın kullanım amacı", "field": "kullanimAmaci" },
+      { "label": "Son kontrol tarihi", "field": "sonKontrolTarihi", "format": "date" },
+      { "label": "Hava durumu ve sıcaklığı", "field": "havaDurumu" },
+      { "label": "Zemin nem durumu", "field": "zeminNem" },
+      { "label": "Pano/Ekipman tanımlaması", "field": "panoTanimi" }
+    ]
+  }
+}

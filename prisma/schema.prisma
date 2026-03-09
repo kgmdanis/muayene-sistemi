@@ -283,6 +283,7 @@ model AltGorev {
   kompresorRaporlari       KompresorRaporu[]
   havaTankiRaporlari       HavaTankiRaporu[]
   raporlar                 Rapor[]
+  icTesisatRaporlari       ElektrikIcTesisatRaporu[]
 }
 
 model IsEmriFirmaBilgi {
@@ -386,13 +387,68 @@ model ElektrikTopraklamaRaporu {
   // Tarihler - sahada seçilecek
   baslangicTarihi       DateTime?
   bitisTarihi           DateTime?
+  baslangicSaati        String?
+  bitisSaati            String?
 
   // Ortam Koşulları
   ortamSicaklik         String?
   ortamNem              String?
+  havaDurumu            String?
+  zeminNem              String?
+
+  // Ölçüm Metodu
+  olcumCevrimEmpedansi  Boolean?                   @default(false)
+  olcum3UcluTopraklama  Boolean?                   @default(false)
+  olcumKlamp            Boolean?                   @default(false)
+
+  // Kontrol Nedeni
+  kontrolNedeni         String?                    @default("periyodik")
+
+  // Proje & Tek Hat Şeması
+  projeVar              Boolean?                   @default(false)
+  tekHatSemasiVar       Boolean?                   @default(false)
+
+  // Yapı Cinsi (çoklu seçim)
+  yapiEv                Boolean?                   @default(false)
+  yapiTicari            Boolean?                   @default(false)
+  yapiEndustri          Boolean?                   @default(false)
+  yapiDiger             Boolean?                   @default(false)
+
+  // Topraklayıcı Tipi (çoklu seçim)
+  toprakRing            Boolean?                   @default(false)
+  toprakYuzeysel        Boolean?                   @default(false)
+  toprakTemel           Boolean?                   @default(false)
+  toprakDerin           Boolean?                   @default(false)
+  toprakBelirlenemedi   Boolean?                   @default(false)
+
+  // Koruma Önlemi (çoklu seçim)
+  korumaEspotansiyel    Boolean?                   @default(false)
+  korumaYalitma         Boolean?                   @default(false)
+  korumaAyirma          Boolean?                   @default(false)
+  korumaKucukGerilim    Boolean?                   @default(false)
+
+  // Kapsamlı Değişiklik & Önceki Kontrol Etiketi
+  kapsamliDegisiklik    Boolean?                   @default(false)
+  oncekiKontrolEtiketi  Boolean?                   @default(false)
+
+  // Ekipman & Diğer Bilgiler
+  enerjiSaglayan        String?
+  sebekeGerilimi        String?
+  projeBilgileri        String?
+  ekipmanKullanimAmaci  String?
+  sonKontrolTarihi      String?
+  panoTanimi            String?
+
+  // Sonuç
+  uygunlukNotu          String?
 
   // Sistem Tipi (TN veya TT)
   sistemTipi            String                     @default("TN")
+
+  // Şebeke Tipi (genişletilmiş) - TN_S, TN_C, TN_CS, TT, IT
+  sebekeTipi            String?
+  // Yer Tipi - NORMAL veya TEHLIKELI (RA hesabında 50 veya 25 kullanılır)
+  yerTipi               String                     @default("NORMAL")
 
   // Ölçüm Cihazları (sabit)
   topraklamaCihazId     Int?
@@ -415,6 +471,7 @@ model ElektrikTopraklamaRaporu {
   ekipmanBilgi          TopraklamaEkipmanBilgi?
   detayliOlcumler       TopraklamaDetayliOlcum[]
   rcdSecicilik          RCDSecicilik[]
+  icTesisatRaporlari    ElektrikIcTesisatRaporu[]
 }
 
 // Ekipman Bilgileri - Checkbox alanları
@@ -715,6 +772,224 @@ model SistemDosya {
   updatedAt   DateTime  @updatedAt
   personel    Personel? @relation(fields: [personelId], references: [id])
   isEmri      IsEmri?   @relation(fields: [isEmriId], references: [id])
+}
+
+// =============================================
+// ELEKTRİK İÇ TESİSAT RAPORU MODELLERİ
+// FR7.2.40 Elektrik İç Tesisat Ölçüm Raporu
+// =============================================
+
+model ElektrikIcTesisatRaporu {
+  id                    Int                        @id @default(autoincrement())
+  raporNo               String                     @unique
+  altGorevId            Int
+
+  // Rapor tipi checkboxları
+  raporTipiTopraklama   Boolean                    @default(false)
+  raporTipiIcTesisat    Boolean                    @default(true)
+
+  // Firma bilgileri
+  sgkSicilNo            String?
+  isgKatipNo            String?
+
+  // Tarihler
+  baslangicTarihi       DateTime?
+  bitisTarihi           DateTime?
+
+  // Ortam
+  sicaklik              String?    @map("ortamSicaklik")
+  nem                   String?    @map("ortamNem")
+
+  // Sistem tipi
+  sistemTipi            String                     @default("TN")
+  sebekeTipi            String?
+  yerTipi               String                     @default("NORMAL")
+
+  // Topraklama raporu FK
+  topraklamaRaporuId    Int?
+
+  // Ekipman bilgileri
+  enerjiFirma           String?    @map("enerjiSaglayan")
+  dkdSpd                String?    @map("dkdSpdKullanildi")
+  sonKontrolTarihi      DateTime?
+  ilaveTopraklamaElektrotu String?
+  kullanimAmaci         String?    @map("ekipmanKullanimAmaci")
+
+  // Notlar
+  genelNotlar           String?    @map("notlar")
+
+  // Koruyucu önlemler ve ölçüm metodu (JSON dizisi)
+  koruyucuOnlemler      String?
+  olcumMetodu           String?
+
+  // 2.1 Ek alanlar
+  fazIletkenSayisiTipi  String?    @map("fazIletkenTipi")
+  temelTopraklamaDirenci String?
+  sistemTopraklamaIletkeni String?
+  anaEspotansiyelIletkeni String?
+  nominalGerilim        String?    @map("beslemeNominalGerilim")
+  nominalFrekans        String?    @map("beslemeNominalFrekans")
+  hataAkimi             String?    @map("beslemeHataAkimi")
+  cevrimEmpedansi       String?    @map("beslemeCevrimEmpedans")
+  anaRcdAnmaAkimi       String?
+  anaKesiciTipi         String?
+  anaKesiciNominalAkim  String?
+  anaRcdTestAkimi       String?
+
+  // Genel Sonuç
+  genelSonuc            String?
+  sonucAciklama         String?    @map("aciklama")
+  formData              Json                       @default("{}")
+
+  // Meta
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+
+  // İlişkiler
+  altGorev              AltGorev                   @relation(fields: [altGorevId], references: [id], onDelete: Cascade)
+  topraklamaRaporu      ElektrikTopraklamaRaporu?   @relation(fields: [topraklamaRaporuId], references: [id])
+  panolar               IcTesisatPano[]
+  linyeler              IcTesisatLinye[]
+  potansiyelDengeleme   IcTesisatPotansiyelDengeleme[]
+  zeminIzolasyon        IcTesisatZeminIzolasyon[]
+  fotograflar           IcTesisatFoto[]
+}
+
+model IcTesisatPano {
+  id                    Int                        @id @default(autoincrement())
+  raporId               Int
+  siraNo                Int                        @default(1)
+  panoAdi               String?
+
+  // 27 kriter (U=Uygun, UD=Uygun Değil, UY=Uygulanamaz)
+  kriter1               String?    @default("U")
+  kriter2               String?    @default("U")
+  kriter3               String?    @default("U")
+  kriter4               String?    @default("U")
+  kriter5               String?    @default("U")
+  kriter6               String?    @default("U")
+  kriter7               String?    @default("U")
+  kriter8               String?    @default("U")
+  kriter9               String?    @default("U")
+  kriter10              String?    @default("U")
+  kriter11              String?    @default("U")
+  kriter12              String?    @default("U")
+  kriter13              String?    @default("U")
+  kriter14              String?    @default("U")
+  kriter15              String?    @default("U")
+  kriter16              String?    @default("U")
+  kriter17              String?    @default("U")
+  kriter18              String?    @default("U")
+  kriter19              String?    @default("U")
+  kriter20              String?    @default("U")
+  kriter21              String?    @default("U")
+  kriter22              String?    @default("U")
+  kriter23              String?    @default("U")
+  kriter24              String?    @default("U")
+  kriter25              String?    @default("U")
+  kriter26              String?    @default("U")
+  kriter27              String?    @default("U")
+
+  // Pano ölçüm değerleri
+  panoZx                String?    // Faz-toprak çevrim empedansı (ohm)
+  panoZln               String?    // Faz-nötr çevrim empedansı (ohm)
+  panoVff               String?    @map("gerilimFF")    // Faz-Faz gerilimi (V)
+  panoVln               String?    @map("gerilimLN")    // Faz-Nötr gerilimi (V)
+  panoVnpe              String?    @map("gerilimNPE")   // Nötr-PE gerilimi (V)
+  panoIkk               String?    @map("kisaDevreAkimi3Faz")  // 3 fazlı kısa devre akımı (kA)
+  panoDkdTipi           String?    @map("dkdTipi")      // DKD tipi
+  panoDkdAkim           String?    @map("dkdDayanmaAkimi")     // DKD dayanma akımı (kA)
+
+  // Termal kamera
+  termalFotografTarihi  String?    @map("termalFotoTarih")
+  termalFotografNo      String?    @map("termalFotoNo")
+
+  aciklama              String?
+  createdAt             DateTime                   @default(now())
+
+  rapor                 ElektrikIcTesisatRaporu     @relation(fields: [raporId], references: [id], onDelete: Cascade)
+}
+
+model IcTesisatLinye {
+  id                    Int                        @id @default(autoincrement())
+  raporId               Int
+  siraNo                Int                        @default(1)
+
+  panoLinyeAdi          String?                    @map("panoAdi")
+  egriTipi              String?                    // B, C, D, TMS
+  kutupSayisi           String?                    // 1P, 2P, 3P, 4P
+  inA                   Decimal?                   @db.Decimal(10, 2)
+  icuKA                 Decimal?                   @db.Decimal(10, 2)
+  fazKesiti             String?                    @map("kesitFaz")
+  nKesiti               String?                    @map("kesitN")
+  peKesiti              String?                    @map("kesitPE")
+  ibA                   Decimal?                   @db.Decimal(10, 2)    @map("ib")
+  izA                   Decimal?                   @db.Decimal(10, 2)    @map("iz")
+  zxOhm                 Decimal?                   @db.Decimal(10, 4)    @map("zx")
+  rcdIAn                Decimal?                   @db.Decimal(10, 2)
+  rcdTSuresi            Decimal?                   @db.Decimal(10, 2)    @map("rcdTd")
+
+  // Hesaplanan değerler
+  ia                    Decimal?                   @db.Decimal(10, 2)
+  zsRa                  Decimal?                   @db.Decimal(10, 4)
+  ik1                   Decimal?                   @db.Decimal(10, 2)
+
+  koordinasyonSonuc     String?
+  peKesitSonuc          String?
+  sonuc                 String?
+  notKodu               String?
+
+  createdAt             DateTime                   @default(now())
+
+  rapor                 ElektrikIcTesisatRaporu     @relation(fields: [raporId], references: [id], onDelete: Cascade)
+}
+
+model IcTesisatPotansiyelDengeleme {
+  id                    Int                        @id @default(autoincrement())
+  raporId               Int
+  siraNo                Int                        @default(1)
+
+  olcumNoktasi          String?
+  iletkenKesiti         String?
+  sureklillikOhm        Decimal?                   @db.Decimal(10, 4)
+  tamamlayiciKesit      String?
+  tamamlayiciSureklilik Decimal?                   @db.Decimal(10, 4)
+  sonuc                 String?
+
+  createdAt             DateTime                   @default(now())
+
+  rapor                 ElektrikIcTesisatRaporu     @relation(fields: [raporId], references: [id], onDelete: Cascade)
+}
+
+model IcTesisatZeminIzolasyon {
+  id                    Int                        @id @default(autoincrement())
+  raporId               Int
+  siraNo                Int                        @default(1)
+
+  olcumNoktasi          String?
+  eni                   Decimal?                   @db.Decimal(10, 2)
+  boyu                  Decimal?                   @db.Decimal(10, 2)
+  izolasyonDirenciKOhm  Decimal?                   @db.Decimal(10, 4)
+  sinirDeger            Decimal                    @default(50)  @db.Decimal(10, 4)
+  sonuc                 String?
+
+  createdAt             DateTime                   @default(now())
+
+  rapor                 ElektrikIcTesisatRaporu     @relation(fields: [raporId], references: [id], onDelete: Cascade)
+}
+
+model IcTesisatFoto {
+  id          Int      @id @default(autoincrement())
+  raporId     Int
+  panoId      Int?
+  fotoTipi    String   // "ekipman" veya "termal"
+  dosyaYolu   String
+  dosyaAdi    String?
+  aciklama    String?
+  siraNo      Int      @default(1)
+  createdAt   DateTime @default(now())
+
+  rapor       ElektrikIcTesisatRaporu @relation(fields: [raporId], references: [id], onDelete: Cascade)
 }
 
 enum WorkOrderDurum {

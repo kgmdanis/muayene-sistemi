@@ -1,0 +1,136 @@
+{
+  "sablonKodu": "FR7.2.202",
+  "sablonAdi": "Otomatik Yangın Söndürme Tesisatı Muayene ve Ölçüm Raporu",
+  "kategori": "tesisat kontrolü",
+  "altKategori": "yangın söndürme",
+  "raporNoPrefix": "TK",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        { "id": "firmaAdi", "label": "Firma Adı", "type": "text", "source": "customer.unvan", "readonly": true, "autoFill": true },
+        { "id": "bolumu", "label": "Bölümü", "type": "text", "placeholder": "İşletme, Üretim vb." },
+        { "id": "firmaAdres", "label": "Adresi", "type": "text", "source": "customer.adres", "readonly": true, "autoFill": true },
+        { "id": "kontrolTarihi", "label": "Kontrol Tarihi", "type": "date" },
+        { "id": "firmaTelefon", "label": "Tel/Fax", "type": "text", "source": "customer.telefon", "readonly": true, "autoFill": true },
+        { "id": "raporTarihi", "label": "Rapor Tarihi", "type": "date" },
+        { "id": "firmaEmail", "label": "E-mail", "type": "text", "source": "customer.email", "readonly": true, "autoFill": true },
+        { "id": "sonrakiKontrolTarihi", "label": "Sonraki Kontrol Tarihi", "type": "date" },
+        { "id": "firmaWeb", "label": "Web", "type": "text", "source": "customer.web", "readonly": true, "autoFill": true },
+        { "id": "raporNo", "label": "Rapor No", "type": "text", "readonly": true, "autoFill": true },
+        { "id": "sgkSicilNo", "label": "SGK Sicil No", "type": "text" },
+        { "id": "isgKatipNo", "label": "İSG-KATİP Sözleşme ID", "type": "text" }
+      ]
+    },
+    {
+      "id": "ekipman",
+      "title": "İş Ekipmanına Ait Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        { "id": "markasi", "label": "Markası", "type": "text" },
+        { "id": "yanginTesisatiTipi", "label": "Yangın Tesisatı Tipi", "type": "text", "placeholder": "SPRİNKLER" },
+        { "id": "ortamSicakligi", "label": "Ortam Sıcaklığı", "type": "text", "placeholder": "°C" },
+        { "id": "seriNo", "label": "Seri Numarası", "type": "text" },
+        { "id": "olcumYapilanMahal", "label": "Ölçüm Yapılan Mahal", "type": "text" },
+        { "id": "ortamNemi", "label": "Ortam Nemi", "type": "text", "placeholder": "%" },
+        { "id": "calismaBasinci", "label": "Çalışma Basıncı (bar)", "type": "text" },
+        { "id": "testBasinci", "label": "Test Basıncı (bar)", "type": "text" },
+        { "id": "pompaAdedi", "label": "Pompa Adedi", "type": "text" }
+      ]
+    },
+    {
+      "id": "cihaz",
+      "title": "Kullanılan Ekipmanın Özellikleri",
+      "layout": "row-2",
+      "fields": [
+        { "id": "metreMarka", "label": "Metre Marka", "type": "text" },
+        { "id": "metreDemirbasNo", "label": "Metre Demirbaş No", "type": "text" },
+        { "id": "testPompasiMarka", "label": "Test Pompası Marka", "type": "text" },
+        { "id": "testPompasiDemirbasNo", "label": "Test Pompası Demirbaş No", "type": "text" },
+        { "id": "manometreMarka", "label": "Manometre Marka", "type": "text" },
+        { "id": "manometreDemirbasNo", "label": "Manometre Demirbaş No", "type": "text" }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "8 Kontrol",
+      "questions": [
+        { "id": "kriter1", "no": 1, "text": "Yangın söndürme sisteminin dağıtıldığı bölümde bulunan vanalar açık konumdadır.", "options": ["Evet", "Hayır"], "default": "Evet" },
+        { "id": "kriter2", "no": 2, "text": "Vanalardaki zincir ve kilit sistemi kapalıdır.", "options": ["Evet", "Hayır"], "default": "Evet" },
+        { "id": "kriter3", "no": 3, "text": "Yangın dolabı/nozul fiziksel olarak sağlam konumdadır.", "options": ["Evet", "Hayır"], "default": "Evet" },
+        { "id": "kriter4", "no": 4, "text": "Hortumu ve vanası uygun şekilde bulunmaktadır.", "options": ["Evet", "Hayır"], "default": "Evet" },
+        { "id": "kriter5", "no": 5, "text": "Nozul montajı ve çalışması uygundur.", "options": ["Evet", "Hayır"], "default": "Evet" },
+        { "id": "kriter6", "no": 6, "text": "Nozullar hakim noktalarda konumlandırılmışlardır.", "options": ["Evet", "Hayır"], "default": "Evet" },
+        { "id": "kriter7", "no": 7, "text": "Su basıncının, su akışının kararlı ve yeterli olduğu tespit edilmiştir.", "options": ["Evet", "Hayır"], "default": "Evet" },
+        { "id": "kriter8", "no": 8, "text": "Sprinkler başlıkları hakim noktalarda konumlandırılmışlardır.", "options": ["Evet", "Hayır"], "default": "Evet" }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "Hidrostatik Test",
+      "layout": "row-2",
+      "fields": [
+        { "id": "testBasinciUygulanan", "label": "Uygulanan Test Basıncı (Bar)", "type": "text" },
+        { "id": "testSuresi", "label": "Test Süresi (dk)", "type": "text", "placeholder": "30" },
+        { "id": "deformasyonDurumu", "label": "Deformasyon/Sızıntı Durumu", "type": "text", "placeholder": "Yok" }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        { "id": "ikazOneriler", "label": "İkaz ve Öneriler", "type": "textarea", "rows": 3 }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Otomatik Yangın Söndürme Tesisatı\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/tesisat/FR7.2.202 Otomatik Yangın Söndürme Tesisatı Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header1.xml",
+    "fields": [
+      { "label": "Firma Adı", "source": "firma.unvan" },
+      { "label": "Bölümü", "field": "bolumu" },
+      { "label": "Adresi", "source": "firma.adres" },
+      { "label": "Kontrol Tarihi", "field": "kontrolTarihi", "format": "date" },
+      { "label": "Tel/Fax", "source": "firma.telefon" },
+      { "label": "Rapor Tarihi", "field": "raporTarihi", "format": "date" },
+      { "label": "E-mail", "source": "firma.email" },
+      { "label": "Sonraki Kontrol Tarihi", "field": "sonrakiKontrolTarihi", "format": "date" },
+      { "label": "Web", "source": "firma.web" },
+      { "label": "Rapor No", "source": "rapor.raporNo" },
+      { "label": "SGK Sicil No", "source": "firmaBilgi.sgkSicilNo" },
+      { "label": "Sözlesme ID", "source": "firmaBilgi.isgKatipId" },
+      { "label": "Markası", "field": "markasi" },
+      { "label": "Yangın Tesisatı Tipi", "field": "yanginTesisatiTipi" },
+      { "label": "Ortam Sıcaklığı", "field": "ortamSicakligi" },
+      { "label": "Seri Numarası", "field": "seriNo" },
+      { "label": "Ölçüm Yapılan Mahal", "field": "olcumYapilanMahal" },
+      { "label": "Ortam Nemi", "field": "ortamNemi" },
+      { "label": "Çalışma Basıncı", "field": "calismaBasinci" },
+      { "label": "Test Basıncı", "field": "testBasinci" },
+      { "label": "Pompa Adedi", "field": "pompaAdedi" }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        { "field": "kriter1", "text": "vanalar açık konumdadır" },
+        { "field": "kriter2", "text": "zincir ve kilit sistemi" },
+        { "field": "kriter3", "text": "fiziksel olarak sağlam" },
+        { "field": "kriter4", "text": "vanası uygun şekilde" },
+        { "field": "kriter5", "text": "montajı ve çalışması" },
+        { "field": "kriter6", "text": "konumlandırılmışlardır" },
+        { "field": "kriter7", "text": "su basıncının, su akışının" },
+        { "field": "kriter8", "text": "noktalarda konumlandırılmış" }
+      ]
+    }
+  }
+}

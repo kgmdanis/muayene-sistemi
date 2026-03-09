@@ -1,0 +1,177 @@
+{
+  "sablonKodu": "FR7.2.40",
+  "sablonAdi": "Elektrik İç Tesisat Ölçüm Raporu",
+  "kategori": "elektrik",
+  "altKategori": "elektrik",
+  "raporNoPrefix": "MT",
+  "ozelForm": true,
+  "formUrl": "/forms/elektrik-ic-tesisat-form.html",
+  "wordServiceType": "elektrikIcTesisat",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP No",
+          "type": "text"
+        },
+        {
+          "id": "baslangicTarihi",
+          "label": "Başlangıç Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "bitisTarihi",
+          "label": "Bitiş Tarihi",
+          "type": "date"
+        }
+      ]
+    },
+    {
+      "id": "ortam",
+      "title": "Ortam Koşulları",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "sicaklik",
+          "label": "Sıcaklık (°C)",
+          "type": "text",
+          "placeholder": "25"
+        },
+        {
+          "id": "nem",
+          "label": "Nem (%)",
+          "type": "text",
+          "placeholder": "50"
+        }
+      ]
+    },
+    {
+      "id": "sistem",
+      "title": "Sistem Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "sistemTipi",
+          "label": "Sistem Tipi",
+          "type": "radio",
+          "options": ["TN", "TT", "IT"]
+        },
+        {
+          "id": "sebekeTipi",
+          "label": "Şebeke Tipi",
+          "type": "select",
+          "options": ["TN-S", "TN-C", "TN-C-S", "TT", "IT"]
+        },
+        {
+          "id": "yerTipi",
+          "label": "Yer Tipi",
+          "type": "radio",
+          "options": ["NORMAL", "TEHLIKELI"]
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Kontrol Bilgileri",
+      "fields": [
+        {
+          "id": "kontrolNedeni",
+          "label": "Kontrol Nedeni",
+          "type": "radio",
+          "options": ["periyodik", "ilk"]
+        },
+        {
+          "id": "projeVar",
+          "label": "Tesise Ait Proje",
+          "type": "radio",
+          "options": ["true", "false"]
+        },
+        {
+          "id": "tekHatSemasiVar",
+          "label": "Tek Hat Şeması",
+          "type": "radio",
+          "options": ["true", "false"]
+        }
+      ]
+    },
+    {
+      "id": "yapiCinsi",
+      "title": "Yapı Cinsi",
+      "fields": [
+        { "id": "yapiEv", "label": "Ev", "type": "checkbox" },
+        { "id": "yapiTicari", "label": "Ticari", "type": "checkbox" },
+        { "id": "yapiEndustri", "label": "Endüstri", "type": "checkbox" },
+        { "id": "yapiDiger", "label": "Diğer", "type": "checkbox" }
+      ]
+    },
+    {
+      "id": "topraklayiciTipi",
+      "title": "Topraklayıcı Tipi",
+      "fields": [
+        { "id": "toprakRing", "label": "Ring Topraklayıcı", "type": "checkbox" },
+        { "id": "toprakYuzeysel", "label": "Yüzeysel", "type": "checkbox" },
+        { "id": "toprakTemel", "label": "Temel", "type": "checkbox" },
+        { "id": "toprakDerin", "label": "Derin", "type": "checkbox" },
+        { "id": "toprakBelirlenemedi", "label": "Belirlenemedi", "type": "checkbox" }
+      ]
+    },
+    {
+      "id": "korumaOnlemi",
+      "title": "Koruma Önlemi",
+      "fields": [
+        { "id": "korEspotansiyel", "label": "Eşpotansiyel Topraklama", "type": "checkbox" },
+        { "id": "korYalitma", "label": "Koruyucu Yalıtma", "type": "checkbox" },
+        { "id": "korAyirma", "label": "Koruyucu Ayırma", "type": "checkbox" },
+        { "id": "korKucukGerilim", "label": "Küçük Gerilim", "type": "checkbox" }
+      ]
+    },
+    {
+      "id": "olcumMetodu",
+      "title": "Ölçüm Metodu",
+      "fields": [
+        { "id": "metodCevrim", "label": "Çevrim Empedansı", "type": "checkbox" },
+        { "id": "metodUcUclu", "label": "3 Uçlu Topraklama", "type": "checkbox" },
+        { "id": "metodKlamp", "label": "Klamp Yöntemi", "type": "checkbox" }
+      ]
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/elektrik/FR7.2.40 Elektrik İç Tesisat Ölçüm Raporu-2 (2).docx",
+    "fields": [
+      { "label": "Firma Adı", "source": "firma.unvan" },
+      { "label": "Rapor Numarası", "source": "rapor.raporNo" },
+      { "label": "Periyodik Kontrol Adresi", "source": "firma.adres" },
+      { "label": "Rapor Tarihi", "field": "bitisTarihi", "format": "date" },
+      { "label": "İSG-KATİP Sözleşme ID", "source": "firmaBilgi.isgKatipId" },
+      { "label": "SGK Sicil Numarası", "source": "firmaBilgi.sgkSicilNo" },
+      { "label": "Periyodik Kontrol Başlangıç Tarihi ve Saati", "field": "baslangicTarihi", "format": "dateTime" },
+      { "label": "Periyodik Kontrol Bitiş Tarihi ve Saati", "field": "bitisTarihi", "format": "dateTime" },
+      { "label": "Bir Sonraki Periyodik Kontrol Tarihi", "field": "bitisTarihi", "format": "nextYear" }
+    ]
+  }
+}

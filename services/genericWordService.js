@@ -97,8 +97,22 @@ async function generateGenericWord(rapor, isEmri, options = {}) {
     if (config.wordMapping.controlQuestions) {
         const cq = config.wordMapping.controlQuestions;
         const questions = cq.questions || [];
+
+        // Section'dan default değerleri topla
+        const sectionDefaults = {};
+        const kontrolSection = (config.sections || []).find(s => s.type === 'control-questions');
+        if (kontrolSection && kontrolSection.questions) {
+            for (const sq of kontrolSection.questions) {
+                if (sq.default) sectionDefaults[sq.id] = sq.default;
+            }
+        }
+
         for (const q of questions) {
-            const deger = getValue(q.field, rapor, formData, options);
+            let deger = getValue(q.field, rapor, formData, options);
+            // Değer yoksa section default'unu veya config default'unu kullan
+            if (!deger) {
+                deger = q.default || sectionDefaults[q.field] || null;
+            }
             if (deger) {
                 const mode = q.mode || cq.mode || 'last';
                 const exact = q.exact || false;
@@ -106,6 +120,10 @@ async function generateGenericWord(rapor, isEmri, options = {}) {
             }
         }
     }
+
+    // === 3.5. PRE-FILLED DEĞER NORMALİZASYONU ===
+    // Şablondaki önceden doldurulmuş "UYGUN"/"UYGULANAMAZ" gibi büyük harfli değerleri normalize et
+    docXml = normalizePrefilledValues(docXml);
 
     // === 4. TEST SATIRLARI ===
     if (config.wordMapping.testRows) {
@@ -246,6 +264,32 @@ function fillSonuc(docXml, genelSonuc, pattern) {
     }
 
     return docXml;
+}
+
+/**
+ * Şablondaki önceden doldurulmuş büyük harfli değerleri normalize et
+ * "UYGUN" → "Uygun", "UYGUN DEĞİL" → "Uygun Değil", "UYGULANAMAZ" → "Uygulanamaz"
+ * "EVET" → "Evet", "HAYIR" → "Hayır"
+ */
+function normalizePrefilledValues(xml) {
+    const replacements = {
+        'UYGUN DEĞİL': 'Uygun Değil',
+        'UYGULANAMAZ': 'Uygulanamaz',
+        'UYGUN': 'Uygun',
+        'EVET': 'Evet',
+        'HAYIR': 'Hayır'
+    };
+
+    // Önce uzun ifadeleri değiştir (kısa olan "UYGUN" sonra gelsin, "UYGUN DEĞİL"i bozmasın)
+    const orderedKeys = Object.keys(replacements).sort((a, b) => b.length - a.length);
+    for (const upper of orderedKeys) {
+        const normal = replacements[upper];
+        // Tam eşleşme: <w:t>UYGUN</w:t> veya <w:t xml:space="preserve">UYGUN</w:t>
+        const regex = new RegExp(`(<w:t[^>]*>)\\s*${upper}\\s*(<\\/w:t>)`, 'g');
+        xml = xml.replace(regex, `$1${normal}$2`);
+    }
+
+    return xml;
 }
 
 module.exports = {

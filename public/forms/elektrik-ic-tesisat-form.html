@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FR7.2.40 Elektrik İç Tesisat Ölçüm Raporu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+
+        .header { background: linear-gradient(135deg, #2e7d32, #4caf50); color: white; padding: 16px 24px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .header h1 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .header-status { display: flex; align-items: center; gap: 16px; font-size: 13px; }
+        .status-dot { width: 8px; height: 8px; background: #a5d6a7; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .btn-new { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .btn-new:hover { background: rgba(255,255,255,0.3); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; overflow: hidden; }
+        .card-header { background: #f8f9fa; padding: 16px 20px; font-weight: 600; font-size: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .card-header:hover { background: #f0f0f0; }
+        .card-header .badge { background: #2e7d32; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; }
+        .card-body { padding: 20px; }
+        .card-body.collapsed { display: none; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-weight: 500; margin-bottom: 8px; color: #333; font-size: 14px; }
+        .form-control { width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .form-control:focus { outline: none; border-color: #2e7d32; box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1); }
+        .form-control:disabled { background: #f5f5f5; color: #666; }
+        .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .form-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 14px; }
+        .checkbox-item:hover { background: #e8f5e9; border-color: #4caf50; }
+        .checkbox-item input { width: 18px; height: 18px; accent-color: #2e7d32; cursor: pointer; }
+        .checkbox-item:has(input:checked) { background: #e8f5e9; border-color: #2e7d32; }
+        .checkbox-item:has(input:checked) span { color: #2e7d32; font-weight: 600; }
+
+        .table-container { overflow-x: auto; margin-top: 16px; }
+        .olcum-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .olcum-table th { background: #2e7d32; color: white; padding: 12px 8px; text-align: center; font-weight: 500; white-space: nowrap; }
+        .olcum-table th.group-header { background: #388e3c; }
+        .olcum-table td { padding: 8px; border: 1px solid #e0e0e0; text-align: center; }
+        .olcum-table tbody tr:hover { background: #f8f9fa; }
+        .olcum-table input, .olcum-table select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 13px; }
+        .olcum-table input:focus, .olcum-table select:focus { outline: none; border-color: #2e7d32; }
+        .sonuc-uygun { background: #e8f5e9; color: #2e7d32; font-weight: 600; }
+        .sonuc-uygunsuz { background: #ffebee; color: #c62828; font-weight: 600; }
+        .btn-delete { background: #ff5252; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 16px; }
+        .btn-delete:hover { background: #ff1744; }
+        .btn-add-row { display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #f0f0f0; border: 2px dashed #ccc; border-radius: 8px; cursor: pointer; font-size: 14px; color: #666; margin-top: 16px; width: 100%; justify-content: center; }
+        .btn-add-row:hover { background: #e8f5e9; border-color: #2e7d32; color: #2e7d32; }
+
+        /* Pano kartlari */
+        .pano-card { border: 2px solid #e0e0e0; border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
+        .pano-card-header { background: #e8f5e9; padding: 12px 16px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #c8e6c9; }
+        .pano-card-body { padding: 16px; }
+        .kontrol-group-title { background: #2e7d32; color: white; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; margin: 16px 0 10px 0; }
+        .kontrol-group-title:first-child { margin-top: 0; }
+        .kontrol-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 6px; }
+        .kontrol-item .soru-no { font-weight: 700; color: #2e7d32; margin-right: 10px; min-width: 28px; font-size: 13px; }
+        .kontrol-item .soru-text { flex: 1; font-size: 13px; }
+        .kontrol-item select { padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; min-width: 130px; }
+        .kontrol-item select.uygun { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .kontrol-item select.uygun-degil { background: #ffebee; border-color: #f44336; color: #c62828; }
+        .kontrol-item select.uygulanamaz { background: #fff3e0; border-color: #ff9800; color: #e65100; }
+
+        .kusur-list { display: flex; flex-direction: column; gap: 10px; }
+        .kusur-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; cursor: pointer; }
+        .kusur-item:hover, .kusur-item:has(input:checked) { background: #fff3e0; border-color: #ff9800; }
+        .kusur-item input { width: 20px; height: 20px; accent-color: #ff9800; }
+
+        .sonuc-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+        .sonuc-btn { padding: 32px; border: 2px solid #e0e0e0; border-radius: 12px; text-align: center; cursor: pointer; background: white; transition: all 0.2s; }
+        .sonuc-btn.uygun:hover, .sonuc-btn.uygun.active { border-color: #4caf50; background: #e8f5e9; }
+        .sonuc-btn.uygunsuz:hover, .sonuc-btn.uygunsuz.active { border-color: #f44336; background: #ffebee; }
+        .sonuc-btn .icon { font-size: 48px; margin-bottom: 12px; }
+        .sonuc-btn h3 { font-size: 18px; }
+
+        .not-list { display: flex; flex-direction: column; gap: 8px; }
+        .not-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; cursor: pointer; }
+        .not-item:hover, .not-item:has(input:checked) { background: #e3f2fd; border-color: #2196f3; }
+        .not-item input { margin-top: 2px; width: 18px; height: 18px; accent-color: #2196f3; }
+        .not-item strong { color: #1565c0; }
+
+        .footer-buttons { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 16px 24px; display: flex; gap: 16px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 100; }
+        .footer-buttons .btn { flex: 1; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+        .btn-save { background: #f5f5f5; color: #333; }
+        .btn-save:hover { background: #e0e0e0; }
+        .btn-submit { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); color: white; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4); }
+        .btn-word { background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); color: white; }
+        .btn-word:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4); }
+        .footer-spacer { height: 100px; }
+
+        /* Fotograf grid */
+        .foto-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid #e0e0e0; }
+        .foto-section-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #333; display: flex; align-items: center; gap: 8px; }
+        .foto-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 8px; }
+        .foto-cell { height: 280px; border: 2px dashed #ccc; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: #fafafa; cursor: pointer; transition: all 0.2s; overflow: hidden; }
+        .foto-cell:hover { border-color: #4caf50; background: #f0f8f0; }
+        .foto-cell.filled { border-style: solid; border-color: #4caf50; cursor: default; background: #fff; }
+        .foto-cell img { width: 100%; height: 230px; object-fit: cover; }
+        .foto-cell .foto-aciklama { width: 100%; text-align: center; padding: 6px 4px; font-size: 12px; border: none; border-top: 1px solid #eee; background: #f8f9fa; outline: none; }
+        .foto-cell .foto-aciklama:focus { background: #e8f5e9; }
+        .foto-cell .foto-sil { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; background: rgba(244,67,54,0.9); color: white; border: none; border-radius: 50%; cursor: pointer; font-size: 16px; display: none; z-index: 2; align-items: center; justify-content: center; line-height: 1; }
+        .foto-cell:hover .foto-sil { display: flex; }
+        .foto-cell .placeholder { color: #bbb; font-size: 36px; }
+        .foto-cell .placeholder-text { color: #bbb; font-size: 12px; margin-top: 8px; }
+        .foto-etiket { margin-top: 8px; font-size: 12px; color: #666; font-weight: 500; text-align: center; }
+        .foto-menu { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.2); z-index: 50; min-width: 200px; overflow: hidden; }
+        .foto-menu-item { display: flex; align-items: center; gap: 10px; padding: 14px 18px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
+        .foto-menu-item:last-child { border-bottom: none; }
+        .foto-menu-item:hover { background: #e8f5e9; }
+        .foto-menu-item .menu-icon { font-size: 18px; }
+        .foto-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .foto-overlay img { max-width: 92%; max-height: 92%; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+
+        @media (max-width: 768px) { .form-row, .form-row-3, .form-row-4 { grid-template-columns: 1fr; } .checkbox-group { flex-direction: column; } .foto-grid { grid-template-columns: repeat(2, 1fr); } }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .btn:disabled { cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button onclick="vazgec()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:20px;margin-right:12px;display:flex;align-items:center;justify-content:center;" title="Geri Don"><i class="fas fa-arrow-left"></i></button>
+        <h1><i class="fas fa-bolt"></i> FR7.2.40 Elektrik Ic Tesisat Olcum Raporu</h1>
+        <div class="header-status">
+            <span class="status-dot"></span>
+            <span>Cevrimici</span>
+            <span id="saveStatus">Kaydedilmedi</span>
+            <button class="btn-new" onclick="yeniRapor()"><i class="fas fa-plus"></i> Yeni Rapor</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 1. Is Emri & Gorev Secimi -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('isEmriSection')"><span><i class="fas fa-clipboard-list"></i> Is Emri & Gorev Secimi</span><span id="isEmriToggle">&#9650;</span></div>
+            <div class="card-body" id="isEmriSection">
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Is Emri</label><select id="isEmriSelect" class="form-control" onchange="isEmriDegisti(this.value)"><option value="">Is Emri Secin...</option></select></div>
+                    <div class="form-group"><label class="form-label">Alt Gorev</label><select id="altGorevSelect" class="form-control" onchange="altGorevDegisti(this.value)"><option value="">Once Is Emri Secin...</option></select></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Firma Bilgileri -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('firmaSection')"><span><i class="fas fa-building"></i> Firma Bilgileri</span><span class="badge">Otomatik</span></div>
+            <div class="card-body" id="firmaSection">
+                <div class="form-group"><label class="form-label">Firma Adi</label><input type="text" id="firmaAdi" class="form-control" disabled></div>
+                <div class="form-group"><label class="form-label">Adres</label><input type="text" id="firmaAdres" class="form-control" disabled></div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">SGK Sicil No</label><input type="text" id="sgkSicilNo" class="form-control" placeholder="SGK Sicil No girin"></div>
+                    <div class="form-group"><label class="form-label">ISG-KATIP No</label><select id="isgKatipNo" class="form-control"><option value="">Seciniz...</option></select></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Tarih & Ortam -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('tarihSection')"><span><i class="fas fa-calendar-alt"></i> Tarih & Ortam Bilgileri</span><span>&#9650;</span></div>
+            <div class="card-body" id="tarihSection">
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Baslangic Tarihi</label><input type="date" id="baslangicTarihi" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Baslangic Saati</label><input type="time" id="baslangicSaati" class="form-control"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Bitis Tarihi</label><input type="date" id="bitisTarihi" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Bitis Saati</label><input type="time" id="bitisSaati" class="form-control"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Sicaklik (C)</label><input type="text" id="sicaklik" class="form-control" value="25" placeholder="Orn: 25"></div>
+                    <div class="form-group"><label class="form-label">Nem (%)</label><input type="text" id="nem" class="form-control" value="50" placeholder="Orn: 50"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Sistem Bilgileri -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('sistemSection')"><span><i class="fas fa-cogs"></i> Sistem Bilgileri</span><span>&#9650;</span></div>
+            <div class="card-body" id="sistemSection">
+                <div class="form-group">
+                    <label class="form-label">Sistem Tipi</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="sistemTipi" value="TN" checked><span>TN</span></label>
+                        <label class="checkbox-item"><input type="radio" name="sistemTipi" value="TT"><span>TT</span></label>
+                        <label class="checkbox-item"><input type="radio" name="sistemTipi" value="IT"><span>IT</span></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sebeke Tipi</label>
+                    <select id="sebekeTipi" class="form-control" style="max-width:300px;">
+                        <option value="TN_S">TN-S</option>
+                        <option value="TN_C">TN-C</option>
+                        <option value="TN_CS" selected>TN-C-S</option>
+                        <option value="TT">TT</option>
+                        <option value="IT">IT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Yer Tipi</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="yerTipi" value="NORMAL" checked><span>Normal Yer, Kuru</span></label>
+                        <label class="checkbox-item"><input type="radio" name="yerTipi" value="TEHLIKELI"><span>Tehlikeli / Islak Yer</span></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rapor Tipi</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="raporTipiTopraklama" checked><span>Topraklama</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="raporTipiIcTesisat" checked><span>Ic Tesisat</span></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. 2.1 Etiket ve Detay Bilgileri -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('etiketSection')"><span><i class="fas fa-tags"></i> 2.1 Etiket ve Detay Bilgileri</span><span>&#9650;</span></div>
+            <div class="card-body" id="etiketSection">
+                <!-- Kontrol Nedeni -->
+                <div class="form-group">
+                    <label class="form-label">Kontrol Nedeni</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="kontrolNedeni" value="periyodik" checked><span>Periyodik Kontrol</span></label>
+                        <label class="checkbox-item"><input type="radio" name="kontrolNedeni" value="ilk"><span>Ilk Kontrol</span></label>
+                    </div>
+                </div>
+                <!-- Proje Var/Yok -->
+                <div class="form-group">
+                    <label class="form-label">Tesise Ait Proje Var mi?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="projeVar" value="true" checked><span>Var</span></label>
+                        <label class="checkbox-item"><input type="radio" name="projeVar" value="false"><span>Yok</span></label>
+                    </div>
+                </div>
+                <!-- Tek Hat Semasi -->
+                <div class="form-group">
+                    <label class="form-label">Tek Hat Semasi Var mi?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="tekHatSemasiVar" value="true" checked><span>Var</span></label>
+                        <label class="checkbox-item"><input type="radio" name="tekHatSemasiVar" value="false"><span>Yok</span></label>
+                    </div>
+                </div>
+                <!-- Yapi Cinsi -->
+                <div class="form-group">
+                    <label class="form-label">Yapi Cinsi</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="yapiEv"><span>Ev</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="yapiTicari"><span>Ticari</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="yapiEndustri" checked><span>Endustri</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="yapiDiger"><span>Diger</span></label>
+                    </div>
+                </div>
+                <!-- Topraklayici Tipi -->
+                <div class="form-group">
+                    <label class="form-label">Topraklayici Tipi</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="toprakRing"><span>Ring</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="toprakYuzeysel"><span>Yuzeysel</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="toprakTemel" checked><span>Temel</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="toprakDerin"><span>Derin</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="toprakBelirlenemedi"><span>Belirlenemedi</span></label>
+                    </div>
+                </div>
+                <!-- Koruma Onlemi -->
+                <div class="form-group">
+                    <label class="form-label">Dolayli Dokunmaya Karsi Koruma Onlemi</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" id="korEspotansiyel" name="korEspotansiyel" checked><span>Espotansiyel Topraklama (TT, TN, IT)</span></label>
+                        <label class="checkbox-item"><input type="checkbox" id="korYalitma" name="korYalitma"><span>Koruyucu Yalitma (Sinif II)</span></label>
+                        <label class="checkbox-item"><input type="checkbox" id="korAyirma" name="korAyirma"><span>Koruyucu Ayirma (Izolasyon trafosu)</span></label>
+                        <label class="checkbox-item"><input type="checkbox" id="korKucukGerilim" name="korKucukGerilim"><span>Kucuk Gerilim (&lt;50V)</span></label>
+                    </div>
+                </div>
+                <!-- Olcum Metodu -->
+                <div class="form-group">
+                    <label class="form-label">Olcum ve Dogrulama Metodu</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" id="metodCevrim" name="metodCevrim" checked><span>Cevrim Empedansi</span></label>
+                        <label class="checkbox-item"><input type="checkbox" id="metodUcUclu" name="metodUcUclu"><span>3 Uclu Topraklama</span></label>
+                        <label class="checkbox-item"><input type="checkbox" id="metodKlamp" name="metodKlamp"><span>Klamp Yontemi</span></label>
+                    </div>
+                </div>
+                <!-- Kapsamli Degisiklik -->
+                <div class="form-group">
+                    <label class="form-label">Tesisatta Kapsamli Degisiklik Var mi?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="kapsamliDegisiklik" value="true"><span>Var</span></label>
+                        <label class="checkbox-item"><input type="radio" name="kapsamliDegisiklik" value="false" checked><span>Yok</span></label>
+                    </div>
+                </div>
+                <!-- Onceki Kontrol Etiketi -->
+                <div class="form-group">
+                    <label class="form-label">Bir Onceki Periyodik Kontrol Etiketi Var mi?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="radio" name="oncekiKontrolEtiketi" value="true" checked><span>Var</span></label>
+                        <label class="checkbox-item"><input type="radio" name="oncekiKontrolEtiketi" value="false"><span>Yok</span></label>
+                    </div>
+                </div>
+
+                <hr style="margin:20px 0;border-color:#e0e0e0;">
+
+                <!-- Ic Tesisat ek alanlari -->
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Faz Iletkenlerinin Sayisi ve Tipi</label><input type="text" id="fazIletkenSayisiTipi" class="form-control" placeholder="Orn: 3 x NYY 4x16mm2"></div>
+                    <div class="form-group"><label class="form-label">Temel Topraklama Direnci (ohm)</label><input type="number" id="temelTopraklamaDirenci" class="form-control" step="0.01" placeholder="Orn: 2.5"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Sistem Topraklama Iletkeni / Kesiti</label><input type="text" id="sistemTopraklamaIletkeni" class="form-control" placeholder="Orn: Cu / 16mm2"></div>
+                    <div class="form-group"><label class="form-label">Ana Espotansiyel Iletkeni / Kesiti</label><input type="text" id="anaEspotansiyelIletkeni" class="form-control" placeholder="Orn: Cu / 10mm2"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Nominal Gerilim (V)</label><input type="text" id="nominalGerilim" class="form-control" value="380" placeholder="380"></div>
+                    <div class="form-group"><label class="form-label">Nominal Frekans (Hz)</label><input type="text" id="nominalFrekans" class="form-control" value="50" placeholder="50"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Hata Akimi (A)</label><input type="text" id="hataAkimi" class="form-control" placeholder="Orn: 25kA"></div>
+                    <div class="form-group"><label class="form-label">Cevrim Empedansi (ohm)</label><input type="text" id="cevrimEmpedansi" class="form-control" placeholder="Orn: 0.45"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Ana Kesici Tipi</label><input type="text" id="anaKesiciTipi" class="form-control" placeholder="Orn: Kompakt Sakter"></div>
+                    <div class="form-group"><label class="form-label">Ana Kesici Nominal Akim (A)</label><input type="number" id="anaKesiciNominalAkim" class="form-control" placeholder="Orn: 630"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Ana RCD Anma Akimi (mA)</label><input type="number" id="anaRcdAnmaAkimi" class="form-control" placeholder="Orn: 300"></div>
+                    <div class="form-group"><label class="form-label">Ana RCD Test Akimi (mA)</label><input type="number" id="anaRcdTestAkimi" class="form-control" placeholder="Orn: 150"></div>
+                </div>
+
+                <hr style="margin:20px 0;border-color:#e0e0e0;">
+                <h4 style="color:#2e7d32;margin-bottom:12px;"><i class="fas fa-info-circle"></i> Ekipman Bilgileri</h4>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Enerji Saglayan Kurulus</label><input type="text" id="enerjiFirma" class="form-control" placeholder="Orn: TEDAS, OSB, MEDAS"></div>
+                    <div class="form-group"><label class="form-label">Ekipmanin Kullanim Amaci</label><input type="text" id="kullanimAmaci" class="form-control" placeholder="Orn: Uretim, Depolama, Fabrika"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Son Kontrol Tarihi</label><input type="date" id="sonKontrolTarihi" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Ilave Topraklama Elektrotu</label><input type="text" id="ilaveTopraklamaElektrotu" class="form-control" placeholder="Orn: 2 adet 2.4m bakir cubuk"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">DKD/SPD Var mi?</label>
+                        <select id="dkdSpd" class="form-control">
+                            <option value="">Seciniz</option>
+                            <option value="evet">Evet</option>
+                            <option value="hayir">Hayir</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Olcum Aletleri -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('cihazSection')"><span><i class="fas fa-tools"></i> Olcum Aletleri</span><span class="badge">3 Cihaz</span></div>
+            <div class="card-body" id="cihazSection">
+                <div class="form-row-3">
+                    <div class="form-group"><label class="form-label">1. Cihaz Adi</label><input type="text" id="cihaz1Adi" class="form-control" placeholder="Orn: Fluke 1664FC"></div>
+                    <div class="form-group"><label class="form-label">Seri No</label><input type="text" id="cihaz1SeriNo" class="form-control" placeholder="Seri No"></div>
+                    <div class="form-group"><label class="form-label">Kalibrasyon Tarihi</label><input type="date" id="cihaz1Kalibrasyon" class="form-control"></div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group"><label class="form-label">2. Cihaz Adi</label><input type="text" id="cihaz2Adi" class="form-control" placeholder="Orn: Megger MIT410/2"></div>
+                    <div class="form-group"><label class="form-label">Seri No</label><input type="text" id="cihaz2SeriNo" class="form-control" placeholder="Seri No"></div>
+                    <div class="form-group"><label class="form-label">Kalibrasyon Tarihi</label><input type="date" id="cihaz2Kalibrasyon" class="form-control"></div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group"><label class="form-label">3. Cihaz Adi</label><input type="text" id="cihaz3Adi" class="form-control" placeholder="Orn: Flir E60"></div>
+                    <div class="form-group"><label class="form-label">Seri No</label><input type="text" id="cihaz3SeriNo" class="form-control" placeholder="Seri No"></div>
+                    <div class="form-group"><label class="form-label">Kalibrasyon Tarihi</label><input type="date" id="cihaz3Kalibrasyon" class="form-control"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Pano Kontrol Tablosu -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('panoSection')"><span><i class="fas fa-th-list"></i> Pano Kontrol Tablosu</span><span class="badge" id="panoSayisi">0 Pano</span></div>
+            <div class="card-body" id="panoSection">
+                <div id="panoContainer"></div>
+                <button class="btn-add-row" onclick="yeniPanoEkle()"><i class="fas fa-plus"></i> Yeni Pano Ekle</button>
+            </div>
+        </div>
+
+        <!-- 8. 6.1 Linye Olcum Tablosu -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('linyeSection')"><span><i class="fas fa-table"></i> 6.1 Linye Olcum Tablosu</span><span class="badge" id="linyeSayisi">0 Satir</span></div>
+            <div class="card-body" id="linyeSection">
+                <div class="table-container">
+                    <table class="olcum-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Pano/Linye Adi</th>
+                                <th>Egri</th>
+                                <th>Kutup</th>
+                                <th>In (A)</th>
+                                <th>Icu (kA)</th>
+                                <th>Faz mm2</th>
+                                <th>N mm2</th>
+                                <th>PE mm2</th>
+                                <th>Ib (A)</th>
+                                <th>Iz (A)</th>
+                                <th>Zx (ohm)</th>
+                                <th>IdeltaN (mA)</th>
+                                <th>Tdelta (ms)</th>
+                                <th>Sonuc</th>
+                                <th>Sil</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linyeTableBody"></tbody>
+                    </table>
+                </div>
+                <button class="btn-add-row" onclick="yeniLinyeSatiri()"><i class="fas fa-plus"></i> Yeni Linye Satiri Ekle</button>
+            </div>
+        </div>
+
+        <!-- 9. 6.2 Potansiyel Dengeleme Tablosu -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('potansiyelSection')"><span><i class="fas fa-balance-scale"></i> 6.2 Potansiyel Dengeleme Tablosu</span><span class="badge" id="potansiyelSayisi">0 Satir</span></div>
+            <div class="card-body" id="potansiyelSection">
+                <div class="table-container">
+                    <table class="olcum-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Bolum / Olcum Noktasi</th>
+                                <th>Iletken Kesiti</th>
+                                <th>Sureklilik (ohm)</th>
+                                <th>Tamamlayici Kesit</th>
+                                <th>Tamamlayici Sureklilik</th>
+                                <th>Sonuc</th>
+                                <th>Sil</th>
+                            </tr>
+                        </thead>
+                        <tbody id="potansiyelTableBody"></tbody>
+                    </table>
+                </div>
+                <button class="btn-add-row" onclick="yeniPotansiyelSatiri()"><i class="fas fa-plus"></i> Yeni Potansiyel Satiri Ekle</button>
+            </div>
+        </div>
+
+        <!-- 10. 6.3 Zemin Izolasyonu Tablosu -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('zeminSection')"><span><i class="fas fa-layer-group"></i> 6.3 Zemin Izolasyonu Tablosu</span><span class="badge" id="zeminSayisi">0 Satir</span></div>
+            <div class="card-body" id="zeminSection">
+                <div class="table-container">
+                    <table class="olcum-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Yer</th>
+                                <th>En (m)</th>
+                                <th>Boy (m)</th>
+                                <th>Izolasyon Direnci (kohm)</th>
+                                <th>Sonuc</th>
+                                <th>Sil</th>
+                            </tr>
+                        </thead>
+                        <tbody id="zeminTableBody"></tbody>
+                    </table>
+                </div>
+                <button class="btn-add-row" onclick="yeniZeminSatiri()"><i class="fas fa-plus"></i> Yeni Zemin Satiri Ekle</button>
+            </div>
+        </div>
+
+        <!-- Notlar -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('notlarSection')"><span><i class="fas fa-sticky-note"></i> Notlar</span><span>&#9650;</span></div>
+            <div class="card-body" id="notlarSection">
+                <div class="form-group">
+                    <label class="form-label">Genel Notlar ve Aciklamalar</label>
+                    <textarea id="notlar" class="form-control" rows="5" placeholder="Rapor ile ilgili ek notlar ve aciklamalar buraya yazilabilir..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. Kusur Aciklamalari -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('kusurSection')"><span><i class="fas fa-exclamation-triangle"></i> Kusur Aciklamalari</span><span>&#9650;</span></div>
+            <div class="card-body" id="kusurSection">
+                <label class="form-label">Tespit Edilen Kusurlar</label>
+                <div class="kusur-list">
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="topraklama_direnci"><span>Topraklama direnci yuksek (*)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="hat_empedansi"><span>Hat empedansi yuksek (*)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="rcd_sure"><span>RCD calisma suresi asildi (*)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="topraklama_yok"><span>Topraklama baglantisi yok (**)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="pano_kopru"><span>Pano govde-kapak koprusu yok (**)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="notr_toprak"><span>Notr-toprak birlesikligi tespit edildi (**)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="rcd_yok"><span>RCD yok veya arizali (**)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="pen_kopru"><span>PEN koprusu disinda PE-N birlestirilmis (**)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="pano_ic_kapak"><span>Pano ic kapak/faz erisim engeli yok (**)</span></label>
+                    <label class="kusur-item"><input type="checkbox" name="kusur" value="kablo_renk"><span>Kablo renk kodlari uygun degil (*)</span></label>
+                </div>
+                <p style="margin-top:10px;font-size:12px;color:#666;">(*) Hafif kusur, (**) Agir kusur</p>
+                <div class="form-group" style="margin-top:20px">
+                    <label class="form-label">Ek Kusur Aciklamasi</label>
+                    <textarea id="kusurAciklama" class="form-control" rows="3" placeholder="Varsa ek kusur aciklamalari..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12. Sonuc ve Kanaat -->
+        <div class="card">
+            <div class="card-header" onclick="toggleSection('sonucSection')"><span><i class="fas fa-check-circle"></i> Sonuc ve Kanaat</span><span>&#9650;</span></div>
+            <div class="card-body" id="sonucSection">
+                <div class="sonuc-group">
+                    <div class="sonuc-btn uygun active" onclick="setSonuc(this,'UYGUN')"><div class="icon"><i class="fas fa-check-circle" style="color:#4caf50;"></i></div><h3>UYGUN</h3></div>
+                    <div class="sonuc-btn uygunsuz" onclick="setSonuc(this,'UYGUN_DEGIL')"><div class="icon"><i class="fas fa-times-circle" style="color:#f44336;"></i></div><h3>UYGUN DEGIL</h3></div>
+                </div>
+                <input type="hidden" id="genelSonuc" value="UYGUN">
+                <label class="form-label">Uygunluk Notu Secin:</label>
+                <div class="not-list">
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-1" checked><span><strong>Not-1:</strong> Uygun.</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-2"><span><strong>Not-2:</strong> Guvenlik sarti saglanamadi, uygun degildir. (Agir kusur)</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-3"><span><strong>Not-3:</strong> Topraklama baglantisi yok, kontrol edilmelidir. (Agir kusur)</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-4"><span><strong>Not-4:</strong> Artik akim anahtari kullanildigi ve faal oldugu icin uygundur.</span></label>
+                    <label class="not-item"><input type="radio" name="uygunlukNotu" value="Not-5"><span><strong>Not-5:</strong> TT/TN sebekede 32A'e kadar priz tesisatlarinda 30mA RCD kullanimi zorunludur. (Agir kusur)</span></label>
+                </div>
+                <div class="form-group" style="margin-top:20px">
+                    <label class="form-label">Ek Aciklama</label>
+                    <textarea id="sonucAciklama" class="form-control" rows="3" placeholder="Varsa ek sonuc aciklamalari..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-spacer"></div>
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="footer-buttons">
+        <button class="btn" onclick="vazgec()" style="background:#6c757d;color:white;"><i class="fas fa-arrow-left"></i> Vazgec</button>
+        <button class="btn btn-save" onclick="kaydet()"><i class="fas fa-save"></i> Kaydet</button>
+        <button class="btn btn-submit" onclick="gonder()"><i class="fas fa-paper-plane"></i> Gonder</button>
+        <button class="btn btn-word" onclick="wordIndir()"><i class="fas fa-file-word"></i> Word Indir</button>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentRaporId = null;
+        let currentAltGorevId = null;
+        let currentTopraklamaRaporuId = null;
+        let panoSayac = 0;
+        let linyeSayac = 0;
+        let potansiyelSayac = 0;
+        let zeminSayac = 0;
+
+        // ========== PANO KRITERLERI ==========
+        const panoKriterleri = [
+            { grup: 'PANO VE DIGER DONANIMLARA GIRISIN UYGUNLUGU', kriterler: [
+                { no: 1, text: 'Kablo sebeke tarafi' },
+                { no: 2, text: 'Kablo donanim tarafi' },
+                { no: 3, text: 'Pano sabitlenmesi (Depreme dayaniklilik)' },
+                { no: 4, text: 'Dis darbelere karsi koruma onlemi' },
+                { no: 5, text: 'Elektrik panosu etrafinda yabanci malzemeler' },
+                { no: 6, text: 'Zemin izolasyonu' }
+            ]},
+            { grup: 'TOPRAKLANMIS POTANSIYEL DENGELEME', kriterler: [
+                { no: 7, text: 'Topraklama iletkeni' },
+                { no: 8, text: 'Ana potansiyel dengeleme iletkeni' },
+                { no: 9, text: 'Ek Potansiyel dengeleme Iletkeni' },
+                { no: 10, text: 'Pano kapak baglantisi kontrolu' }
+            ]},
+            { grup: 'KARSILIKLI ZARARLI ETKILERIN ONLENMESI', kriterler: [
+                { no: 11, text: 'Elektriksel olmayan tesislere yaklasma' },
+                { no: 12, text: 'Bant I ve Bant II ayrilmasi' },
+                { no: 13, text: 'Guvenlik devre ayrilmasi' },
+                { no: 14, text: 'Pano ic kapak, faza erisim engeli' }
+            ]},
+            { grup: 'TANIMLAMA', kriterler: [
+                { no: 15, text: 'Semalar, talimatlar, devre cizimleri' },
+                { no: 16, text: 'Koruma cihaz ve terminal etiket' },
+                { no: 17, text: 'Tehlike isaretleri ve diger uyari isaretleri' }
+            ]},
+            { grup: 'KABLO VE ILETKENLER', kriterler: [
+                { no: 18, text: 'Kablo yollarinin uygunlugu ve mekanik koruma' },
+                { no: 19, text: 'Kablo renk kodlari' },
+                { no: 20, text: 'Tesisat yontemi' },
+                { no: 21, text: 'Yangin engeli, kilitleme ve sicaklik etkisine karsi koruma' }
+            ]},
+            { grup: 'TERMAL KAMERA', kriterler: [
+                { no: 22, text: 'Kontak gevsekligi isinmasi' },
+                { no: 23, text: 'Asiri yuk isinmasi (PVC >70 derece)' }
+            ]},
+            { grup: 'GENEL DEGERLENDIRMELER', kriterler: [
+                { no: 24, text: 'Yangin sondurme tertibati' },
+                { no: 25, text: 'Ekipman temizlik/bakim durumu' },
+                { no: 26, text: 'Korozyon kontrolu' },
+                { no: 27, text: 'Acil durum aydinlatma tertibati' }
+            ]}
+        ];
+
+        // ========== INIT ==========
+        document.addEventListener('DOMContentLoaded', async function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('baslangicTarihi').value = today;
+            document.getElementById('bitisTarihi').value = today;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const isEmriId = urlParams.get('isEmriId');
+            currentAltGorevId = urlParams.get('altGorevId');
+
+            if (currentAltGorevId) {
+                await altGorevDegisti(currentAltGorevId);
+            } else {
+                await isEmriListesiYukle();
+                if (isEmriId) {
+                    document.getElementById('isEmriSelect').value = isEmriId;
+                    await isEmriDegisti(isEmriId);
+                }
+            }
+
+            updateWordButtonState();
+        });
+
+        // ========== SECTION TOGGLE ==========
+        function toggleSection(id) {
+            document.getElementById(id).classList.toggle('collapsed');
+        }
+
+        // ========== NOTIFICATION ==========
+        function showNotification(message, type = 'success') {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            const div = document.createElement('div');
+            div.className = 'notification';
+            div.style.cssText = 'position:fixed;top:20px;right:20px;padding:16px 24px;border-radius:8px;color:white;font-weight:500;z-index:9999;animation:slideIn 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.15);';
+            div.style.background = type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#ff9800';
+            div.textContent = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 4000);
+        }
+
+        // ========== AUTH FETCH ==========
+        async function authenticatedFetch(url, options = {}, retryCount = 0) {
+            const token = localStorage.getItem('token');
+            const headers = { ...options.headers };
+            if (token) headers['Authorization'] = 'Bearer ' + token;
+            if (!(options.body instanceof FormData)) {
+                headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+            }
+            try {
+                const res = await fetch(url, { ...options, headers });
+                if (res.status === 401 && retryCount === 0) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login.html';
+                    return null;
+                }
+                return res;
+            } catch (err) {
+                console.error('Fetch hatasi:', err);
+                return null;
+            }
+        }
+
+        // ========== IS EMRI ==========
+        async function isEmriListesiYukle() {
+            try {
+                const res = await authenticatedFetch(`${API_BASE}/is-emirleri`);
+                const data = await res.json();
+                const sel = document.getElementById('isEmriSelect');
+                sel.innerHTML = '<option value="">Is Emri Secin...</option>';
+                data.forEach(ie => {
+                    sel.innerHTML += `<option value="${ie.id}">${ie.isEmriNo} - ${ie.customer?.unvan || ''}</option>`;
+                });
+            } catch (e) { console.error('Is emri listesi yuklenemedi:', e); }
+        }
+
+        async function isEmriDegisti(isEmriId) {
+            if (!isEmriId) return;
+            try {
+                const res = await authenticatedFetch(`${API_BASE}/is-emirleri/${isEmriId}`);
+                const ie = await res.json();
+
+                // Firma bilgileri
+                document.getElementById('firmaAdi').value = ie.customer?.unvan || '';
+                document.getElementById('firmaAdres').value = ie.customer?.adres || '';
+
+                // ISG Katip
+                isgKatipSecenekleriniDoldur(ie.firmaBilgi, null);
+
+                // Alt gorevler
+                const sel = document.getElementById('altGorevSelect');
+                sel.innerHTML = '<option value="">Alt Gorev Secin...</option>';
+                (ie.altGorevler || []).forEach(g => {
+                    sel.innerHTML += `<option value="${g.id}">${g.siraNo}. ${g.hizmetAdi}</option>`;
+                });
+            } catch (e) { console.error('Is emri yuklenemedi:', e); }
+        }
+
+        function isgKatipSecenekleriniDoldur(firmaBilgi, seciliDeger) {
+            const sel = document.getElementById('isgKatipNo');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Seciniz...</option>';
+            if (!firmaBilgi) return;
+            const katipIds = [firmaBilgi.isgKatipId, firmaBilgi.isgKatipId2, firmaBilgi.isgKatipId3, firmaBilgi.isgKatipId4].filter(v => v && v.trim());
+            katipIds.forEach(id => { sel.innerHTML += `<option value="${id}">${id}</option>`; });
+            if (seciliDeger) sel.value = seciliDeger;
+        }
+
+        // ========== ALT GOREV ==========
+        async function altGorevDegisti(altGorevId) {
+            if (!altGorevId) return;
+            currentAltGorevId = altGorevId;
+            try {
+                // Mevcut raporu dene
+                const res = await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat/alt-gorev/${altGorevId}`);
+                if (res.ok) {
+                    const rapor = await res.json();
+                    if (rapor && rapor.id) {
+                        currentRaporId = rapor.id;
+                        raporuFormaYukle(rapor);
+                        showNotification('Rapor yuklendi: ' + (rapor.raporNo || rapor.id), 'success');
+                        updateWordButtonState();
+                        return;
+                    }
+                }
+            } catch (e) { console.error('Mevcut rapor yuklenemedi:', e); }
+
+            // Yeni rapor icin alt gorev bilgilerini yukle
+            try {
+                const res = await authenticatedFetch(`${API_BASE}/alt-gorevler/${altGorevId}`);
+                if (res.ok) {
+                    const altGorev = await res.json();
+                    if (altGorev.isEmri?.customer) {
+                        document.getElementById('firmaAdi').value = altGorev.isEmri.customer.unvan || '';
+                        document.getElementById('firmaAdres').value = altGorev.isEmri.customer.adres || '';
+                    }
+                    if (altGorev.isEmri?.firmaBilgi) {
+                        isgKatipSecenekleriniDoldur(altGorev.isEmri.firmaBilgi, null);
+                    }
+                }
+            } catch (e) { console.error('Alt gorev yuklenemedi:', e); }
+
+            // Topraklama raporundan verileri cek ve formu doldur
+            try {
+                const trRes = await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat/topraklama-verileri/${altGorevId}`);
+                if (trRes && trRes.ok) {
+                    const trData = await trRes.json();
+                    if (trData && trData.topraklamaRaporuId) {
+                        currentTopraklamaRaporuId = trData.topraklamaRaporuId;
+                        topraklamaVerileriniDoldur(trData);
+                        showNotification('Topraklama raporundan veriler aktarildi', 'success');
+                    }
+                }
+            } catch (e) { console.error('Topraklama verileri yuklenemedi:', e); }
+
+            // Varsayilan satirlar ekle
+            if (document.querySelectorAll('#panoContainer .pano-card').length === 0) yeniPanoEkle();
+            if (document.querySelectorAll('#linyeTableBody tr').length === 0) { for (let i = 0; i < 3; i++) yeniLinyeSatiri(); }
+            updateWordButtonState();
+        }
+
+        // ========== TOPRAKLAMA VERİLERİNİ DOLDUR ==========
+        function topraklamaVerileriniDoldur(data) {
+            // Tarihler
+            if (data.baslangicTarihi) document.getElementById('baslangicTarihi').value = data.baslangicTarihi.split('T')[0];
+            if (data.bitisTarihi) document.getElementById('bitisTarihi').value = data.bitisTarihi.split('T')[0];
+            if (data.ortamSicaklik) document.getElementById('sicaklik').value = data.ortamSicaklik;
+            if (data.ortamNem) document.getElementById('nem').value = data.ortamNem;
+
+            // Sistem tipi
+            if (data.sistemTipi) {
+                const r = document.querySelector(`input[name="sistemTipi"][value="${data.sistemTipi}"]`);
+                if (r) r.checked = true;
+            }
+
+            // Checkbox alanlari
+            const boolFields = ['yapiEv', 'yapiTicari', 'yapiEndustri', 'yapiDiger',
+                'toprakRing', 'toprakYuzeysel', 'toprakTemel', 'toprakDerin', 'toprakBelirlenemedi'];
+            boolFields.forEach(name => {
+                const cb = document.querySelector(`input[name="${name}"]`);
+                if (cb && data[name]) cb.checked = true;
+            });
+
+            // Radio alanlari
+            const radioFields = ['kontrolNedeni', 'projeVar', 'tekHatSemasiVar', 'kapsamliDegisiklik', 'oncekiKontrolEtiketi'];
+            radioFields.forEach(name => {
+                if (data[name] !== undefined && data[name] !== null) {
+                    const val = String(data[name]);
+                    const r = document.querySelector(`input[name="${name}"][value="${val}"]`);
+                    if (r) r.checked = true;
+                }
+            });
+
+            // Koruyucu onlemler
+            if (data.korumaEspotansiyel) { const el = document.getElementById('korEspotansiyel'); if (el) el.checked = true; }
+            if (data.korumaYalitma) { const el = document.getElementById('korYalitma'); if (el) el.checked = true; }
+            if (data.korumaAyirma) { const el = document.getElementById('korAyirma'); if (el) el.checked = true; }
+            if (data.korumaKucukGerilim) { const el = document.getElementById('korKucukGerilim'); if (el) el.checked = true; }
+
+            // Olcum metodu
+            if (data.olcumCevrimEmpedansi) { const el = document.getElementById('metodCevrim'); if (el) el.checked = true; }
+            if (data.olcum3UcluTopraklama) { const el = document.getElementById('metodUcUclu'); if (el) el.checked = true; }
+            if (data.olcumKlamp) { const el = document.getElementById('metodKlamp'); if (el) el.checked = true; }
+
+            // Metin alanlari
+            if (data.enerjiSaglayan) { const el = document.getElementById('enerjiFirma'); if (el) el.value = data.enerjiSaglayan; }
+            if (data.sebekeGerilimi) { const el = document.getElementById('sebekeGerilimi'); if (el) el.value = data.sebekeGerilimi; }
+            if (data.kullanimAmaci) { const el = document.getElementById('kullanimAmaci'); if (el) el.value = data.kullanimAmaci; }
+            if (data.sonKontrolTarihi) { const el = document.getElementById('sonKontrolTarihi'); if (el) el.value = data.sonKontrolTarihi.split('T')[0]; }
+        }
+
+        // ========== RAPORU FORMA YUKLE ==========
+        function raporuFormaYukle(rapor) {
+            // Firma bilgileri
+            if (rapor.altGorev?.isEmri?.customer) {
+                document.getElementById('firmaAdi').value = rapor.altGorev.isEmri.customer.unvan || '';
+                document.getElementById('firmaAdres').value = rapor.altGorev.isEmri.customer.adres || '';
+            }
+
+            // Tarih ve ortam
+            if (rapor.baslangicTarihi) document.getElementById('baslangicTarihi').value = rapor.baslangicTarihi.split('T')[0];
+            if (rapor.bitisTarihi) document.getElementById('bitisTarihi').value = rapor.bitisTarihi.split('T')[0];
+            if (rapor.baslangicSaati) document.getElementById('baslangicSaati').value = rapor.baslangicSaati;
+            if (rapor.bitisSaati) document.getElementById('bitisSaati').value = rapor.bitisSaati;
+            if (rapor.sicaklik) document.getElementById('sicaklik').value = rapor.sicaklik;
+            if (rapor.nem) document.getElementById('nem').value = rapor.nem;
+
+            // Sistem bilgileri
+            if (rapor.sistemTipi) { const r = document.querySelector(`input[name="sistemTipi"][value="${rapor.sistemTipi}"]`); if (r) r.checked = true; }
+            if (rapor.sebekeTipi) document.getElementById('sebekeTipi').value = rapor.sebekeTipi;
+            if (rapor.yerTipi) { const r = document.querySelector(`input[name="yerTipi"][value="${rapor.yerTipi}"]`); if (r) r.checked = true; }
+
+            // Checkbox alanlari
+            const radioFields = ['kontrolNedeni', 'projeVar', 'tekHatSemasiVar', 'kapsamliDegisiklik', 'oncekiKontrolEtiketi'];
+            radioFields.forEach(name => {
+                if (rapor[name] !== undefined) {
+                    const val = String(rapor[name]);
+                    const r = document.querySelector(`input[name="${name}"][value="${val}"]`);
+                    if (r) r.checked = true;
+                }
+            });
+
+            const checkboxFields = ['yapiEv', 'yapiTicari', 'yapiEndustri', 'yapiDiger', 'toprakRing', 'toprakYuzeysel', 'toprakTemel', 'toprakDerin', 'toprakBelirlenemedi', 'raporTipiTopraklama', 'raporTipiIcTesisat'];
+            checkboxFields.forEach(name => {
+                const cb = document.querySelector(`input[name="${name}"]`);
+                if (cb && rapor[name] !== undefined) cb.checked = rapor[name];
+            });
+
+            // Koruyucu onlemler JSON parse
+            if (rapor.koruyucuOnlemler) {
+                try {
+                    const kor = typeof rapor.koruyucuOnlemler === 'string' ? JSON.parse(rapor.koruyucuOnlemler) : rapor.koruyucuOnlemler;
+                    if (kor.includes('espotansiyel')) document.getElementById('korEspotansiyel').checked = true;
+                    if (kor.includes('yalitma')) document.getElementById('korYalitma').checked = true;
+                    if (kor.includes('ayirma')) document.getElementById('korAyirma').checked = true;
+                    if (kor.includes('kucukGerilim')) document.getElementById('korKucukGerilim').checked = true;
+                } catch(e) {}
+            }
+            // Olcum metodu JSON parse
+            if (rapor.olcumMetodu) {
+                try {
+                    const met = typeof rapor.olcumMetodu === 'string' ? JSON.parse(rapor.olcumMetodu) : rapor.olcumMetodu;
+                    if (met.includes('cevrim')) document.getElementById('metodCevrim').checked = true;
+                    if (met.includes('ucUclu')) document.getElementById('metodUcUclu').checked = true;
+                    if (met.includes('klamp')) document.getElementById('metodKlamp').checked = true;
+                } catch(e) {}
+            }
+
+            // Text alanlari
+            const textFields = ['sgkSicilNo', 'fazIletkenSayisiTipi', 'temelTopraklamaDirenci', 'sistemTopraklamaIletkeni', 'anaEspotansiyelIletkeni', 'nominalGerilim', 'nominalFrekans', 'hataAkimi', 'cevrimEmpedansi', 'anaKesiciTipi', 'anaKesiciNominalAkim', 'anaRcdAnmaAkimi', 'anaRcdTestAkimi', 'cihaz1Adi', 'cihaz1SeriNo', 'cihaz1Kalibrasyon', 'cihaz2Adi', 'cihaz2SeriNo', 'cihaz2Kalibrasyon', 'cihaz3Adi', 'cihaz3SeriNo', 'cihaz3Kalibrasyon', 'kusurAciklama', 'sonucAciklama', 'enerjiFirma', 'kullanimAmaci', 'sonKontrolTarihi', 'ilaveTopraklamaElektrotu', 'genelNotlar', 'dkdSpd'];
+            textFields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && rapor[id]) el.value = rapor[id];
+            });
+
+            if (rapor.isgKatipNo) document.getElementById('isgKatipNo').value = rapor.isgKatipNo;
+
+            // Genel sonuc
+            if (rapor.genelSonuc) {
+                document.getElementById('genelSonuc').value = rapor.genelSonuc;
+                document.querySelectorAll('.sonuc-btn').forEach(b => b.classList.remove('active'));
+                const activeBtn = rapor.genelSonuc === 'UYGUN' ? document.querySelector('.sonuc-btn.uygun') : document.querySelector('.sonuc-btn.uygunsuz');
+                if (activeBtn) activeBtn.classList.add('active');
+            }
+            if (rapor.uygunlukNotu) {
+                const r = document.querySelector(`input[name="uygunlukNotu"][value="${rapor.uygunlukNotu}"]`);
+                if (r) r.checked = true;
+            }
+
+            // Kusurlar
+            if (rapor.kusurlar && Array.isArray(rapor.kusurlar)) {
+                rapor.kusurlar.forEach(k => {
+                    const cb = document.querySelector(`input[name="kusur"][value="${k}"]`);
+                    if (cb) cb.checked = true;
+                });
+            }
+
+            // Panolar
+            if (rapor.panolar && rapor.panolar.length > 0) {
+                rapor.panolar.forEach(pano => yeniPanoEkle(pano));
+            } else {
+                yeniPanoEkle();
+            }
+
+            // Linyeler
+            if (rapor.linyeler && rapor.linyeler.length > 0) {
+                rapor.linyeler.forEach(linye => yeniLinyeSatiri(linye));
+            } else {
+                for (let i = 0; i < 3; i++) yeniLinyeSatiri();
+            }
+
+            // Potansiyel
+            if (rapor.potansiyeller && rapor.potansiyeller.length > 0) {
+                rapor.potansiyeller.forEach(p => yeniPotansiyelSatiri(p));
+            }
+
+            // Zemin
+            if (rapor.zeminler && rapor.zeminler.length > 0) {
+                rapor.zeminler.forEach(z => yeniZeminSatiri(z));
+            }
+
+            // Fotograflari yukle (panolar olustuktan sonra)
+            setTimeout(() => fotograflariYukle(), 300);
+        }
+
+        // ========== PANO YONETIMI ==========
+        function yeniPanoEkle(data) {
+            panoSayac++;
+            const idx = panoSayac;
+            const panoDiv = document.createElement('div');
+            panoDiv.className = 'pano-card';
+            panoDiv.id = `pano-${idx}`;
+            if (data && data.id) panoDiv.dataset.id = data.id;
+
+            let html = `
+                <div class="pano-card-header">
+                    <span><i class="fas fa-server"></i> Pano #${idx}: <input type="text" id="panoAdi-${idx}" value="${data?.panoAdi || 'Ana Pano'}" style="border:1px solid #ccc;border-radius:4px;padding:4px 8px;font-size:14px;width:200px;"></span>
+                    <button class="btn-delete" onclick="panoSil(${idx})" title="Panoyu Sil"><i class="fas fa-trash"></i></button>
+                </div>
+                <div class="pano-card-body">`;
+
+            panoKriterleri.forEach(grup => {
+                html += `<div class="kontrol-group-title">${grup.grup}</div>`;
+                grup.kriterler.forEach(k => {
+                    const val = data && data['kriter' + k.no] ? data['kriter' + k.no] : 'U';
+                    html += `
+                        <div class="kontrol-item">
+                            <span class="soru-no">${k.no}</span>
+                            <span class="soru-text">${k.text}</span>
+                            <select id="pano${idx}_kriter${k.no}" onchange="updateKriterStyle(this)">
+                                <option value="U" ${val === 'U' ? 'selected' : ''}>U (Uygun)</option>
+                                <option value="UD" ${val === 'UD' ? 'selected' : ''}>UD (Uygun Degil)</option>
+                                <option value="UY" ${val === 'UY' ? 'selected' : ''}>UY (Uygulanamaz)</option>
+                            </select>
+                        </div>`;
+                });
+            });
+
+            html += `
+                    <div style="margin-top:16px;padding-top:12px;border-top:2px solid #e8f5e9;">
+                        <h4 style="color:#2e7d32;margin-bottom:12px;"><i class="fas fa-tachometer-alt"></i> Pano Olcumleri</h4>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">Zx (ohm) Faz-Toprak Cevrim Empedansi</label><input type="number" step="0.001" id="panoZx-${idx}" value="${data?.panoZx || ''}" class="form-control" placeholder="Orn: 0.45"></div>
+                            <div class="form-group"><label class="form-label">ZLN (ohm) Faz-Notr Cevrim Empedansi</label><input type="number" step="0.001" id="panoZln-${idx}" value="${data?.panoZln || ''}" class="form-control" placeholder="Orn: 0.38"></div>
+                        </div>
+                        <div class="form-row" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                            <div class="form-group"><label class="form-label">F-F Gerilim (V)</label><input type="number" step="0.1" id="panoVff-${idx}" value="${data?.panoVff || ''}" class="form-control" placeholder="Orn: 400"></div>
+                            <div class="form-group"><label class="form-label">L-N Gerilim (V)</label><input type="number" step="0.1" id="panoVln-${idx}" value="${data?.panoVln || ''}" class="form-control" placeholder="Orn: 230"></div>
+                            <div class="form-group"><label class="form-label">N-PE Gerilim (V)</label><input type="number" step="0.1" id="panoVnpe-${idx}" value="${data?.panoVnpe || ''}" class="form-control" placeholder="Orn: 0.5"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">3 Fazli Kisa Devre Akimi (kA)</label><input type="number" step="0.01" id="panoIkk-${idx}" value="${data?.panoIkk || ''}" class="form-control" placeholder="Orn: 25"></div>
+                            <div class="form-group"><label class="form-label">DKD Tipi</label><input type="text" id="panoDkdTipi-${idx}" value="${data?.panoDkdTipi || ''}" class="form-control" placeholder="Orn: Tip 2"></div>
+                            <div class="form-group"><label class="form-label">DKD Dayanma Akimi (kA)</label><input type="number" step="0.01" id="panoDkdAkim-${idx}" value="${data?.panoDkdAkim || ''}" class="form-control" placeholder="Orn: 40"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top:16px;" class="form-row">
+                        <div class="form-group"><label class="form-label">Termal Fotograf Tarihi</label><input type="date" id="panoTermalTarih-${idx}" value="${data?.termalFotografTarihi || ''}" class="form-control"></div>
+                        <div class="form-group"><label class="form-label">Termal Fotograf No</label><input type="text" id="panoTermalNo-${idx}" value="${data?.termalFotografNo || ''}" class="form-control" placeholder="Orn: TF-001"></div>
+                    </div>
+
+                    <div class="foto-section">
+                        <div class="foto-section-title"><i class="fas fa-camera"></i> Ekipman Fotograflari</div>
+                        <div class="foto-grid" id="fotoGrid-ekipman-${idx}">
+                            <div class="foto-cell" onclick="fotoMenuAc(this, ${idx}, 'ekipman')"><span class="placeholder"><i class="fas fa-camera"></i></span><span class="placeholder-text">Fotograf ekle</span></div>
+                            <div class="foto-cell" onclick="fotoMenuAc(this, ${idx}, 'ekipman')"><span class="placeholder"><i class="fas fa-camera"></i></span><span class="placeholder-text">Fotograf ekle</span></div>
+                            <div class="foto-cell" onclick="fotoMenuAc(this, ${idx}, 'ekipman')"><span class="placeholder"><i class="fas fa-camera"></i></span><span class="placeholder-text">Fotograf ekle</span></div>
+                            <div class="foto-cell" onclick="fotoMenuAc(this, ${idx}, 'ekipman')"><span class="placeholder"><i class="fas fa-camera"></i></span><span class="placeholder-text">Fotograf ekle</span></div>
+                        </div>
+                        <div class="foto-etiket" id="fotoEtiket-ekipman-${idx}">Fotograf No: 0 / ${data?.panoAdi || 'Ana Pano'}</div>
+                        <button type="button" class="btn-add-row" onclick="bosHucreEkle(${idx}, 'ekipman')"><i class="fas fa-plus-circle"></i> Bos Hucre Ekle</button>
+                    </div>
+
+                    <div class="foto-section">
+                        <div class="foto-section-title"><i class="fas fa-thermometer-half"></i> Termal Kamera Fotograflari</div>
+                        <div class="foto-grid" id="fotoGrid-termal-${idx}">
+                            <div class="foto-cell" onclick="fotoMenuAc(this, ${idx}, 'termal')"><span class="placeholder"><i class="fas fa-thermometer-half"></i></span><span class="placeholder-text">Fotograf ekle</span></div>
+                            <div class="foto-cell" onclick="fotoMenuAc(this, ${idx}, 'termal')"><span class="placeholder"><i class="fas fa-thermometer-half"></i></span><span class="placeholder-text">Fotograf ekle</span></div>
+                            <div class="foto-cell" onclick="fotoMenuAc(this, ${idx}, 'termal')"><span class="placeholder"><i class="fas fa-thermometer-half"></i></span><span class="placeholder-text">Fotograf ekle</span></div>
+                            <div class="foto-cell" onclick="fotoMenuAc(this, ${idx}, 'termal')"><span class="placeholder"><i class="fas fa-thermometer-half"></i></span><span class="placeholder-text">Fotograf ekle</span></div>
+                        </div>
+                        <div class="foto-etiket" id="fotoEtiket-termal-${idx}">Termal Foto No: 0 / ${data?.panoAdi || 'Ana Pano'}</div>
+                        <button type="button" class="btn-add-row" onclick="bosHucreEkle(${idx}, 'termal')"><i class="fas fa-plus-circle"></i> Bos Hucre Ekle</button>
+                    </div>
+                </div>`;
+
+            panoDiv.innerHTML = html;
+            document.getElementById('panoContainer').appendChild(panoDiv);
+            updatePanoSayisi();
+
+            // Kriter stillerini guncelle
+            panoDiv.querySelectorAll('.kontrol-item select').forEach(sel => updateKriterStyle(sel));
+        }
+
+        function panoSil(idx) {
+            const el = document.getElementById(`pano-${idx}`);
+            if (el) {
+                if (el.dataset.id && currentRaporId) {
+                    authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat-pano/${el.dataset.id}`, { method: 'DELETE' }).catch(e => console.error(e));
+                }
+                el.remove();
+                updatePanoSayisi();
+            }
+        }
+
+        function updatePanoSayisi() {
+            document.getElementById('panoSayisi').textContent = document.querySelectorAll('#panoContainer .pano-card').length + ' Pano';
+        }
+
+        function updateKriterStyle(sel) {
+            sel.className = '';
+            if (sel.value === 'U') sel.className = 'uygun';
+            else if (sel.value === 'UD') sel.className = 'uygun-degil';
+            else if (sel.value === 'UY') sel.className = 'uygulanamaz';
+        }
+
+        // ========== FOTOGRAF YONETIMI ==========
+        function fotoMenuAc(cell, panoIdx, fotoTipi) {
+            // Dolu hucreye tiklanirsa buyuk onizleme
+            if (cell.classList.contains('filled')) {
+                const img = cell.querySelector('img');
+                if (img) fotoOnizle(img.src);
+                return;
+            }
+
+            // Eski menuleri kapat
+            document.querySelectorAll('.foto-menu').forEach(m => m.remove());
+
+            const menu = document.createElement('div');
+            menu.className = 'foto-menu';
+            menu.innerHTML = `
+                <div class="foto-menu-item" onclick="fotoCek(${panoIdx}, '${fotoTipi}', this)">
+                    <span class="menu-icon"><i class="fas fa-camera"></i></span> Kamera ile Cek
+                </div>
+                <div class="foto-menu-item" onclick="fotoSec(${panoIdx}, '${fotoTipi}', this)">
+                    <span class="menu-icon"><i class="fas fa-images"></i></span> Galeriden Sec
+                </div>
+            `;
+            cell.style.position = 'relative';
+            cell.appendChild(menu);
+
+            // Disari tiklaninca kapat
+            setTimeout(() => {
+                const handler = (e) => {
+                    if (!menu.contains(e.target) && e.target !== cell) {
+                        menu.remove();
+                        document.removeEventListener('click', handler);
+                    }
+                };
+                document.addEventListener('click', handler);
+            }, 50);
+        }
+
+        function fotoCek(panoIdx, fotoTipi, menuItem) {
+            menuItem.closest('.foto-menu').remove();
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.setAttribute('capture', 'environment');
+            input.onchange = (e) => {
+                if (e.target.files && e.target.files[0])
+                    fotoYukle(e.target.files[0], panoIdx, fotoTipi);
+            };
+            document.body.appendChild(input);
+            input.click();
+            setTimeout(() => {
+                if (document.body.contains(input)) document.body.removeChild(input);
+            }, 2000);
+        }
+
+        function fotoSec(panoIdx, fotoTipi, menuItem) {
+            menuItem.closest('.foto-menu').remove();
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => { if (e.target.files[0]) fotoYukle(e.target.files[0], panoIdx, fotoTipi); };
+            input.click();
+        }
+
+        async function fotoYukle(file, panoIdx, fotoTipi) {
+            if (!currentRaporId) {
+                showNotification('Once raporu kaydedin!', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('dosya', file);
+            formData.append('fotoTipi', fotoTipi);
+
+            const panoDiv = document.getElementById(`pano-${panoIdx}`);
+            const panoId = panoDiv?.dataset.id || '';
+            if (panoId) formData.append('panoId', panoId);
+
+            try {
+                showNotification('Fotograf yukleniyor...', 'warning');
+                const res = await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat/${currentRaporId}/foto`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (res.ok) {
+                    const foto = await res.json();
+                    fotoGrideEkle(panoIdx, fotoTipi, foto);
+                    showNotification('Fotograf yuklendi!', 'success');
+                } else {
+                    const err = await res.json();
+                    showNotification('Yukleme hatasi: ' + (err.error || ''), 'error');
+                }
+            } catch (e) {
+                showNotification('Fotograf yukleme hatasi: ' + e.message, 'error');
+            }
+        }
+
+        function fotoGrideEkle(panoIdx, fotoTipi, foto) {
+            const grid = document.getElementById(`fotoGrid-${fotoTipi}-${panoIdx}`);
+            if (!grid) return;
+
+            // Ilk bos hucreyi bul
+            let bos = grid.querySelector('.foto-cell:not(.filled)');
+            if (!bos) {
+                bos = document.createElement('div');
+                bos.className = 'foto-cell';
+                grid.appendChild(bos);
+            }
+
+            bos.classList.add('filled');
+            bos.dataset.fotoId = foto.id;
+            bos.removeAttribute('onclick');
+            bos.innerHTML = `
+                <button class="foto-sil" onclick="event.stopPropagation(); fotoSilOnay(${foto.id}, this, ${panoIdx}, '${fotoTipi}')" title="Sil">&times;</button>
+                <img src="${foto.dosyaYolu}" alt="${foto.aciklama || 'Foto'}" onclick="fotoOnizle(this.src)" style="cursor:pointer;">
+                <input class="foto-aciklama" type="text" placeholder="Aciklama girin"
+                       value="${foto.aciklama || ''}"
+                       onblur="fotoAciklamaGuncelle(${foto.id}, this.value)"
+                       onclick="event.stopPropagation()">
+            `;
+
+            fotoEtiketGuncelle(panoIdx, fotoTipi);
+        }
+
+        async function fotoSilOnay(fotoId, btn, panoIdx, fotoTipi) {
+            if (!confirm('Fotografi silmek istediginize emin misiniz?')) return;
+            try {
+                const res = await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat-foto/${fotoId}`, { method: 'DELETE' });
+                if (res.ok) {
+                    const cell = btn.closest('.foto-cell');
+                    cell.classList.remove('filled');
+                    delete cell.dataset.fotoId;
+                    cell.setAttribute('onclick', `fotoMenuAc(this, ${panoIdx}, '${fotoTipi}')`);
+                    const icon = fotoTipi === 'termal' ? 'fa-thermometer-half' : 'fa-camera';
+                    cell.innerHTML = `<span class="placeholder"><i class="fas ${icon}"></i></span><span class="placeholder-text">Fotograf ekle</span>`;
+                    fotoEtiketGuncelle(panoIdx, fotoTipi);
+                    showNotification('Fotograf silindi', 'success');
+                }
+            } catch (e) {
+                showNotification('Silme hatasi: ' + e.message, 'error');
+            }
+        }
+
+        async function fotoAciklamaGuncelle(fotoId, aciklama) {
+            try {
+                await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat-foto/${fotoId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ aciklama })
+                });
+            } catch (e) {
+                console.error('Aciklama guncelleme hatasi:', e);
+            }
+        }
+
+        function fotoEtiketGuncelle(panoIdx, fotoTipi) {
+            const grid = document.getElementById(`fotoGrid-${fotoTipi}-${panoIdx}`);
+            if (!grid) return;
+            const count = grid.querySelectorAll('.foto-cell.filled').length;
+            const panoAdi = document.getElementById(`panoAdi-${panoIdx}`)?.value || 'Pano';
+            const prefix = fotoTipi === 'termal' ? 'Termal Foto' : 'Fotograf';
+            const etiket = document.getElementById(`fotoEtiket-${fotoTipi}-${panoIdx}`);
+            if (etiket) etiket.textContent = `${prefix} No: ${count} / ${panoAdi}`;
+        }
+
+        function bosHucreEkle(panoIdx, fotoTipi) {
+            const grid = document.getElementById(`fotoGrid-${fotoTipi}-${panoIdx}`);
+            if (!grid) return;
+            const icon = fotoTipi === 'termal' ? 'fa-thermometer-half' : 'fa-camera';
+            const cell = document.createElement('div');
+            cell.className = 'foto-cell';
+            cell.setAttribute('onclick', `fotoMenuAc(this, ${panoIdx}, '${fotoTipi}')`);
+            cell.innerHTML = `<span class="placeholder"><i class="fas ${icon}"></i></span><span class="placeholder-text">Fotograf ekle</span>`;
+            grid.appendChild(cell);
+        }
+
+        function fotoOnizle(src) {
+            const overlay = document.createElement('div');
+            overlay.className = 'foto-overlay';
+            overlay.innerHTML = `<img src="${src}">`;
+            overlay.onclick = () => overlay.remove();
+            document.body.appendChild(overlay);
+        }
+
+        async function fotograflariYukle() {
+            if (!currentRaporId) return;
+            try {
+                const res = await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat/${currentRaporId}/foto`);
+                if (!res.ok) return;
+                const fotograflar = await res.json();
+
+                // Her fotografi ilgili pano grid'ine ekle
+                fotograflar.forEach(foto => {
+                    // panoId ile pano kartini bul
+                    let panoIdx = null;
+                    if (foto.panoId) {
+                        const panoDivs = document.querySelectorAll('#panoContainer .pano-card');
+                        panoDivs.forEach(div => {
+                            if (div.dataset.id == foto.panoId) {
+                                panoIdx = div.id.split('-')[1];
+                            }
+                        });
+                    }
+                    // panoId bulunamazsa ilk pano
+                    if (!panoIdx) {
+                        const ilkPano = document.querySelector('#panoContainer .pano-card');
+                        if (ilkPano) panoIdx = ilkPano.id.split('-')[1];
+                    }
+                    if (panoIdx) {
+                        fotoGrideEkle(panoIdx, foto.fotoTipi || 'ekipman', foto);
+                    }
+                });
+            } catch (e) {
+                console.error('Fotograflari yukleme hatasi:', e);
+            }
+        }
+
+        // ========== LINYE YONETIMI ==========
+        function yeniLinyeSatiri(data) {
+            linyeSayac++;
+            const idx = linyeSayac;
+            const tr = document.createElement('tr');
+            tr.id = `linye-${idx}`;
+            if (data && data.id) tr.dataset.id = data.id;
+
+            tr.innerHTML = `
+                <td>${idx}</td>
+                <td><input type="text" value="${data?.panoLinyeAdi || 'Pano-' + idx + ' / Q' + idx}" style="min-width:130px;"></td>
+                <td><select>
+                    <option value="B" ${data?.egriTipi === 'B' ? 'selected' : ''}>B</option>
+                    <option value="C" ${(data?.egriTipi === 'C' || !data) ? 'selected' : ''}>C</option>
+                    <option value="D" ${data?.egriTipi === 'D' ? 'selected' : ''}>D</option>
+                    <option value="TMS" ${data?.egriTipi === 'TMS' ? 'selected' : ''}>TMS</option>
+                </select></td>
+                <td><select>
+                    <option value="1P" ${data?.kutupSayisi === '1P' ? 'selected' : ''}>1P</option>
+                    <option value="2P" ${data?.kutupSayisi === '2P' ? 'selected' : ''}>2P</option>
+                    <option value="3P" ${(data?.kutupSayisi === '3P' || !data) ? 'selected' : ''}>3P</option>
+                    <option value="4P" ${data?.kutupSayisi === '4P' ? 'selected' : ''}>4P</option>
+                </select></td>
+                <td><input type="number" value="${data?.inA ?? 16}" style="width:60px;" onchange="linyeHesapla(this.closest('tr'))"></td>
+                <td><input type="number" value="${data?.icuKA ?? 10}" style="width:60px;"></td>
+                <td><input type="number" value="${data?.fazKesiti ?? 2.5}" step="0.1" style="width:60px;" onchange="peKesitHesapla(this.closest('tr'))"></td>
+                <td><input type="number" value="${data?.nKesiti ?? 2.5}" step="0.1" style="width:60px;"></td>
+                <td><input type="number" value="${data?.peKesiti ?? 2.5}" step="0.1" style="width:60px;"></td>
+                <td><input type="number" value="${data?.ibA ?? ''}" step="0.1" style="width:60px;" onchange="linyeHesapla(this.closest('tr'))"></td>
+                <td><input type="number" value="${data?.izA ?? ''}" step="0.1" style="width:60px;" onchange="linyeHesapla(this.closest('tr'))"></td>
+                <td><input type="number" value="${data?.zxOhm ?? ''}" step="0.0001" style="width:70px;" onchange="linyeHesapla(this.closest('tr'))"></td>
+                <td><input type="number" value="${data?.rcdIAn ?? ''}" style="width:60px;" onchange="linyeHesapla(this.closest('tr'))"></td>
+                <td><input type="number" value="${data?.rcdTSuresi ?? ''}" style="width:60px;"></td>
+                <td class="sonuc">${data?.sonuc || '-'}</td>
+                <td><button class="btn-delete" onclick="linyeSil(${idx})"><i class="fas fa-times"></i></button></td>
+            `;
+            document.getElementById('linyeTableBody').appendChild(tr);
+            updateLinyeSayisi();
+
+            // Onceki sonuc varsa stili uygula
+            if (data?.sonuc) {
+                const sonucTd = tr.querySelector('.sonuc');
+                if (data.sonuc.includes('Uygun') && !data.sonuc.includes('Degil')) {
+                    sonucTd.className = 'sonuc sonuc-uygun';
+                } else if (data.sonuc.includes('Degil')) {
+                    sonucTd.className = 'sonuc sonuc-uygunsuz';
+                }
+            }
+        }
+
+        function linyeSil(idx) {
+            const el = document.getElementById(`linye-${idx}`);
+            if (el) {
+                if (el.dataset.id && currentRaporId) {
+                    authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat-linye/${el.dataset.id}`, { method: 'DELETE' }).catch(e => console.error(e));
+                }
+                el.remove();
+                updateLinyeSayisi();
+            }
+        }
+
+        function updateLinyeSayisi() {
+            document.getElementById('linyeSayisi').textContent = document.querySelectorAll('#linyeTableBody tr').length + ' Satir';
+        }
+
+        // PE kesit otomatik hesaplama
+        function peKesitHesapla(tr) {
+            const inputs = tr.querySelectorAll('input');
+            const fazKesiti = parseFloat(inputs[4]?.value) || 0; // 5th input = fazKesiti
+            let peKesiti = 0;
+            if (fazKesiti <= 16) peKesiti = fazKesiti;
+            else if (fazKesiti <= 35) peKesiti = 16;
+            else peKesiti = fazKesiti / 2;
+            inputs[6].value = peKesiti; // 7th input = peKesiti
+        }
+
+        // Linye hesaplama - API + client-side
+        async function linyeHesapla(tr) {
+            const inputs = tr.querySelectorAll('input, select');
+            const egriTipi = inputs[1]?.value || 'C';      // select egri
+            const inA = parseFloat(inputs[3]?.value) || 0;   // input In
+            const ibA = parseFloat(inputs[8]?.value) || 0;   // input Ib
+            const izA = parseFloat(inputs[9]?.value) || 0;   // input Iz
+            const zxOhm = parseFloat(inputs[10]?.value) || 0; // input Zx
+            const rcdIAn = parseFloat(inputs[11]?.value) || 0; // input RCD IΔn
+
+            const sonucTd = tr.querySelector('.sonuc');
+            let sonuclar = [];
+            let uygunMu = true;
+
+            // 1. Koordinasyon kontrolu: Ib <= In <= Iz
+            if (ibA > 0 && izA > 0 && inA > 0) {
+                if (ibA <= inA && inA <= izA) {
+                    sonuclar.push('Koor:OK');
+                } else {
+                    sonuclar.push('Koor:FAIL');
+                    uygunMu = false;
+                }
+            }
+
+            // 2. Zx hesabi - API cagir
+            if (zxOhm > 0) {
+                try {
+                    const sebekeTipi = document.getElementById('sebekeTipi')?.value || 'TN_CS';
+                    const yerTipi = document.querySelector('input[name="yerTipi"]:checked')?.value || 'NORMAL';
+                    const res = await authenticatedFetch(`${API_BASE}/elektrik/hesapla`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            sebekeTipi: sebekeTipi,
+                            sigortaTipi: egriTipi,
+                            sigortaIn: inA,
+                            zxOlculen: zxOhm,
+                            rcdVar: rcdIAn > 0,
+                            rcdIdelta: rcdIAn,
+                            yerTipi: yerTipi
+                        })
+                    });
+                    if (res.ok) {
+                        const hesap = await res.json();
+                        if (hesap.sonuc === 'UYGUN' || hesap.uygun === true) {
+                            sonuclar.push('Zx:OK');
+                        } else {
+                            sonuclar.push('Zx:FAIL');
+                            uygunMu = false;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Hesaplama API hatasi:', e);
+                    // Client-side fallback
+                    let ia = 0;
+                    if (egriTipi === 'B') ia = inA * 5;
+                    else if (egriTipi === 'C') ia = inA * 10;
+                    else if (egriTipi === 'D') ia = inA * 20;
+                    else ia = inA * 10;
+
+                    const ik = zxOhm > 0 ? 230 / zxOhm : 0;
+                    if (ik >= ia) {
+                        sonuclar.push('Zx:OK');
+                    } else {
+                        sonuclar.push('Zx:FAIL');
+                        uygunMu = false;
+                    }
+                }
+            }
+
+            // Sonuc guncelle
+            if (sonuclar.length > 0) {
+                sonucTd.textContent = uygunMu ? 'Uygun' : 'Uygun Degil';
+                sonucTd.className = uygunMu ? 'sonuc sonuc-uygun' : 'sonuc sonuc-uygunsuz';
+                sonucTd.title = sonuclar.join(', ');
+            } else {
+                sonucTd.textContent = '-';
+                sonucTd.className = 'sonuc';
+                sonucTd.title = '';
+            }
+        }
+
+        // ========== POTANSIYEL DENGELEME ==========
+        function yeniPotansiyelSatiri(data) {
+            potansiyelSayac++;
+            const idx = potansiyelSayac;
+            const tr = document.createElement('tr');
+            tr.id = `potansiyel-${idx}`;
+            if (data && data.id) tr.dataset.id = data.id;
+
+            tr.innerHTML = `
+                <td>${idx}</td>
+                <td><input type="text" value="${data?.bolumOlcumNoktasi || ''}" style="min-width:150px;" placeholder="Orn: Ana Pano - Bina"></td>
+                <td><input type="text" value="${data?.iletkenKesiti || ''}" placeholder="Orn: 10mm2"></td>
+                <td><input type="number" value="${data?.sureklilik ?? ''}" step="0.01" onchange="potansiyelSonucHesapla(this.closest('tr'))"></td>
+                <td><input type="text" value="${data?.tamamlayiciKesit || ''}" placeholder="Orn: 6mm2"></td>
+                <td><input type="number" value="${data?.tamamlayiciSureklilik ?? ''}" step="0.01" onchange="potansiyelSonucHesapla(this.closest('tr'))"></td>
+                <td class="sonuc">${data?.sonuc || '-'}</td>
+                <td><button class="btn-delete" onclick="potansiyelSil(${idx})"><i class="fas fa-times"></i></button></td>
+            `;
+            document.getElementById('potansiyelTableBody').appendChild(tr);
+            updatePotansiyelSayisi();
+            if (data?.sonuc) {
+                const sonucTd = tr.querySelector('.sonuc');
+                sonucTd.className = data.sonuc.includes('Degil') ? 'sonuc sonuc-uygunsuz' : 'sonuc sonuc-uygun';
+            }
+        }
+
+        function potansiyelSil(idx) {
+            const el = document.getElementById(`potansiyel-${idx}`);
+            if (el) {
+                if (el.dataset.id && currentRaporId) {
+                    authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat-potansiyel/${el.dataset.id}`, { method: 'DELETE' }).catch(e => console.error(e));
+                }
+                el.remove();
+                updatePotansiyelSayisi();
+            }
+        }
+
+        function updatePotansiyelSayisi() {
+            document.getElementById('potansiyelSayisi').textContent = document.querySelectorAll('#potansiyelTableBody tr').length + ' Satir';
+        }
+
+        function potansiyelSonucHesapla(tr) {
+            const inputs = tr.querySelectorAll('input');
+            const sureklilik = parseFloat(inputs[2]?.value);
+            const tamSureklilik = parseFloat(inputs[4]?.value);
+            const sonucTd = tr.querySelector('.sonuc');
+
+            if (!isNaN(sureklilik)) {
+                const maxSureklilik = Math.max(sureklilik, isNaN(tamSureklilik) ? 0 : tamSureklilik);
+                if (maxSureklilik <= 1) {
+                    sonucTd.textContent = 'Uygun';
+                    sonucTd.className = 'sonuc sonuc-uygun';
+                } else {
+                    sonucTd.textContent = 'Uygun Degil';
+                    sonucTd.className = 'sonuc sonuc-uygunsuz';
+                }
+            } else {
+                sonucTd.textContent = '-';
+                sonucTd.className = 'sonuc';
+            }
+        }
+
+        // ========== ZEMIN IZOLASYONU ==========
+        function yeniZeminSatiri(data) {
+            zeminSayac++;
+            const idx = zeminSayac;
+            const tr = document.createElement('tr');
+            tr.id = `zemin-${idx}`;
+            if (data && data.id) tr.dataset.id = data.id;
+
+            tr.innerHTML = `
+                <td>${idx}</td>
+                <td><input type="text" value="${data?.yer || ''}" style="min-width:150px;" placeholder="Orn: Uretim Alani"></td>
+                <td><input type="number" value="${data?.enM ?? ''}" step="0.1" style="width:70px;"></td>
+                <td><input type="number" value="${data?.boyM ?? ''}" step="0.1" style="width:70px;"></td>
+                <td><input type="number" value="${data?.izolasyonDirenci ?? ''}" step="0.1" onchange="zeminSonucHesapla(this.closest('tr'))"></td>
+                <td class="sonuc">${data?.sonuc || '-'}</td>
+                <td><button class="btn-delete" onclick="zeminSil(${idx})"><i class="fas fa-times"></i></button></td>
+            `;
+            document.getElementById('zeminTableBody').appendChild(tr);
+            updateZeminSayisi();
+            if (data?.sonuc) {
+                const sonucTd = tr.querySelector('.sonuc');
+                sonucTd.className = data.sonuc.includes('Degil') ? 'sonuc sonuc-uygunsuz' : 'sonuc sonuc-uygun';
+            }
+        }
+
+        function zeminSil(idx) {
+            const el = document.getElementById(`zemin-${idx}`);
+            if (el) {
+                if (el.dataset.id && currentRaporId) {
+                    authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat-zemin/${el.dataset.id}`, { method: 'DELETE' }).catch(e => console.error(e));
+                }
+                el.remove();
+                updateZeminSayisi();
+            }
+        }
+
+        function updateZeminSayisi() {
+            document.getElementById('zeminSayisi').textContent = document.querySelectorAll('#zeminTableBody tr').length + ' Satir';
+        }
+
+        function zeminSonucHesapla(tr) {
+            const inputs = tr.querySelectorAll('input');
+            const izolasyon = parseFloat(inputs[3]?.value);
+            const sonucTd = tr.querySelector('.sonuc');
+
+            if (!isNaN(izolasyon)) {
+                if (izolasyon >= 50) {
+                    sonucTd.textContent = 'Uygun';
+                    sonucTd.className = 'sonuc sonuc-uygun';
+                } else {
+                    sonucTd.textContent = 'Uygun Degil';
+                    sonucTd.className = 'sonuc sonuc-uygunsuz';
+                }
+            } else {
+                sonucTd.textContent = '-';
+                sonucTd.className = 'sonuc';
+            }
+        }
+
+        // ========== SONUC ==========
+        function setSonuc(el, sonuc) {
+            document.getElementById('genelSonuc').value = sonuc;
+            document.querySelectorAll('.sonuc-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // ========== VERI TOPLAMA ==========
+        function getPanoVerileri() {
+            const panolar = [];
+            document.querySelectorAll('#panoContainer .pano-card').forEach(panoDiv => {
+                const idx = panoDiv.id.split('-')[1];
+                const pano = {
+                    panoAdi: document.getElementById(`panoAdi-${idx}`)?.value || '',
+                    panoZx: parseFloat(document.getElementById(`panoZx-${idx}`)?.value) || null,
+                    panoZln: parseFloat(document.getElementById(`panoZln-${idx}`)?.value) || null,
+                    panoVff: parseFloat(document.getElementById(`panoVff-${idx}`)?.value) || null,
+                    panoVln: parseFloat(document.getElementById(`panoVln-${idx}`)?.value) || null,
+                    panoVnpe: parseFloat(document.getElementById(`panoVnpe-${idx}`)?.value) || null,
+                    panoIkk: parseFloat(document.getElementById(`panoIkk-${idx}`)?.value) || null,
+                    panoDkdTipi: document.getElementById(`panoDkdTipi-${idx}`)?.value || '',
+                    panoDkdAkim: parseFloat(document.getElementById(`panoDkdAkim-${idx}`)?.value) || null,
+                    termalFotografTarihi: document.getElementById(`panoTermalTarih-${idx}`)?.value || '',
+                    termalFotografNo: document.getElementById(`panoTermalNo-${idx}`)?.value || ''
+                };
+                if (panoDiv.dataset.id) pano.id = parseInt(panoDiv.dataset.id);
+
+                for (let k = 1; k <= 27; k++) {
+                    const sel = document.getElementById(`pano${idx}_kriter${k}`);
+                    pano['kriter' + k] = sel?.value || 'U';
+                }
+                panolar.push(pano);
+            });
+            return panolar;
+        }
+
+        function getLinyeVerileri() {
+            return Array.from(document.querySelectorAll('#linyeTableBody tr')).map((tr, i) => {
+                const inputs = tr.querySelectorAll('input, select');
+                const data = {
+                    siraNo: i + 1,
+                    panoLinyeAdi: inputs[0]?.value || '',
+                    egriTipi: inputs[1]?.value || 'C',
+                    kutupSayisi: inputs[2]?.value || '3P',
+                    inA: parseFloat(inputs[3]?.value) || 0,
+                    icuKA: parseFloat(inputs[4]?.value) || 0,
+                    fazKesiti: parseFloat(inputs[5]?.value) || 0,
+                    nKesiti: parseFloat(inputs[6]?.value) || 0,
+                    peKesiti: parseFloat(inputs[7]?.value) || 0,
+                    ibA: parseFloat(inputs[8]?.value) || 0,
+                    izA: parseFloat(inputs[9]?.value) || 0,
+                    zxOhm: parseFloat(inputs[10]?.value) || 0,
+                    rcdIAn: parseFloat(inputs[11]?.value) || 0,
+                    rcdTSuresi: parseFloat(inputs[12]?.value) || 0,
+                    sonuc: tr.querySelector('.sonuc')?.textContent || '-'
+                };
+                if (tr.dataset.id) data.id = parseInt(tr.dataset.id);
+                return data;
+            });
+        }
+
+        function getPotansiyelVerileri() {
+            return Array.from(document.querySelectorAll('#potansiyelTableBody tr')).map((tr, i) => {
+                const inputs = tr.querySelectorAll('input');
+                const data = {
+                    siraNo: i + 1,
+                    bolumOlcumNoktasi: inputs[0]?.value || '',
+                    iletkenKesiti: inputs[1]?.value || '',
+                    sureklilik: parseFloat(inputs[2]?.value) || 0,
+                    tamamlayiciKesit: inputs[3]?.value || '',
+                    tamamlayiciSureklilik: parseFloat(inputs[4]?.value) || 0,
+                    sonuc: tr.querySelector('.sonuc')?.textContent || '-'
+                };
+                if (tr.dataset.id) data.id = parseInt(tr.dataset.id);
+                return data;
+            });
+        }
+
+        function getZeminVerileri() {
+            return Array.from(document.querySelectorAll('#zeminTableBody tr')).map((tr, i) => {
+                const inputs = tr.querySelectorAll('input');
+                const data = {
+                    siraNo: i + 1,
+                    yer: inputs[0]?.value || '',
+                    enM: parseFloat(inputs[1]?.value) || 0,
+                    boyM: parseFloat(inputs[2]?.value) || 0,
+                    izolasyonDirenci: parseFloat(inputs[3]?.value) || 0,
+                    sonuc: tr.querySelector('.sonuc')?.textContent || '-'
+                };
+                if (tr.dataset.id) data.id = parseInt(tr.dataset.id);
+                return data;
+            });
+        }
+
+        function getAllFormData() {
+            return {
+                // Tarih & ortam
+                baslangicTarihi: document.getElementById('baslangicTarihi')?.value || '',
+                bitisTarihi: document.getElementById('bitisTarihi')?.value || '',
+                baslangicSaati: document.getElementById('baslangicSaati')?.value || '',
+                bitisSaati: document.getElementById('bitisSaati')?.value || '',
+                sicaklik: document.getElementById('sicaklik')?.value || '',
+                nem: document.getElementById('nem')?.value || '',
+
+                // Sistem bilgileri
+                sistemTipi: document.querySelector('input[name="sistemTipi"]:checked')?.value || 'TN',
+                sebekeTipi: document.getElementById('sebekeTipi')?.value || 'TN_CS',
+                yerTipi: document.querySelector('input[name="yerTipi"]:checked')?.value || 'NORMAL',
+                raporTipiTopraklama: document.querySelector('input[name="raporTipiTopraklama"]')?.checked || false,
+                raporTipiIcTesisat: document.querySelector('input[name="raporTipiIcTesisat"]')?.checked || false,
+
+                // Checkboxlar
+                kontrolNedeni: document.querySelector('input[name="kontrolNedeni"]:checked')?.value || 'periyodik',
+                projeVar: document.querySelector('input[name="projeVar"]:checked')?.value === 'true',
+                tekHatSemasiVar: document.querySelector('input[name="tekHatSemasiVar"]:checked')?.value === 'true',
+                yapiEv: document.querySelector('input[name="yapiEv"]')?.checked || false,
+                yapiTicari: document.querySelector('input[name="yapiTicari"]')?.checked || false,
+                yapiEndustri: document.querySelector('input[name="yapiEndustri"]')?.checked || false,
+                yapiDiger: document.querySelector('input[name="yapiDiger"]')?.checked || false,
+                toprakRing: document.querySelector('input[name="toprakRing"]')?.checked || false,
+                toprakYuzeysel: document.querySelector('input[name="toprakYuzeysel"]')?.checked || false,
+                toprakTemel: document.querySelector('input[name="toprakTemel"]')?.checked || false,
+                toprakDerin: document.querySelector('input[name="toprakDerin"]')?.checked || false,
+                toprakBelirlenemedi: document.querySelector('input[name="toprakBelirlenemedi"]')?.checked || false,
+                // Koruyucu onlemler (JSON array)
+                koruyucuOnlemler: JSON.stringify([
+                    document.getElementById('korEspotansiyel')?.checked && 'espotansiyel',
+                    document.getElementById('korYalitma')?.checked && 'yalitma',
+                    document.getElementById('korAyirma')?.checked && 'ayirma',
+                    document.getElementById('korKucukGerilim')?.checked && 'kucukGerilim'
+                ].filter(Boolean)),
+                // Olcum metodu (JSON array)
+                olcumMetodu: JSON.stringify([
+                    document.getElementById('metodCevrim')?.checked && 'cevrim',
+                    document.getElementById('metodUcUclu')?.checked && 'ucUclu',
+                    document.getElementById('metodKlamp')?.checked && 'klamp'
+                ].filter(Boolean)),
+                kapsamliDegisiklik: document.querySelector('input[name="kapsamliDegisiklik"]:checked')?.value === 'true',
+                oncekiKontrolEtiketi: document.querySelector('input[name="oncekiKontrolEtiketi"]:checked')?.value === 'true',
+
+                // Ekipman bilgileri
+                enerjiFirma: document.getElementById('enerjiFirma')?.value || '',
+                kullanimAmaci: document.getElementById('kullanimAmaci')?.value || '',
+                dkdSpd: document.getElementById('dkdSpd')?.value || '',
+                sonKontrolTarihi: document.getElementById('sonKontrolTarihi')?.value || '',
+                ilaveTopraklamaElektrotu: document.getElementById('ilaveTopraklamaElektrotu')?.value || '',
+                genelNotlar: document.getElementById('genelNotlar')?.value || '',
+
+                // Text alanlar
+                sgkSicilNo: document.getElementById('sgkSicilNo')?.value || '',
+                isgKatipNo: document.getElementById('isgKatipNo')?.value || '',
+                fazIletkenSayisiTipi: document.getElementById('fazIletkenSayisiTipi')?.value || '',
+                temelTopraklamaDirenci: document.getElementById('temelTopraklamaDirenci')?.value || '',
+                sistemTopraklamaIletkeni: document.getElementById('sistemTopraklamaIletkeni')?.value || '',
+                anaEspotansiyelIletkeni: document.getElementById('anaEspotansiyelIletkeni')?.value || '',
+                nominalGerilim: document.getElementById('nominalGerilim')?.value || '',
+                nominalFrekans: document.getElementById('nominalFrekans')?.value || '',
+                hataAkimi: document.getElementById('hataAkimi')?.value || '',
+                cevrimEmpedansi: document.getElementById('cevrimEmpedansi')?.value || '',
+                anaKesiciTipi: document.getElementById('anaKesiciTipi')?.value || '',
+                anaKesiciNominalAkim: document.getElementById('anaKesiciNominalAkim')?.value || '',
+                anaRcdAnmaAkimi: document.getElementById('anaRcdAnmaAkimi')?.value || '',
+                anaRcdTestAkimi: document.getElementById('anaRcdTestAkimi')?.value || '',
+
+                // Cihazlar
+                cihaz1Adi: document.getElementById('cihaz1Adi')?.value || '',
+                cihaz1SeriNo: document.getElementById('cihaz1SeriNo')?.value || '',
+                cihaz1Kalibrasyon: document.getElementById('cihaz1Kalibrasyon')?.value || '',
+                cihaz2Adi: document.getElementById('cihaz2Adi')?.value || '',
+                cihaz2SeriNo: document.getElementById('cihaz2SeriNo')?.value || '',
+                cihaz2Kalibrasyon: document.getElementById('cihaz2Kalibrasyon')?.value || '',
+                cihaz3Adi: document.getElementById('cihaz3Adi')?.value || '',
+                cihaz3SeriNo: document.getElementById('cihaz3SeriNo')?.value || '',
+                cihaz3Kalibrasyon: document.getElementById('cihaz3Kalibrasyon')?.value || '',
+
+                // Tablolar
+                panolar: getPanoVerileri(),
+                linyeler: getLinyeVerileri(),
+                potansiyeller: getPotansiyelVerileri(),
+                zeminler: getZeminVerileri(),
+
+                // Kusur ve sonuc
+                kusurlar: Array.from(document.querySelectorAll('input[name="kusur"]:checked')).map(cb => cb.value),
+                kusurAciklama: document.getElementById('kusurAciklama')?.value || '',
+                sonucAciklama: document.getElementById('sonucAciklama')?.value || '',
+                uygunlukNotu: document.querySelector('input[name="uygunlukNotu"]:checked')?.value || 'Not-1',
+                genelSonuc: document.getElementById('genelSonuc')?.value || 'UYGUN',
+                topraklamaRaporuId: currentTopraklamaRaporuId
+            };
+        }
+
+        // ========== KAYDET ==========
+        async function kaydet() {
+            try {
+                const altGorevId = currentAltGorevId || document.getElementById('altGorevSelect')?.value;
+                if (!altGorevId) {
+                    showNotification('Lutfen once is emri ve alt gorev secin!', 'error');
+                    return;
+                }
+
+                const formData = getAllFormData();
+                const payload = { altGorevId: parseInt(altGorevId), ...formData };
+
+                let res;
+                if (currentRaporId) {
+                    res = await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat/${currentRaporId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    res = await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+
+                if (res.ok) {
+                    const rapor = await res.json();
+                    currentRaporId = rapor.id;
+
+                    // Panolari kaydet
+                    const panolar = getPanoVerileri();
+                    for (const pano of panolar) {
+                        if (pano.id) {
+                            await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat-pano/${pano.id}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(pano)
+                            });
+                        } else {
+                            await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat/${currentRaporId}/pano`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(pano)
+                            });
+                        }
+                    }
+
+                    // Linyeleri kaydet
+                    const linyeler = getLinyeVerileri();
+                    for (const linye of linyeler) {
+                        if (linye.id) {
+                            await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat-linye/${linye.id}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(linye)
+                            });
+                        } else {
+                            await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat/${currentRaporId}/linye`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(linye)
+                            });
+                        }
+                    }
+
+                    // Potansiyelleri kaydet
+                    const potansiyeller = getPotansiyelVerileri();
+                    for (const p of potansiyeller) {
+                        if (p.id) {
+                            await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat-potansiyel/${p.id}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(p)
+                            });
+                        } else {
+                            await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat/${currentRaporId}/potansiyel`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(p)
+                            });
+                        }
+                    }
+
+                    // Zeminleri kaydet
+                    const zeminler = getZeminVerileri();
+                    for (const z of zeminler) {
+                        if (z.id) {
+                            await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat-zemin/${z.id}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(z)
+                            });
+                        } else {
+                            await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat/${currentRaporId}/zemin`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(z)
+                            });
+                        }
+                    }
+
+                    showNotification('Rapor kaydedildi: ' + (rapor.raporNo || rapor.id), 'success');
+                    document.getElementById('saveStatus').textContent = 'Kaydedildi';
+                    updateWordButtonState();
+                } else {
+                    const err = await res.json();
+                    showNotification('Kaydetme hatasi: ' + (err.error || 'Bilinmeyen hata'), 'error');
+                }
+            } catch (e) {
+                showNotification('Hata: ' + e.message, 'error');
+            }
+        }
+
+        // ========== GONDER ==========
+        async function gonder() {
+            if (!confirm('Raporu gondermek istediginize emin misiniz?')) return;
+            await kaydet();
+            showNotification('Rapor basariyla gonderildi!', 'success');
+        }
+
+        // ========== WORD INDIR ==========
+        async function wordIndir() {
+            if (!currentRaporId) {
+                showNotification('Once raporu kaydedin!', 'error');
+                return;
+            }
+            try {
+                showNotification('Word dosyasi olusturuluyor...', 'warning');
+                const formData = getAllFormData();
+
+                const res = await authenticatedFetch(`${API_BASE}/elektrik-ic-tesisat/${currentRaporId}/word-rapor`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Elektrik_Ic_Tesisat_Raporu_${currentRaporId}.docx`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showNotification('Word dosyasi indirildi!', 'success');
+                } else {
+                    const e = await res.json();
+                    showNotification('Hata: ' + (e.error || 'Word olusturulamadi'), 'error');
+                }
+            } catch (e) {
+                showNotification('Hata: ' + e.message, 'error');
+            }
+        }
+
+        // ========== WORD BUTTON STATE ==========
+        function updateWordButtonState() {
+            const wordBtn = document.querySelector('.btn-word');
+            if (currentRaporId) {
+                wordBtn.disabled = false;
+                wordBtn.style.opacity = '1';
+                wordBtn.title = 'Word dosyasini indir';
+            } else {
+                wordBtn.disabled = true;
+                wordBtn.style.opacity = '0.5';
+                wordBtn.title = 'Once kaydedin';
+            }
+        }
+
+        // ========== VAZGEC ==========
+        function vazgec() {
+            if (confirm('Kaydedilmemis degisiklikler kaybolacak. Cikmak istediginize emin misiniz?')) {
+                window.parent.postMessage({ type: 'navigate', page: 'is-emirleri' }, '*');
+            }
+        }
+
+        // ========== YENI RAPOR ==========
+        function yeniRapor() {
+            if (confirm('Yeni rapor olusturmak istediginize emin misiniz?')) location.reload();
+        }
+    </script>
+</body>
+</html>

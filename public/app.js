@@ -3819,6 +3819,7 @@ async function olcumYap(altGorevId, hizmetAdi) {
         // Özel formları en üstte göster
         const ozelFormlar = [
             { kod: 'elektrik-topraklama', ad: 'Elektrik Topraklama Raporu', icon: '⚡', arama: 'elektrik topraklama ölçüm raporu FR7.2.36' },
+            { kod: 'elektrik-ic-tesisat', ad: 'Elektrik İç Tesisat Raporu', icon: '⚡', arama: 'elektrik iç tesisat ölçüm raporu FR7.2.40' },
             { kod: 'kompresor', ad: 'Kompresör Raporu', icon: '🔧', arama: 'kompresör kompresor basınç raporu' },
             { kod: 'hava-tanki', ad: 'Hava Tankı Raporu', icon: '🛢️', arama: 'hava tankı basınçlı kap raporu' }
         ];
@@ -3916,6 +3917,8 @@ function olcumFormuAc(altGorevId, formTipi) {
     // Eski özel formlar (geriye uyumluluk)
     if (formTipi === 'elektrik-topraklama') {
         window.open(`/forms/elektrik-topraklama-form-v2.html?altGorevId=${altGorevId}`, '_blank');
+    } else if (formTipi === 'elektrik-ic-tesisat') {
+        window.open(`/forms/elektrik-ic-tesisat-form.html?altGorevId=${altGorevId}`, '_blank');
     } else if (formTipi === 'kompresor') {
         window.open(`/forms/kompresor-form.html?altGorevId=${altGorevId}`, '_blank');
     } else if (formTipi === 'hava-tanki') {
@@ -5843,6 +5846,7 @@ async function gorevDetayGoster(gorevId) {
         // Özel formlar (en üstte göster)
         const ozelFormlar = [
             { kod: 'elektrik-topraklama', ad: '⚡ Elektrik Topraklama Raporu' },
+            { kod: 'elektrik-ic-tesisat', ad: '⚡ Elektrik İç Tesisat Raporu' },
             { kod: 'kompresor', ad: '🔧 Kompresör Raporu' },
             { kod: 'hava-tanki', ad: '🛢️ Hava Tankı Raporu' }
         ];
@@ -5945,6 +5949,8 @@ function raporFormAc(altGorevId) {
     // Özel formlar için yönlendirme
     if (sablonKodu === 'elektrik-topraklama') {
         formUrl = `/forms/elektrik-topraklama-form-v2.html?altGorevId=${altGorevId}`;
+    } else if (sablonKodu === 'elektrik-ic-tesisat') {
+        formUrl = `/forms/elektrik-ic-tesisat-form.html?altGorevId=${altGorevId}`;
     } else if (sablonKodu === 'kompresor') {
         formUrl = `/forms/kompresor-form.html?altGorevId=${altGorevId}`;
     } else if (sablonKodu === 'hava-tanki') {
@@ -6421,6 +6427,8 @@ function raporDuzenle(raporId, altGorevId, raporTipi, sablonKodu) {
         window.open(`/forms/hava-tanki-form.html?altGorevId=${altGorevId}`, '_blank');
     } else if (tip.includes('elektrik') && tip.includes('topraklama')) {
         window.open(`/forms/elektrik-topraklama-form-v2.html?altGorevId=${altGorevId}`, '_blank');
+    } else if (tip.includes('ic') && tip.includes('tesisat') || tip.includes('ictesisat')) {
+        window.open(`/forms/elektrik-ic-tesisat-form.html?altGorevId=${altGorevId}`, '_blank');
     } else if (sablonKodu) {
         // Generic rapor - şablon koduna göre form aç
         window.open(`/forms/generic-rapor-form.html?sablon=${sablonKodu}&altGorevId=${altGorevId}`, '_blank');
@@ -6437,12 +6445,15 @@ async function raporWordIndir(raporId, raporTipi, sablonKodu) {
         const tipLower = (raporTipi || '').toLowerCase();
         const isKompresor = tipLower.includes('kompres');
         const isHavaTanki = tipLower.includes('hava');
-        const isElektrik = tipLower.includes('elektrik');
-        const isGeneric = sablonKodu && !isKompresor && !isHavaTanki && !isElektrik;
+        const isIcTesisat = tipLower.includes('ic') && tipLower.includes('tesisat') || tipLower.includes('ictesisat');
+        const isElektrik = tipLower.includes('elektrik') && !isIcTesisat;
+        const isGeneric = sablonKodu && !isKompresor && !isHavaTanki && !isElektrik && !isIcTesisat;
 
         let apiUrl;
         if (isGeneric) {
             apiUrl = `${API_BASE}/rapor/${sablonKodu}/${raporId}/word`;
+        } else if (isIcTesisat) {
+            apiUrl = `${API_BASE}/elektrik-ic-tesisat/${raporId}/word-rapor`;
         } else {
             const apiPath = isKompresor ? 'kompresor-raporu' : isHavaTanki ? 'hava-tanki-raporu' : 'elektrik-topraklama-raporu';
             apiUrl = `${API_BASE}/${apiPath}/${raporId}/word`;
@@ -6462,7 +6473,7 @@ async function raporWordIndir(raporId, raporTipi, sablonKodu) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            const dosyaAdi = isGeneric ? (sablonKodu + '_Raporu') : isKompresor ? 'Kompresor_Muayene_Raporu' : isHavaTanki ? 'Hava_Tanki_Muayene_Raporu' : 'Elektrik_Topraklama_Raporu';
+            const dosyaAdi = isGeneric ? (sablonKodu + '_Raporu') : isKompresor ? 'Kompresor_Muayene_Raporu' : isHavaTanki ? 'Hava_Tanki_Muayene_Raporu' : isIcTesisat ? 'Elektrik_Ic_Tesisat_Raporu' : 'Elektrik_Topraklama_Raporu';
             a.download = `${dosyaAdi}_${raporId}.docx`;
             a.click();
             URL.revokeObjectURL(url);
@@ -6483,10 +6494,13 @@ async function raporSil(raporId, raporTipi, sablonKodu) {
 
     try {
         const tipL = (raporTipi || '').toLowerCase();
-        const isGeneric = sablonKodu && !tipL.includes('kompres') && !tipL.includes('hava') && !tipL.includes('elektrik');
+        const isIcTes = tipL.includes('ic') && tipL.includes('tesisat') || tipL.includes('ictesisat');
+        const isGeneric = sablonKodu && !tipL.includes('kompres') && !tipL.includes('hava') && !tipL.includes('elektrik') && !isIcTes;
         let apiUrl;
         if (isGeneric) {
             apiUrl = `${API_BASE}/rapor/${sablonKodu}/${raporId}`;
+        } else if (isIcTes) {
+            apiUrl = `${API_BASE}/elektrik-ic-tesisat/${raporId}`;
         } else {
             const apiPath = tipL.includes('kompres') ? 'kompresor-raporu' : tipL.includes('hava') ? 'hava-tanki-raporu' : 'elektrik-topraklama-raporu';
             apiUrl = `${API_BASE}/${apiPath}/${raporId}`;

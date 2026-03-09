@@ -1,0 +1,167 @@
+{
+  "sablonKodu": "FR7.2.42",
+  "sablonAdi": "Yangın Tesisatı Muayene ve Ölçüm Raporu",
+  "kategori": "tesisat kontrolü",
+  "altKategori": "yangın tesisatı",
+  "raporNoPrefix": "TK",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        { "id": "firmaAdi", "label": "Firma Adı", "type": "text", "source": "customer.unvan", "readonly": true, "autoFill": true },
+        { "id": "bolumu", "label": "Bölümü", "type": "text", "placeholder": "İşletme, Üretim vb." },
+        { "id": "firmaAdres", "label": "Adresi", "type": "text", "source": "customer.adres", "readonly": true, "autoFill": true },
+        { "id": "kontrolTarihi", "label": "Kontrol Tarihi", "type": "date" },
+        { "id": "firmaTelefon", "label": "Tel/Fax", "type": "text", "source": "customer.telefon", "readonly": true, "autoFill": true },
+        { "id": "raporTarihi", "label": "Rapor Tarihi", "type": "date" },
+        { "id": "firmaEmail", "label": "E-mail", "type": "text", "source": "customer.email", "readonly": true, "autoFill": true },
+        { "id": "sonrakiKontrolTarihi", "label": "Sonraki Kontrol Tarihi", "type": "date" },
+        { "id": "firmaWeb", "label": "Web", "type": "text", "source": "customer.web", "readonly": true, "autoFill": true },
+        { "id": "raporNo", "label": "Rapor No", "type": "text", "readonly": true, "autoFill": true },
+        { "id": "sgkSicilNo", "label": "SGK Sicil No", "type": "text" },
+        { "id": "isgKatipNo", "label": "İSG-KATİP Sözleşme ID", "type": "text" }
+      ]
+    },
+    {
+      "id": "yapi",
+      "title": "Yangın Mekanik Tesisatına Bağlı Yapı Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        { "id": "projeMuellifi", "label": "Proje Müellifi", "type": "text" },
+        { "id": "yapiInsaatAlani", "label": "Yapı İnşaat Alanı (m²)", "type": "text" },
+        { "id": "projeOnayTarihi", "label": "Proje Onay Tarihi", "type": "text" },
+        { "id": "projeOnayNo", "label": "Proje Onay Numarası", "type": "text" },
+        { "id": "binaYuksekligi", "label": "Bina Yüksekliği (m)", "type": "text" },
+        { "id": "sistemDebisi", "label": "Sistem Debisi (l/dk)", "type": "text" },
+        { "id": "sistemBasinci", "label": "Sistem Basıncı (bar)", "type": "text" },
+        { "id": "yapiKullanimAmaci", "label": "Yapı Kullanım Amacı", "type": "text" },
+        { "id": "tehlikeSinifi", "label": "Tehlike Sınıfı", "type": "text", "placeholder": "HH/OH/EH" }
+      ]
+    },
+    {
+      "id": "tesisatBilgi",
+      "title": "Yangın Mekanik Tesisatı Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        { "id": "sprinklerProje", "label": "Sprinkler (Proje)", "type": "text", "placeholder": "Var/Yok" },
+        { "id": "sprinklerUygulama", "label": "Sprinkler (Uygulama)", "type": "text", "placeholder": "Var/Yok" },
+        { "id": "yanginDolabiProje", "label": "Yangın Dolabı (Proje)", "type": "text", "placeholder": "Var/Yok" },
+        { "id": "yanginDolabiUygulama", "label": "Yangın Dolabı (Uygulama)", "type": "text", "placeholder": "Var/Yok" },
+        { "id": "itfaiyeSuAlmaProje", "label": "İtfaiye Su Alma Ağzı (Proje)", "type": "text", "placeholder": "Var/Yok" },
+        { "id": "itfaiyeSuAlmaUygulama", "label": "İtfaiye Su Alma Ağzı (Uygulama)", "type": "text", "placeholder": "Var/Yok" },
+        { "id": "hidrantProje", "label": "Hidrant Sistemi (Proje)", "type": "text", "placeholder": "Var/Yok" },
+        { "id": "hidrantUygulama", "label": "Hidrant Sistemi (Uygulama)", "type": "text", "placeholder": "Var/Yok" }
+      ]
+    },
+    {
+      "id": "cihaz",
+      "title": "Kullanılan Ekipmanın Özellikleri",
+      "layout": "row-2",
+      "fields": [
+        { "id": "debimetreMarka", "label": "Ultrasonik Debimetre Marka", "type": "text" },
+        { "id": "debimetreSN", "label": "Debimetre SN", "type": "text" },
+        { "id": "metreMarka", "label": "Metre Marka", "type": "text" },
+        { "id": "metreDemirbasNo", "label": "Metre Demirbaş No", "type": "text" },
+        { "id": "testPompasiMarka", "label": "Test Pompası Marka", "type": "text" },
+        { "id": "testPompasiSN", "label": "Test Pompası SN", "type": "text" },
+        { "id": "manometreMarka", "label": "Manometre Marka", "type": "text" },
+        { "id": "manometreDemirbasNo", "label": "Manometre Demirbaş No", "type": "text" }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Kontrol Kriterleri ve Testler",
+      "type": "control-questions",
+      "badge": "30+ Kontrol",
+      "questions": [
+        { "id": "kriter1", "no": 1, "text": "Yangın pompa dairesinin sıcaklığı uygun değerlerdedir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter2", "no": 2, "text": "Yangın pompası debi ve basınç bilgileri proje ile uyumludur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter3", "no": 3, "text": "Yangın pompaları yedeklemesi kapasite ve miktar yönünden uygundur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter4", "no": 4, "text": "Yangın pompa performans test sonuçları uygundur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter5", "no": 5, "text": "Yönetmelik ve standartlara uygun yangın tesisatı mekanik projesi vardır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter6", "no": 6, "text": "Yangın tesisatı uygulaması projesi ile uyumludur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter7", "no": 7, "text": "Su deposu kapasitesi yönetmelik ve standart ile uyumludur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter8", "no": 8, "text": "Su deposunun beslemeleri otomatik olarak sağlanmaktadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter9", "no": 9, "text": "Besleme borusu ve kontrol vana seti uygun sıcaklıkta muhafaza edilmektedir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter10", "no": 10, "text": "Yangın dolabı konumları uygundur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter11", "no": 11, "text": "Yangın dolaplarının birbirlerine olan mesafeleri uygundur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter12", "no": 12, "text": "Yangın dolapları ilgili standart normlarına uygundur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter13", "no": 13, "text": "Yangın dolabı kapağı uygun açılmaktadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter14", "no": 14, "text": "Yangın dolabı hasarsız ve bileşenlerinde aşınma/sızdırma bulunmamaktadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter15", "no": 15, "text": "Yangın dolabı tamburu serbestçe dönebilmektedir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter16", "no": 16, "text": "Yangın dolabı vanaları doğru ve uygun tiptedir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter17", "no": 17, "text": "Yangın dolabı vanaları çalışır durumdadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter18", "no": 18, "text": "Yangın dolabı hortumları normlarına uygundur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter19", "no": 19, "text": "Yangın dolabı hortumlarında hasar çatlama yıpranma bulunmamaktadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter20", "no": 20, "text": "Yangın pompaları mevcuttur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter21", "no": 21, "text": "Yangın pompa dairesi/odası bulunmakta ve amacı dışında kullanılmamaktadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter22", "no": 22, "text": "Yangın pompa dairesinde uygun drenaj gideri düzenlenmiştir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "Notlar / İkaz ve Öneriler",
+      "fields": [
+        { "id": "ikazOneriler", "label": "İkaz ve Öneriler", "type": "textarea", "rows": 3 }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Yangın Tesisatı\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/tesisat/FR7.2.42 Yangın Tesisatı Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header1.xml",
+    "fields": [
+      { "label": "Firma Adı", "source": "firma.unvan" },
+      { "label": "Bölümü", "field": "bolumu" },
+      { "label": "Adresi", "source": "firma.adres" },
+      { "label": "Kontrol Tarihi", "field": "kontrolTarihi", "format": "date" },
+      { "label": "Tel/Fax", "source": "firma.telefon" },
+      { "label": "Rapor Tarihi", "field": "raporTarihi", "format": "date" },
+      { "label": "E-mail", "source": "firma.email" },
+      { "label": "Sonraki Kontrol Tarihi", "field": "sonrakiKontrolTarihi", "format": "date" },
+      { "label": "Web", "source": "firma.web" },
+      { "label": "Rapor No", "source": "rapor.raporNo" },
+      { "label": "SGK Sicil No", "source": "firmaBilgi.sgkSicilNo" },
+      { "label": "Sözlesme ID", "source": "firmaBilgi.isgKatipId" },
+      { "label": "Proje Müellifi", "field": "projeMuellifi" },
+      { "label": "Yapı İnşaat Alanı", "field": "yapiInsaatAlani" },
+      { "label": "Bina Yüksekliği", "field": "binaYuksekligi" },
+      { "label": "Sistem Debisi", "field": "sistemDebisi" },
+      { "label": "Tehlike Sınıfı", "field": "tehlikeSinifi" }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        { "field": "kriter1", "text": "pompa dairesinin sıcaklığı" },
+        { "field": "kriter2", "text": "debi ve basınç bilgileri" },
+        { "field": "kriter3", "text": "yedeklemesi, kapasite" },
+        { "field": "kriter4", "text": "performans test sonuçları" },
+        { "field": "kriter5", "text": "mekanik projesi vardır" },
+        { "field": "kriter6", "text": "uygulaması projesi ile" },
+        { "field": "kriter7", "text": "Su deposu kapasitesi" },
+        { "field": "kriter8", "text": "beslemeleri otomatik" },
+        { "field": "kriter9", "text": "Besleme borusu ve kontrol" },
+        { "field": "kriter10", "text": "dolabı konumları" },
+        { "field": "kriter11", "text": "birbirlerine olan mesafe" },
+        { "field": "kriter12", "text": "standart normlarına" },
+        { "field": "kriter13", "text": "dolabı kapağı" },
+        { "field": "kriter14", "text": "hasarsız olmalı" },
+        { "field": "kriter15", "text": "tamburu her iki yönde" },
+        { "field": "kriter16", "text": "vanaları doğru ve uygun" },
+        { "field": "kriter17", "text": "vanaları çalışır" },
+        { "field": "kriter18", "text": "hortumları normlarına" },
+        { "field": "kriter19", "text": "hasar çatlama" },
+        { "field": "kriter20", "text": "pompaları mevcuttur" },
+        { "field": "kriter21", "text": "pompa dairesi/odası" },
+        { "field": "kriter22", "text": "drenaj gideri" }
+      ]
+    }
+  }
+}

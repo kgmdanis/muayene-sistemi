@@ -382,64 +382,71 @@ function setKorumaOnlemi(xml, onlem) {
  */
 function fillAllCheckboxes(xml, rapor, options = {}) {
     let result = xml;
+    // options öncelikli, rapor fallback
+    const get = (key) => options[key] !== undefined ? options[key] : rapor[key];
 
     // 1. ŞEBEKE TİPİ
-    if (rapor.sistemTipi) {
-        result = setSebekeTipi(result, rapor.sistemTipi.toUpperCase().replace('TN-C-S', 'TN-CS'));
+    const sTipi = get('sistemTipi');
+    if (sTipi) {
+        result = setSebekeTipi(result, String(sTipi).toUpperCase().replace('TN-C-S', 'TN-CS'));
     }
 
     // 2. KONTROL NEDENİ
-    result = setKontrolNedeni(result, options.kontrolNedeni || 'periyodik');
+    result = setKontrolNedeni(result, get('kontrolNedeni') || 'periyodik');
 
     // 3. TESİSE AİT PROJE VAR MI?
-    if (options.projeVar !== undefined) {
-        result = setVarYokCheckbox(result, 'Tesise ait proje var mı', options.projeVar);
+    const projeVar = get('projeVar');
+    if (projeVar !== undefined && projeVar !== null) {
+        result = setVarYokCheckbox(result, 'Tesise ait proje var mı', projeVar);
     }
 
     // 4. TEK HAT ŞEMASI VAR MI?
-    if (options.tekHatSemasiVar !== undefined) {
-        result = setVarYokCheckbox(result, 'Tek hat şeması var mı', options.tekHatSemasiVar);
+    const tekHat = get('tekHatSemasiVar');
+    if (tekHat !== undefined && tekHat !== null) {
+        result = setVarYokCheckbox(result, 'Tek hat şeması var mı', tekHat);
     }
 
     // 5. YAPI CİNSİ (ayrı ayrı checkbox'lar olarak geliyor)
-    if (options.yapiEv) result = setCheckboxByLabel(result, 'Ev', true);
-    if (options.yapiTicari) result = setCheckboxByLabel(result, 'Ticari', true);
-    if (options.yapiEndustri) result = setCheckboxByLabel(result, 'Endüstri', true);
-    if (options.yapiDiger) result = setCheckboxByLabel(result, 'Diğer', true);
+    if (get('yapiEv')) result = setCheckboxByLabel(result, 'Ev', true);
+    if (get('yapiTicari')) result = setCheckboxByLabel(result, 'Ticari', true);
+    if (get('yapiEndustri')) result = setCheckboxByLabel(result, 'Endüstri', true);
+    if (get('yapiDiger')) result = setCheckboxByLabel(result, 'Diğer', true);
     // Eski format için de destek
     if (options.yapiCinsi) {
         result = setYapiCinsi(result, options.yapiCinsi);
     }
 
     // 6. TOPRAKLAYICI TİPİ
-    if (options.toprakRing) result = setCheckboxByLabel(result, 'Ring', true);
-    if (options.toprakYuzeysel) result = setCheckboxByLabel(result, 'Yüzeysel', true);
-    if (options.toprakTemel) result = setCheckboxByLabel(result, 'Temel', true);
-    if (options.toprakDerin) result = setCheckboxByLabel(result, 'Derin', true);
-    if (options.toprakBelirlenemedi) result = setCheckboxByLabel(result, 'Belirlenemedi', true);
+    if (get('toprakRing')) result = setCheckboxByLabel(result, 'Ring', true);
+    if (get('toprakYuzeysel')) result = setCheckboxByLabel(result, 'Yüzeysel', true);
+    if (get('toprakTemel')) result = setCheckboxByLabel(result, 'Temel', true);
+    if (get('toprakDerin')) result = setCheckboxByLabel(result, 'Derin', true);
+    if (get('toprakBelirlenemedi')) result = setCheckboxByLabel(result, 'Belirlenemedi', true);
 
     // 7. KORUMA ÖNLEMİ
-    if (options.korumaEspotansiyel) {
+    if (get('korumaEspotansiyel')) {
         result = setCheckboxByLabel(result, 'Eşpotansiyel topraklama ve beslemenin otomatik kesilmesi', true);
     }
-    if (options.korumaYalitma) result = setCheckboxByLabel(result, 'Koruyucu yalıtma', true);
-    if (options.korumaAyirma) result = setCheckboxByLabel(result, 'Koruyucu ayırma', true);
-    if (options.korumaKucukGerilim) result = setCheckboxByLabel(result, 'Küçük gerilim', true);
+    if (get('korumaYalitma')) result = setCheckboxByLabel(result, 'Koruyucu yalıtma', true);
+    if (get('korumaAyirma')) result = setCheckboxByLabel(result, 'Koruyucu ayırma', true);
+    if (get('korumaKucukGerilim')) result = setCheckboxByLabel(result, 'Küçük gerilim', true);
 
     // 8. TESİSATTA KAPSAMLI DEĞİŞİKLİK
-    if (options.kapsamliDegisiklik !== undefined) {
-        result = setVarYokCheckbox(result, 'Tesisatta kapsamlı değişiklik var mı', options.kapsamliDegisiklik);
+    const kapsamli = get('kapsamliDegisiklik');
+    if (kapsamli !== undefined && kapsamli !== null) {
+        result = setVarYokCheckbox(result, 'Tesisatta kapsamlı değişiklik var mı', kapsamli);
     }
 
     // 9. ÖNCEKİ KONTROL ETİKETİ
-    if (options.oncekiKontrolEtiketi !== undefined) {
-        result = setVarYokCheckbox(result, 'önceki periyodik kontrol etiketi var mı', options.oncekiKontrolEtiketi);
+    const onceki = get('oncekiKontrolEtiketi');
+    if (onceki !== undefined && onceki !== null) {
+        result = setVarYokCheckbox(result, 'önceki periyodik kontrol etiketi var mı', onceki);
     }
 
     // 10. ÖLÇÜM METODU
-    if (options.olcumCevrim) result = setCheckboxByLabel(result, 'Çevrim empedansı', true);
-    if (options.olcum3Uclu) result = setCheckboxByLabel(result, '3 Uçlu topraklama', true);
-    if (options.olcumKlamp) result = setCheckboxByLabel(result, 'Klamp metodu', true);
+    if (get('olcumCevrimEmpedansi') || options.olcumCevrim) result = setCheckboxByLabel(result, 'Çevrim empedansı', true);
+    if (get('olcum3UcluTopraklama') || options.olcum3Uclu) result = setCheckboxByLabel(result, '3 Uçlu topraklama', true);
+    if (get('olcumKlamp')) result = setCheckboxByLabel(result, 'Klamp metodu', true);
 
     return result;
 }
@@ -464,8 +471,8 @@ async function generateElektrikTopraklamaWord(rapor, isEmri, olcumler = [], opti
     docXml = setValueByLabel(docXml, 'Rapor Numarası', rapor.raporNo);
     docXml = setValueByLabel(docXml, 'Periyodik Kontrol Adresi', firma.adres);
     docXml = setValueByLabel(docXml, 'Rapor Tarihi', formatDate(rapor.bitisTarihi || new Date()));
-    docXml = setValueByLabel(docXml, 'İSG-KATİP Sözleşme ID', firmaBilgi.isgKatipId);
-    docXml = setValueByLabel(docXml, 'SGK Sicil Numarası', firmaBilgi.sgkSicilNo);
+    docXml = setValueByLabel(docXml, 'İSG-KATİP', options.isgKatipNo || rapor.isgKatipNo || firmaBilgi.isgKatipId);
+    docXml = setValueByLabel(docXml, 'SGK Sicil No', firmaBilgi.sgkSicilNo);
     docXml = setValueByLabel(docXml, 'Periyodik Kontrol Başlangıç Tarihi ve Saati', formatDateTime(rapor.baslangicTarihi, options.baslangicSaati || '09:00'));
     docXml = setValueByLabel(docXml, 'Periyodik Kontrol Bitiş Tarihi ve Saati', formatDateTime(rapor.bitisTarihi, options.bitisSaati || '17:00'));
     docXml = setValueByLabel(docXml, 'Bir Sonraki Periyodik Kontrol Tarihi', getNextYearDate(rapor.bitisTarihi));
@@ -476,18 +483,17 @@ async function generateElektrikTopraklamaWord(rapor, isEmri, olcumler = [], opti
     docXml = setValueByLabel(docXml, 'Proje bilgileri', options.projeBilgileri || '-');
     docXml = setValueByLabel(docXml, 'Ekipmanın kullanım amacı', options.kullanimAmaci || firma.spiKodu || 'FABRİKA');
     docXml = setValueByLabel(docXml, 'Son kontrol tarihi', formatDate(options.sonKontrolTarihi) || '-');
-    docXml = setValueByLabel(docXml, 'Hava durumu ve sıcaklığı', `${rapor.ortamSicaklik || 25} °C`);
-    docXml = setValueByLabel(docXml, 'Zemin nem durumu', rapor.ortamNem ? (rapor.ortamNem < 50 ? 'KURU' : 'NORMAL') : 'KURU');
+    docXml = setValueByLabel(docXml, 'Hava durumu ve sıcaklığı', options.havaDurumu || rapor.havaDurumu || `${rapor.ortamSicaklik || 25} °C`);
+    docXml = setValueByLabel(docXml, 'Zemin nem durumu', options.zeminNem || rapor.zeminNem || (rapor.ortamNem ? (rapor.ortamNem < 50 ? 'KURU' : 'NORMAL') : 'KURU'));
     docXml = setValueByLabel(docXml, 'Pano/Ekipman tanımlaması', options.panoTanimi || '-');
 
     // === 3. ÖLÇÜM CİHAZI ===
-    if (rapor.topraklamaCihaz) {
-        docXml = setValueByLabel(docXml, 'Cihaz adı', rapor.topraklamaCihaz.cihazAdi || 'Chauvin Arnoux');
-        docXml = setValueByLabel(docXml, 'Seri numarası', rapor.topraklamaCihaz.seriNo);
-        docXml = setValueByLabel(docXml, 'Kalibrasyon tarihi', formatDate(rapor.topraklamaCihaz.kalibrasyonTarihi));
-        docXml = setValueByLabel(docXml, 'Kalibrasyon geçerlilik tarihi', formatDate(rapor.topraklamaCihaz.kalibrasyonGecerlilikTarihi));
-        docXml = setValueByLabel(docXml, 'Kalibrasyon numarası', rapor.topraklamaCihaz.kalibrasyonNo);
-    }
+    const cihaz = rapor.topraklamaCihaz || {};
+    docXml = setValueByLabel(docXml, 'Cihaz adı', cihaz.cihazAdi || 'Chauvin Arnoux');
+    docXml = setValueByLabel(docXml, 'Seri numarası', cihaz.seriNo || '0165K-0126-00105');
+    docXml = setValueByLabel(docXml, 'Kalibrasyon tarihi', formatDate(cihaz.kalibrasyonTarihi) || '20.01.2026');
+    docXml = setValueByLabel(docXml, 'Kalibrasyon geçerlilik tarihi', formatDate(cihaz.kalibrasyonGecerlilikTarihi) || '20.01.2027');
+    docXml = setValueByLabel(docXml, 'Kalibrasyon numarası', cihaz.kalibrasyonNo || '2500290');
 
     // === 3.5 CHECKBOX'LAR ===
     docXml = fillAllCheckboxes(docXml, rapor, options);
@@ -523,9 +529,10 @@ async function generateElektrikTopraklamaWord(rapor, isEmri, olcumler = [], opti
     }
 
     // === 7. NOTLAR ===
-    if (options.notlar) {
-        docXml = setValueByLabel(docXml, 'Açıklama', options.notlar);
-    }
+    // Sabit metin + kullanıcının ek notları
+    const sabitNotlar = 'İŞ EKİPMANLARININ KULLANIMINDA SAĞLIK VE GÜVENLİK ŞARTLARI YÖNETMELİĞİ\nTesisatlar:2.3.7. Elektrik, topraklama ve yıldırımdan korunma tesisatları için periyodik kontrolde tesisat projesi aranır. İşveren, projesi olmayan tesisatların 3/12/2003 tarihli ve 25305 sayılı Resmî Gazete\'de yayımlanan Elektrik İç Tesisleri Proje Hazırlama Yönetmeliği, diğer ilgili yönetmelikler ve ilgili standartlara uygun olarak projelendirilmesini yaptırmak zorundadır.\nNot: Ölçüm Raporları Ölçüm Yapılan Günün Şartları İçin Geçerlidir';
+    const notlarMetni = options.notlar ? `${sabitNotlar}\n${options.notlar}` : sabitNotlar;
+    docXml = fillNotlarTable(docXml, notlarMetni);
 
     // Güncellenmiş XML'i kaydet
     zip.file('word/document.xml', docXml);
@@ -599,6 +606,39 @@ function fillMeasurementTable(docXml, olcumler, sistemTipi) {
         dataRowIndex++;
     }
 
+    // Doldurulan satırlardan sonraki boş veri satırlarını sil
+    if (dataRowIndex > 0) {
+        const updatedRows = newTable.match(rowRegex) || [];
+        for (let i = 0; i < updatedRows.length; i++) {
+            const row = updatedRows[i];
+            const rowText = getRowText(row);
+
+            // Başlık satırlarını atla
+            if (rowText.includes('Ölçüm noktası') ||
+                rowText.includes('Açma eğrisi') ||
+                rowText.includes('SON TÜKETİM') ||
+                rowText.includes('Koruma Elemanı') ||
+                rowText.includes('Sınır değer') ||
+                rowText.includes('Ölçülen değer') ||
+                rowText.length === 0) {
+                continue;
+            }
+
+            // Satır numarası ile başlayan veri satırı mı?
+            const firstNum = rowText.match(/^\d+/);
+            if (!firstNum) continue;
+
+            const cellCount = (row.match(/<w:tc[^>]*>/g) || []).length;
+            if (cellCount < 12) continue;
+
+            const rowNum = parseInt(firstNum[0]);
+            // Doldurulan satırlardan sonraki boş satırları sil
+            if (rowNum > dataRowIndex) {
+                newTable = newTable.replace(row, '');
+            }
+        }
+    }
+
     return docXml.replace(measurementTable, newTable);
 }
 
@@ -633,21 +673,36 @@ function fillMeasurementRow(rowXml, olcum, rowNum, sistemTipi) {
         if (sigortaTipi === 'B') ia = anmaAkimi * 5;
         else if (sigortaTipi === 'C') ia = anmaAkimi * 10;
         else if (sigortaTipi === 'D') ia = anmaAkimi * 20;
+        else if (sigortaTipi === 'TMS' || sigortaTipi === 'TMŞ') ia = anmaAkimi * 10;
     }
 
-    const isTT = (sistemTipi || '').toUpperCase() === 'TT';
-    let zsra = ia > 0 ? (isTT ? 50 / ia : 230 / ia) : 0;
+    const rcdIdn = parseFloat(olcum.rcdIdn || olcum.rcdIAn) || 0;
+    const rcdVar = rcdIdn > 0;
+
+    // Zs/RA hesaplama: Sınır değer = UL(mV) / Ia
+    let zsra = ia > 0 ? 50000 / ia : 0;
+
+    // Ik1 = U₀ / Zx
     let ik = zx > 0 ? (230 / zx) : 0;
 
-    const sonuc = (zx > 0 && zsra > 0 && zx <= zsra) ? 'Not-1' : 'Not-2';
+    // Sonuç: Zx ≤ Zs → Not-1 (MCB yeterli), Zx > Zs ve RCD var → Not-4, yoksa Not-2
+    let sonuc = 'Not-2';
+    if (zx > 0 && zsra > 0) {
+        if (zx <= zsra) {
+            sonuc = 'Not-1';
+        } else if (rcdVar) {
+            sonuc = 'Not-4';
+        }
+    }
 
     const olcumNoktasi = olcum.olcumNoktasi || olcum.tabloAdi || olcum.panoAdi || '-';
-    const rcdIdn = olcum.rcdIdn || olcum.rcdIAn || '-';
+    const rcdInStr = olcum.rcdIn || '-';
+    const rcdIdnStr = olcum.rcdIdn || olcum.rcdIAn || '-';
     const rcdId = olcum.rcdId || '-';
     const rcdTd = olcum.rcdTd || olcum.rcdSure || '-';
 
-    // RCD bilgisi: tip/In/IΔn formatında
-    const rcdInfo = rcdIdn !== '-' ? `AC/${anmaAkimi || '-'}/${rcdIdn}` : '-';
+    // RCD bilgisi: tip/In(A)/IΔn(mA) formatında
+    const rcdInfo = rcdVar ? `AC/${rcdInStr}/${rcdIdnStr}` : '-';
 
     // 12 hücre - şablon sırasıyla
     const values = [
@@ -658,7 +713,7 @@ function fillMeasurementRow(rowXml, olcum, rowNum, sistemTipi) {
         ia ? ia.toFixed(0) : '-',    // 4: Ia (A)
         ik ? ik.toFixed(0) : '-',    // 5: Ik1 (A)
         zx ? zx.toFixed(2) : '-',   // 6: Zx/Rx (Ω)
-        zsra ? zsra.toFixed(3) : '-', // 7: Zs/RA (Ω)
+        zsra ? (zsra % 1 === 0 ? zsra.toFixed(0) : zsra.toFixed(2)) : '-', // 7: Zs/RA (Ω)
         rcdInfo,                     // 8: RCD tipi/In/IΔn
         rcdId,                       // 9: IΔ (mA)
         rcdTd,                       // 10: TΔ (ms)
@@ -743,7 +798,7 @@ function fillRcdTable(docXml, rcdVerileri) {
             rcd.sonRcdTipi || '-',               // 7: RCD Tipi (son)
             rcd.sonIdn || '-',                   // 8: IΔn (mA) (son)
             rcd.sonTd || '-',                    // 9: TΔ (ms) (son)
-            rcd.sonuc || 'UYGUN'                 // 10: Sonuç
+            rcd.sonuc || 'Not-7'                 // 10: Sonuç
         ];
 
         let newRow = row;
@@ -758,6 +813,36 @@ function fillRcdTable(docXml, rcdVerileri) {
         }
 
         dataRowIndex++;
+    }
+
+    // Doldurulan satırlardan sonraki boş veri satırlarını sil
+    if (dataRowIndex > 0) {
+        const updatedRows = newTable.match(rowRegex) || [];
+        for (let i = 0; i < updatedRows.length; i++) {
+            const row = updatedRows[i];
+            const rowText = getRowText(row);
+
+            // Başlık satırlarını atla
+            if (rowText.includes('SELEKTİVİTE') || rowText.includes('Selektivite') ||
+                rowText.includes('RCD Tipi') || rowText.includes('Dayanma') ||
+                rowText.includes('pano adı') || rowText.includes('Sonuç') ||
+                rowText.includes('Uygunluk')) {
+                continue;
+            }
+
+            const cells = row.match(/<w:tc[^>]*>[\s\S]*?<\/w:tc>/g) || [];
+            if (cells.length < 11) continue;
+
+            // İlk hücre numara mı? Doldurulan satır sayısından büyükse sil
+            const firstCellText = getCellText(cells[0]).trim();
+            const rowNum = parseInt(firstCellText);
+            if (!isNaN(rowNum) && rowNum > dataRowIndex) {
+                newTable = newTable.replace(row, '');
+            } else if (firstCellText === '' || firstCellText === '-') {
+                // Numarası olmayan boş satır
+                newTable = newTable.replace(row, '');
+            }
+        }
     }
 
     return docXml.replace(rcdTable, newTable);
@@ -816,6 +901,36 @@ function fillKusurTable(docXml, kusurlar, kusurAciklama) {
 }
 
 /**
+ * Notlar tablosunu doldur
+ * Tablo 7: "NOTLAR" başlıklı tablo, alt satıra yaz
+ */
+function fillNotlarTable(docXml, notlarText) {
+    if (!notlarText) return docXml;
+
+    const tableRegex = /<w:tbl>[\s\S]*?<\/w:tbl>/g;
+    const tables = docXml.match(tableRegex) || [];
+
+    for (const table of tables) {
+        const tableText = table.replace(/<[^>]+>/g, ' ');
+        if (tableText.includes('NOTLAR') && !tableText.includes('KUSUR')) {
+            const rows = table.match(/<w:tr[^>]*>[\s\S]*?<\/w:tr>/g) || [];
+            if (rows.length >= 2) {
+                const dataRow = rows[rows.length - 1];
+                const cells = dataRow.match(/<w:tc[^>]*>[\s\S]*?<\/w:tc>/g) || [];
+                if (cells.length > 0) {
+                    const newCell = writeToCell(cells[0], notlarText);
+                    const newRow = dataRow.replace(cells[0], newCell);
+                    const newTable = table.replace(dataRow, newRow);
+                    return docXml.replace(table, newTable);
+                }
+            }
+        }
+    }
+
+    return docXml;
+}
+
+/**
  * Dosyaya kaydet
  */
 async function saveWordToFile(rapor, isEmri, olcumler, options, outputPath) {
@@ -841,5 +956,6 @@ module.exports = {
     setKorumaOnlemi,
     fillAllCheckboxes,
     fillRcdTable,
-    fillKusurTable
+    fillKusurTable,
+    fillNotlarTable
 };
