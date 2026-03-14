@@ -96,7 +96,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "7 Kontrol",
+      "badge": "8 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -162,6 +162,16 @@
           "id": "kriter7",
           "no": 7,
           "text": "Hidrofor tankında kalıcı deformasyon var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Test Pompası",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -285,6 +295,11 @@
         {
           "field": "kriter7",
           "text": "Hidrofor tankında kalıcı deformasyon",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Test Pompası",
           "exact": true
         }
       ]

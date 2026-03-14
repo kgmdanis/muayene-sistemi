@@ -127,12 +127,12 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "15 Kontrol",
+      "badge": "16 Kontrol",
       "questions": [
         {
           "id": "kriter1",
           "no": 1,
-          "text": "Bağlantılar ve vidaların kontrolü; eksik vida, gevşeklik, deformasyın durumu uygun mu?",
+          "text": "İş ekipmanından kaynaklanacak parça kopması, fırlaması, v.b. tehlikelere karşı önlem alınmış mı?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -142,7 +142,7 @@
         {
           "id": "kriter2",
           "no": 2,
-          "text": "Hızlanma ve yavaşlama durumu uygun mu?",
+          "text": "Bağlantılar ve vidaların kontrolü; eksik vida, gevşeklik, deformasyın durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -152,7 +152,7 @@
         {
           "id": "kriter3",
           "no": 3,
-          "text": "Hareketli bir parçanın sabit bir parçaya yaklaşması durumu uygun mu?",
+          "text": "Hızlanma ve yavaşlama durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -162,7 +162,7 @@
         {
           "id": "kriter4",
           "no": 4,
-          "text": "Kesme parçaları, elastik parçaların durumu uygun mu?",
+          "text": "Hareketli bir parçanın sabit bir parçaya yaklaşması durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -172,7 +172,7 @@
         {
           "id": "kriter5",
           "no": 5,
-          "text": "Hareketli ve dönen parçaların durumu uygun mu?",
+          "text": "Kesme parçaları, elastik parçaların durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -182,7 +182,7 @@
         {
           "id": "kriter6",
           "no": 6,
-          "text": "Pürüzlü, kaygan yüzey, zeminin durumu uygun mu?",
+          "text": "Hareketli ve dönen parçaların durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -192,7 +192,7 @@
         {
           "id": "kriter7",
           "no": 7,
-          "text": "Keskin kenarlar durumu uygun mu?",
+          "text": "Pürüzlü, kaygan yüzey, zeminin durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -202,7 +202,7 @@
         {
           "id": "kriter8",
           "no": 8,
-          "text": "Elektrik kaynağı arızası, arıza koşullarında elektriksel gerilimli hale gelen parçaların durumu uygun mu?",
+          "text": "Keskin kenarlar durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -212,7 +212,7 @@
         {
           "id": "kriter9",
           "no": 9,
-          "text": "Elektrik motoru, pano, redüktör yağ sızıntı durumu uygun mu?",
+          "text": "Elektrik kaynağı arızası, arıza koşullarında elektriksel gerilimli hale gelen parçaların durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -222,7 +222,7 @@
         {
           "id": "kriter10",
           "no": 10,
-          "text": "Tezgahın boş durumda çalıştırılması durumu uygun mu?",
+          "text": "Elektrik motoru, pano, redüktör yağ sızıntı durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -232,7 +232,7 @@
         {
           "id": "kriter11",
           "no": 11,
-          "text": "Kumanda panelindeki anahtarların çalışma kontrolü durumu uygun mu?",
+          "text": "Tezgahın boş durumda çalıştırılması durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -242,7 +242,7 @@
         {
           "id": "kriter12",
           "no": 12,
-          "text": "Kumanda cihazları; işaret, görülebilirlik, istem dışı hareket, acil stop durumu uygun mu?",
+          "text": "Kumanda panelindeki anahtarların çalışma kontrolü durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -252,7 +252,7 @@
         {
           "id": "kriter13",
           "no": 13,
-          "text": "Hidrolik sistemler, bağlantılar, sınırlama valfleri, sızıntı durumu uygun mu?",
+          "text": "Kumanda cihazları; işaret, görülebilirlik, istem dışı hareket, acil stop durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -262,7 +262,7 @@
         {
           "id": "kriter14",
           "no": 14,
-          "text": "Hareketli koruyucu kontrolü (varsa) durumu uygun mu?",
+          "text": "Hidrolik sistemler, bağlantılar, sınırlama valfleri, sızıntı durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -272,6 +272,16 @@
         {
           "id": "kriter15",
           "no": 15,
+          "text": "Hareketli koruyucu kontrolü (varsa) durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter16",
+          "no": 16,
           "text": "Test sonunda yapılan gözle kontrolde, mekanizmalarda, metal yapısında, bağlantı elemanlarında, emniyeti bozacak bir şekil değiştirme, gevşeme, bozulma, kalıcı hasar vb. durumları uygun mu?",
           "options": [
             "Uygun",
@@ -378,76 +388,81 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Bağlantılar ve vidaların kontrolü;",
+          "text": "İş ekipmanından kaynaklanacak parça",
           "exact": true
         },
         {
           "field": "kriter2",
-          "text": "Hızlanma ve yavaşlama durumu",
+          "text": "Bağlantılar ve vidaların kontrolü;",
           "exact": true
         },
         {
           "field": "kriter3",
-          "text": "Hareketli bir parçanın sabit",
+          "text": "Hızlanma ve yavaşlama durumu",
           "exact": true
         },
         {
           "field": "kriter4",
-          "text": "Kesme parçaları, elastik parçaların",
+          "text": "Hareketli bir parçanın sabit",
           "exact": true
         },
         {
           "field": "kriter5",
-          "text": "Hareketli ve dönen parçaların",
+          "text": "Kesme parçaları, elastik parçaların",
           "exact": true
         },
         {
           "field": "kriter6",
-          "text": "Pürüzlü, kaygan yüzey, zeminin",
+          "text": "Hareketli ve dönen parçaların",
           "exact": true
         },
         {
           "field": "kriter7",
-          "text": "Keskin kenarlar durumu uygun",
+          "text": "Pürüzlü, kaygan yüzey, zeminin",
           "exact": true
         },
         {
           "field": "kriter8",
-          "text": "Elektrik kaynağı arızası, arıza",
+          "text": "Keskin kenarlar durumu uygun",
           "exact": true
         },
         {
           "field": "kriter9",
-          "text": "Elektrik motoru, pano, redüktör",
+          "text": "Elektrik kaynağı arızası, arıza",
           "exact": true
         },
         {
           "field": "kriter10",
-          "text": "Tezgahın boş durumda çalıştırılması",
+          "text": "Elektrik motoru, pano, redüktör",
           "exact": true
         },
         {
           "field": "kriter11",
-          "text": "Kumanda panelindeki anahtarların çalışma",
+          "text": "Tezgahın boş durumda çalıştırılması",
           "exact": true
         },
         {
           "field": "kriter12",
-          "text": "Kumanda cihazları; işaret, görülebilirlik,",
+          "text": "Kumanda panelindeki anahtarların çalışma",
           "exact": true
         },
         {
           "field": "kriter13",
-          "text": "Hidrolik sistemler, bağlantılar, sınırlama",
+          "text": "Kumanda cihazları; işaret, görülebilirlik,",
           "exact": true
         },
         {
           "field": "kriter14",
-          "text": "Hareketli koruyucu kontrolü (varsa)",
+          "text": "Hidrolik sistemler, bağlantılar, sınırlama",
           "exact": true
         },
         {
           "field": "kriter15",
+          "text": "Hareketli koruyucu kontrolü (varsa)",
+          "exact": true
+        },
+        {
+          "field": "kriter16",
           "text": "Test sonunda yapılan gözle",
           "exact": true
         }

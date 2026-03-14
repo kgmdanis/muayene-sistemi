@@ -221,15 +221,21 @@
         },
         {
           "id": "halat_kanca_tipi",
-          "label": "Kanca Tipi",
+          "label": "Kanca tip",
           "type": "text",
           "placeholder": "Tek kancalı / Çift kancalı"
         },
         {
-          "id": "halat_kanca_numarasi",
-          "label": "Kanca Numarası",
+          "id": "halat_kanca_sapi_capi_mm",
+          "label": "Kanca sapı çapı(mm)",
           "type": "text",
-          "placeholder": "Kanca No"
+          "placeholder": "Kanca sapı çapı(mm)"
+        },
+        {
+          "id": "halat_kanca_ic_capi_mm",
+          "label": "Kanca iç çapı(mm)",
+          "type": "text",
+          "placeholder": "Kanca iç çapı(mm)"
         }
       ]
     },
@@ -252,15 +258,15 @@
         },
         {
           "id": "test_oncesi_kanca_agiz_acikligi_mm",
-          "label": "Test öncesi kanca ağız açıklığı (mm)",
+          "label": "Deney öncesi ağız açıklığı(mm)",
           "type": "text",
-          "placeholder": "Test öncesi kanca ağız açıklığı"
+          "placeholder": "Deney öncesi ağız açıklığı(mm)"
         },
         {
           "id": "test_sonrasi_kanca_agiz_acikligi_mm",
-          "label": "Test sonrası kanca ağız açıklığı (mm)",
+          "label": "Deney sonrası ağız açıklığı(mm)",
           "type": "text",
-          "placeholder": "Test sonrası kanca ağız açıklığı"
+          "placeholder": "Deney sonrası ağız açıklığı(mm)"
         }
       ]
     },
@@ -268,7 +274,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "14 Kontrol",
+      "badge": "17 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -363,7 +369,7 @@
         {
           "id": "kriter_kanca_durumu",
           "no": 10,
-          "text": "Vinç kancasının durumu",
+          "text": "Kanca ve kanca güvenlik mandalının durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -371,9 +377,39 @@
           "default": "Uygun"
         },
         {
-          "id": "kriter_kanca_mandali",
+          "id": "kriter_halat_kilavuzu",
           "no": 11,
-          "text": "Kanca emniyet mandalı durumu",
+          "text": "Halat kılavuzu, makara ve tamburun durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter_halat_durumu",
+          "no": 12,
+          "text": "Halat’ın durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter_halat_baglantilari",
+          "no": 13,
+          "text": "Sabit ve taşıma halat bağlantıları durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter_makine_sicil",
+          "no": 14,
+          "text": "Makina sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -382,7 +418,7 @@
         },
         {
           "id": "kriter12",
-          "no": 12,
+          "no": 15,
           "text": "I.Yüksüz hareket",
           "options": [
             "Uygun",
@@ -392,7 +428,7 @@
         },
         {
           "id": "kriter13",
-          "no": 13,
+          "no": 16,
           "text": "II.Yük altında statik kontrol durumu",
           "options": [
             "Uygun",
@@ -402,7 +438,7 @@
         },
         {
           "id": "kriter14",
-          "no": 14,
+          "no": 17,
           "text": "III.Yük alltında dinamik kontrol durumu",
           "options": [
             "Uygun",
@@ -560,19 +596,23 @@
         "field": "halat_kalici_esneme_orani"
       },
       {
-        "label": "Kanca Tipi",
+        "label": "Kanca tip",
         "field": "halat_kanca_tipi"
       },
       {
-        "label": "Kanca Numarası",
-        "field": "halat_kanca_numarasi"
+        "label": "Kanca sapı çapı(mm)",
+        "field": "halat_kanca_sapi_capi_mm"
       },
       {
-        "label": "Test öncesi kanca ağız açıklığı (mm)",
+        "label": "Kanca iç çapı(mm)",
+        "field": "halat_kanca_ic_capi_mm"
+      },
+      {
+        "label": "Deney öncesi ağız açıklığı(mm)",
         "field": "test_oncesi_kanca_agiz_acikligi_mm"
       },
       {
-        "label": "Test sonrası kanca ağız açıklığı (mm)",
+        "label": "Deney sonrası ağız açıklığı(mm)",
         "field": "test_sonrasi_kanca_agiz_acikligi_mm"
       },
       {
@@ -633,13 +673,28 @@
           "exact": true
         },
         {
-          "field": "kriter_kanca_durumu",
-          "text": "Vinç kancasının durumu",
+          "field": "kancaDurumu",
+          "text": "Kanca ve kanca güvenlik mandalının durumu",
           "exact": true
         },
         {
-          "field": "kriter_kanca_mandali",
-          "text": "Kanca emniyet mandalı",
+          "field": "halatKilavuzu",
+          "text": "Halat kılavuzu, makara ve tamburun durumu",
+          "exact": true
+        },
+        {
+          "field": "halatDurumu",
+          "text": "Halat’ın durumu",
+          "exact": true
+        },
+        {
+          "field": "halatBaglantilari",
+          "text": "Sabit ve taşıma halat bağlantıları durumu",
+          "exact": true
+        },
+        {
+          "field": "makineSicil",
+          "text": "Makina sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
           "exact": true
         },
         {

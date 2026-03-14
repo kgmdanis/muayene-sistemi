@@ -236,14 +236,14 @@
         {
           "id": "kriter8",
           "no": 8,
-          "text": "II. Yük altında statik kontrol durumu",
+          "text": "II .Yük altında statik kontrol durumu",
           "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         },
         {
           "id": "kriter9",
           "no": 9,
-          "text": "III. Yük altında dinamik kontrol durumu",
+          "text": "III.Yük altında dinamik kontrol durumu",
           "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         },
@@ -420,12 +420,12 @@
         },
         {
           "field": "kriter8",
-          "text": "Yük  altında statik kontrol",
+          "text": "II .Yük altında statik kontrol durumu",
           "exact": true
         },
         {
           "field": "kriter9",
-          "text": "Yük  altında dinamik kontrol",
+          "text": "III.Yük altında dinamik kontrol durumu",
           "exact": true
         },
         {

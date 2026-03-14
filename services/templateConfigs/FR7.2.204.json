@@ -48,9 +48,23 @@
       ]
     },
     {
+      "id": "tupListesi",
+      "title": "Yangın Söndürme Tüpleri Listesi",
+      "type": "repeatable",
+      "badge": "Artırılabilir",
+      "entryTitle": "Tüp",
+      "fields": [
+        { "id": "markasi", "label": "Markası", "type": "text", "placeholder": "ALSÖZ" },
+        { "id": "turu", "label": "Türü", "type": "text", "placeholder": "Kuru Kimyevi Tozlu" },
+        { "id": "agirligi", "label": "Ağırlığı", "type": "text", "placeholder": "6 KG" },
+        { "id": "durumu", "label": "Durumu", "type": "select", "options": ["UYGUN", "UYGUN DEĞİL"], "default": "UYGUN" }
+      ]
+    },
+    {
       "id": "kusur",
       "title": "Açıklama / İkaz ve Öneriler",
       "fields": [
+        { "id": "aciklama", "label": "Açıklama", "type": "textarea", "rows": 2 },
         { "id": "ikazOneriler", "label": "İkaz ve Öneriler", "type": "textarea", "rows": 3 }
       ]
     },
@@ -90,6 +104,15 @@
         { "field": "kriter3", "text": "basınç göstergede uygun" },
         { "field": "kriter4", "text": "engelleyici malzeme" }
       ]
-    }
+    },
+    "repeatableSections": [
+      {
+        "id": "tupListesi",
+        "type": "row-table",
+        "findTableBy": "MARKASI",
+        "headerRows": 1,
+        "columns": ["_siraNo", "markasi", "turu", "agirligi", "durumu"]
+      }
+    ]
   }
 }

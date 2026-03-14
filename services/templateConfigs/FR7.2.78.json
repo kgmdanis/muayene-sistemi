@@ -170,7 +170,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "6 Kontrol",
+      "badge": "8 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -230,6 +230,20 @@
             "Uygun",
             "Uygun Değil"
           ],
+          "default": "Uygun"
+        },
+        {
+          "id": "mapaKancaDurumu",
+          "no": 7,
+          "text": "Mapa kaldırma kanca yeri genel durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "makineSicil",
+          "no": 8,
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu ?",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         }
       ]
@@ -382,6 +396,14 @@
           "field": "kriter6",
           "text": "III.Yük altında dinamik kontrol",
           "exact": true
+        },
+        {
+          "field": "mapaKancaDurumu",
+          "text": "Mapa kaldırma kanca yeri genel durumu"
+        },
+        {
+          "field": "makineSicil",
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu"
         }
       ]
     }

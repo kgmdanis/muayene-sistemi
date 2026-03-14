@@ -50,7 +50,9 @@
         { "id": "testPompasiMarka", "label": "Test Pompası Marka", "type": "text" },
         { "id": "testPompasiDemirbasNo", "label": "Test Pompası Demirbaş No", "type": "text" },
         { "id": "manometreMarka", "label": "Manometre Marka", "type": "text" },
-        { "id": "manometreDemirbasNo", "label": "Manometre Demirbaş No", "type": "text" }
+        { "id": "manometreDemirbasNo", "label": "Manometre Demirbaş No", "type": "text" },
+        { "id": "projeVarMi", "label": "Tesise Ait Yangın Tesisatı Projesi Var Mı?", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "projeUygunluk", "label": "Uygulamada Projeye Uygunluk Var Mı?", "type": "radio", "options": ["Uygun", "Uygun değil"], "default": "Uygun" }
       ]
     },
     {
@@ -118,6 +120,20 @@
       { "label": "Çalışma Basıncı", "field": "calismaBasinci" },
       { "label": "Test Basıncı", "field": "testBasinci" },
       { "label": "Pompa Adedi", "field": "pompaAdedi" }
+    ],
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["Var", "Yok"],
+        "field": "projeVarMi",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Uygun", "Uygun değil"],
+        "field": "projeUygunluk",
+        "direction": "after"
+      }
     ],
     "controlQuestions": {
       "mode": "next",

@@ -671,7 +671,8 @@
                 olcum3UcluTopraklama: document.querySelector('input[name="olcum3UcluTopraklama"]')?.checked || false,
                 olcumKlamp: document.querySelector('input[name="olcumKlamp"]')?.checked || false,
                 
-                // ===== ISG-KATİP =====
+                // ===== SGK & ISG-KATİP =====
+                sgkSicilNo: document.getElementById('sgkSicilNo')?.value || '',
                 isgKatipNo: document.getElementById('isgKatipNo')?.value || '',
 
                 // ===== SAAT BİLGİLERİ =====
@@ -765,6 +766,8 @@
                 const ie = await res.json();
                 document.getElementById('firmaAdi').value = ie.customer?.unvan || '';
                 document.getElementById('firmaAdres').value = ie.customer?.adres || '';
+                // SGK Sicil No otomatik doldur
+                if (ie.firmaBilgi?.sgkSicilNo) document.getElementById('sgkSicilNo').value = ie.firmaBilgi.sgkSicilNo;
                 const sel = document.getElementById('altGorevSelect');
                 sel.innerHTML = '<option value="">Alt Görev Seçin...</option>';
                 (ie.altGorevler || []).forEach(g => { sel.innerHTML += `<option value="${g.id}">${g.siraNo}. ${g.hizmetAdi}</option>`; });
@@ -843,6 +846,8 @@
                         document.getElementById('firmaAdi').value = altGorev.isEmri.customer.unvan || '';
                         document.getElementById('firmaAdres').value = altGorev.isEmri.customer.adres || '';
                     }
+                    // SGK Sicil No otomatik doldur
+                    if (altGorev.isEmri?.firmaBilgi?.sgkSicilNo) document.getElementById('sgkSicilNo').value = altGorev.isEmri.firmaBilgi.sgkSicilNo;
                     // ISG-KATİP seçeneklerini doldur
                     isgKatipSecenekleriniDoldur(altGorev.isEmri?.firmaBilgi, null);
                 }
@@ -876,6 +881,9 @@
             // ISG-KATİP seçeneklerini doldur
             isgKatipSecenekleriniDoldur(rapor.altGorev?.isEmri?.firmaBilgi, rapor.isgKatipNo);
 
+            // SGK Sicil No
+            if (rapor.sgkSicilNo) document.getElementById('sgkSicilNo').value = rapor.sgkSicilNo;
+
             // Tarihler ve saatler
             if (rapor.baslangicTarihi) document.getElementById('baslangicTarihi').value = rapor.baslangicTarihi.split('T')[0];
             if (rapor.bitisTarihi) document.getElementById('bitisTarihi').value = rapor.bitisTarihi.split('T')[0];
@@ -886,6 +894,54 @@
             if (rapor.sistemTipi) {
                 const radio = document.querySelector(`input[name="sistemTipi"][value="${rapor.sistemTipi}"]`);
                 if (radio) radio.checked = true;
+            }
+
+            // Radio button'ları yükle
+            if (rapor.kontrolNedeni) {
+                const r = document.querySelector(`input[name="kontrolNedeni"][value="${rapor.kontrolNedeni}"]`);
+                if (r) r.checked = true;
+            }
+            if (rapor.tekHatSemasiVar !== undefined && rapor.tekHatSemasiVar !== null) {
+                const r = document.querySelector(`input[name="tekHatSemasiVar"][value="${rapor.tekHatSemasiVar}"]`);
+                if (r) r.checked = true;
+            }
+            if (rapor.projeVar !== undefined && rapor.projeVar !== null) {
+                const r = document.querySelector(`input[name="projeVar"][value="${rapor.projeVar}"]`);
+                if (r) r.checked = true;
+            }
+            if (rapor.oncekiKontrolEtiketi !== undefined && rapor.oncekiKontrolEtiketi !== null) {
+                const r = document.querySelector(`input[name="oncekiKontrolEtiketi"][value="${rapor.oncekiKontrolEtiketi}"]`);
+                if (r) r.checked = true;
+            }
+            if (rapor.kapsamliDegisiklik !== undefined && rapor.kapsamliDegisiklik !== null) {
+                const r = document.querySelector(`input[name="kapsamliDegisiklik"][value="${rapor.kapsamliDegisiklik}"]`);
+                if (r) r.checked = true;
+            }
+
+            // Checkbox'ları yükle
+            const checkboxFields = ['yapiEv','yapiTicari','yapiEndustri','yapiDiger',
+                'toprakRing','toprakYuzeysel','toprakTemel','toprakDerin','toprakBelirlenemedi',
+                'korumaEspotansiyel','korumaYalitma','korumaAyirma','korumaKucukGerilim',
+                'olcumCevrimEmpedansi','olcum3UcluTopraklama','olcumKlamp'];
+            for (const f of checkboxFields) {
+                if (rapor[f]) {
+                    const cb = document.querySelector(`input[name="${f}"]`);
+                    if (cb) cb.checked = true;
+                }
+            }
+
+            // Yazı alanları
+            if (rapor.enerjiSaglayan) document.getElementById('enerjiSaglayan').value = rapor.enerjiSaglayan;
+            if (rapor.sebekeGerilimi) document.getElementById('sebekeGerilimi').value = rapor.sebekeGerilimi;
+            if (rapor.projeBilgileri) document.getElementById('projeBilgileri').value = rapor.projeBilgileri;
+            if (rapor.ekipmanKullanimAmaci) document.getElementById('ekipmanKullanimAmaci').value = rapor.ekipmanKullanimAmaci;
+            if (rapor.sonKontrolTarihi) document.getElementById('sonKontrolTarihi').value = rapor.sonKontrolTarihi;
+            if (rapor.havaDurumu) document.getElementById('havaDurumu').value = rapor.havaDurumu;
+            if (rapor.zeminNem) document.getElementById('zeminNem').value = rapor.zeminNem;
+            if (rapor.panoTanimi) document.getElementById('panoTanimi').value = rapor.panoTanimi;
+            if (rapor.uygunlukNotu) {
+                const r = document.querySelector(`input[name="uygunlukNotu"][value="${rapor.uygunlukNotu}"]`);
+                if (r) r.checked = true;
             }
 
             // Genel sonuç
@@ -994,10 +1050,43 @@
                     baslangicSaati: document.getElementById('baslangicSaati')?.value || '09:00',
                     bitisTarihi: document.getElementById('bitisTarihi')?.value,
                     bitisSaati: document.getElementById('bitisSaati')?.value || '17:00',
+                    sgkSicilNo: document.getElementById('sgkSicilNo')?.value || null,
                     isgKatipNo: document.getElementById('isgKatipNo')?.value || null,
                     sistemTipi: formData.sistemTipi,
                     sebekeTipi: formData.sebekeTipi,
                     yerTipi: formData.yerTipi,
+                    // Checkbox alanları
+                    kontrolNedeni: formData.kontrolNedeni,
+                    projeVar: formData.projeVar,
+                    tekHatSemasiVar: formData.tekHatSemasiVar,
+                    kapsamliDegisiklik: formData.kapsamliDegisiklik,
+                    oncekiKontrolEtiketi: formData.oncekiKontrolEtiketi,
+                    yapiEv: formData.yapiEv,
+                    yapiTicari: formData.yapiTicari,
+                    yapiEndustri: formData.yapiEndustri,
+                    yapiDiger: formData.yapiDiger,
+                    toprakRing: formData.toprakRing,
+                    toprakYuzeysel: formData.toprakYuzeysel,
+                    toprakTemel: formData.toprakTemel,
+                    toprakDerin: formData.toprakDerin,
+                    toprakBelirlenemedi: formData.toprakBelirlenemedi,
+                    korumaEspotansiyel: formData.korumaEspotansiyel,
+                    korumaYalitma: formData.korumaYalitma,
+                    korumaAyirma: formData.korumaAyirma,
+                    korumaKucukGerilim: formData.korumaKucukGerilim,
+                    olcumCevrimEmpedansi: formData.olcumCevrimEmpedansi,
+                    olcum3UcluTopraklama: formData.olcum3UcluTopraklama,
+                    olcumKlamp: formData.olcumKlamp,
+                    // Yazı alanları
+                    enerjiSaglayan: formData.enerjiSaglayan,
+                    sebekeGerilimi: formData.sebekeGerilimi,
+                    projeBilgileri: formData.projeBilgileri,
+                    ekipmanKullanimAmaci: formData.ekipmanKullanimAmaci,
+                    sonKontrolTarihi: formData.sonKontrolTarihi,
+                    havaDurumu: formData.havaDurumu,
+                    zeminNem: formData.zeminNem,
+                    panoTanimi: formData.panoTanimi,
+                    uygunlukNotu: formData.uygunlukNotu,
                     genelSonuc: formData.genelSonuc,
                     aciklama: formData.notlar
                 };

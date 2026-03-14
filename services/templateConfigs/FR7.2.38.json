@@ -1,0 +1,505 @@
+{
+  "sablonKodu": "FR7.2.38",
+  "sablonAdi": "Jeneratör Muayene ve Ölçüm Raporu",
+  "kategori": "elektrik",
+  "altKategori": "elektrik",
+  "raporNoPrefix": "MT",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Sonraki Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil No",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        }
+      ]
+    },
+    {
+      "id": "tesisTeknik",
+      "title": "Tesis Teknik Özellikler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "havaDurumu",
+          "label": "Hava Durumu",
+          "type": "select",
+          "options": ["Açık", "Kapalı", "Yağışlı"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "toprakDurumu",
+          "label": "Toprak Durumu",
+          "type": "select",
+          "options": ["Islak", "Nemli", "Kuru"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "kontrolNedeni",
+          "label": "Kontrol Nedeni",
+          "type": "select",
+          "options": ["Periyodik", "Düzeltme", "Yeni Tesis"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "projeVarMi",
+          "label": "Tesise Ait Elektrik Projesi Var Mı?",
+          "type": "select",
+          "options": ["Var", "Yok"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "sebekeTipi",
+          "label": "Şebeke Tipi",
+          "type": "text",
+          "placeholder": "3 Faz+Nötr"
+        },
+        {
+          "id": "sebekeGerilimi",
+          "label": "Şebeke Gerilimi",
+          "type": "text",
+          "placeholder": "400V"
+        },
+        {
+          "id": "kullanimAmaci",
+          "label": "Tesisin Kullanım Amacı",
+          "type": "text",
+          "placeholder": "Yedek enerji kaynağı"
+        },
+        {
+          "id": "yapiCinsi",
+          "label": "Yapı Cinsi",
+          "type": "text",
+          "placeholder": "Betonarme"
+        },
+        {
+          "id": "esPotansiyelBara",
+          "label": "Eş Potansiyel Bara",
+          "type": "text",
+          "placeholder": "Var/Yok"
+        },
+        {
+          "id": "topraklayiciRing",
+          "label": "Topraklayıcı - Ring",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciTemel",
+          "label": "Topraklayıcı - Temel",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciYuzeysel",
+          "label": "Topraklayıcı - Yüzeysel",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciDerin",
+          "label": "Topraklayıcı - Derin",
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "id": "jeneratorBilgileri",
+      "title": "Jeneratör Teknik Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "AKSA"
+        },
+        {
+          "id": "modelTipi",
+          "label": "Model/Tipi",
+          "type": "text",
+          "placeholder": "APD-33"
+        },
+        {
+          "id": "seriNo",
+          "label": "Seri No",
+          "type": "text",
+          "placeholder": "123456"
+        },
+        {
+          "id": "motorGucu",
+          "label": "Motor Gücü (HP)",
+          "type": "text",
+          "placeholder": "44"
+        },
+        {
+          "id": "kapasite",
+          "label": "Kapasite (kVA)",
+          "type": "text",
+          "placeholder": "33"
+        }
+      ]
+    },
+    {
+      "id": "olcum",
+      "title": "Gövde Topraklama Ölçümü",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "topraklamaDirenci",
+          "label": "Topraklama Direnci Ölçüm Değeri (Ω)",
+          "type": "text",
+          "placeholder": "0,43"
+        },
+        {
+          "id": "topraklamaDirenciSonuc",
+          "label": "Sonuç",
+          "type": "select",
+          "options": ["UYGUN", "UYGUN DEĞİL"],
+          "default": "UYGUN"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Kontrol Soruları",
+      "type": "control-questions",
+      "badge": "9 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Jeneratörün üzerinde markası modeli güç paneli ve kontrol kartı var mı?",
+          "options": ["UYGUN", "UYGUN DEĞİL"],
+          "default": "UYGUN"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Egzoz dumanı çıkışı için uygun önlemler alınmış mı?",
+          "options": ["UYGUN", "UYGUN DEĞİL"],
+          "default": "UYGUN"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Jeneratörün şebeke ile transferi için gerekli pano ve güç bağlantıları yapılmış mı?",
+          "options": ["UYGUN", "UYGUN DEĞİL"],
+          "default": "UYGUN"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Motor suyu ve yağ seviyesi kontrol ediliyor mu?",
+          "options": ["UYGUN", "UYGUN DEĞİL"],
+          "default": "UYGUN"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Yakıt tankı seviyesi kontrol ediliyor mu?",
+          "options": ["UYGUN", "UYGUN DEĞİL"],
+          "default": "UYGUN"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Yakıt tankı kapasitesi yeterli mi?",
+          "options": ["UYGUN", "UYGUN DEĞİL"],
+          "default": "UYGUN"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Jeneratör çalışması esnasında ses ve gürültü kontrlü yapılıyor mu?",
+          "options": ["UYGUN", "UYGUN DEĞİL"],
+          "default": "UYGUN"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Akü voltaj seviyesi uygun mu? Aküde şişme ve sızıntı oluyor mu?",
+          "options": ["UYGUN", "UYGUN DEĞİL"],
+          "default": "UYGUN"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Yetkili servis tarafından motor yağı, yağ filtresi, hava filtresi için periyodik olarak bakım yapılıyor mu?",
+          "options": ["UYGUN", "UYGUN DEĞİL"],
+          "default": "UYGUN"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Jeneratör\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/4. Elektrik/FR7.2.38 Jenaratör Muayene ve Ölçüm Raporu.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Sonraki Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "SGK Sicil No",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Sözlesme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Şebeke Tipi",
+        "field": "sebekeTipi"
+      },
+      {
+        "label": "Şebeke Gerilimi",
+        "field": "sebekeGerilimi"
+      },
+      {
+        "label": "Tesisin Kullanım Amacı",
+        "field": "kullanimAmaci"
+      },
+      {
+        "label": "Yapı Cinsi",
+        "field": "yapiCinsi"
+      },
+      {
+        "label": "Eş Potansiyel Bara ",
+        "field": "esPotansiyelBara"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Model/Tipi",
+        "field": "modelTipi"
+      },
+      {
+        "label": "Seri No",
+        "field": "seriNo"
+      },
+      {
+        "label": "Motor Gücü (HP)",
+        "field": "motorGucu"
+      },
+      {
+        "label": "Kapasite (kVA)",
+        "field": "kapasite"
+      },
+      {
+        "label": "JENERATÖR GÖVDE TOPRAKLAMA DİRENÇ DEĞERİ",
+        "field": "topraklamaDirenci"
+      }
+    ],
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["Açık", "Kapalı", "Yağışlı"],
+        "field": "havaDurumu",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Islak", "Nemli", "Kuru"],
+        "field": "toprakDurumu",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Periyodik", "Düzeltme", "Yeni Tesis"],
+        "field": "kontrolNedeni",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Var", "Yok"],
+        "field": "projeVarMi",
+        "direction": "after"
+      },
+      {
+        "type": "multi",
+        "mapping": {
+          "topraklayiciRing": "Ring",
+          "topraklayiciTemel": "Temel",
+          "topraklayiciYuzeysel": "Yüzeysel",
+          "topraklayiciDerin": "Derin"
+        }
+      }
+    ],
+    "controlQuestions": {
+      "mode": "last",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "JENERATÖRÜN ÜZERİNDE MARKASI MODELİ"
+        },
+        {
+          "field": "kriter2",
+          "text": "EGZOZ DUMANI ÇIKIŞI İÇİN"
+        },
+        {
+          "field": "kriter3",
+          "text": "JENERATÖRÜN ŞEBEKE İLE TRANSFERİ"
+        },
+        {
+          "field": "kriter4",
+          "text": "MOTOR SUYU VE YAĞ SEVİYESİ"
+        },
+        {
+          "field": "kriter5",
+          "text": "YAKIT TANKI SEVİYESİ KONTROL"
+        },
+        {
+          "field": "kriter6",
+          "text": "YAKIT TANKI KAPASİTESİ YETERLİ"
+        },
+        {
+          "field": "kriter7",
+          "text": "SES VE GÜRÜLTÜ KONTRLÜ"
+        },
+        {
+          "field": "kriter8",
+          "text": "AKÜ VOLTAJ SEVİYESİ UYGUN MU"
+        },
+        {
+          "field": "kriter9",
+          "text": "YETKİLİ SERVİS TARAFINDAN"
+        }
+      ]
+    }
+  }
+}

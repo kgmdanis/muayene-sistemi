@@ -47,7 +47,8 @@
         { "id": "metreMarka", "label": "Metre Marka", "type": "text" },
         { "id": "metreDemirbasNo", "label": "Metre Demirbaş No", "type": "text" },
         { "id": "anemometreMarka", "label": "Anemometre Marka", "type": "text" },
-        { "id": "anemometreDemirbasNo", "label": "Anemometre Demirbaş No", "type": "text" }
+        { "id": "anemometreDemirbasNo", "label": "Anemometre Demirbaş No", "type": "text" },
+        { "id": "projeVarMi", "label": "Tesise Ait Havalandırma Tesisatı Projesi Var Mı?", "type": "radio", "options": ["Var", "Yok"] }
       ]
     },
     {
@@ -62,7 +63,7 @@
         { "id": "kriter4", "no": 4, "text": "Gövde Sızdırmazlığı", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
         { "id": "kriter5", "no": 5, "text": "Gövde Yapısı", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
         { "id": "kriter6", "no": 6, "text": "Fanlar Dönüş Yönü", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "kriter7", "no": 7, "text": "Rotor Balansı", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter7", "no": 7, "text": "Rotor Balanslaması ve Toleransı", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
         { "id": "kriter8", "no": 8, "text": "Yatak ve Motor Yağlaması", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
         { "id": "kriter9", "no": 9, "text": "Kasnak Ayarları", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
         { "id": "kriter10", "no": 10, "text": "Kayış Gerginliği", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
@@ -71,6 +72,45 @@
         { "id": "kriter13", "no": 13, "text": "Flexible Kanal Bağlantıları", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
         { "id": "kriter14", "no": 14, "text": "Tip & Karakteristikler", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" }
       ]
+    },
+    {
+      "id": "hesaplama",
+      "title": "Kapasite Uygunluk Hesaplama",
+      "type": "havalandirma-hesaplama",
+      "badge": "Hesaplama",
+      "fields": [
+        { "id": "hesapYer", "label": "Yer", "type": "text", "placeholder": "Lazer Kesim, Enjeksiyon vb." }
+      ],
+      "menfezler": {
+        "entryTitle": "Menfez",
+        "maxEntries": 10,
+        "fields": [
+          { "id": "menfezNo", "label": "No", "type": "text", "placeholder": "1 NOLU" },
+          { "id": "menfezKonumu", "label": "Konumu", "type": "text", "placeholder": "LOKAL HAVALANDIRMA" },
+          { "id": "menfezHiz", "label": "Hız (m/s)", "type": "number", "placeholder": "12.8" },
+          { "id": "menfezKesit", "label": "Kesit (m²)", "type": "number", "placeholder": "0.0324" }
+        ]
+      },
+      "hacim": {
+        "fields": [
+          { "id": "hacimEn", "label": "En (m)", "type": "number", "placeholder": "1.17" },
+          { "id": "hacimBoy", "label": "Boy (m)", "type": "number", "placeholder": "1.25" },
+          { "id": "hacimYukseklik", "label": "Yükseklik (m)", "type": "number", "placeholder": "2.9" }
+        ]
+      },
+      "gerekenKatsayi": {
+        "id": "gerekenHavaDegisimKatsayisi",
+        "label": "Gereken Hava Değişim Katsayısı",
+        "type": "number",
+        "default": 30
+      },
+      "hesapFormulleri": {
+        "debi": "menfezHiz × menfezKesit",
+        "toplamDebi": "Σ debi",
+        "havaM3": "toplamDebi × 3600",
+        "hacim": "en × boy × yükseklik",
+        "havaDegisimKatsayisi": "havaM3 / hacim"
+      }
     },
     {
       "id": "kusur",
@@ -109,6 +149,29 @@
       { "label": "Ölçüm Yapılan Mahal", "field": "olcumYapilanMahal" },
       { "label": "Ortam Nemi", "field": "ortamNemi" }
     ],
+    "hesaplamaTable": {
+      "findBy": "KAPASİTE UYGUNLUK HESAPLAMA",
+      "fields": {
+        "yer": { "label": "YER:", "field": "hesapYer" },
+        "toplamDebi": { "label": "TOPLAM DEBİ", "field": "hesapToplamDebi" },
+        "havaM3": { "label": "HAVA M3 =", "field": "hesapHavaM3" },
+        "hacim": { "label": "HACİM=", "index": 1, "field": "hesapHacim" },
+        "gerekenKatsayi": { "label": "GEREKEN HAVA DEĞİŞİM KATSATISI", "field": "gerekenHavaDegisimKatsayisi" },
+        "sonuc": { "label": "TOPLAM HAVALANDIMA M3 /HACİM M3 =", "field": "hesapSonuc" }
+      },
+      "menfezRows": {
+        "startAfter": "MENFEZ (EMİŞ)",
+        "fields": ["menfezNo", "menfezKonumu", "menfezHiz", "menfezKesit", "menfezDebi"]
+      }
+    },
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["Var", "Yok"],
+        "field": "projeVarMi",
+        "direction": "after"
+      }
+    ],
     "controlQuestions": {
       "mode": "next",
       "questions": [
@@ -117,8 +180,8 @@
         { "field": "kriter3", "text": "Temizlik" },
         { "field": "kriter4", "text": "Gövde Sızdırmazlığı" },
         { "field": "kriter5", "text": "Gövde Yapısı" },
-        { "field": "kriter6", "text": "Fanlar Dönüş Yönü" },
-        { "field": "kriter7", "text": "Rotor Balansı" },
+        { "field": "kriter6", "text": "Dönüş Yönü" },
+        { "field": "kriter7", "text": "Rotor Balanslaması ve Toleransı" },
         { "field": "kriter8", "text": "Yatak ve Motor Yağlaması" },
         { "field": "kriter9", "text": "Kasnak Ayarları" },
         { "field": "kriter10", "text": "Kayış Gerginliği" },

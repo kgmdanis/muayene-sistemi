@@ -152,10 +152,11 @@
           "placeholder": "01 NOLU"
         },
         {
-          "id": "kaldirma_sistemi",
+          "id": "kaldirmaSistemi",
           "label": "Kaldırma Sistemi",
-          "type": "text",
-          "placeholder": "Pistonlu   Sonsuz Vidalı / Körüklü"
+          "type": "select",
+          "options": ["Pistonlu", "Sonsuz Vidali"],
+          "default": "Pistonlu"
         }
       ]
     },
@@ -459,7 +460,7 @@
       },
       {
         "label": "Kaldırma Sistemi",
-        "field": "kaldirma_sistemi"
+        "field": "kaldirmaSistemi"
       },
       {
         "label": "Dinamik Test Ağırlığı(kg)",
@@ -558,6 +559,9 @@
           "exact": true
         }
       ]
-    }
+    },
+    "checkboxes": [
+      { "type": "radio", "labels": ["Pistonlu", "Sonsuz Vidali"], "field": "kaldirmaSistemi", "direction": "after" }
+    ]
   }
 }

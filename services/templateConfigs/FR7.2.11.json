@@ -188,7 +188,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "20 Kontrol",
+      "badge": "21 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -388,6 +388,13 @@
             "Uygun",
             "Uygun Değil"
           ],
+          "default": "Uygun"
+        },
+        {
+          "id": "bakimDosyasi",
+          "no": 21,
+          "text": "Bakım-onarım dosyası ve periyodik kontrol dosyası var mı",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         }
       ]
@@ -622,6 +629,10 @@
           "field": "kriter20",
           "text": "IV. Yük altında Kararlılık",
           "exact": true
+        },
+        {
+          "field": "bakimDosyasi",
+          "text": "Bakım-onarım dosyası ve periyodik kontrol dosyası var mı"
         }
       ]
     }

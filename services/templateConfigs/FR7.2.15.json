@@ -150,6 +150,13 @@
           "label": "Seri No",
           "type": "text",
           "placeholder": "YA 01"
+        },
+        {
+          "id": "kaldirmaSistemi",
+          "label": "Kaldırma Sistemi",
+          "type": "radio",
+          "options": ["Pistonlu", "Halatlı"],
+          "default": "Halatlı"
         }
       ]
     },
@@ -176,7 +183,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "13 Kontrol",
+      "badge": "15 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -307,6 +314,26 @@
             "Uygun Değil"
           ],
           "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 14,
+          "text": "Halatın durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter15",
+          "no": 15,
+          "text": "Güç iletici mil veya halat boşlukları normal mi?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
         }
       ]
     },
@@ -430,6 +457,14 @@
         "field": "test_statik_test_agirligi_kg"
       }
     ],
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["Pistonlu", "Halatlı"],
+        "field": "kaldirmaSistemi",
+        "direction": "after"
+      }
+    ],
     "controlQuestions": {
       "mode": "next",
       "questions": [
@@ -500,6 +535,16 @@
         {
           "field": "kriter13",
           "text": "III.Yük altında dinamik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter14",
+          "text": "Halatın durumu uygun mu?",
+          "exact": true
+        },
+        {
+          "field": "kriter15",
+          "text": "Güç iletici mil veya halat",
           "exact": true
         }
       ]

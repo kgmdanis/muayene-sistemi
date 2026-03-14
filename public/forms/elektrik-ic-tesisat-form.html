@@ -1000,6 +1000,7 @@
                         <div class="foto-etiket" id="fotoEtiket-termal-${idx}">Termal Foto No: 0 / ${data?.panoAdi || 'Ana Pano'}</div>
                         <button type="button" class="btn-add-row" onclick="bosHucreEkle(${idx}, 'termal')"><i class="fas fa-plus-circle"></i> Bos Hucre Ekle</button>
                     </div>
+
                 </div>`;
 
             panoDiv.innerHTML = html;
@@ -1223,9 +1224,7 @@
                 if (!res.ok) return;
                 const fotograflar = await res.json();
 
-                // Her fotografi ilgili pano grid'ine ekle
                 fotograflar.forEach(foto => {
-                    // panoId ile pano kartini bul
                     let panoIdx = null;
                     if (foto.panoId) {
                         const panoDivs = document.querySelectorAll('#panoContainer .pano-card');
@@ -1235,7 +1234,6 @@
                             }
                         });
                     }
-                    // panoId bulunamazsa ilk pano
                     if (!panoIdx) {
                         const ilkPano = document.querySelector('#panoContainer .pano-card');
                         if (ilkPano) panoIdx = ilkPano.id.split('-')[1];

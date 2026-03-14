@@ -158,16 +158,10 @@
           "placeholder": "150"
         },
         {
-          "id": "elektrikli",
-          "label": "Elektrikli",
-          "type": "text",
-          "placeholder": "Elektrikli"
-        },
-        {
-          "id": "mekanik",
-          "label": "Mekanik",
-          "type": "text",
-          "placeholder": "Mekanik"
+          "id": "istifTipi",
+          "label": "İstif Makinesi Tipi",
+          "type": "select",
+          "options": ["Elektrikli", "Mekanik"]
         }
       ]
     },
@@ -175,7 +169,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "11 Kontrol",
+      "badge": "15 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -250,7 +244,7 @@
         {
           "id": "kriter8",
           "no": 8,
-          "text": "I. Yüksüz hareket durumu",
+          "text": "Korna çalışma durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -260,7 +254,7 @@
         {
           "id": "kriter9",
           "no": 9,
-          "text": "II. Yük altında statik kontrol durumu",
+          "text": "Aşırı yük koruma valfi durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -270,7 +264,7 @@
         {
           "id": "kriter10",
           "no": 10,
-          "text": "III.Yük altında dinanik kontrol durumu",
+          "text": "Panel göstergeleri durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -280,7 +274,47 @@
         {
           "id": "kriter11",
           "no": 11,
+          "text": "I. Yüksüz hareket durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "II. Yük altında statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "III.Yük altında dinanik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 14,
           "text": "III.Yük altında yapı kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter15",
+          "no": 15,
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -406,11 +440,15 @@
       },
       {
         "label": "Elektrikli",
-        "field": "elektrikli"
-      },
+        "field": "istifTipi"
+      }
+    ],
+    "checkboxes": [
       {
-        "label": "Mekanik",
-        "field": "mekanik"
+        "type": "radio",
+        "labels": ["Elektrikli", "Mekanik"],
+        "field": "istifTipi",
+        "direction": "after"
       }
     ],
     "controlQuestions": {
@@ -453,22 +491,42 @@
         },
         {
           "field": "kriter8",
-          "text": "I. Yüksüz hareket durumu",
+          "text": "Korna çalışma durumu",
           "exact": true
         },
         {
           "field": "kriter9",
-          "text": "II. Yük altında statik",
+          "text": "Aşırı yük koruma valfi durumu",
           "exact": true
         },
         {
           "field": "kriter10",
-          "text": "III.Yük altında dinanik kontrol",
+          "text": "Panel göstergeleri durumu",
           "exact": true
         },
         {
           "field": "kriter11",
+          "text": "I. Yüksüz hareket durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter12",
+          "text": "II. Yük altında statik",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "III.Yük altında dinanik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter14",
           "text": "III.Yük altında yapı kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter15",
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
           "exact": true
         }
       ]

@@ -151,7 +151,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "11 Kontrol",
+      "badge": "13 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -257,6 +257,26 @@
           "id": "kriter11",
           "no": 11,
           "text": "Yük altında yapı kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "Basma Ayakların Durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "Beton Taşıma Boruların genel durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -429,6 +449,16 @@
         {
           "field": "kriter11",
           "text": "Yük altında yapı kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter12",
+          "text": "Basma Ayakların Durumu",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "Beton Taşıma Boruların genel",
           "exact": true
         }
       ]

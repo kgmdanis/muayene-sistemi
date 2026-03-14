@@ -127,7 +127,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "15 Kontrol",
+      "badge": "16 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -262,7 +262,7 @@
         {
           "id": "kriter14",
           "no": 14,
-          "text": "Hareketli koruyucu kontrolü (varsa) durumu uygun mu?",
+          "text": "Hidrolik sistemler, bağlantılar, sınırlama valfleri, sızıntı durumu uygun mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -272,6 +272,16 @@
         {
           "id": "kriter15",
           "no": 15,
+          "text": "Hareketli koruyucu kontrolü (varsa) durumu uygun mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter16",
+          "no": 16,
           "text": "Test sonunda yapılan gözle kontrolde, mekanizmalarda, metal yapısında, bağlantı elemanlarında, emniyeti bozacak bir şekil değiştirme, gevşeme, bozulma, kalıcı hasar vb. durumları uygun mu?",
           "options": [
             "Uygun",
@@ -443,11 +453,16 @@
         },
         {
           "field": "kriter14",
-          "text": "Hareketli koruyucu kontrolü (varsa)",
+          "text": "Hidrolik sistemler, bağlantılar, sınırlama",
           "exact": true
         },
         {
           "field": "kriter15",
+          "text": "Hareketli koruyucu kontrolü (varsa)",
+          "exact": true
+        },
+        {
+          "field": "kriter16",
           "text": "Test sonunda yapılan gözle",
           "exact": true
         }

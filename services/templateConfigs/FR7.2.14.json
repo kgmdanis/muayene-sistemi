@@ -144,6 +144,13 @@
           "label": "İşletme Kapasitesi (kg)",
           "type": "text",
           "placeholder": "230"
+        },
+        {
+          "id": "kullanimTipi",
+          "label": "Kullanım Tipi",
+          "type": "radio",
+          "options": ["Yük Taşıma", "İnsan Taşıma"],
+          "default": "İnsan Taşıma"
         }
       ]
     },
@@ -468,6 +475,14 @@
       {
         "label": "Statik Test Ağırlığı(kg)",
         "field": "test_statik_test_agirligi_kg"
+      }
+    ],
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["Yük Taşıma", "İnsan Taşıma"],
+        "field": "kullanimTipi",
+        "direction": "after"
       }
     ],
     "controlQuestions": {

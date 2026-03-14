@@ -127,7 +127,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "17 Kontrol",
+      "badge": "18 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -260,8 +260,18 @@
           "default": "Uygun"
         },
         {
-          "id": "kriter14",
+          "id": "kriter_makine_sicil",
           "no": 14,
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 15,
           "text": "Yüksüz hareket durumu",
           "options": [
             "Uygun",
@@ -271,7 +281,7 @@
         },
         {
           "id": "kriter15",
-          "no": 15,
+          "no": 16,
           "text": "Yük altında statik kontrol durumu",
           "options": [
             "Uygun",
@@ -281,7 +291,7 @@
         },
         {
           "id": "kriter16",
-          "no": 16,
+          "no": 17,
           "text": "Yük altında dinamik kontrol durumu",
           "options": [
             "Uygun",
@@ -291,7 +301,7 @@
         },
         {
           "id": "kriter17",
-          "no": 17,
+          "no": 18,
           "text": "Yük altında yapı kontrol durumu",
           "options": [
             "Uygun",
@@ -467,6 +477,11 @@
         {
           "field": "kriter13",
           "text": "Eksoz sistemi ve gaz",
+          "exact": true
+        },
+        {
+          "field": "makineSicil",
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
           "exact": true
         },
         {

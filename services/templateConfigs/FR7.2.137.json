@@ -157,7 +157,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "7 Kontrol",
+      "badge": "9 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -227,6 +227,23 @@
             "Uygun",
             "Uygun Değil"
           ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Park teker kilitleme durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "makineSicil",
+          "no": 9,
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu ?",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         }
       ]
@@ -380,6 +397,15 @@
           "field": "kriter7",
           "text": "III.Yük altında yapı kontrol",
           "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "Park teker kilitleme durumu",
+          "exact": true
+        },
+        {
+          "field": "makineSicil",
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu"
         }
       ]
     }

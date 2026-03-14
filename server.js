@@ -4116,8 +4116,56 @@ async function generateWordBuffer(raporTipi, raporId, body) {
             }
         });
         if (!rapor) throw new Error('Rapor bulunamadı');
+
+        // Topraklama raporundan ortak verileri çek (checkbox'lar, cihaz bilgileri vs.)
+        let topraklamaVerileri = {};
+        try {
+            const isEmriId = rapor.altGorev?.isEmriId || rapor.altGorev?.isEmri?.id;
+            if (isEmriId) {
+                const topraklamaRaporu = await auth.prisma.elektrikTopraklamaRaporu.findFirst({
+                    where: { altGorev: { isEmriId } },
+                    include: { topraklamaCihaz: true },
+                    orderBy: { createdAt: 'desc' }
+                });
+                if (topraklamaRaporu) {
+                    topraklamaVerileri = {
+                        sistemTipi: topraklamaRaporu.sistemTipi,
+                        kontrolNedeni: topraklamaRaporu.kontrolNedeni,
+                        projeVar: topraklamaRaporu.projeVar,
+                        tekHatSemasiVar: topraklamaRaporu.tekHatSemasiVar,
+                        kapsamliDegisiklik: topraklamaRaporu.kapsamliDegisiklik,
+                        oncekiKontrolEtiketi: topraklamaRaporu.oncekiKontrolEtiketi,
+                        yapiEv: topraklamaRaporu.yapiEv,
+                        yapiTicari: topraklamaRaporu.yapiTicari,
+                        yapiEndustri: topraklamaRaporu.yapiEndustri,
+                        yapiDiger: topraklamaRaporu.yapiDiger,
+                        toprakRing: topraklamaRaporu.toprakRing,
+                        toprakYuzeysel: topraklamaRaporu.toprakYuzeysel,
+                        toprakTemel: topraklamaRaporu.toprakTemel,
+                        toprakDerin: topraklamaRaporu.toprakDerin,
+                        toprakBelirlenemedi: topraklamaRaporu.toprakBelirlenemedi,
+                        olcumCevrimEmpedansi: topraklamaRaporu.olcumCevrimEmpedansi,
+                        olcum3UcluTopraklama: topraklamaRaporu.olcum3UcluTopraklama,
+                        olcumKlamp: topraklamaRaporu.olcumKlamp,
+                        dkdSpdKullanildi: topraklamaRaporu.dkdSpdKullanildi,
+                        enerjiSaglayan: topraklamaRaporu.enerjiSaglayan,
+                        sebekeGerilimi: topraklamaRaporu.sebekeGerilimi,
+                        cihaz: topraklamaRaporu.topraklamaCihaz ? {
+                            cihazAdi: topraklamaRaporu.topraklamaCihaz.cihazAdi,
+                            seriNo: topraklamaRaporu.topraklamaCihaz.seriNo,
+                            kalibrasyonTarihi: topraklamaRaporu.topraklamaCihaz.kalibrasyonTarihi,
+                            kalibrasyonGecerlilikTarihi: topraklamaRaporu.topraklamaCihaz.kalibrasyonGecerlilik,
+                            kalibrasyonNo: topraklamaRaporu.topraklamaCihaz.kalibrasyonNo
+                        } : null
+                    };
+                }
+            }
+        } catch (e) {
+            console.error('Topraklama verileri çekilirken hata:', e.message);
+        }
+
         const icTesisatWordService = require('./services/elektrikIcTesisatWordService');
-        return await icTesisatWordService.generateElektrikIcTesisatWord(rapor, rapor.altGorev?.isEmri, { ...body, tekniker: body.tekniker || {} });
+        return await icTesisatWordService.generateElektrikIcTesisatWord(rapor, rapor.altGorev?.isEmri, { ...topraklamaVerileri, ...body, tekniker: body.tekniker || {} });
     } else if (isKompresor) {
         const rapor = await auth.prisma.kompresorRaporu.findUnique({
             where: { id: parseInt(raporId) },
@@ -4290,7 +4338,7 @@ app.get('/api/word-templates/:filename/analyze', (req, res) => {
 // Elektrik Topraklama Raporu için Word dosyası oluştur
 app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
     try {
-        const { uygunlukNotu, kusurlar, kusurAciklama, notlar, tekniker, isgKatipNo } = req.body;
+        const { uygunlukNotu, kusurlar, kusurAciklama, notlar, tekniker, isgKatipNo, sgkSicilNo } = req.body;
 
         // Raporu getir
         const rapor = await auth.prisma.elektrikTopraklamaRaporu.findUnique({
@@ -4381,6 +4429,7 @@ app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
             notlar,
             tekniker: tekniker || {},
             isgKatipNo: isgKatipNo || rapor.isgKatipNo,
+            sgkSicilNo: sgkSicilNo || rapor.sgkSicilNo,
             // Sistem tipi (formdan veya DB'den)
             sistemTipi: sistemTipi || rapor.sistemTipi,
             // Checkbox parametreleri

@@ -77,8 +77,12 @@ function numStr(val, decimals = 2) {
 
 // ============ HÜCRE İŞLEMLERİ ============
 
+// Calibri 8pt (16 half-points) font özellikleri
+const FONT_RPR = '<w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr>';
+
 /**
  * Hücreye metin yaz - mevcut içeriği değiştirerek
+ * Tüm yazılan metinler Calibri 8pt olarak formatlanır
  */
 function writeToCell(cellXml, newText) {
     const escapedText = escapeXml(newText || '-');
@@ -87,23 +91,32 @@ function writeToCell(cellXml, newText) {
         if (/<w:pPr>[\s\S]*?<\/w:pPr>/.test(cellXml)) {
             return cellXml.replace(
                 /(<\/w:pPr>)/,
-                `$1<w:r><w:t xml:space="preserve">${escapedText}</w:t></w:r>`
+                `$1<w:r>${FONT_RPR}<w:t xml:space="preserve">${escapedText}</w:t></w:r>`
             );
         }
         return cellXml.replace(
             /(<\/w:p>)/,
-            `<w:r><w:t xml:space="preserve">${escapedText}</w:t></w:r>$1`
+            `<w:r>${FONT_RPR}<w:t xml:space="preserve">${escapedText}</w:t></w:r>$1`
         );
     }
 
     let firstReplaced = false;
-    return cellXml.replace(/<w:t([^>]*)>([^<]*)<\/w:t>/g, (match, attrs, oldText) => {
+    let result = cellXml.replace(/<w:t([^>]*)>([^<]*)<\/w:t>/g, (match, attrs, oldText) => {
         if (!firstReplaced) {
             firstReplaced = true;
             return `<w:t xml:space="preserve">${escapedText}</w:t>`;
         }
         return '<w:t></w:t>';
     });
+
+    // Mevcut run'lardaki font boyutlarını Calibri 8pt'ye normalize et
+    result = result.replace(/<w:sz w:val="\d+"/g, '<w:sz w:val="16"');
+    result = result.replace(/<w:szCs w:val="\d+"/g, '<w:szCs w:val="16"');
+    result = result.replace(/<w:rFonts[^>]*\/>/g, '<w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>');
+    // rPr'si olmayan run'lara font ekle
+    result = result.replace(/<w:r>(\s*)<w:t/g, `<w:r>$1${FONT_RPR}<w:t`);
+
+    return result;
 }
 
 /**
@@ -350,11 +363,23 @@ function fillAllCheckboxes(xml, rapor, options = {}) {
         result = setVarYokCheckbox(result, 'Tek hat şeması var mı', options.tekHatSemasiVar);
     }
 
-    // 5. YAPI CİNSİ (ayrı ayrı checkbox'lar)
+    // 5. YAPI CİNSİ
     if (options.yapiEv) result = setCheckboxByLabel(result, 'Ev', true);
     if (options.yapiTicari) result = setCheckboxByLabel(result, 'Ticari', true);
     if (options.yapiEndustri) result = setCheckboxByLabel(result, 'Endüstri', true);
     if (options.yapiDiger) result = setCheckboxByLabel(result, 'Diğer', true);
+
+    // 5b. FAZ İLETKEN TİPİ (AA/DA)
+    if (options.fazTipi) {
+        const ft = options.fazTipi;
+        if (ft.includes('1f2t')) result = setCheckboxByLabel(result, '1 faz, 2 tel', true);
+        if (ft.includes('1f3t')) result = setCheckboxByLabel(result, '1 faz, 3 tel', true);
+        if (ft.includes('2f3t')) result = setCheckboxByLabel(result, '2 faz, 3 tel', true);
+        if (ft.includes('3f3t')) result = setCheckboxByLabel(result, '3 faz, 3 tel', true);
+        if (ft.includes('3f4t')) result = setCheckboxByLabel(result, '3 faz, 4 tel', true);
+        if (ft.includes('DA2k')) result = setCheckboxByLabel(result, '2 kutup', true);
+        if (ft.includes('DA3k')) result = setCheckboxByLabel(result, '3 kutup', true);
+    }
 
     // 6. TOPRAKLAYICI TİPİ
     if (options.toprakRing) result = setCheckboxByLabel(result, 'Ring', true);
@@ -363,17 +388,24 @@ function fillAllCheckboxes(xml, rapor, options = {}) {
     if (options.toprakDerin) result = setCheckboxByLabel(result, 'Derin', true);
     if (options.toprakBelirlenemedi) result = setCheckboxByLabel(result, 'Belirlenemedi', true);
 
-    // 7. KORUMA ÖNLEMİ
-    if (options.korumaEspotansiyel) {
-        result = setCheckboxByLabel(result, 'Eşpotansiyel topraklama ve beslemenin otomatik kesilmesi', true);
-    }
-    if (options.korumaYalitma) result = setCheckboxByLabel(result, 'Koruyucu yalıtma', true);
-    if (options.korumaAyirma) result = setCheckboxByLabel(result, 'Koruyucu ayırma', true);
-    if (options.korumaKucukGerilim) result = setCheckboxByLabel(result, 'Küçük gerilim', true);
+    // 7. DOĞRUDAN DOKUNMAYA KARŞI KORUMA ÖNLEMİ
+    // Template'de tek hücrede birleşik checkbox'lar: Gerilim altındaki, Mahfaza, Engel, El ulaşma, İlave koruma
+    // Bu checkbox'lar label-before yöntemiyle çalışır
+    if (options.korumaYalitma) result = setCheckboxByLabel(result, 'Gerilim altındaki bölümlerin yalıtılması', true);
+    if (options.korumaMahfaza) result = setCheckboxByLabel(result, 'Mahfaza', true);
+    if (options.korumaEngel) result = setCheckboxByLabel(result, 'Engel', true);
+    if (options.korumaElUlasma) result = setCheckboxByLabel(result, 'El ulaşma uzaklığı', true);
+    if (options.korumaIlaveRCD) result = setCheckboxByLabel(result, 'İlave koruma', true);
 
     // 8. TESİSATTA KAPSAMLI DEĞİŞİKLİK
     if (options.kapsamliDegisiklik !== undefined) {
-        result = setVarYokCheckbox(result, 'Tesisatta kapsamlı değişiklik var mı', options.kapsamliDegisiklik);
+        result = setVarYokCheckbox(result, 'kapsamlı değişiklik var mı', options.kapsamliDegisiklik);
+    }
+
+    // 8b. DKD/SPD (Evet/Hayır - Var/Yok değil)
+    if (options.dkdSpdKullanildi !== undefined) {
+        result = setCheckboxInContext(result, 'DKD/SPD', 'Evet', options.dkdSpdKullanildi === true);
+        result = setCheckboxInContext(result, 'DKD/SPD', 'Hayır', options.dkdSpdKullanildi === false);
     }
 
     // 9. ÖNCEKİ KONTROL ETİKETİ
@@ -381,13 +413,10 @@ function fillAllCheckboxes(xml, rapor, options = {}) {
         result = setVarYokCheckbox(result, 'önceki periyodik kontrol etiketi var mı', options.oncekiKontrolEtiketi);
     }
 
-    // 10. ÖLÇÜM METODU
-    if (options.olcumCevrimEmpedansi) result = setCheckboxByLabel(result, 'Çevrim empedansı', true);
-    if (options.olcum3UcluTopraklama) result = setCheckboxByLabel(result, '3 Uçlu topraklama', true);
-    if (options.olcumKlamp) result = setCheckboxByLabel(result, 'Klamp metodu', true);
-    // Eski format desteği
-    if (options.olcumCevrim) result = setCheckboxByLabel(result, 'Çevrim empedansı', true);
-    if (options.olcum3Uclu) result = setCheckboxByLabel(result, '3 Uçlu topraklama', true);
+    // 10. ÖLÇÜM METODU - Template label'ları
+    if (options.olcumCevrimEmpedansi || options.olcumCevrim) result = setCheckboxByLabel(result, 'Çevrim Empedansı', true);
+    if (options.olcum3UcluTopraklama || options.olcum3Uclu) result = setCheckboxByLabel(result, 'Üç Uçlu Karşılaştırma', true);
+    if (options.olcumKlamp) result = setCheckboxByLabel(result, 'Klamp Yöntemi', true);
 
     return result;
 }
@@ -457,32 +486,37 @@ function fillPanoKontrolTable(docXml, panolar) {
 
     const tables = findAllTables(docXml);
 
-    // Pano kontrol tablolarını bul - genelde "Gözle kontrol" veya "Madde" gibi metinler icerir
-    // Her pano icin ayri bir tablo var
+    // Pano kontrol tablolarını bul
+    // Her pano icin ayri bir tablo var - "KONTROL KRİTERLERİ" başlığı ile tanımlanır
     const panoTables = [];
     for (const table of tables) {
-        // Pano kontrol tablosu genelde madde numaralari ve U/UD/UY sutunlari icerir
-        if ((table.text.includes('Madde') || table.text.includes('madde')) &&
-            (table.text.includes('Uygun') || table.text.includes('U ') || table.text.includes('UD'))) {
+        if (table.text.includes('KONTROL KRİTERLERİ') && table.text.includes('Pano Adı')) {
             panoTables.push(table);
         }
     }
 
-    // Alternatif: "Gözle Kontrol" veya "GÖZLE KONTROL" ile baslayan tablolar
+    // Alternatif: "Pano Adı/Ekipman Tanımlaması" içeren tablolar
     if (panoTables.length === 0) {
         for (const table of tables) {
-            if (table.text.includes('Gözle') || table.text.includes('GÖZLE') ||
-                table.text.includes('gözle kontrol') || table.text.includes('Kontrol Kriterleri')) {
+            if (table.text.includes('Pano Adı/Ekipman') || table.text.includes('Pano Adı') || table.text.includes('PANO ADI')) {
                 panoTables.push(table);
             }
         }
     }
 
-    // Pano adı içeren tabloları da bul
+    // Alternatif: "Gözle Kontrol" veya "Madde" içeren tablolar
     if (panoTables.length === 0) {
         for (const table of tables) {
-            if (table.text.includes('Pano Adı') || table.text.includes('PANO ADI') ||
-                table.text.includes('Pano adı')) {
+            if ((table.text.includes('Madde') || table.text.includes('madde')) &&
+                (table.text.includes('Uygun') || table.text.includes('U '))) {
+                panoTables.push(table);
+            }
+        }
+    }
+
+    if (panoTables.length === 0) {
+        for (const table of tables) {
+            if (table.text.includes('Gözle') || table.text.includes('GÖZLE')) {
                 panoTables.push(table);
             }
         }
@@ -499,20 +533,18 @@ function fillPanoKontrolTable(docXml, panolar) {
 
             // Pano adını yaz
             if (pano.panoAdi) {
-                newTable = setValueByLabel(newTable, 'Pano Adı', pano.panoAdi) || newTable;
-                newTable = setValueByLabel(newTable, 'PANO ADI', pano.panoAdi) || newTable;
-                newTable = setValueByLabel(newTable, 'Pano adı', pano.panoAdi) || newTable;
+                newTable = setValueByLabel(newTable, 'Pano Adı/Ekipman Tanımlaması', pano.panoAdi);
             }
 
             // Termal foto bilgilerini yaz
             if (pano.termalFotoTarih) {
-                newTable = setValueByLabel(newTable, 'Termal', pano.termalFotoTarih) || newTable;
+                newTable = setValueByLabel(newTable, 'Fotoğraf tarihi', pano.termalFotoTarih);
             }
             if (pano.termalFotoNo) {
-                newTable = setValueByLabel(newTable, 'Foto No', pano.termalFotoNo) || newTable;
+                newTable = setValueByLabel(newTable, 'Fotoğraf no', pano.termalFotoNo);
             }
 
-            // Kriter satırlarını doldur
+            // Kriter satırlarını doldur - 4 sütunlu: Kriter | Değerlendirme | Kriter | Değerlendirme
             const rowRegex = /<w:tr[^>]*>[\s\S]*?<\/w:tr>/g;
             const rows = newTable.match(rowRegex) || [];
 
@@ -521,41 +553,38 @@ function fillPanoKontrolTable(docXml, panolar) {
                 const row = rows[ri];
                 const rowText = getRowText(row);
 
-                // Başlık satırlarını atla
-                if (rowText.includes('Madde') || rowText.includes('MADDE') ||
-                    rowText.includes('Pano Adı') || rowText.includes('PANO') ||
-                    rowText.includes('Termal') || rowText.includes('Gözle') ||
-                    rowText.includes('GÖZLE') || rowText.includes('Kontrol Kriterleri') ||
-                    rowText.includes('Uygun Değil') || rowText.length === 0) {
+                // Başlık ve section satırlarını atla
+                if (rowText.includes('TEST VE KONTROLLER') || rowText.includes('KONTROL KRİTERLERİ') ||
+                    rowText.includes('Pano Adı') || rowText.includes('Kontrol Kriteri') ||
+                    rowText.includes('Değerlendirme') || rowText.length === 0) {
                     continue;
                 }
 
-                // Satırda numara var mı kontrol et
                 const cellRegex = /<w:tc[^>]*>[\s\S]*?<\/w:tc>/g;
                 const cells = row.match(cellRegex) || [];
-                if (cells.length < 2) continue;
 
-                const firstCellText = getCellText(cells[0]).trim();
-                // Numara ile başlayan satır
-                if (!/^\d+$/.test(firstCellText)) continue;
+                // 1 hücreli satır = section başlığı (PANO VE DİĞER, TOPRAKLANMIŞ, vs.)
+                if (cells.length <= 1) continue;
 
-                const rowNum = parseInt(firstCellText);
-                if (rowNum < 1 || rowNum > 27) continue;
+                // 4 hücreli satır: kriter1 | değer1 | kriter2 | değer2
+                if (cells.length === 4) {
+                    // Sol taraf
+                    const kriterKey1 = `kriter${kriterIndex}`;
+                    const kriterValue1 = pano[kriterKey1] || 'U';
+                    const newCell1 = writeToCell(cells[1], kriterValue1);
+                    newTable = newTable.replace(cells[1], newCell1);
+                    kriterIndex++;
 
-                const kriterKey = `kriter${rowNum}`;
-                const kriterValue = pano[kriterKey] || 'U';
-
-                // Son hücreye (veya Sonuç hücresine) kriter değerini yaz
-                // Genelde son hücre sonuç hücresidir
-                if (cells.length >= 3) {
-                    // Sonuç hücresi genelde son veya sondan bir önceki hücre
-                    const targetCellIndex = cells.length - 1;
-                    const newCell = writeToCell(cells[targetCellIndex], kriterValue);
-                    const newRow = row.replace(cells[targetCellIndex], newCell);
-                    newTable = newTable.replace(row, newRow);
+                    // Sağ taraf (eğer metin varsa)
+                    const rightText = getCellText(cells[2]).trim();
+                    if (rightText && rightText.length > 2) {
+                        const kriterKey2 = `kriter${kriterIndex}`;
+                        const kriterValue2 = pano[kriterKey2] || 'U';
+                        const newCell2 = writeToCell(cells[3], kriterValue2);
+                        newTable = newTable.replace(cells[3], newCell2);
+                        kriterIndex++;
+                    }
                 }
-
-                kriterIndex++;
             }
 
             result = result.replace(table.xml, newTable);
@@ -1019,16 +1048,12 @@ async function generateElektrikIcTesisatWord(rapor, isEmri, options = {}) {
     try {
         docXml = setValueByLabel(docXml, 'Enerji sağlayan kuruluş', rapor.enerjiSaglayan || options.enerjiSaglayan || 'MEDAŞ');
         docXml = setValueByLabel(docXml, 'Şebeke gerilimi', options.sebekeGerilimi || rapor.beslemeNominalGerilim || '380');
-        docXml = setValueByLabel(docXml, 'Proje bilgileri', options.projeBilgileri || '-');
+        // Proje bilgileri alanı template'de yok, checkbox ile kontrol ediliyor
         docXml = setValueByLabel(docXml, 'Ekipmanın kullanım amacı', rapor.ekipmanKullanimAmaci || options.ekipmanKullanimAmaci || firma.spiKodu || 'FABRİKA');
         docXml = setValueByLabel(docXml, 'Son kontrol tarihi', rapor.sonKontrolTarihi ? formatDate(rapor.sonKontrolTarihi) : (options.sonKontrolTarihi ? formatDate(options.sonKontrolTarihi) : '-'));
-        docXml = setValueByLabel(docXml, 'Hava durumu ve sıcaklığı', `${rapor.ortamSicaklik || 25} °C`);
-        docXml = setValueByLabel(docXml, 'Zemin nem durumu', rapor.ortamNem ? (parseFloat(rapor.ortamNem) < 50 ? 'KURU' : 'NORMAL') : 'KURU');
-        docXml = setValueByLabel(docXml, 'Pano/Ekipman tanımlaması', options.panoTanimi || '-');
+        // Hava durumu ve Zemin nem durumu bu template'de yok (topraklama template'ine ait)
         // DKD/SPD ve İlave topraklama
-        if (rapor.dkdSpdKullanildi) {
-            docXml = setValueByLabel(docXml, 'DKD/SPD kullanılmış mı', rapor.dkdSpdKullanildi);
-        }
+        // DKD/SPD checkbox ile kontrol ediliyor, ayrıca setValueByLabel yok
         if (rapor.ilaveTopraklamaElektrotu) {
             docXml = setValueByLabel(docXml, 'İlave topraklama elektrotu', rapor.ilaveTopraklamaElektrotu);
         }
@@ -1038,18 +1063,14 @@ async function generateElektrikIcTesisatWord(rapor, isEmri, options = {}) {
 
     // === 3. 2.1 EK ALANLAR (İç tesisat'a özel) ===
     try {
-        docXml = setValueByLabel(docXml, 'Faz iletken tipi', rapor.fazIletkenTipi || options.fazIletkenTipi || '-');
+        docXml = setValueByLabel(docXml, 'Faz iletkenlerinin sayısı ve tipi', rapor.fazIletkenTipi || options.fazIletkenTipi || '-');
         docXml = setValueByLabel(docXml, 'Temel topraklama direnci', rapor.temelTopraklamaDirenci || options.temelTopraklamaDirenci || '-');
         docXml = setValueByLabel(docXml, 'Sistem topraklama iletkeni', rapor.sistemTopraklamaIletkeni || options.sistemTopraklamaIletkeni || '-');
         docXml = setValueByLabel(docXml, 'Ana eşpotansiyel iletkeni', rapor.anaEspotansiyelIletkeni || options.anaEspotansiyelIletkeni || '-');
-        docXml = setValueByLabel(docXml, 'Nominal gerilim', rapor.beslemeNominalGerilim || options.beslemeNominalGerilim || '400');
-        docXml = setValueByLabel(docXml, 'Nominal frekans', rapor.beslemeNominalFrekans || options.beslemeNominalFrekans || '50');
-        docXml = setValueByLabel(docXml, 'Hata akımı', rapor.beslemeHataAkimi || options.beslemeHataAkimi || '-');
-        docXml = setValueByLabel(docXml, 'Çevrim empedansı', rapor.beslemeCevrimEmpedans || options.beslemeCevrimEmpedans || '-');
-        docXml = setValueByLabel(docXml, 'Ana kesici tipi', rapor.anaKesiciTipi || options.anaKesiciTipi || '-');
-        docXml = setValueByLabel(docXml, 'Ana kesici nominal akım', rapor.anaKesiciNominalAkim || options.anaKesiciNominalAkim || '-');
-        docXml = setValueByLabel(docXml, 'Ana RCD anma akımı', rapor.anaRcdAnmaAkimi || options.anaRcdAnmaAkimi || '-');
-        docXml = setValueByLabel(docXml, 'Ana RCD test akımı', rapor.anaRcdTestAkimi || options.anaRcdTestAkimi || '-');
+        // Nominal gerilim/frekans/hata akımı/çevrim empedansı tek hücrede birleşik - ayrı yazılamaz
+        docXml = setValueByLabel(docXml, 'Ana kesici karakteristikleri', rapor.anaKesiciTipi || options.anaKesiciTipi || '-');
+        docXml = setValueByLabel(docXml, 'TT-TN-S Şebeke için ana RCD anma akımı', rapor.anaRcdAnmaAkimi || options.anaRcdAnmaAkimi || '-');
+        docXml = setValueByLabel(docXml, 'TT-TNS Şebeke için ana RCD test akımı', rapor.anaRcdTestAkimi || options.anaRcdTestAkimi || '-');
     } catch (e) {
         console.error('2.1 ek alanlar doldurulurken hata:', e.message);
     }
@@ -1060,10 +1081,12 @@ async function generateElektrikIcTesisatWord(rapor, isEmri, options = {}) {
         const formData = typeof rapor.formData === 'string' ? JSON.parse(rapor.formData) : (rapor.formData || {});
         const cihaz = formData.olcumCihazi || formData.cihaz || options.cihaz || {};
 
+        const kalTarihi = cihaz.kalibrasyonTarihi ? formatDate(cihaz.kalibrasyonTarihi) : '20.01.2026';
+        const kalGecerlilik = cihaz.kalibrasyonGecerlilikTarihi ? formatDate(cihaz.kalibrasyonGecerlilikTarihi) : '20.01.2027';
         docXml = setValueByLabel(docXml, 'Cihaz adı', cihaz.cihazAdi || 'Chauvin Arnoux');
         docXml = setValueByLabel(docXml, 'Seri numarası', cihaz.seriNo || '0165K-0126-00105');
-        docXml = setValueByLabel(docXml, 'Kalibrasyon tarihi', formatDate(cihaz.kalibrasyonTarihi) || '20.01.2026');
-        docXml = setValueByLabel(docXml, 'Kalibrasyon geçerlilik tarihi', formatDate(cihaz.kalibrasyonGecerlilikTarihi) || '20.01.2027');
+        docXml = setValueByLabel(docXml, 'Kalibrasyon tarihi', kalTarihi);
+        docXml = setValueByLabel(docXml, 'Kalibrasyon geçerlilik tarihi', kalGecerlilik);
         docXml = setValueByLabel(docXml, 'Kalibrasyon numarası', cihaz.kalibrasyonNo || '2500290');
     } catch (e) {
         console.error('Ölçüm cihazı bilgileri doldurulurken hata:', e.message);
@@ -1090,14 +1113,16 @@ async function generateElektrikIcTesisatWord(rapor, isEmri, options = {}) {
         if (rapor.panolar && rapor.panolar.length > 0) {
             const ilkPano = rapor.panolar[0];
             // İlk panonun ölçüm değerlerini ana alanlara yaz
-            if (ilkPano.panoZx) docXml = setValueByLabel(docXml, 'Zx', ilkPano.panoZx);
-            if (ilkPano.panoZln) docXml = setValueByLabel(docXml, 'ZLN', ilkPano.panoZln);
-            if (ilkPano.gerilimFF) docXml = setValueByLabel(docXml, 'Gerilim F-F', ilkPano.gerilimFF);
-            if (ilkPano.gerilimLN) docXml = setValueByLabel(docXml, 'Gerilim L-N', ilkPano.gerilimLN);
-            if (ilkPano.gerilimNPE) docXml = setValueByLabel(docXml, 'Gerilim N-PE', ilkPano.gerilimNPE);
-            if (ilkPano.kisaDevreAkimi3Faz) docXml = setValueByLabel(docXml, 'Kısa devre akımı', ilkPano.kisaDevreAkimi3Faz);
-            if (ilkPano.dkdTipi) docXml = setValueByLabel(docXml, 'DKD tipi', ilkPano.dkdTipi);
-            if (ilkPano.dkdDayanmaAkimi) docXml = setValueByLabel(docXml, 'DKD dayanma akımı', ilkPano.dkdDayanmaAkimi);
+            // Pano adını fonksiyon kontrol bölümüne yaz
+            if (ilkPano.panoAdi) docXml = setValueByLabel(docXml, 'Pano (Ekipman) Adı-Etiketi veya Kodu', ilkPano.panoAdi);
+            if (ilkPano.panoZx) docXml = setValueByLabel(docXml, 'Panodan ölçülen faztoprak', ilkPano.panoZx);
+            if (ilkPano.panoZln) docXml = setValueByLabel(docXml, 'Panodan ölçülen faz-nötr', ilkPano.panoZln);
+            if (ilkPano.gerilimFF) docXml = setValueByLabel(docXml, 'F-F(V)', ilkPano.gerilimFF);
+            if (ilkPano.gerilimLN) docXml = setValueByLabel(docXml, 'L-N(V)', ilkPano.gerilimLN);
+            if (ilkPano.gerilimNPE) docXml = setValueByLabel(docXml, 'N-PE(V)', ilkPano.gerilimNPE);
+            if (ilkPano.kisaDevreAkimi3Faz) docXml = setValueByLabel(docXml, 'Hesaplanan 3fazlı kısa devre', ilkPano.kisaDevreAkimi3Faz);
+            if (ilkPano.dkdTipi) docXml = setValueByLabel(docXml, 'Aşırı gerilim koruma (DKD) tipi', ilkPano.dkdTipi);
+            if (ilkPano.dkdDayanmaAkimi) docXml = setValueByLabel(docXml, 'Aşırı gerilim koruma(DKD) dayanma', ilkPano.dkdDayanmaAkimi);
         }
     } catch (e) {
         console.error('Pano ölçüm değerleri doldurulurken hata:', e.message);

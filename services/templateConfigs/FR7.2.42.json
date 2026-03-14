@@ -45,14 +45,25 @@
       "title": "Yangın Mekanik Tesisatı Bilgileri",
       "layout": "row-2",
       "fields": [
-        { "id": "sprinklerProje", "label": "Sprinkler (Proje)", "type": "text", "placeholder": "Var/Yok" },
-        { "id": "sprinklerUygulama", "label": "Sprinkler (Uygulama)", "type": "text", "placeholder": "Var/Yok" },
-        { "id": "yanginDolabiProje", "label": "Yangın Dolabı (Proje)", "type": "text", "placeholder": "Var/Yok" },
-        { "id": "yanginDolabiUygulama", "label": "Yangın Dolabı (Uygulama)", "type": "text", "placeholder": "Var/Yok" },
-        { "id": "itfaiyeSuAlmaProje", "label": "İtfaiye Su Alma Ağzı (Proje)", "type": "text", "placeholder": "Var/Yok" },
-        { "id": "itfaiyeSuAlmaUygulama", "label": "İtfaiye Su Alma Ağzı (Uygulama)", "type": "text", "placeholder": "Var/Yok" },
-        { "id": "hidrantProje", "label": "Hidrant Sistemi (Proje)", "type": "text", "placeholder": "Var/Yok" },
-        { "id": "hidrantUygulama", "label": "Hidrant Sistemi (Uygulama)", "type": "text", "placeholder": "Var/Yok" }
+        { "id": "sprinklerProje", "label": "Sprinkler (Proje)", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "sprinklerUygulama", "label": "Sprinkler (Uygulama)", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "yanginDolabiProje", "label": "Yangın Dolabı (Proje)", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "yanginDolabiUygulama", "label": "Yangın Dolabı (Uygulama)", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "itfaiyeSuAlmaProje", "label": "İtfaiye Su Alma Ağzı (Proje)", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "itfaiyeSuAlmaUygulama", "label": "İtfaiye Su Alma Ağzı (Uygulama)", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "itfaiyeSuVermeProje", "label": "İtfaiye Su Verme Ağzı (Proje)", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "itfaiyeSuVermeUygulama", "label": "İtfaiye Su Verme Ağzı (Uygulama)", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "hidrantProje", "label": "Hidrant Sistemi (Proje)", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "hidrantUygulama", "label": "Hidrant Sistemi (Uygulama)", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "hidrolikHesaplari", "label": "Yangın Tesisatı Hidrolik Hesapları", "type": "radio", "options": ["Var", "Yok"], "default": "Var" },
+        { "id": "islakBoruluProje", "label": "Sprinkler Islak Borulu (Proje)", "type": "radio", "options": ["sulu", "köpüklü"], "default": "sulu" },
+        { "id": "islakBoruluUygulama", "label": "Sprinkler Islak Borulu (Uygulama)", "type": "radio", "options": ["sulu", "köpüklü"], "default": "sulu" },
+        { "id": "kuruBoruluProje", "label": "Sprinkler Kuru Borulu (Proje)", "type": "radio", "options": ["sulu", "köpüklü"], "default": "sulu" },
+        { "id": "kuruBoruluUygulama", "label": "Sprinkler Kuru Borulu (Uygulama)", "type": "radio", "options": ["sulu", "köpüklü"], "default": "sulu" },
+        { "id": "suDeposuKapasite", "label": "Yangın Suyu Deposu Kapasite (m³)", "type": "text" },
+        { "id": "kopukDeposuKapasite", "label": "Köpük Deposu Kapasite (m³)", "type": "text" },
+        { "id": "sprinklerSistemAlani", "label": "Sprinkler Sistem Alanı", "type": "text" },
+        { "id": "yapiYuksekligi", "label": "Yapı Yüksekliği (m)", "type": "text" }
       ]
     },
     {
@@ -74,7 +85,7 @@
       "id": "kontrol",
       "title": "Kontrol Kriterleri ve Testler",
       "type": "control-questions",
-      "badge": "30+ Kontrol",
+      "badge": "38 Kontrol",
       "questions": [
         { "id": "kriter1", "no": 1, "text": "Yangın pompa dairesinin sıcaklığı uygun değerlerdedir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
         { "id": "kriter2", "no": 2, "text": "Yangın pompası debi ve basınç bilgileri proje ile uyumludur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
@@ -97,7 +108,61 @@
         { "id": "kriter19", "no": 19, "text": "Yangın dolabı hortumlarında hasar çatlama yıpranma bulunmamaktadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
         { "id": "kriter20", "no": 20, "text": "Yangın pompaları mevcuttur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
         { "id": "kriter21", "no": 21, "text": "Yangın pompa dairesi/odası bulunmakta ve amacı dışında kullanılmamaktadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
-        { "id": "kriter22", "no": 22, "text": "Yangın pompa dairesinde uygun drenaj gideri düzenlenmiştir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" }
+        { "id": "kriter22", "no": 22, "text": "Yangın pompa dairesinde uygun drenaj gideri düzenlenmiştir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter23", "no": 23, "text": "Yangın pompalarında hava boşaltma valfi bulunmakta ve çalışır durumdadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter24", "no": 24, "text": "Yangın pompalarında sirkülasyon rahatlatma valfi bulunmakta ve çalışır durumdadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter25", "no": 25, "text": "Her bir yangın pompasının basınç kontrol anahtarı bulunmakta ve çalışır durumdadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter26", "no": 26, "text": "Her bir yangın pompasının ayrı bir basınç hissetme hattı bulunmakta ve çalışır durumdadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter27", "no": 27, "text": "Her bir pompanın ayrı bir kumanda panosu bulunmakta ve çalışır durumdadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter28", "no": 28, "text": "Yangın pompa emişinde bağlantı konik veya düzdür.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter29", "no": 29, "text": "Yangın pompalarının giriş ve çıkışlarında uygun tipte basınç göstergeleri bulunmakta ve okunur durumdadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter30", "no": 30, "text": "Basınç sabitleme pompası tesis edilmiş ise uygun debi ve basınç kapasitesindedir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter31", "no": 31, "text": "Yangın pompalarının enerji beslemesi güvenilir kaynaktan yapılmaktadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter32", "no": 32, "text": "Debi ölçümü için debimetre tesis edilmiş veya bulundurulmaktadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter33", "no": 33, "text": "Yangın dolabı hortumları 30 m uzunluğu aşmamaktadır. (TS EN 671-1)", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter34", "no": 34, "text": "Yangın dolabı hortumları lans kapama, püskürtme veya fıskiye yapabilmektedir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter35", "no": 35, "text": "Yangın dolabında suyun akışı sabit ve yeterli düzeydedir.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter36", "no": 36, "text": "Yangın dolabı hattında basınç değeri 4-9 bar arasındadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter37", "no": 37, "text": "Sabit boru sistemi ve bağlantı noktaları üzerinde korozyon bulunmamaktadır.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" },
+        { "id": "kriter38", "no": 38, "text": "Boru tesisatı sabitlemesi uygundur.", "options": ["Uygun", "Uygun Değil", "Uygulanamaz"], "default": "Uygun" }
+      ]
+    },
+    {
+      "id": "yanginDolaplari",
+      "title": "Yangın Dolap Sistemi",
+      "type": "repeatable",
+      "badge": "Artırılabilir",
+      "entryTitle": "Yangın Dolabı",
+      "fields": [
+        { "id": "bulunduguBolum", "label": "Bulunduğu Bölüm", "type": "text", "placeholder": "İdari Bina (Zemin Kat)" },
+        { "id": "dolapNo", "label": "Dolap Numarası", "type": "text", "placeholder": "1 NOLU" },
+        { "id": "hortumUzunlugu", "label": "Hortum Uzunluğu (m)", "type": "text", "default": "20" },
+        { "id": "hortumCapi", "label": "Hortum Çapı (mm)", "type": "text", "default": "25" }
+      ],
+      "checks": [
+        { "id": "fizikselSaglam", "text": "Yangın Dolabı fiziksel olarak sağlam konumdadır.", "default": true },
+        { "id": "guvenlikIsareti", "text": "Yangın Dolabı üzerinde güvenlik işareti ve uyarı tabelası mevcuttur.", "default": true },
+        { "id": "hortumVana", "text": "Yangın Dolabının hortum ve vanası uygun şekilde bulunmaktadır.", "default": true },
+        { "id": "engelleyiciMalzeme", "text": "Dolap Önünde engelleyici malzeme bulunmamaktadır.", "default": true },
+        { "id": "nozulMontaji", "text": "Yangın Dolabı hortum ucu nozul montajı ve çalışması uygundur.", "default": true },
+        { "id": "hakimNokta", "text": "Yangın Dolabı işletmeye hakim noktaya konumlandırılmışlardır.", "default": true },
+        { "id": "suBasinci", "text": "Yangın Dolabında su basıncının, su akışının kararlı ve yeterli olduğu", "default": true }
+      ]
+    },
+    {
+      "id": "pompaBilgileri",
+      "title": "Yangın Pompa Grubu Etiket Bilgileri",
+      "type": "repeatable",
+      "badge": "Artırılabilir",
+      "entryTitle": "Pompa",
+      "fields": [
+        { "id": "pompaMarka", "label": "Marka", "type": "text" },
+        { "id": "pompaTipModel", "label": "Tip - Model", "type": "text" },
+        { "id": "pompaTur", "label": "Tür (Asıl/Yedek/Jokey)", "type": "select", "options": ["ASIL", "YEDEK", "JOKEY"] },
+        { "id": "pompaDebi", "label": "Debi (m³/h)", "type": "text" },
+        { "id": "pompaBasinc", "label": "Basınç (mss)", "type": "text" },
+        { "id": "pompaGuc", "label": "Güç (kW)", "type": "text" },
+        { "id": "pompaSeriNo", "label": "Pompa Seri No", "type": "text" }
       ]
     },
     {
@@ -134,7 +199,24 @@
       { "label": "Yapı İnşaat Alanı", "field": "yapiInsaatAlani" },
       { "label": "Bina Yüksekliği", "field": "binaYuksekligi" },
       { "label": "Sistem Debisi", "field": "sistemDebisi" },
-      { "label": "Tehlike Sınıfı", "field": "tehlikeSinifi" }
+      { "label": "Tehlike Sınıfı", "field": "tehlikeSinifi" },
+      { "label": "Proje Onay Tarihi/ Numarası", "field": "projeOnayTarihi" },
+      { "label": "Sistem Basıncı", "field": "sistemBasinci" },
+      { "label": "Yapı Kullanım Amacı", "field": "yapiKullanimAmaci" },
+      { "label": "Sprinkler Sistem Alanı", "field": "sprinklerSistemAlani" },
+      { "label": "Yapı Yüksekliği", "field": "yapiYuksekligi" },
+      { "label": "Yangın Suyu Deposu Kapasite", "field": "suDeposuKapasite" },
+      { "label": "Köpük Deposu Kapasite", "field": "kopukDeposuKapasite" }
+    ],
+    "checkboxes": [
+      { "type": "var-yok-pair", "context": "Sprinkler  Sistemi", "projeField": "sprinklerProje", "uygulamaField": "sprinklerUygulama" },
+      { "type": "var-yok-pair", "context": "Yangın Dolabı Sistemi", "projeField": "yanginDolabiProje", "uygulamaField": "yanginDolabiUygulama" },
+      { "type": "var-yok-pair", "context": "İtfaiye Su Alma Ağzı", "projeField": "itfaiyeSuAlmaProje", "uygulamaField": "itfaiyeSuAlmaUygulama" },
+      { "type": "var-yok-pair", "context": "İtfaiye Su Verme Ağzı", "projeField": "itfaiyeSuVermeProje", "uygulamaField": "itfaiyeSuVermeUygulama" },
+      { "type": "var-yok-pair", "context": "Hidrant  Sistemi", "projeField": "hidrantProje", "uygulamaField": "hidrantUygulama" },
+      { "type": "var-yok", "context": "Hidrolik Hesapları", "field": "hidrolikHesaplari" },
+      { "type": "row-radio-pair", "context": "ıslak borulu", "projeField": "islakBoruluProje", "uygulamaField": "islakBoruluUygulama", "options": ["sulu", "köpüklü"] },
+      { "type": "row-radio-pair", "context": "kuru borulu", "projeField": "kuruBoruluProje", "uygulamaField": "kuruBoruluUygulama", "options": ["sulu", "köpüklü"] }
     ],
     "controlQuestions": {
       "mode": "next",
@@ -145,7 +227,7 @@
         { "field": "kriter4", "text": "performans test sonuçları" },
         { "field": "kriter5", "text": "mekanik projesi vardır" },
         { "field": "kriter6", "text": "uygulaması projesi ile" },
-        { "field": "kriter7", "text": "Su deposu kapasitesi" },
+        { "field": "kriter7", "text": "deposu kapasitesi" },
         { "field": "kriter8", "text": "beslemeleri otomatik" },
         { "field": "kriter9", "text": "Besleme borusu ve kontrol" },
         { "field": "kriter10", "text": "dolabı konumları" },
@@ -160,8 +242,39 @@
         { "field": "kriter19", "text": "hasar çatlama" },
         { "field": "kriter20", "text": "pompaları mevcuttur" },
         { "field": "kriter21", "text": "pompa dairesi/odası" },
-        { "field": "kriter22", "text": "drenaj gideri" }
+        { "field": "kriter22", "text": "drenaj gideri" },
+        { "field": "kriter23", "text": "hava boşaltma valfi" },
+        { "field": "kriter24", "text": "sirkülasyon rahatlatma" },
+        { "field": "kriter25", "text": "basınç kontrol anahtarı" },
+        { "field": "kriter26", "text": "basınç hissetme hattı" },
+        { "field": "kriter27", "text": "kumanda panosu" },
+        { "field": "kriter28", "text": "emişinde bağlantı" },
+        { "field": "kriter29", "text": "basınç göstergeleri" },
+        { "field": "kriter30", "text": "Basınç sabitleme" },
+        { "field": "kriter31", "text": "enerji beslemesi" },
+        { "field": "kriter32", "text": "debimetre tesis" },
+        { "field": "kriter33", "text": "30 m uzunluğu" },
+        { "field": "kriter34", "text": "lans kapama" },
+        { "field": "kriter35", "text": "akışı sabit ve yeterli" },
+        { "field": "kriter36", "text": "4-9 bar" },
+        { "field": "kriter37", "text": "korozyon" },
+        { "field": "kriter38", "text": "sabitlemesi uygun" }
       ]
-    }
+    },
+    "repeatableSections": [
+      {
+        "id": "yanginDolaplari",
+        "findTableBy": "YANGIN DOLAP S",
+        "rowsPerEntry": 10,
+        "fields": {
+          "bulunduguBolum": { "row": 1, "label": "BULUNDUĞU BÖLÜM" },
+          "dolapNo": { "row": 1, "label": "DOLAP NUMARASI" },
+          "hortumUzunlugu": { "row": 2, "label": "Hortum Uzunluğu" },
+          "hortumCapi": { "row": 2, "label": "Hortum Çapı" }
+        },
+        "checks": ["fizikselSaglam", "guvenlikIsareti", "hortumVana", "engelleyiciMalzeme", "nozulMontaji", "hakimNokta", "suBasinci"],
+        "checkSymbol": "√"
+      }
+    ]
   }
 }

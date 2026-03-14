@@ -1,0 +1,909 @@
+{
+  "sablonKodu": "FR7.2.49E",
+  "sablonAdi": "Yangın Algılama Sistemi Muayene ve Ölçüm Raporu",
+  "kategori": "elektrik",
+  "altKategori": "elektrik",
+  "raporNoPrefix": "MT",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor Numarası",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Periyodik Kontrol Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        },
+        {
+          "id": "baslangicTarihi",
+          "label": "Periyodik Kontrol Başlangıç Tarihi ve Saati",
+          "type": "date"
+        },
+        {
+          "id": "bitisTarihi",
+          "label": "Periyodik Kontrol Bitiş Tarihi ve Saati",
+          "type": "date"
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil Numarası",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Bir Sonraki Periyodik Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "metodKapsam",
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "type": "text",
+          "placeholder": "TS EN 54"
+        }
+      ]
+    },
+    {
+      "id": "tesisBilgileri",
+      "title": "Tesis/Sistem Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "kontrolPaneliMarkaModel",
+          "label": "Kontrol paneli marka/model",
+          "type": "text",
+          "placeholder": "Marka/Model"
+        },
+        {
+          "id": "kontrolPaneliSeriNo",
+          "label": "Kontrol paneli seri no./imal yılı",
+          "type": "text",
+          "placeholder": "Seri No / İmal Yılı"
+        },
+        {
+          "id": "kontrolPaneliCalismaGerilimi",
+          "label": "Kontrol paneli çalışma gerilimi",
+          "type": "text",
+          "placeholder": "Çalışma gerilimi"
+        },
+        {
+          "id": "kontrolPaneliYeri",
+          "label": "Kontrol paneli yeri",
+          "type": "text",
+          "placeholder": "Panel yeri"
+        },
+        {
+          "id": "ilkKontrolTarihi",
+          "label": "İlk kontrol/devreye alma tarihi",
+          "type": "text",
+          "placeholder": "İlk kontrol tarihi"
+        },
+        {
+          "id": "sonKontrolTarihi",
+          "label": "Son kontrol tarihi",
+          "type": "text",
+          "placeholder": "Son kontrol tarihi"
+        },
+        {
+          "id": "projeOnayKurumu",
+          "label": "Proje onay kurumu",
+          "type": "text",
+          "placeholder": "Onay kurumu"
+        },
+        {
+          "id": "projeOnayTarihSayisi",
+          "label": "Proje onay tarih ve sayısı",
+          "type": "text",
+          "placeholder": "Tarih ve sayı"
+        },
+        {
+          "id": "binaKullanimSinifi",
+          "label": "Bina kullanma sınıfı",
+          "type": "text",
+          "placeholder": "Konut, Endüstriyel vb."
+        },
+        {
+          "id": "binaTehlikeSinifi",
+          "label": "Bina tehlike sınıfı",
+          "type": "text",
+          "placeholder": "Düşük/Orta/Yüksek tehlike"
+        },
+        {
+          "id": "tehlikeKategorisi",
+          "label": "Tehlike kategorisi",
+          "type": "select",
+          "options": ["1", "2", "3", "4"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "binaToplamKullanimAlani",
+          "label": "Bina toplam kullanım alanı (m²)",
+          "type": "text",
+          "placeholder": "m²"
+        },
+        {
+          "id": "katSayisi",
+          "label": "Kat sayısı",
+          "type": "text",
+          "placeholder": "Kat sayısı"
+        },
+        {
+          "id": "binaYuksekligi",
+          "label": "Bina yüksekliği/Yapı yüksekliği (m)",
+          "type": "text",
+          "placeholder": "m"
+        },
+        {
+          "id": "yapiKullanimIzinTarihi",
+          "label": "Yapı kullanma izin tarihi",
+          "type": "text",
+          "placeholder": "İzin tarihi"
+        },
+        {
+          "id": "bolumSayisi",
+          "label": "Bölüm sayısı",
+          "type": "text",
+          "placeholder": "Bölüm sayısı"
+        },
+        {
+          "id": "digerTespitler",
+          "label": "Varsa diğer tespitler",
+          "type": "text",
+          "placeholder": "Diğer tespitler"
+        },
+        {
+          "id": "sistemTipi",
+          "label": "Yangın algılama sistemi",
+          "type": "select",
+          "options": ["Otomatik", "Manuel"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "sebekeTipi",
+          "label": "Şebeke tipi",
+          "type": "select",
+          "options": ["Işıklı", "Sesli", "Işık+Sesli", "Anons", "Diğer"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "calismaYontemi",
+          "label": "Sistem çalışma tipi",
+          "type": "select",
+          "options": ["Adresli", "Konvansiyonel"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "kontrolNedeni",
+          "label": "Kontrol nedeni",
+          "type": "select",
+          "options": ["Periyodik Kontrol", "İlk Kontrol"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "kapsamliDegisiklik",
+          "label": "Tesisatta kapsamlı değişiklik var mı?",
+          "type": "select",
+          "options": ["Var", "Yok", "Belirlenemedi"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "oncekiEtiket",
+          "label": "Bir önceki periyodik kontrol etiketi var mı?",
+          "type": "select",
+          "options": ["Var", "Yok"],
+          "placeholder": "Seçiniz"
+        }
+      ]
+    },
+    {
+      "id": "olcumAletleri",
+      "title": "Ölçüm Aletleri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "cihazAdi",
+          "label": "Cihaz Adı",
+          "type": "text",
+          "placeholder": "Toprak Direnci Ölçer"
+        },
+        {
+          "id": "cihazSeriNo",
+          "label": "Seri Numarası",
+          "type": "text"
+        },
+        {
+          "id": "kalibrasyonTarihi",
+          "label": "Kalibrasyon Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "kalibrasyonGecerlilikTarihi",
+          "label": "Kalibrasyon Geçerlilik Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "kalibrasyonNo",
+          "label": "Kalibrasyon Numarası",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Kontrol Kriterleri",
+      "type": "control-questions",
+      "badge": "34 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "group": "ÖN KONTROLLER",
+          "text": "Yetkili ve eğitimli personel var mı?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "group": "ÖN KONTROLLER",
+          "text": "Acil durum anons sistemi mevcudiyeti",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "group": "ÖN KONTROLLER",
+          "text": "Yangın güvenliği sorumluları belirlenmiş mi?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "group": "ÖN KONTROLLER",
+          "text": "Bakım/servis kayıtları tutuluyor mu?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "group": "ÖN KONTROLLER",
+          "text": "Yangın alarm panelinin durumu (ekran-tuşlar-LED'ler)",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "group": "ÖN KONTROLLER",
+          "text": "Sistem kütüğü belgesi var mı?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Kontrol paneli ve varsa tekrarlayıcı panellerin yerleşim durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Kullanma talimatı var mı?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Kontrol paneli sürekli izlenebilir durumda mı?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Akü kapasitesi, gerilimi ve fiziki durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Dedektör ve/veya buton adreslemesi veya yerleşim haritası var mı?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Dedektörlerin çalışma ortamına uyumu ve yeterli olması",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Asma tavan, yükseltilmiş döşeme vb. içinde kalan dedektörlerin uyarılarının görülebilmesi için paralel ihbar lambaları var mı?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 14,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Sesli-siren/ışıklı-flaşör uyarılarının yerleşim durumu ve yeterli olması",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter15",
+          "no": 15,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Çevrimlerde kısa devre ve açık devre koruması",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter16",
+          "no": 16,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Yangın alarm ve uyarı kablolarının uygunluğu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter17",
+          "no": 17,
+          "group": "YANGIN ALGILAMA VE YANGIN UYARI SİSTEMİ VE TESİSATI",
+          "text": "Güvenlik devre ayrılması (Bant-I, Bant-II'den ayırma/yalıtım)",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter18",
+          "no": 18,
+          "group": "ACİL DURUM AYDINLATMA VE ACİL DURUM YÖNLENDİRME SİSTEMİ",
+          "text": "Acil durum aydınlatma armatürleri uygunluğu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter19",
+          "no": 19,
+          "group": "ACİL DURUM AYDINLATMA VE ACİL DURUM YÖNLENDİRME SİSTEMİ",
+          "text": "Acil durum aydınlatma sistemi varlığı, yeterliliği panel önü (lux değeri TS EN 12464'e göre)",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter20",
+          "no": 20,
+          "group": "ACİL DURUM AYDINLATMA VE ACİL DURUM YÖNLENDİRME SİSTEMİ",
+          "text": "Acil durum aydınlatma sistemi varlığı, yeterliliği-diğer gerekli alanlar",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter21",
+          "no": 21,
+          "group": "ACİL DURUM AYDINLATMA VE ACİL DURUM YÖNLENDİRME SİSTEMİ",
+          "text": "Acil çıkış hollerinde acil durum yönlendirme işaretleri varlığı, yeterliliği",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter22",
+          "no": 22,
+          "group": "ACİL DURUM AYDINLATMA VE ACİL DURUM YÖNLENDİRME SİSTEMİ",
+          "text": "Kaçış yollarında acil durum yönlendirme işaretleri varlığı, yeterliliği",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter23",
+          "no": 23,
+          "group": "ACİL DURUM AYDINLATMA VE ACİL DURUM YÖNLENDİRME SİSTEMİ",
+          "text": "Acil durum aydınlatma ünitelerinin aydınlatma sürelerinin uygunluğu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter24",
+          "no": 24,
+          "group": "ACİL DURUM AYDINLATMA VE ACİL DURUM YÖNLENDİRME SİSTEMİ",
+          "text": "Acil durum aydınlatma ünitelerinin aydınlatma seviyelerinin uygunluğu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter25",
+          "no": 25,
+          "group": "ACİL DURUM AYDINLATMA VE ACİL DURUM YÖNLENDİRME SİSTEMİ",
+          "text": "Acil durum aydınlatması ve yönlendirmesi elektrik kesildiğinde otomatik devreye girmesi",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter26",
+          "no": 26,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "Duman damperleri açık/kapalı konum bilgilerinin doğrudan çevrimlere bağlı kontak izleme cihazlar ile izlenebilirliği",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter27",
+          "no": 27,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "İklimlendirme/havalandırma sistemi ve duman egzoz sistemi sinyal kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter28",
+          "no": 28,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "Yangın alarm sisteminin diğer otomatik söndürme sistemleri ile entegre olma durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter29",
+          "no": 29,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "Yangın söndürme sistemi akış anahtarları, hat kesme vanaları, yangın pompaları çalışma fonksiyonları konum bilgisi izlenebilirliği",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter30",
+          "no": 30,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "Yangın algılama ve uyarı sisteminin bina otomasyon sistemi ile bağlantı ve haberleşme kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter31",
+          "no": 31,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "Yangın anında asansör kuyuları ve yangın merdiveni kovaları basınçlandırma sistemi kontrolleri",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter32",
+          "no": 32,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "Asansörlerin yangın anında davranışları kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter33",
+          "no": 33,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "Yangın bölme kapıları elektromanyetik tutucuları kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter34",
+          "no": 34,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "Yangın anında elektrik tesisatında kesicilerin çalışıp çalışmadığı, enerjisi kesilmemesi gereken bölümlerin yedek enerji kaynaklarının bulunup bulunmadığı ve devreye otomatik girip girmediği",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter35",
+          "no": 35,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "Yangın anında patlayıcı gaz dağıtım sistemlerinin kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter36",
+          "no": 36,
+          "group": "YANGIN ANINDA DİĞER MEKANİK, ELEKTRİK VE ELEKTRONİK SİSTEMLERLE ENTEGRASYON",
+          "text": "Geçiş kontrol sistemleri uygunluğu (döner kapı, turnike, acil çıkış kapıları)",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Yangın Algılama Sistemi\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/4. Elektrik/FR7.2.49 Yangın Algılama Sistemi Muayene ve Ölçüm Raporu-1.docx",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Rapor Numarası",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "Periyodik Kontrol Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "İSG-KATİP Sözleşme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "Periyodik Kontrol Başlangıç Tarihi ve Saati",
+        "field": "baslangicTarihi",
+        "format": "dateTime"
+      },
+      {
+        "label": "Periyodik Kontrol Bitiş Tarihi ve Saati",
+        "field": "bitisTarihi",
+        "format": "dateTime"
+      },
+      {
+        "label": "SGK Sicil Numarası",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Bir Sonraki Periyodik Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Periyodik Kontrol Metodu ve Kapsamı",
+        "field": "metodKapsam"
+      },
+      {
+        "label": "Kontrol paneli marka/model",
+        "field": "kontrolPaneliMarkaModel"
+      },
+      {
+        "label": "Kontrol paneli seri no./imal yılı",
+        "field": "kontrolPaneliSeriNo"
+      },
+      {
+        "label": "Kontrol paneli çalışma gerilimi",
+        "field": "kontrolPaneliCalismaGerilimi"
+      },
+      {
+        "label": "Kontrol paneli yeri",
+        "field": "kontrolPaneliYeri"
+      },
+      {
+        "label": "İlk kontrol/devreye alma tarihi",
+        "field": "ilkKontrolTarihi"
+      },
+      {
+        "label": "Son kontrol tarihi",
+        "field": "sonKontrolTarihi"
+      },
+      {
+        "label": "Proje onay kurumu",
+        "field": "projeOnayKurumu"
+      },
+      {
+        "label": "Proje onay tarih ve sayısı",
+        "field": "projeOnayTarihSayisi"
+      },
+      {
+        "label": "Bina kullanma sınıfı",
+        "field": "binaKullanimSinifi"
+      },
+      {
+        "label": "Bina tehlike sınıfı",
+        "field": "binaTehlikeSinifi"
+      },
+      {
+        "label": "Tehlike kategorisi",
+        "field": "tehlikeKategorisi"
+      },
+      {
+        "label": "Bina toplam kullanım alanı (m²)",
+        "field": "binaToplamKullanimAlani"
+      },
+      {
+        "label": "Kat sayısı",
+        "field": "katSayisi"
+      },
+      {
+        "label": "Bina yüksekliği/Yapı yüksekliği (m)",
+        "field": "binaYuksekligi"
+      },
+      {
+        "label": "Yapı kullanma izin tarihi",
+        "field": "yapiKullanimIzinTarihi"
+      },
+      {
+        "label": "Bölüm sayısı",
+        "field": "bolumSayisi"
+      },
+      {
+        "label": "Varsa diğer tespitler",
+        "field": "digerTespitler"
+      },
+      {
+        "label": "Cihaz adı",
+        "field": "cihazAdi"
+      },
+      {
+        "label": "Seri numarası",
+        "field": "cihazSeriNo"
+      },
+      {
+        "label": "Kalibrasyon tarihi",
+        "field": "kalibrasyonTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Kalibrasyon geçerlilik tarihi",
+        "field": "kalibrasyonGecerlilikTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Kalibrasyon numarası",
+        "field": "kalibrasyonNo"
+      }
+    ],
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["Otomatik", "Manuel"],
+        "field": "sistemTipi",
+        "direction": "after",
+        "searchText": "Yangın algılama sistemi"
+      },
+      {
+        "type": "radio",
+        "labels": ["Işıklı", "Sesli", "Işık+Sesli", "Anons", "Diğer"],
+        "field": "sebekeTipi",
+        "direction": "after",
+        "searchText": "Şebeke tipi"
+      },
+      {
+        "type": "radio",
+        "labels": ["Adresli", "Konvansiyonel"],
+        "field": "calismaYontemi",
+        "direction": "after",
+        "searchText": "Sistem çalışma tipi"
+      },
+      {
+        "type": "radio",
+        "labels": ["Periyodik Kontrol", "İlk Kontrol"],
+        "field": "kontrolNedeni",
+        "direction": "after",
+        "searchText": "Kontrol nedeni"
+      },
+      {
+        "type": "radio",
+        "labels": ["Var", "Yok", "Belirlenemedi"],
+        "field": "kapsamliDegisiklik",
+        "direction": "after",
+        "searchText": "kapsamlı değişiklik"
+      },
+      {
+        "type": "radio",
+        "labels": ["Var", "Yok"],
+        "field": "oncekiEtiket",
+        "direction": "after",
+        "searchText": "periyodik kontrol etiketi"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Yetkili ve eğitimli personel var mı"
+        },
+        {
+          "field": "kriter2",
+          "text": "Acil durum anons sistemi mevcudiyeti"
+        },
+        {
+          "field": "kriter3",
+          "text": "Yangın güvenliği sorumluları belirlenmiş mi"
+        },
+        {
+          "field": "kriter4",
+          "text": "Bakım/servis kayıtları tutuluyor mu"
+        },
+        {
+          "field": "kriter5",
+          "text": "Yangın alarm panelinin durumu"
+        },
+        {
+          "field": "kriter6",
+          "text": "Sistem kütüğü belgesi var mı"
+        },
+        {
+          "field": "kriter7",
+          "text": "Kontrol paneli ve varsa tekrarlayıcı panellerin yerleşim"
+        },
+        {
+          "field": "kriter8",
+          "text": "Kullanma talimatı var mı"
+        },
+        {
+          "field": "kriter9",
+          "text": "Kontrol paneli sürekli izlenebilir durumda"
+        },
+        {
+          "field": "kriter10",
+          "text": "Akü kapasitesi, gerilimi ve fiziki durumu"
+        },
+        {
+          "field": "kriter11",
+          "text": "Dedektör ve/veya buton adreslemesi"
+        },
+        {
+          "field": "kriter12",
+          "text": "Dedektörlerin çalışma ortamına uyumu"
+        },
+        {
+          "field": "kriter13",
+          "text": "Asma tavan, yükseltilmiş döşeme"
+        },
+        {
+          "field": "kriter14",
+          "text": "Sesli-siren/ışıklı-flaşör uyarılarının yerleşim"
+        },
+        {
+          "field": "kriter15",
+          "text": "Çevrimlerde kısa devre ve açık devre koruması"
+        },
+        {
+          "field": "kriter16",
+          "text": "Yangın alarm ve uyarı kablolarının uygunluğu"
+        },
+        {
+          "field": "kriter17",
+          "text": "Güvenlik devre ayrılması"
+        },
+        {
+          "field": "kriter18",
+          "text": "Acil durum aydınlatma armatürleri uygunluğu"
+        },
+        {
+          "field": "kriter19",
+          "text": "aydınlatma sistemi varlığı, yeterliliğipanelönü"
+        },
+        {
+          "field": "kriter20",
+          "text": "aydınlatma sistemi varlığı, yeterliliği-diğer"
+        },
+        {
+          "field": "kriter21",
+          "text": "acil durum yönlendirmeişaretleri varlığı"
+        },
+        {
+          "field": "kriter22",
+          "text": "Kaçış yollarında acil durum yönlendirme işaretleri"
+        },
+        {
+          "field": "kriter23",
+          "text": "aydınlatma ünitelerinin aydınlatmasürelerinin"
+        },
+        {
+          "field": "kriter24",
+          "text": "aydınlatma ünitelerinin aydınlatmaseviyelerinin"
+        },
+        {
+          "field": "kriter25",
+          "text": "elektrikkesildiğinde otomatik devreye girmesi"
+        },
+        {
+          "field": "kriter26",
+          "text": "Duman damperleri açık/kapalı konum bilgilerinin"
+        },
+        {
+          "field": "kriter27",
+          "text": "İklimlendirme/havalandırma sistemi ve duman"
+        },
+        {
+          "field": "kriter28",
+          "text": "Yangın alarm sisteminin diğer otomatik söndürme"
+        },
+        {
+          "field": "kriter29",
+          "text": "Yangın söndürme sistemi akış anahtarları"
+        },
+        {
+          "field": "kriter30",
+          "text": "Yangın algılama ve uyarı sisteminin bina otomasyon"
+        },
+        {
+          "field": "kriter31",
+          "text": "asansör kuyuları ve yangın merdiveni"
+        },
+        {
+          "field": "kriter32",
+          "text": "Asansörlerin yangın anında davranışları"
+        },
+        {
+          "field": "kriter33",
+          "text": "Yangın bölme kapıları elektromanyetik"
+        },
+        {
+          "field": "kriter34",
+          "text": "elektrik tesisatında kesicilerin çalışıp"
+        },
+        {
+          "field": "kriter35",
+          "text": "patlayıcı gaz dağıtım sistemlerinin"
+        },
+        {
+          "field": "kriter36",
+          "text": "Geçiş kontrol sistemleri uygunluğu"
+        }
+      ]
+    }
+  }
+}

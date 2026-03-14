@@ -158,16 +158,10 @@
           "placeholder": "2000"
         },
         {
-          "id": "elektrikli",
-          "label": "Elektrikli",
-          "type": "text",
-          "placeholder": "Elektrikli"
-        },
-        {
-          "id": "mekanik",
-          "label": "Mekanik",
-          "type": "text",
-          "placeholder": "Mekanik"
+          "id": "transpaletTipi",
+          "label": "Transpalet Tipi",
+          "type": "select",
+          "options": ["Elektrikli", "Mekanik"]
         }
       ]
     },
@@ -177,27 +171,10 @@
       "layout": "row-2",
       "fields": [
         {
-          "id": "test_dinamik_test_agirligi_kg",
-          "label": "Dinamik Test Ağırlığı (kg)",
+          "id": "testAgirligi",
+          "label": "Test Ağırlığı (kg)",
           "type": "text",
-          "placeholder": "Dinamik Test Ağırlığı"
-        },
-        {
-          "id": "test_statik_test_agirligi_kg",
-          "label": "Statik Test Ağırlığı (kg)",
-          "type": "text",
-          "placeholder": "Statik Test Ağırlığı"
-        },
-        {
-          "id": "test_tarihi",
-          "label": "Test Tarihi",
-          "type": "date"
-        },
-        {
-          "id": "test_suresi_dk",
-          "label": "Test Süresi (dk)",
-          "type": "text",
-          "placeholder": "Test süresi"
+          "placeholder": "2660"
         }
       ]
     },
@@ -205,7 +182,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "9 Kontrol",
+      "badge": "15 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -240,27 +217,25 @@
         {
           "id": "kriter4",
           "no": 4,
-          "text": "Bağlantı cıvataları durumu",
+          "text": "Asansör makaralarının durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
-          ],
-          "default": "Uygun"
+          ]
         },
         {
           "id": "kriter5",
           "no": 5,
-          "text": "Gal zinciri bakla ve pimlerinin aşınma ve gerginlik durumu",
+          "text": "Yürüyüş ve park freni durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
-          ],
-          "default": "Uygun"
+          ]
         },
         {
           "id": "kriter6",
           "no": 6,
-          "text": "I. Yüksüz hareket durumu",
+          "text": "Bağlantı cıvataları durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -270,7 +245,7 @@
         {
           "id": "kriter7",
           "no": 7,
-          "text": "II. Yük altında statik kontrol durumu",
+          "text": "Gal zinciri bakla ve pimlerinin aşınma ve gerginlik durumu",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -280,6 +255,53 @@
         {
           "id": "kriter8",
           "no": 8,
+          "text": "Korna çalışma durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ]
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Aşırı yük koruma valfi durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ]
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Panel göstergeleri durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ]
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "I. Yüksüz hareket durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "II. Yük altında statik kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
           "text": "III.Yük altında dinamik kontrol durumu",
           "options": [
             "Uygun",
@@ -288,9 +310,19 @@
           "default": "Uygun"
         },
         {
-          "id": "kriter9",
-          "no": 9,
+          "id": "kriter14",
+          "no": 14,
           "text": "III.Yük altında yapı kontrol durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter15",
+          "no": 15,
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu ?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -415,79 +447,36 @@
         "field": "i_sletme_kapasitesi_kg"
       },
       {
-        "label": "Elektrikli",
-        "field": "elektrikli"
-      },
+        "label": "Test Ağırlığı(kg)",
+        "field": "testAgirligi"
+      }
+    ],
+    "checkboxes": [
       {
-        "label": "Mekanik",
-        "field": "mekanik"
-      },
-      {
-        "label": "Dinamik Test Ağırlığı (kg)",
-        "field": "test_dinamik_test_agirligi_kg"
-      },
-      {
-        "label": "Statik Test Ağırlığı (kg)",
-        "field": "test_statik_test_agirligi_kg"
-      },
-      {
-        "label": "Test Tarihi",
-        "field": "test_tarihi",
-        "format": "date"
-      },
-      {
-        "label": "Test Süresi (dk)",
-        "field": "test_suresi_dk"
+        "type": "radio",
+        "labels": ["Elektrikli", "Mekanik"],
+        "field": "transpaletTipi",
+        "direction": "after"
       }
     ],
     "controlQuestions": {
-      "mode": "next",
+      "mode": "last",
       "questions": [
-        {
-          "field": "kriter1",
-          "text": "Piston ve kumanda valfi",
-          "exact": true
-        },
-        {
-          "field": "kriter2",
-          "text": "Tekerlek çatalında deformasyon ve",
-          "exact": true
-        },
-        {
-          "field": "kriter3",
-          "text": "Lastiklerin genel durumu",
-          "exact": true
-        },
-        {
-          "field": "kriter4",
-          "text": "Bağlantı cıvataları durumu",
-          "exact": true
-        },
-        {
-          "field": "kriter5",
-          "text": "Gal zinciri bakla ve",
-          "exact": true
-        },
-        {
-          "field": "kriter6",
-          "text": "I. Yüksüz hareket durumu",
-          "exact": true
-        },
-        {
-          "field": "kriter7",
-          "text": "II. Yük altında statik",
-          "exact": true
-        },
-        {
-          "field": "kriter8",
-          "text": "III.Yük altında dinamik kontrol",
-          "exact": true
-        },
-        {
-          "field": "kriter9",
-          "text": "III.Yük altında yapı kontrol",
-          "exact": true
-        }
+        { "field": "kriter1", "text": "Piston ve kumanda valfi kaçak durumu" },
+        { "field": "kriter2", "text": "Tekerlek çatalında deformasyon ve çatlaklık durumu" },
+        { "field": "kriter3", "text": "Lastiklerin genel durumu" },
+        { "field": "kriter4", "text": "Asansör makaralarının durumu" },
+        { "field": "kriter5", "text": "Yürüyüş ve park freni durumu" },
+        { "field": "kriter6", "text": "Bağlantı cıvataları durumu" },
+        { "field": "kriter7", "text": "Gal zinciri bakla ve pimlerinin aşınma ve gerginlik durumu" },
+        { "field": "kriter8", "text": "Korna çalışma durumu" },
+        { "field": "kriter9", "text": "Aşırı yük koruma valfi durumu" },
+        { "field": "kriter10", "text": "Panel göstergeleri durumu" },
+        { "field": "kriter11", "text": "I. Yüksüz hareket durumu" },
+        { "field": "kriter12", "text": "II. Yük altında statik kontrol durumu" },
+        { "field": "kriter13", "text": "III.Yük altında dinanik kontrol durumu" },
+        { "field": "kriter14", "text": "III.Yük altında yapı kontrol durumu" },
+        { "field": "kriter15", "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu" }
       ]
     }
   }

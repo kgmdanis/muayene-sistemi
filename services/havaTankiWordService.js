@@ -31,37 +31,41 @@ function escapeXml(str) {
 
 // ============ HÜCRE İŞLEMLERİ ============
 
+// Calibri 8pt (16 half-points) font özellikleri
+const FONT_RPR = '<w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr>';
+
 function writeToCell(cellXml, newText, opts = {}) {
     const escapedText = escapeXml(newText || '-');
 
     if (!/<w:t[ >]/.test(cellXml)) {
-        const rPrMatch = cellXml.match(/<w:pPr>[\s\S]*?<w:rPr>([\s\S]*?)<\/w:rPr>[\s\S]*?<\/w:pPr>/);
-        let rPrInner = rPrMatch ? rPrMatch[1] : '';
-        if (opts.stripColor) {
-            rPrInner = rPrInner.replace(/<w:color[^/]*\/>/g, '');
-        }
-        const rPrTag = rPrInner ? `<w:rPr>${rPrInner}</w:rPr>` : '';
-
         if (/<w:pPr>[\s\S]*?<\/w:pPr>/.test(cellXml)) {
             return cellXml.replace(
                 /(<\/w:pPr>)/,
-                `$1<w:r>${rPrTag}<w:t xml:space="preserve">${escapedText}</w:t></w:r>`
+                `$1<w:r>${FONT_RPR}<w:t xml:space="preserve">${escapedText}</w:t></w:r>`
             );
         }
         return cellXml.replace(
             /(<\/w:p>)/,
-            `<w:r>${rPrTag}<w:t xml:space="preserve">${escapedText}</w:t></w:r>$1`
+            `<w:r>${FONT_RPR}<w:t xml:space="preserve">${escapedText}</w:t></w:r>$1`
         );
     }
 
     let firstReplaced = false;
-    return cellXml.replace(/<w:t([^>]*)>([^<]*)<\/w:t>/g, (match, attrs, oldText) => {
+    let result = cellXml.replace(/<w:t([^>]*)>([^<]*)<\/w:t>/g, (match, attrs, oldText) => {
         if (!firstReplaced) {
             firstReplaced = true;
             return `<w:t xml:space="preserve">${escapedText}</w:t>`;
         }
         return '<w:t></w:t>';
     });
+
+    // Mevcut run'lardaki font boyutlarını Calibri 8pt'ye normalize et
+    result = result.replace(/<w:sz w:val="\d+"/g, '<w:sz w:val="16"');
+    result = result.replace(/<w:szCs w:val="\d+"/g, '<w:szCs w:val="16"');
+    result = result.replace(/<w:rFonts[^>]*\/>/g, '<w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>');
+    result = result.replace(/<w:r>(\s*)<w:t/g, `<w:r>$1${FONT_RPR}<w:t`);
+
+    return result;
 }
 
 function getRowText(rowXml) {

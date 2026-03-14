@@ -144,6 +144,13 @@
           "label": "İşletme Kapasitesi (kg)",
           "type": "text",
           "placeholder": "2000"
+        },
+        {
+          "id": "kullanimTipi",
+          "label": "Kullanım Tipi",
+          "type": "radio",
+          "options": ["Yük Taşıma", "İnsan Taşıma"],
+          "default": "Yük Taşıma"
         }
       ]
     },
@@ -151,7 +158,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "14 Kontrol",
+      "badge": "16 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -292,6 +299,26 @@
             "Uygun Değil"
           ],
           "default": "Uygun"
+        },
+        {
+          "id": "kriter15",
+          "no": 15,
+          "text": "Halat kılavuzu, makara ve tamburun durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter16",
+          "no": 16,
+          "text": "Halat\u2019ın durumu",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
         }
       ]
     },
@@ -403,6 +430,14 @@
         "field": "i_sletme_kapasitesi_kg"
       }
     ],
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["Yük Taşıma", "İnsan Taşıma"],
+        "field": "kullanimTipi",
+        "direction": "after"
+      }
+    ],
     "controlQuestions": {
       "mode": "next",
       "questions": [
@@ -474,6 +509,16 @@
         {
           "field": "kriter14",
           "text": "III.Yük altında statik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter15",
+          "text": "Halat kılavuzu, makara ve",
+          "exact": true
+        },
+        {
+          "field": "kriter16",
+          "text": "Halat\u2019ın durumu",
           "exact": true
         }
       ]

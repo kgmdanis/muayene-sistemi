@@ -222,6 +222,84 @@
       ]
     },
     {
+      "id": "kontrol",
+      "title": "Tespit ve Değerlendirme",
+      "type": "control-questions",
+      "badge": "10 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Uyarı levhası var mı?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Alimak yapısı ve bağlantı elamanlarının durumu uygun mu?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Güç iletici mil veya zincir boşlukları normal mi?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Kumanda buton durumu çalışıyor mu?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Acil stop butonu uygun mu?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Yürüme yolu ve rayların durumu uygun mu?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Redüktör ve yağ sızıntı durumu uygun mu?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "I.Yüksüz harekette kaldırma kollarının durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "II.Yük altında statik kontrol durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "III.Yük altında dinamik kontrol durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
       "id": "kusur",
       "title": "İkaz ve Öneriler",
       "fields": [
@@ -371,7 +449,58 @@
     ],
     "controlQuestions": {
       "mode": "next",
-      "questions": []
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Uyarı levhası var mı?",
+          "exact": true
+        },
+        {
+          "field": "kriter2",
+          "text": "Alimak yapısı ve bağlantı",
+          "exact": true
+        },
+        {
+          "field": "kriter3",
+          "text": "Güç iletici mil veya zincir",
+          "exact": true
+        },
+        {
+          "field": "kriter4",
+          "text": "Kumanda buton durumu çalışıyor",
+          "exact": true
+        },
+        {
+          "field": "kriter5",
+          "text": "Acil stop butonu uygun",
+          "exact": true
+        },
+        {
+          "field": "kriter6",
+          "text": "Yürüme yolu ve rayların",
+          "exact": true
+        },
+        {
+          "field": "kriter7",
+          "text": "Redüktör ve yağ sızıntı",
+          "exact": true
+        },
+        {
+          "field": "kriter8",
+          "text": "I.Yüksüz harekette kaldırma kollarının",
+          "exact": true
+        },
+        {
+          "field": "kriter9",
+          "text": "II.Yük altında statik kontrol",
+          "exact": true
+        },
+        {
+          "field": "kriter10",
+          "text": "III.Yük altında dinamik kontrol",
+          "exact": true
+        }
+      ]
     }
   }
 }

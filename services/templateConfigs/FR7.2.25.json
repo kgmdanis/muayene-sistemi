@@ -170,7 +170,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "12 Kontrol",
+      "badge": "13 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -286,6 +286,16 @@
           "id": "kriter12",
           "no": 12,
           "text": "Yapılan bakım ve onarımlar sicil defterine işleniyor mu?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "Test Pompası",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -475,6 +485,11 @@
         {
           "field": "kriter12",
           "text": "Yapılan bakım ve onarımlar",
+          "exact": true
+        },
+        {
+          "field": "kriter13",
+          "text": "Test Pompası",
           "exact": true
         }
       ]

@@ -134,16 +134,11 @@
           "placeholder": "150"
         },
         {
-          "id": "caraskal_tipi",
+          "id": "caraskalTipi",
           "label": "Caraskal Tipi",
-          "type": "text",
-          "placeholder": "Elektrik Motoru"
-        },
-        {
-          "id": "mekanik",
-          "label": "Mekanik",
-          "type": "text",
-          "placeholder": "Elektrik"
+          "type": "select",
+          "options": ["Mekanik", "Elektrik"],
+          "default": "Elektrik"
         },
         {
           "id": "marka",
@@ -158,16 +153,11 @@
           "placeholder": "-"
         },
         {
-          "id": "baglandigi_yer",
+          "id": "baglandigiYer",
           "label": "Bağlandığı Yer",
-          "type": "text",
-          "placeholder": "Güç"
-        },
-        {
-          "id": "hareketli_ray",
-          "label": "Hareketli Ray",
-          "type": "text",
-          "placeholder": "Sabit Mapa"
+          "type": "select",
+          "options": ["Hareketli Ray", "Sabit Mapa"],
+          "default": "Hareketli Ray"
         },
         {
           "id": "devir_d_dak",
@@ -231,7 +221,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "11 Kontrol",
+      "badge": "15 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -341,6 +331,34 @@
             "Uygun",
             "Uygun Değil"
           ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kancaDurumu",
+          "no": 12,
+          "text": "Yük ve askı kancaları durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "halatDurumu",
+          "no": 13,
+          "text": "Halatta aşınma ve deformasyon durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "zincirBaglanti",
+          "no": 14,
+          "text": "Yük-tahrik zincirleri ve yük kancası-yük zinciri bağlantıları",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "makineSicil",
+          "no": 15,
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu ?",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         }
       ]
@@ -554,8 +572,28 @@
           "field": "kriter11",
           "text": "III.Yük altında dinamik kontrol",
           "exact": true
+        },
+        {
+          "field": "kancaDurumu",
+          "text": "Yük ve askı kancaları durumu"
+        },
+        {
+          "field": "halatDurumu",
+          "text": "Halatta aşınma ve deformasyon durumu"
+        },
+        {
+          "field": "zincirBaglanti",
+          "text": "Yük-tahrik zincirleri ve yük kancası-yük zinciri bağlantıları"
+        },
+        {
+          "field": "makineSicil",
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu"
         }
       ]
-    }
+    },
+    "checkboxes": [
+      { "type": "radio", "labels": ["Mekanik", "Elektrik"], "field": "caraskalTipi", "direction": "after" },
+      { "type": "radio", "labels": ["Hareketli Ray", "Sabit Mapa"], "field": "baglandigiYer", "direction": "after" }
+    ]
   }
 }

@@ -183,7 +183,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "7 Kontrol",
+      "badge": "9 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -253,6 +253,20 @@
             "Uygun",
             "Uygun Değil"
           ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kancaDurumu",
+          "no": 8,
+          "text": "Yük ve askı kancaları durumu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "makineSicil",
+          "no": 9,
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu ?",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         }
       ]
@@ -414,6 +428,14 @@
           "field": "kriter7",
           "text": "III.Yük altında dinamik kontrol",
           "exact": true
+        },
+        {
+          "field": "kancaDurumu",
+          "text": "Yük ve askı kancaları durumu"
+        },
+        {
+          "field": "makineSicil",
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu"
         }
       ]
     }

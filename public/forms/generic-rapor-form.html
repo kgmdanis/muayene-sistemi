@@ -55,6 +55,30 @@
         .btn:disabled { cursor: not-allowed; opacity: 0.5; }
         .footer-spacer { height: 100px; }
 
+        /* Repeatable section styles */
+        .repeatable-entry { border: 2px solid #e0e0e0; border-radius: 10px; padding: 16px; margin-bottom: 16px; position: relative; background: #fafafa; transition: border-color 0.2s; }
+        .repeatable-entry:hover { border-color: #1565c0; }
+        .repeatable-entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+        .repeatable-entry-title { font-weight: 700; color: #1565c0; font-size: 15px; }
+        .btn-remove-entry { background: #f44336; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+        .btn-remove-entry:hover { background: #d32f2f; transform: scale(1.1); }
+        .btn-add-entry { background: #4caf50; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+        .btn-add-entry:hover { background: #388e3c; transform: translateY(-1px); }
+        .check-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+        .check-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: white; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 13px; }
+        .check-item label { flex: 1; cursor: pointer; }
+        .check-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: #4caf50; cursor: pointer; }
+
+        /* Hesaplama table */
+        .hesaplama-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .hesaplama-table th { background: #1565c0; color: white; padding: 10px 8px; text-align: center; font-weight: 500; }
+        .hesaplama-table td { padding: 6px 4px; border: 1px solid #e0e0e0; }
+        .hesaplama-table tbody tr:hover { background: #f5f5f5; }
+        .hesap-sonuc-box { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; text-align: center; }
+        .hesap-label { display: block; font-size: 12px; color: #666; font-weight: 600; text-transform: uppercase; }
+        .hesap-deger { display: block; font-size: 28px; font-weight: 800; color: #1565c0; margin: 6px 0; }
+        .hesap-aciklama { display: block; font-size: 11px; color: #999; }
+
         @media (max-width: 768px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
@@ -157,6 +181,9 @@
             updateWordButtonState();
         });
 
+        // ============ REPEATABLE STATE ============
+        const repeatableData = {}; // { sectionId: [ {field1: val, field2: val, checks: {id: bool}} ] }
+
         // ============ RENDER ============
         function renderSections() {
             const container = document.getElementById('dynamicSections');
@@ -168,6 +195,15 @@
                     html += renderControlQuestions(section);
                 } else if (section.type === 'sonuc') {
                     html += renderSonuc(section);
+                } else if (section.type === 'repeatable') {
+                    html += renderRepeatableSection(section);
+                    // Init repeatable data with one empty entry
+                    if (!repeatableData[section.id]) {
+                        repeatableData[section.id] = [];
+                        addRepeatableEntry(section.id);
+                    }
+                } else if (section.type === 'havalandirma-hesaplama') {
+                    html += renderHesaplamaSection(section);
                 } else {
                     html += renderStandardSection(section);
                 }
@@ -176,6 +212,17 @@
 
             // Select stillerini uygula
             document.querySelectorAll('.kontrol-item select').forEach(updateSelectStyle);
+
+            // Repeatable section'ları yeniden render et
+            for (const section of sablonConfig.sections) {
+                if (section.type === 'repeatable') {
+                    renderRepeatableEntries(section.id);
+                }
+                // Hesaplama section'inda varsayilan 1 menfez ekle
+                if (section.type === 'havalandirma-hesaplama') {
+                    menfezEkle();
+                }
+            }
         }
 
         function renderStandardSection(section) {
@@ -213,6 +260,10 @@
                     const opts = (f.options || []).map(o => `<option value="${o}">${o}</option>`).join('');
                     input = `<select id="${f.id}" class="form-control" ${disabled}><option value="">Seçiniz...</option>${opts}</select>`;
                     break;
+                case 'radio':
+                    const radios = (f.options || []).map(o => `<label style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#f8f9fa;border:1px solid #ddd;border-radius:6px;cursor:pointer;font-size:14px;"><input type="radio" name="${f.id}" value="${o}" style="accent-color:#1565c0;">${o}</label>`).join(' ');
+                    input = `<div style="display:flex;gap:10px;flex-wrap:wrap;" id="${f.id}_container">${radios}</div>`;
+                    return `<div class="form-group"><label class="form-label">${f.label}${autoFillBadge}</label>${input}</div>`;
                 default:
                     input = `<input type="${f.type || 'text'}" id="${f.id}" class="form-control" placeholder="${f.placeholder || ''}" ${disabled}>`;
             }
@@ -263,6 +314,262 @@
                 </div>`;
         }
 
+        function renderRepeatableSection(section) {
+            const badge = section.badge ? `<span class="badge">${section.badge}</span>` : '';
+            return `
+                <div class="card">
+                    <div class="card-header" onclick="toggleSection('${section.id}Section')">
+                        <span>${section.title}</span>${badge}
+                    </div>
+                    <div class="card-body" id="${section.id}Section">
+                        <div id="${section.id}Entries"></div>
+                        <button class="btn-add-entry" onclick="addRepeatableEntry('${section.id}'); renderRepeatableEntries('${section.id}');">
+                            + ${section.entryTitle || 'Yeni'} Ekle
+                        </button>
+                    </div>
+                </div>`;
+        }
+
+        function addRepeatableEntry(sectionId) {
+            const section = sablonConfig.sections.find(s => s.id === sectionId);
+            if (!section) return;
+            const entry = {};
+            (section.fields || []).forEach(f => { entry[f.id] = f.default || ''; });
+            entry._checks = {};
+            (section.checks || []).forEach(c => { entry._checks[c.id] = c.default !== undefined ? c.default : true; });
+            if (!repeatableData[sectionId]) repeatableData[sectionId] = [];
+            repeatableData[sectionId].push(entry);
+        }
+
+        function removeRepeatableEntry(sectionId, index) {
+            if (repeatableData[sectionId].length <= 1) {
+                showNotification('En az 1 kayit olmalidir!', 'error');
+                return;
+            }
+            repeatableData[sectionId].splice(index, 1);
+            renderRepeatableEntries(sectionId);
+        }
+
+        function renderRepeatableEntries(sectionId) {
+            const container = document.getElementById(sectionId + 'Entries');
+            if (!container) return;
+            const section = sablonConfig.sections.find(s => s.id === sectionId);
+            if (!section) return;
+            const entries = repeatableData[sectionId] || [];
+
+            // Save current values before re-render
+            saveRepeatableValues(sectionId);
+
+            let html = '';
+            entries.forEach((entry, idx) => {
+                const entryNum = idx + 1;
+                const fieldsHtml = (section.fields || []).map(f => {
+                    const val = entry[f.id] || f.default || '';
+                    const escaped = String(val).replace(/"/g, '&quot;');
+                    if (f.type === 'select') {
+                        const opts = (f.options || []).map(o => `<option value="${o}" ${o === val ? 'selected' : ''}>${o}</option>`).join('');
+                        return `<div class="form-group">
+                            <label class="form-label">${f.label}</label>
+                            <select class="form-control" data-section="${sectionId}" data-index="${idx}" data-field="${f.id}">
+                                <option value="">Seciniz...</option>${opts}
+                            </select>
+                        </div>`;
+                    }
+                    return `<div class="form-group">
+                        <label class="form-label">${f.label}</label>
+                        <input type="${f.type || 'text'}" class="form-control" value="${escaped}" placeholder="${f.placeholder || ''}"
+                               data-section="${sectionId}" data-index="${idx}" data-field="${f.id}">
+                    </div>`;
+                }).join('');
+
+                const checksHtml = (section.checks || []).map(c => {
+                    const checked = entry._checks && entry._checks[c.id] !== false ? 'checked' : '';
+                    return `<div class="check-item">
+                        <input type="checkbox" id="${sectionId}_${idx}_${c.id}" ${checked}
+                               data-section="${sectionId}" data-index="${idx}" data-check="${c.id}">
+                        <label for="${sectionId}_${idx}_${c.id}">${c.text}</label>
+                    </div>`;
+                }).join('');
+
+                html += `
+                    <div class="repeatable-entry">
+                        <div class="repeatable-entry-header">
+                            <span class="repeatable-entry-title">${section.entryTitle || ''} #${entryNum}</span>
+                            <button class="btn-remove-entry" onclick="removeRepeatableEntry('${sectionId}', ${idx})" title="Sil">&times;</button>
+                        </div>
+                        <div class="form-row">${fieldsHtml}</div>
+                        ${checksHtml ? '<div class="check-list">' + checksHtml + '</div>' : ''}
+                    </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function saveRepeatableValues(sectionId) {
+            const entries = repeatableData[sectionId] || [];
+            // Save field values
+            document.querySelectorAll(`[data-section="${sectionId}"][data-field]`).forEach(el => {
+                const idx = parseInt(el.dataset.index);
+                const field = el.dataset.field;
+                if (entries[idx]) entries[idx][field] = el.value || '';
+            });
+            // Save check values
+            document.querySelectorAll(`[data-section="${sectionId}"][data-check]`).forEach(el => {
+                const idx = parseInt(el.dataset.index);
+                const checkId = el.dataset.check;
+                if (entries[idx]) {
+                    if (!entries[idx]._checks) entries[idx]._checks = {};
+                    entries[idx]._checks[checkId] = el.checked;
+                }
+            });
+        }
+
+        // ============ HAVALANDIRMA HESAPLAMA ============
+        let menfezData = [];
+        let menfezSayac = 0;
+
+        function renderHesaplamaSection(section) {
+            const badge = section.badge ? `<span class="badge">${section.badge}</span>` : '';
+            const fields = (section.fields || []).map(f => renderField(f)).join('');
+            return `
+                <div class="card">
+                    <div class="card-header" onclick="toggleSection('${section.id}Section')">
+                        <span>${section.title}</span>${badge}
+                    </div>
+                    <div class="card-body" id="${section.id}Section">
+                        <div class="form-row">${fields}</div>
+
+                        <h4 style="margin:20px 0 12px;color:#1565c0;font-size:15px;">Menfez Olcumleri</h4>
+                        <div style="overflow-x:auto;">
+                            <table class="hesaplama-table" id="menfezTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width:60px;">No</th>
+                                        <th>Konumu</th>
+                                        <th style="width:120px;">Hiz (m/s)</th>
+                                        <th style="width:120px;">Kesit (m²)</th>
+                                        <th style="width:140px;">Debi (m³/s)</th>
+                                        <th style="width:50px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="menfezTableBody"></tbody>
+                                <tfoot>
+                                    <tr style="background:#e3f2fd;font-weight:700;">
+                                        <td colspan="4" style="text-align:right;padding-right:16px;">TOPLAM DEBİ:</td>
+                                        <td id="toplamDebiCell" style="text-align:center;">0</td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <button class="btn-add-entry" onclick="menfezEkle()" style="margin-top:12px;">+ Menfez Ekle</button>
+
+                        <h4 style="margin:24px 0 12px;color:#1565c0;font-size:15px;">Hacim Bilgileri</h4>
+                        <div class="form-row-3">
+                            <div class="form-group"><label class="form-label">En (m)</label><input type="number" step="0.01" id="hacimEn" class="form-control" placeholder="1.17" oninput="hesaplamaYap()"></div>
+                            <div class="form-group"><label class="form-label">Boy (m)</label><input type="number" step="0.01" id="hacimBoy" class="form-control" placeholder="1.25" oninput="hesaplamaYap()"></div>
+                            <div class="form-group"><label class="form-label">Yukseklik (m)</label><input type="number" step="0.01" id="hacimYukseklik" class="form-control" placeholder="2.9" oninput="hesaplamaYap()"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">Gereken Hava Degisim Katsayisi</label><input type="number" step="1" id="gerekenHavaDegisimKatsayisi" class="form-control" value="${section.gerekenKatsayi?.default || 30}" oninput="hesaplamaYap()"></div>
+                        </div>
+
+                        <div style="background:#f8f9fa;border:1px solid #e0e0e0;border-radius:10px;padding:20px;margin-top:16px;">
+                            <h4 style="margin-bottom:16px;color:#333;">Hesaplama Sonuclari</h4>
+                            <div class="form-row" style="gap:12px;">
+                                <div class="hesap-sonuc-box"><span class="hesap-label">HAVA M³</span><span class="hesap-deger" id="hesapHavaM3">0</span><span class="hesap-aciklama">Toplam Debi × 3600</span></div>
+                                <div class="hesap-sonuc-box"><span class="hesap-label">HACİM (m³)</span><span class="hesap-deger" id="hesapHacim">0</span><span class="hesap-aciklama">En × Boy × Yukseklik</span></div>
+                            </div>
+                            <div style="text-align:center;margin-top:16px;padding:20px;background:white;border-radius:8px;border:2px solid #e0e0e0;">
+                                <span style="font-size:14px;color:#666;">Hava Degisim Katsayisi</span>
+                                <div id="hesapSonucKatsayi" style="font-size:36px;font-weight:800;color:#1565c0;margin:8px 0;">0</div>
+                                <div id="hesapSonucDurum" style="font-size:14px;font-weight:600;padding:6px 16px;border-radius:20px;display:inline-block;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function menfezEkle(data) {
+            menfezSayac++;
+            const idx = menfezSayac;
+            const tbody = document.getElementById('menfezTableBody');
+            if (!tbody) return;
+
+            const tr = document.createElement('tr');
+            tr.id = `menfez-${idx}`;
+            tr.innerHTML = `
+                <td><input type="text" value="${data?.menfezNo || idx + ' NOLU'}" style="width:100%;text-align:center;padding:8px;border:1px solid #ddd;border-radius:4px;" data-field="menfezNo"></td>
+                <td><input type="text" value="${data?.menfezKonumu || ''}" placeholder="Lokal Havalandirma" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;" data-field="menfezKonumu"></td>
+                <td><input type="number" step="0.01" value="${data?.menfezHiz || ''}" placeholder="12.8" style="width:100%;text-align:center;padding:8px;border:1px solid #ddd;border-radius:4px;" data-field="menfezHiz" oninput="hesaplamaYap()"></td>
+                <td><input type="number" step="0.0001" value="${data?.menfezKesit || ''}" placeholder="0.0324" style="width:100%;text-align:center;padding:8px;border:1px solid #ddd;border-radius:4px;" data-field="menfezKesit" oninput="hesaplamaYap()"></td>
+                <td style="text-align:center;font-weight:600;" class="menfez-debi">0</td>
+                <td><button class="btn-remove-entry" onclick="menfezSil(${idx})" title="Sil" style="width:28px;height:28px;font-size:14px;">&times;</button></td>`;
+            tbody.appendChild(tr);
+            hesaplamaYap();
+        }
+
+        function menfezSil(idx) {
+            const tr = document.getElementById(`menfez-${idx}`);
+            if (tr) tr.remove();
+            hesaplamaYap();
+        }
+
+        function hesaplamaYap() {
+            let toplamDebi = 0;
+            document.querySelectorAll('#menfezTableBody tr').forEach(tr => {
+                const hiz = parseFloat(tr.querySelector('[data-field="menfezHiz"]')?.value) || 0;
+                const kesit = parseFloat(tr.querySelector('[data-field="menfezKesit"]')?.value) || 0;
+                const debi = hiz * kesit;
+                tr.querySelector('.menfez-debi').textContent = debi ? debi.toFixed(4) : '0';
+                toplamDebi += debi;
+            });
+
+            const toplamDebiEl = document.getElementById('toplamDebiCell');
+            if (toplamDebiEl) toplamDebiEl.textContent = toplamDebi ? toplamDebi.toFixed(4) : '0';
+
+            const havaM3 = toplamDebi * 3600;
+            const en = parseFloat(document.getElementById('hacimEn')?.value) || 0;
+            const boy = parseFloat(document.getElementById('hacimBoy')?.value) || 0;
+            const yukseklik = parseFloat(document.getElementById('hacimYukseklik')?.value) || 0;
+            const hacim = en * boy * yukseklik;
+            const gereken = parseFloat(document.getElementById('gerekenHavaDegisimKatsayisi')?.value) || 30;
+            const katsayi = hacim > 0 ? havaM3 / hacim : 0;
+
+            document.getElementById('hesapHavaM3').textContent = havaM3 ? havaM3.toFixed(2) : '0';
+            document.getElementById('hesapHacim').textContent = hacim ? hacim.toFixed(2) : '0';
+            document.getElementById('hesapSonucKatsayi').textContent = katsayi ? katsayi.toFixed(2) : '0';
+
+            const durumEl = document.getElementById('hesapSonucDurum');
+            if (katsayi > 0 && katsayi >= gereken) {
+                durumEl.textContent = 'UYGUN (>= ' + gereken + ')';
+                durumEl.style.background = '#e8f5e9';
+                durumEl.style.color = '#2e7d32';
+            } else if (katsayi > 0) {
+                durumEl.textContent = 'UYGUN DEGIL (< ' + gereken + ')';
+                durumEl.style.background = '#ffebee';
+                durumEl.style.color = '#c62828';
+            } else {
+                durumEl.textContent = '';
+            }
+        }
+
+        function getMenfezVerileri() {
+            const menfezler = [];
+            document.querySelectorAll('#menfezTableBody tr').forEach(tr => {
+                const hiz = parseFloat(tr.querySelector('[data-field="menfezHiz"]')?.value) || 0;
+                const kesit = parseFloat(tr.querySelector('[data-field="menfezKesit"]')?.value) || 0;
+                menfezler.push({
+                    menfezNo: tr.querySelector('[data-field="menfezNo"]')?.value || '',
+                    menfezKonumu: tr.querySelector('[data-field="menfezKonumu"]')?.value || '',
+                    menfezHiz: hiz,
+                    menfezKesit: kesit,
+                    menfezDebi: hiz * kesit
+                });
+            });
+            return menfezler;
+        }
+
         // ============ UI HELPERS ============
         function toggleSection(id) { document.getElementById(id)?.classList.toggle('collapsed'); }
 
@@ -311,10 +618,19 @@
             if (!sablonConfig.sections) return data;
 
             for (const section of sablonConfig.sections) {
-                if (section.fields) {
+                if (section.type === 'repeatable') {
+                    // Save current values from DOM first
+                    saveRepeatableValues(section.id);
+                    data[section.id] = repeatableData[section.id] || [];
+                } else if (section.fields) {
                     for (const f of section.fields) {
-                        const el = document.getElementById(f.id);
-                        if (el && !f.readonly) data[f.id] = el.value || '';
+                        if (f.type === 'radio') {
+                            const checked = document.querySelector(`input[name="${f.id}"]:checked`);
+                            if (checked) data[f.id] = checked.value;
+                        } else {
+                            const el = document.getElementById(f.id);
+                            if (el && !f.readonly) data[f.id] = el.value || '';
+                        }
                     }
                 }
                 if (section.type === 'control-questions' && section.questions) {
@@ -325,6 +641,20 @@
                 }
                 if (section.type === 'sonuc') {
                     data.genelSonuc = document.getElementById('genelSonuc')?.value || 'UYGUN';
+                }
+                if (section.type === 'havalandirma-hesaplama') {
+                    data.menfezler = getMenfezVerileri();
+                    data.hacimEn = parseFloat(document.getElementById('hacimEn')?.value) || 0;
+                    data.hacimBoy = parseFloat(document.getElementById('hacimBoy')?.value) || 0;
+                    data.hacimYukseklik = parseFloat(document.getElementById('hacimYukseklik')?.value) || 0;
+                    data.gerekenHavaDegisimKatsayisi = parseFloat(document.getElementById('gerekenHavaDegisimKatsayisi')?.value) || 30;
+                    // Hesaplanan degerler
+                    const toplamDebi = data.menfezler.reduce((sum, m) => sum + (m.menfezDebi || 0), 0);
+                    data.hesapToplamDebi = toplamDebi.toFixed(4);
+                    data.hesapHavaM3 = (toplamDebi * 3600).toFixed(2);
+                    data.hesapHacim = (data.hacimEn * data.hacimBoy * data.hacimYukseklik).toFixed(2);
+                    const hacim = data.hacimEn * data.hacimBoy * data.hacimYukseklik;
+                    data.hesapSonuc = hacim > 0 ? ((toplamDebi * 3600) / hacim).toFixed(2) : '0';
                 }
             }
             return data;
@@ -369,6 +699,12 @@
             // formData alanlarini doldur
             const fd = rapor.formData || {};
             for (const [key, value] of Object.entries(fd)) {
+                // Radio field mi kontrol et
+                const radioEl = document.querySelector(`input[name="${key}"][value="${value}"]`);
+                if (radioEl) {
+                    radioEl.checked = true;
+                    continue;
+                }
                 const el = document.getElementById(key);
                 if (el) {
                     el.value = value;
@@ -376,6 +712,24 @@
                         updateSelectStyle(el);
                     }
                 }
+            }
+
+            // Repeatable section'lari yukle
+            for (const section of (sablonConfig.sections || [])) {
+                if (section.type === 'repeatable' && fd[section.id] && Array.isArray(fd[section.id])) {
+                    repeatableData[section.id] = fd[section.id];
+                    renderRepeatableEntries(section.id);
+                }
+            }
+
+            // Hesaplama section'lari yukle (menfezler)
+            if (fd.menfezler && Array.isArray(fd.menfezler)) {
+                fd.menfezler.forEach(m => menfezEkle(m));
+                setFieldValue('hacimEn', fd.hacimEn);
+                setFieldValue('hacimBoy', fd.hacimBoy);
+                setFieldValue('hacimYukseklik', fd.hacimYukseklik);
+                if (fd.gerekenHavaDegisimKatsayisi) setFieldValue('gerekenHavaDegisimKatsayisi', fd.gerekenHavaDegisimKatsayisi);
+                setTimeout(() => hesaplamaYap(), 100);
             }
 
             // Sonuc

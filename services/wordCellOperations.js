@@ -4,37 +4,42 @@
 
 const { escapeXml } = require('./wordHelpers');
 
+// Calibri 8pt (16 half-points) font özellikleri
+const FONT_RPR = '<w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr>';
+
 function writeToCell(cellXml, newText, opts = {}) {
     const escapedText = escapeXml(newText || '-');
 
     if (!/<w:t[ >]/.test(cellXml)) {
-        const rPrMatch = cellXml.match(/<w:pPr>[\s\S]*?<w:rPr>([\s\S]*?)<\/w:rPr>[\s\S]*?<\/w:pPr>/);
-        let rPrInner = rPrMatch ? rPrMatch[1] : '';
-        if (opts.stripColor) {
-            rPrInner = rPrInner.replace(/<w:color[^/]*\/>/g, '');
-        }
-        const rPrTag = rPrInner ? `<w:rPr>${rPrInner}</w:rPr>` : '';
-
         if (/<w:pPr>[\s\S]*?<\/w:pPr>/.test(cellXml)) {
             return cellXml.replace(
                 /(<\/w:pPr>)/,
-                `$1<w:r>${rPrTag}<w:t xml:space="preserve">${escapedText}</w:t></w:r>`
+                `$1<w:r>${FONT_RPR}<w:t xml:space="preserve">${escapedText}</w:t></w:r>`
             );
         }
         return cellXml.replace(
             /(<\/w:p>)/,
-            `<w:r>${rPrTag}<w:t xml:space="preserve">${escapedText}</w:t></w:r>$1`
+            `<w:r>${FONT_RPR}<w:t xml:space="preserve">${escapedText}</w:t></w:r>$1`
         );
     }
 
     let firstReplaced = false;
-    return cellXml.replace(/<w:t([^>]*)>([^<]*)<\/w:t>/g, (match, attrs, oldText) => {
+    let result = cellXml.replace(/<w:t([^>]*)>([^<]*)<\/w:t>/g, (match, attrs, oldText) => {
         if (!firstReplaced) {
             firstReplaced = true;
             return `<w:t xml:space="preserve">${escapedText}</w:t>`;
         }
         return '<w:t></w:t>';
     });
+
+    // Mevcut run'lardaki font boyutlarını Calibri 8pt'ye normalize et
+    result = result.replace(/<w:sz w:val="\d+"/g, '<w:sz w:val="16"');
+    result = result.replace(/<w:szCs w:val="\d+"/g, '<w:szCs w:val="16"');
+    result = result.replace(/<w:rFonts[^>]*\/>/g, '<w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>');
+    // rPr'si olmayan run'lara font ekle
+    result = result.replace(/<w:r>(\s*)<w:t/g, `<w:r>$1${FONT_RPR}<w:t`);
+
+    return result;
 }
 
 function getRowText(rowXml) {
@@ -78,6 +83,7 @@ function labelsMatch(cellLabel, searchLabel) {
     // Cell label aranandan başlıyor mu? (örn: "Firma Adı:" ile "Firma Adı" eşleşir)
     if (normalizedCell.startsWith(normalizedSearch + ' ') ||
         normalizedCell.startsWith(normalizedSearch + ':') ||
+        normalizedCell.startsWith(normalizedSearch + '(') ||
         normalizedCell === normalizedSearch) return true;
 
     // Cell'de birden fazla label varsa (örn: "Firma Adı: Vergi No:"), aranan label içinde mi?
@@ -108,6 +114,10 @@ function setValueByLabel(xml, labelText, newValue) {
     // Arama için normalize edilmiş label
     const normalizedSearch = normalizeLabel(labelText);
 
+    // Tüm eşleşmeleri topla ve en iyi olanı seç
+    let bestMatch = null;
+    let bestScore = Infinity; // Düşük skor = daha iyi eşleşme
+
     for (const row of rows) {
         const rowText = getRowText(row);
         const normalizedRowText = normalizeLabel(rowText);
@@ -123,15 +133,30 @@ function setValueByLabel(xml, labelText, newValue) {
             const cellText = getCellText(cells[i]);
 
             if (labelsMatch(cellText, labelText)) {
-                // Değer hücresini bul (bir sonraki hücre)
                 if (i + 1 < cells.length) {
-                    const newCell = writeToCell(cells[i + 1], newValue);
-                    const newRow = row.replace(cells[i + 1], newCell);
-                    result = result.replace(row, newRow);
-                    return result;
+                    // Skor: hücre metin uzunluğu (kısa = daha spesifik eşleşme)
+                    const normalizedCell = normalizeLabel(cellText);
+                    let score = normalizedCell.length;
+                    // Tam eşleşme bonus
+                    if (normalizedCell === normalizedSearch) score = 0;
+                    // Başlangıç eşleşmesi bonus
+                    else if (normalizedCell.startsWith(normalizedSearch)) score = normalizedCell.length;
+                    // Substring eşleşme - uzunluk farkı kadar ceza
+                    else score = normalizedCell.length + 100;
+
+                    if (score < bestScore) {
+                        bestScore = score;
+                        bestMatch = { row, valueCell: cells[i + 1] };
+                    }
                 }
             }
         }
+    }
+
+    if (bestMatch) {
+        const newCell = writeToCell(bestMatch.valueCell, newValue);
+        const newRow = bestMatch.row.replace(bestMatch.valueCell, newCell);
+        result = result.replace(bestMatch.row, newRow);
     }
 
     return result;
@@ -297,6 +322,7 @@ module.exports = {
     writeToCell,
     getRowText,
     getCellText,
+    normalizeLabel,
     setValueByLabel,
     setKontrolSorusu,
     setTestRow,

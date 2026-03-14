@@ -127,7 +127,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "15 Kontrol",
+      "badge": "16 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -273,6 +273,16 @@
           "id": "kriter15",
           "no": 15,
           "text": "Freze siperli var mı?",
+          "options": [
+            "Uygun",
+            "Uygun Değil"
+          ],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter16",
+          "no": 16,
+          "text": "Önceki periyodik kontrol raporu mevcut mu?",
           "options": [
             "Uygun",
             "Uygun Değil"
@@ -449,6 +459,11 @@
         {
           "field": "kriter15",
           "text": "Freze siperli var mı?",
+          "exact": true
+        },
+        {
+          "field": "kriter16",
+          "text": "Önceki periyodik kontrol raporu",
           "exact": true
         }
       ]

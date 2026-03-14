@@ -42,7 +42,7 @@
       "badge": "10 Kontrol",
       "questions": [
         { "id": "kriter1", "no": 1, "text": "Filtreler durumu uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
-        { "id": "kriter2", "no": 2, "text": "Isı değiştirici seperatörler uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
+        { "id": "kriter2", "no": 2, "text": "Isı değiştirici seperatinler uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
         { "id": "kriter3", "no": 3, "text": "Klima genel temizliği uygun mu?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
         { "id": "kriter4", "no": 4, "text": "Gaz kaçağı var mı?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
         { "id": "kriter5", "no": 5, "text": "İç ve Dış Ünite sağlam monte edilmiş mi?", "options": ["Uygun", "Uygun Değil"], "default": "Uygun" },
@@ -92,7 +92,7 @@
       "mode": "next",
       "questions": [
         { "field": "kriter1", "text": "Filtreler durumu uygun" },
-        { "field": "kriter2", "text": "değiştirici seperatör" },
+        { "field": "kriter2", "text": "Isı değiştirici seperatinler" },
         { "field": "kriter3", "text": "Klima genel temizliği" },
         { "field": "kriter4", "text": "Gaz kaçağı var mı" },
         { "field": "kriter5", "text": "Dış Ünite sağlam monte" },

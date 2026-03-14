@@ -1,0 +1,377 @@
+{
+  "sablonKodu": "FR7.2.41E",
+  "sablonAdi": "Paratoner Etki Alanı Projesi Raporu",
+  "kategori": "elektrik",
+  "altKategori": "elektrik",
+  "raporNoPrefix": "MT",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "bolumu",
+          "label": "Bölümü",
+          "type": "text",
+          "placeholder": "Üretim, Bakım vb."
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "kontrolTarihi",
+          "label": "Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaTelefon",
+          "label": "Tel/Fax",
+          "type": "text",
+          "source": "customer.telefon",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "firmaEmail",
+          "label": "E-mail",
+          "type": "text",
+          "source": "customer.email",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor No",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "firmaWeb",
+          "label": "Web",
+          "type": "text",
+          "source": "customer.web",
+          "readonly": true,
+          "autoFill": true
+        }
+      ]
+    },
+    {
+      "id": "tesisBilgileri",
+      "title": "Tesise Ait Bilgiler",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "elektrikSaglayan",
+          "label": "Elektrik Sağlayan Kuruluş",
+          "type": "text",
+          "placeholder": "MEDAŞ"
+        },
+        {
+          "id": "sebekeTipi",
+          "label": "Şebeke Tipi",
+          "type": "text",
+          "placeholder": "TT"
+        },
+        {
+          "id": "sebekeGerilimi",
+          "label": "Şebeke Gerilimi",
+          "type": "text",
+          "placeholder": "380/220"
+        },
+        {
+          "id": "kullanimAmaci",
+          "label": "Tesisin Kullanım Amacı",
+          "type": "text",
+          "placeholder": "Fabrika, Depo vb."
+        },
+        {
+          "id": "yapiCinsi",
+          "label": "Yapı Cinsi",
+          "type": "text",
+          "placeholder": "Betonarme"
+        },
+        {
+          "id": "havaDurumu",
+          "label": "Hava Durumu",
+          "type": "select",
+          "options": ["Açık", "Kapalı", "Yağışlı"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "toprakDurumu",
+          "label": "Toprak Durumu",
+          "type": "select",
+          "options": ["Islak", "Nemli", "Kuru"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "kontrolNedeni",
+          "label": "Kontrol Nedeni",
+          "type": "select",
+          "options": ["Periyodik", "Düzeltme", "Yeni Tesis"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "projeVarMi",
+          "label": "Elektrik Projesi Var Mı?",
+          "type": "select",
+          "options": ["Var", "Yok"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "testKlemensiVarMi",
+          "label": "Test Klemensi Var Mı?",
+          "type": "select",
+          "options": ["Var", "Yok"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "topraklayiciRing",
+          "label": "Topraklayıcı - Ring",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciTemel",
+          "label": "Topraklayıcı - Temel",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciYuzeysel",
+          "label": "Topraklayıcı - Yüzeysel",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciDerin",
+          "label": "Topraklayıcı - Derin",
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "id": "olcumCihazi",
+      "title": "Ölçüm Cihazı",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "markasi",
+          "label": "Markası",
+          "type": "text",
+          "placeholder": "Fluke vb."
+        },
+        {
+          "id": "seriNo",
+          "label": "Seri Numarası",
+          "type": "text"
+        },
+        {
+          "id": "tipiModeli",
+          "label": "Tipi/Modeli",
+          "type": "text"
+        },
+        {
+          "id": "olcumYontemi",
+          "label": "Ölçüm Yöntemi",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "id": "hesapBilgileri",
+      "title": "Yapı Hesap Bilgileri",
+      "layout": "row-3",
+      "fields": [
+        {
+          "id": "yapiBoyu",
+          "label": "Yapının Boyu (L)",
+          "type": "text",
+          "placeholder": "m"
+        },
+        {
+          "id": "yapiEni",
+          "label": "Eni (W)",
+          "type": "text",
+          "placeholder": "m"
+        },
+        {
+          "id": "yapiYuksekligi",
+          "label": "Yüksekliği (H)",
+          "type": "text",
+          "placeholder": "m"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "İkaz ve Öneriler",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Yukarıda Özellikleri Belirtilen Paratoner"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/4. Elektrik/FR7.2.41 Paratoner Etki Alanı Projesi Raporu.docx",
+    "headerFile": "word/header2.xml",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Tel/Fax",
+        "source": "firma.telefon"
+      },
+      {
+        "label": "E-mail",
+        "source": "firma.email"
+      },
+      {
+        "label": "Web",
+        "source": "firma.web"
+      },
+      {
+        "label": "Bölümü",
+        "field": "bolumu"
+      },
+      {
+        "label": "Kontrol Tarihi",
+        "field": "kontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Rapor No",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "Elektrik Sağlayan Kuruluş",
+        "field": "elektrikSaglayan"
+      },
+      {
+        "label": "Şebeke Tipi",
+        "field": "sebekeTipi"
+      },
+      {
+        "label": "Şebeke Gerilimi",
+        "field": "sebekeGerilimi"
+      },
+      {
+        "label": "Tesisin Kullanım Amacı",
+        "field": "kullanimAmaci"
+      },
+      {
+        "label": "Yapı Cinsi",
+        "field": "yapiCinsi"
+      },
+      {
+        "label": "Markası",
+        "field": "markasi"
+      },
+      {
+        "label": "Seri Numarası",
+        "field": "seriNo"
+      },
+      {
+        "label": "Tipi/Modeli",
+        "field": "tipiModeli"
+      },
+      {
+        "label": "Ölçüm Yöntemi",
+        "field": "olcumYontemi"
+      },
+      {
+        "label": "BOYU - L",
+        "field": "yapiBoyu"
+      },
+      {
+        "label": "ENİ  - W",
+        "field": "yapiEni"
+      },
+      {
+        "label": "YÜKSEKLİĞİ - H",
+        "field": "yapiYuksekligi"
+      }
+    ],
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["Açık", "Kapalı", "Yağışlı"],
+        "field": "havaDurumu",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Islak", "Nemli", "Kuru"],
+        "field": "toprakDurumu",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Periyodik", "Düzeltme", "Yeni Tesis"],
+        "field": "kontrolNedeni",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Var", "Yok"],
+        "field": "projeVarMi",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Var", "Yok"],
+        "field": "testKlemensiVarMi",
+        "direction": "after"
+      },
+      {
+        "type": "multi",
+        "mapping": {
+          "topraklayiciRing": "Ring",
+          "topraklayiciTemel": "Temel",
+          "topraklayiciYuzeysel": "Yüzeysel",
+          "topraklayiciDerin": "Derin"
+        },
+        "direction": "after"
+      }
+    ]
+  }
+}

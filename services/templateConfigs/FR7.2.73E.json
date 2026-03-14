@@ -1,0 +1,1169 @@
+{
+  "sablonKodu": "FR7.2.73E",
+  "sablonAdi": "Transformatör 1-36 kV Gözle Kontrol ve Topraklama Periyodik Kontrol Raporu",
+  "kategori": "elektrik",
+  "altKategori": "elektrik",
+  "raporNoPrefix": "MT",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor Numarası",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Periyodik Kontrol Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil Numarası",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "baslangicTarihi",
+          "label": "Periyodik Kontrol Başlangıç Tarihi ve Saati",
+          "type": "date"
+        },
+        {
+          "id": "bitisTarihi",
+          "label": "Periyodik Kontrol Bitiş Tarihi ve Saati",
+          "type": "date"
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Bir Sonraki Periyodik Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "metodKapsam",
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "type": "text",
+          "placeholder": "TS EN 60076"
+        }
+      ]
+    },
+    {
+      "id": "ekipmanBilgileri",
+      "title": "Ekipman Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "enerjiKurulus",
+          "label": "Enerji sağlayan kuruluş",
+          "type": "text",
+          "placeholder": "MEDAŞ, TEDAŞ vb."
+        },
+        {
+          "id": "sebekeTipi",
+          "label": "Şebeke tipi",
+          "type": "radio",
+          "options": ["TT", "IT", "TN", "TN-CS", "TN-C", "TN-S"]
+        },
+        {
+          "id": "sebekeGerilimi",
+          "label": "Şebeke gerilimi",
+          "type": "text",
+          "placeholder": "380"
+        },
+        {
+          "id": "projeVarMi",
+          "label": "Tesise ait proje var mı?",
+          "type": "select",
+          "options": ["Var", "Yok"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "tekHatSemasi",
+          "label": "Tek hat şeması var mı?",
+          "type": "select",
+          "options": ["Var", "Yok"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "kontrolNedeni",
+          "label": "Kontrol nedeni",
+          "type": "select",
+          "options": ["Periyodik Kontrol", "İlk Kontrol"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "topraklayiciRing",
+          "label": "Topraklayıcı tipi - Ring",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciYuzeysel",
+          "label": "Topraklayıcı tipi - Yüzeysel",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciTemel",
+          "label": "Topraklayıcı tipi - Temel",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciDerin",
+          "label": "Topraklayıcı tipi - Derin",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciBelirlenemedi",
+          "label": "Topraklayıcı tipi - Belirlenemedi",
+          "type": "checkbox"
+        },
+        {
+          "id": "yapiCinsi",
+          "label": "Yapı cinsi",
+          "type": "radio",
+          "options": ["Ev", "Ticari", "Endüstri", "Diğer"]
+        },
+        {
+          "id": "kullanimAmaci",
+          "label": "Ekipmanın kullanım amacı",
+          "type": "text",
+          "placeholder": "FABRİKA"
+        },
+        {
+          "id": "sonKontrolTarihi",
+          "label": "Son kontrol tarihi",
+          "type": "text",
+          "placeholder": "-"
+        },
+        {
+          "id": "kurulumSekli",
+          "label": "Kurulum şekli",
+          "type": "radio",
+          "options": ["Direk", "Beton Köşk", "Bina", "Bina İçi", "Bina Altı", "Sac Köşk"]
+        },
+        {
+          "id": "guc",
+          "label": "Güç (kVA)",
+          "type": "text",
+          "placeholder": "1000"
+        },
+        {
+          "id": "gerilimPrimerSekonder",
+          "label": "Gerilim Primer/Sekonder (kV)",
+          "type": "text",
+          "placeholder": "36"
+        },
+        {
+          "id": "imalatYili",
+          "label": "İmalat yılı",
+          "type": "text"
+        },
+        {
+          "id": "seriNo",
+          "label": "Seri no.",
+          "type": "text"
+        },
+        {
+          "id": "baglantıGrubu",
+          "label": "Bağlantı grubu",
+          "type": "radio",
+          "options": ["DYN11", "DYN5"]
+        },
+        {
+          "id": "hucreBilgileri",
+          "label": "Hücre bilgileri",
+          "type": "radio",
+          "options": ["Açık tip", "MMMH-Hava", "MMMH-Gaz"]
+        },
+        {
+          "id": "trafoTipi",
+          "label": "Tipi",
+          "type": "radio",
+          "options": ["Kuru", "Hermetik", "Genleşme Depolu"]
+        },
+        {
+          "id": "havaDurumu",
+          "label": "Hava durumu ve sıcaklığı",
+          "type": "text",
+          "placeholder": "25 °C"
+        },
+        {
+          "id": "zeminNem",
+          "label": "Zemin nem durumu",
+          "type": "text",
+          "placeholder": "KURU"
+        },
+        {
+          "id": "kapsamliDegisiklik",
+          "label": "Tesisatta kapsamlı değişiklik var mı?",
+          "type": "select",
+          "options": ["Var", "Yok"],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "ygSebekeTipi",
+          "label": "Yüksek gerilim şebeke tipi",
+          "type": "select",
+          "options": [
+            "Yıldız noktası, değeri düşük bir empedans üzerinden topraklanmış şebeke",
+            "Yıldız noktası yalıtılmış şebeke",
+            "Toprak teması kompanze edilmiş (rezonans topraklı) şebeke"
+          ],
+          "placeholder": "Seçiniz"
+        },
+        {
+          "id": "ygIsletmeSorumlusu",
+          "label": "Yetkilendirilmiş YG işletme sorumlusu ve onay bilgileri",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "id": "olcumAletleri",
+      "title": "Ölçüm Aletleri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "cihazAdi",
+          "label": "Cihaz adı",
+          "type": "text",
+          "placeholder": "Toprak Direnci Ölçer"
+        },
+        {
+          "id": "kalibrasyonTarihi",
+          "label": "Kalibrasyon tarihi",
+          "type": "date"
+        },
+        {
+          "id": "kalibrasyonGecerlilikTarihi",
+          "label": "Kalibrasyon geçerlilik tarihi",
+          "type": "date"
+        },
+        {
+          "id": "cihazSeriNo",
+          "label": "Seri numarası",
+          "type": "text"
+        },
+        {
+          "id": "kalibrasyonNo",
+          "label": "Kalibrasyon numarası",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Genel Kontroller",
+      "type": "control-questions",
+      "badge": "32 Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Hücre kapısı ölüm tehlikesi / Uyarı levhası/Plastik zincir kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Kilitlerin ve kilit asma kulağının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Bina içi-dışı tel fenslerin kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "Hücre Kapı, pencere ve diğer aksamlarının topraklama tesisi ile irtibatı kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "Hücrenin temel ve duvarlarında çatlak, çökme, nem, sıva, badana yönünden kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "Kapı, pencere, havalandırma ve sinekliklerin kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "Binanın su alıp almadığının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "Binanın içinde-dışında zeminindeki açıkta kabloların bulunmamasının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Hücre metal yapıları boya ihtiyacı yönünden kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Çevre temizliğinin kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "Yüksek gerilim kablo montajı kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter12",
+          "no": 12,
+          "text": "Alçak gerilim kablo montajı kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter13",
+          "no": 13,
+          "text": "AG-YG baraların kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter14",
+          "no": 14,
+          "text": "Gövdenin infrared termal kamera ile kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter15",
+          "no": 15,
+          "text": "Trafo üstü elektriksel malzemelerin infrared termal kamera ile kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter16",
+          "no": 16,
+          "text": "Yüksek gerilim ve alçak gerilim bağlantıları infrared termal kamera ile kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter17",
+          "no": 17,
+          "text": "Gövde topraklama bağlantısı kontrolü (Eksik, çürüme, deformasyon, bozulma)",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter18",
+          "no": 18,
+          "text": "İşletme topraklaması bağlantısı kontrolü (Eksik, çürüme, deformasyon, bozulma)",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter19",
+          "no": 19,
+          "text": "Parafudur kontrolü (Eksik, çürüme, deformasyon, bozulma)",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter20",
+          "no": 20,
+          "text": "Bina içi AC/DC aydınlatmalar kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter21",
+          "no": 21,
+          "text": "Manevra, iş güvenliği talimatı ve tek hat şemasının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter22",
+          "no": 22,
+          "text": "Dokunma alanında enerjili kısım bulunmamasının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter23",
+          "no": 23,
+          "text": "Sinyal lambalarının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter24",
+          "no": 24,
+          "text": "Akü, redresör grubu kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter25",
+          "no": 25,
+          "text": "Topraklama iletkenleri, koruma iletkenleri, işletme topraklaması iletkeni, varsa potansiyel dengeleme iletkenleri mekanik dayanım ve korozyon kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter26",
+          "no": 26,
+          "text": "Isıl bakımdan en yüksek hata akımına dayanıklılık",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter27",
+          "no": 27,
+          "text": "Pano içi ısıtma sistemleri kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter28",
+          "no": 28,
+          "text": "En yüksek toprak hata akımında, topraklama tesislerinde ortaya çıkabilecek gerilimlere karşı canlıların güvenliğinin sağlanması (dolaylı dokunmaya karşı koruma)",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter29",
+          "no": 29,
+          "text": "Transformatör Odası içerisinde tertip ve düzen ile mevzuatta depolanması yasaklanan malzemelerin bu bölümde varlığının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter30",
+          "no": 30,
+          "text": "Transformatör tipine göre yangın söndürme ve algılama önlemlerinin durumu ve uygunluğu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter31",
+          "no": 31,
+          "text": "Transformatör ve varsa enerji nakil hatlarına güvenlik mesafelerinin kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter32",
+          "no": 32,
+          "text": "Yağlı transformatörlerde yağ çukurunun uygunluğu",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kontrolHucre",
+      "title": "Trafo Anahtarlamalı Hücre Kontrolleri",
+      "type": "control-questions",
+      "badge": "16 Kontrol",
+      "questions": [
+        {
+          "id": "kriter33",
+          "no": 1,
+          "text": "Kapı ölüm tehlikesi/Uyarı levhası/Plastik zincir durumu kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter34",
+          "no": 2,
+          "text": "Kapının topraklama tesisi ile irtibatı kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter35",
+          "no": 3,
+          "text": "Temel ve duvarların çatlak, çökme, nem, sıva, badana yönünden kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter36",
+          "no": 4,
+          "text": "Metal yapıların boya ihtiyacı yönünden kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter37",
+          "no": 5,
+          "text": "Giriş-Çıkış-Ölçü-Tr Koruma modüler hücre gövdesi ve kapağında korozyon kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter38",
+          "no": 6,
+          "text": "Giriş-Çıkış-Ölçü-Tr Koruma modüler hücre birbirine ve zemine sabitlenme kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter39",
+          "no": 7,
+          "text": "İndikatörlerin çalışma kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter40",
+          "no": 8,
+          "text": "YG Sigortalı koruma ise sigortanın yönü ve tel sarılmadığının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter41",
+          "no": 9,
+          "text": "YG Sigortalı koruma ise sigortanın uygunluğu kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter42",
+          "no": 10,
+          "text": "Gazlı hücre ise gaz basıncı ve ikaz lambaları kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter43",
+          "no": 11,
+          "text": "Üst, bağlantı ve çevresinin temizliği kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter44",
+          "no": 12,
+          "text": "Yüksek gerilim kablo/Bara montajı kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter45",
+          "no": 13,
+          "text": "Yüksek gerilim bağlantı infrared termal kamera ile kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter46",
+          "no": 14,
+          "text": "Ölçü trafoları infrared termal kamera ile kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter47",
+          "no": 15,
+          "text": "Koruma rölelerinin uygun değer kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter48",
+          "no": 16,
+          "text": "Mühürlerin kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kontrolTrafo",
+      "title": "Trafo Kontrolleri",
+      "type": "control-questions",
+      "badge": "11 Kontrol",
+      "questions": [
+        {
+          "id": "kriter49",
+          "no": 1,
+          "text": "Kapı ölüm tehlikesi/Uyarı levhası/Plastik zincir durumu kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter50",
+          "no": 2,
+          "text": "Trafo gövdesinde eksik çürüme ve deformasyon olmadığının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter51",
+          "no": 3,
+          "text": "Trafo tankında yağ sızıntısı olmadığının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter52",
+          "no": 4,
+          "text": "Buşinglerde eksik çürüme ve deformasyon olmadığının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter53",
+          "no": 5,
+          "text": "Ark boynuzlarında eksik çürüme ve deformasyon olmadığının kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter54",
+          "no": 6,
+          "text": "Trafo yağ seviyesi uygunluğu kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter55",
+          "no": 7,
+          "text": "Trafo silikajel uygunluğu kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter56",
+          "no": 8,
+          "text": "Trafo 630 kVA ve üzeri ise zati korumalar kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter57",
+          "no": 9,
+          "text": "Bucholz rölesinin kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter58",
+          "no": 10,
+          "text": "Hermetik rölesinin kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter59",
+          "no": 11,
+          "text": "Sıcaklık, ihbar rölesinin kontrolü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "Kusur Açıklamaları",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "Kusur Açıklamaları",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusurları açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen Topraklama Tesisatı muayenesi sonrasında mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/4. Elektrik/FR7.2.73 Transformatör 1-36 kV Gözle Kontrol ve Topraklama Periyodik Kontrol Raporu.docx",
+    "fields": [
+      {
+        "label": "Firma Adı",
+        "source": "firma.unvan"
+      },
+      {
+        "label": "Rapor Numarası",
+        "source": "rapor.raporNo"
+      },
+      {
+        "label": "Periyodik Kontrol Adresi",
+        "source": "firma.adres"
+      },
+      {
+        "label": "Rapor Tarihi",
+        "field": "raporTarihi",
+        "format": "date"
+      },
+      {
+        "label": "İSG-KATİP Sözleşme ID",
+        "source": "firmaBilgi.isgKatipId"
+      },
+      {
+        "label": "SGK Sicil Numarası",
+        "source": "firmaBilgi.sgkSicilNo"
+      },
+      {
+        "label": "Periyodik Kontrol Başlangıç Tarihi ve Saati",
+        "field": "baslangicTarihi",
+        "format": "dateTime"
+      },
+      {
+        "label": "Periyodik Kontrol Bitiş Tarihi ve Saati",
+        "field": "bitisTarihi",
+        "format": "dateTime"
+      },
+      {
+        "label": "Bir Sonraki Periyodik Kontrol Tarihi",
+        "field": "sonrakiKontrolTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Periyodik Kontrol Metodu ve Kapsamı",
+        "field": "metodKapsam"
+      },
+      {
+        "label": "Enerji sağlayan kuruluş",
+        "field": "enerjiKurulus"
+      },
+      {
+        "label": "Şebeke gerilimi",
+        "field": "sebekeGerilimi"
+      },
+      {
+        "label": "Güç (kVA)",
+        "field": "guc"
+      },
+      {
+        "label": "Gerilim Primer/Sekonder (kV)",
+        "field": "gerilimPrimerSekonder"
+      },
+      {
+        "label": "İmalat yılı",
+        "field": "imalatYili"
+      },
+      {
+        "label": "Seri no.",
+        "field": "seriNo"
+      },
+      {
+        "label": "Hava durumu ve sıcaklığı",
+        "field": "havaDurumu"
+      },
+      {
+        "label": "Zemin nem durumu",
+        "field": "zeminNem"
+      },
+      {
+        "label": "Yüksek gerilim şebeke tipi",
+        "field": "ygSebekeTipi"
+      },
+      {
+        "label": "Yetkilendirilmiş YG işletme sorumlusu ve onay bilgileri",
+        "field": "ygIsletmeSorumlusu"
+      },
+      {
+        "label": "Ekipmanın kullanım amacı",
+        "field": "kullanimAmaci"
+      },
+      {
+        "label": "Son kontrol tarihi",
+        "field": "sonKontrolTarihi"
+      },
+      {
+        "label": "Cihaz adı",
+        "field": "cihazAdi"
+      },
+      {
+        "label": "Kalibrasyon tarihi",
+        "field": "kalibrasyonTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Kalibrasyon geçerlilik tarihi",
+        "field": "kalibrasyonGecerlilikTarihi",
+        "format": "date"
+      },
+      {
+        "label": "Seri numarası",
+        "field": "cihazSeriNo"
+      },
+      {
+        "label": "Kalibrasyon numarası",
+        "field": "kalibrasyonNo"
+      }
+    ],
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["TT", "IT", "TN", "TN-CS", "TN-C", "TN-S"],
+        "field": "sebekeTipi",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Var", "Yok"],
+        "field": "projeVarMi",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Var", "Yok"],
+        "field": "tekHatSemasi",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Periyodik Kontrol", "İlk Kontrol"],
+        "field": "kontrolNedeni",
+        "direction": "after"
+      },
+      {
+        "type": "multi",
+        "mapping": {
+          "topraklayiciRing": "Ring",
+          "topraklayiciYuzeysel": "Yüzeysel",
+          "topraklayiciTemel": "Temel",
+          "topraklayiciDerin": "Derin",
+          "topraklayiciBelirlenemedi": "Belirlenemedi"
+        },
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Ev", "Ticari", "Endüstri", "Diğer"],
+        "field": "yapiCinsi",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Direk", "Beton Köşk", "Bina", "Bina İçi", "Bina Altı", "Sac Köşk"],
+        "field": "kurulumSekli",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["DYN11", "DYN5"],
+        "field": "baglantıGrubu",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Açık tip", "MMMH-Hava", "MMMH-Gaz"],
+        "field": "hucreBilgileri",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Kuru", "Hermetik", "Genleşme Depolu"],
+        "field": "trafoTipi",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Var", "Yok"],
+        "field": "kapsamliDegisiklik",
+        "direction": "after"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        {
+          "field": "kriter1",
+          "text": "Hücre kapısı ölüm tehlikesi"
+        },
+        {
+          "field": "kriter2",
+          "text": "Kilitlerin ve kilit asma kulağının"
+        },
+        {
+          "field": "kriter3",
+          "text": "tel fenslerin kontrolü"
+        },
+        {
+          "field": "kriter4",
+          "text": "aksamlarının topraklama tesisi ile irtibatı"
+        },
+        {
+          "field": "kriter5",
+          "text": "çatlak, çökme, nem, sıva, badana yönünden"
+        },
+        {
+          "field": "kriter6",
+          "text": "havalandırma ve sinekliklerin"
+        },
+        {
+          "field": "kriter7",
+          "text": "su alıp almadığının"
+        },
+        {
+          "field": "kriter8",
+          "text": "açıkta kabloların bulunmamasının"
+        },
+        {
+          "field": "kriter9",
+          "text": "boya ihtiyacı yönünden"
+        },
+        {
+          "field": "kriter10",
+          "text": "Çevre temizliğinin"
+        },
+        {
+          "field": "kriter11",
+          "text": "Yüksek gerilim kablo montajı"
+        },
+        {
+          "field": "kriter12",
+          "text": "Alçak gerilim kablo montajı"
+        },
+        {
+          "field": "kriter13",
+          "text": "AG-YG baraların"
+        },
+        {
+          "field": "kriter14",
+          "text": "Gövdenin infrared termal kamera"
+        },
+        {
+          "field": "kriter15",
+          "text": "Trafo üstü elektriksel malzemelerin infrared"
+        },
+        {
+          "field": "kriter16",
+          "text": "alçak gerilim bağlantıları infrared"
+        },
+        {
+          "field": "kriter17",
+          "text": "Gövde topraklama bağlantısı kontrolü"
+        },
+        {
+          "field": "kriter18",
+          "text": "İşletme topraklaması bağlantısı kontrolü"
+        },
+        {
+          "field": "kriter19",
+          "text": "Parafudur kontrolü"
+        },
+        {
+          "field": "kriter20",
+          "text": "AC/DC aydınlatmalar"
+        },
+        {
+          "field": "kriter21",
+          "text": "Manevra, iş güvenliği talimatı"
+        },
+        {
+          "field": "kriter22",
+          "text": "enerjili kısım bulunmamasının"
+        },
+        {
+          "field": "kriter23",
+          "text": "Sinyal lambalarının"
+        },
+        {
+          "field": "kriter24",
+          "text": "Akü, redresör grubu"
+        },
+        {
+          "field": "kriter25",
+          "text": "potansiyel dengeleme iletkenleri"
+        },
+        {
+          "field": "kriter26",
+          "text": "en yüksek hata akımına dayanıklılık"
+        },
+        {
+          "field": "kriter27",
+          "text": "Pano içi ısıtma sistemleri"
+        },
+        {
+          "field": "kriter28",
+          "text": "dolaylı dokunmaya karşı koruma"
+        },
+        {
+          "field": "kriter29",
+          "text": "depolanması yasaklanan malzemelerin"
+        },
+        {
+          "field": "kriter30",
+          "text": "yangın söndürme ve algılama önlemlerinin"
+        },
+        {
+          "field": "kriter31",
+          "text": "güvenlik mesafelerinin kontrolü"
+        },
+        {
+          "field": "kriter32",
+          "text": "yağ çukurunun uygunluğu"
+        },
+        {
+          "field": "kriter33",
+          "text": "Kapı ölüm tehlikesi/Uyarı levhası/Plastik zincir durumu"
+        },
+        {
+          "field": "kriter34",
+          "text": "Kapının topraklama tesisi ile irtibatı"
+        },
+        {
+          "field": "kriter35",
+          "text": "Temel ve duvarların çatlak"
+        },
+        {
+          "field": "kriter36",
+          "text": "Metal yapıların boya ihtiyacı"
+        },
+        {
+          "field": "kriter37",
+          "text": "gövdesi ve kapağında korozyon"
+        },
+        {
+          "field": "kriter38",
+          "text": "zemine sabitlenme kontrolü"
+        },
+        {
+          "field": "kriter39",
+          "text": "İndikatörlerin çalışma"
+        },
+        {
+          "field": "kriter40",
+          "text": "sigortanın yönü ve tel sarılmadığının"
+        },
+        {
+          "field": "kriter41",
+          "text": "sigortanın uygunluğu kontrolü"
+        },
+        {
+          "field": "kriter42",
+          "text": "gaz basıncı ve ikaz lambaları"
+        },
+        {
+          "field": "kriter43",
+          "text": "çevresinin temizliği kontrolü"
+        },
+        {
+          "field": "kriter44",
+          "text": "kablo/Bara montajı kontrolü"
+        },
+        {
+          "field": "kriter45",
+          "text": "Yüksek gerilim bağlantı infrared termal"
+        },
+        {
+          "field": "kriter46",
+          "text": "Ölçü trafoları infrared"
+        },
+        {
+          "field": "kriter47",
+          "text": "Koruma rölelerinin uygun değer"
+        },
+        {
+          "field": "kriter48",
+          "text": "Mühürlerin kontrolü"
+        },
+        {
+          "field": "kriter49",
+          "text": "Kapı ölüm tehlikesi"
+        },
+        {
+          "field": "kriter50",
+          "text": "gövdesinde eksik çürüme ve deformasyon"
+        },
+        {
+          "field": "kriter51",
+          "text": "tankında yağ sızıntısı"
+        },
+        {
+          "field": "kriter52",
+          "text": "Buşinglerde eksik çürüme"
+        },
+        {
+          "field": "kriter53",
+          "text": "Ark boynuzlarında eksik"
+        },
+        {
+          "field": "kriter54",
+          "text": "yağ seviyesi uygunluğu"
+        },
+        {
+          "field": "kriter55",
+          "text": "silikajel uygunluğu"
+        },
+        {
+          "field": "kriter56",
+          "text": "630 kVA ve üzeri ise zati korumalar"
+        },
+        {
+          "field": "kriter57",
+          "text": "Bucholz rölesinin"
+        },
+        {
+          "field": "kriter58",
+          "text": "Hermetik rölesinin"
+        },
+        {
+          "field": "kriter59",
+          "text": "ihbar rölesinin"
+        }
+      ]
+    }
+  }
+}

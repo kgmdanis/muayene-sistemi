@@ -1,0 +1,446 @@
+{
+  "sablonKodu": "FR7.2.37",
+  "sablonAdi": "Yıldırımdan Korunma Tesisatı Muayene Raporu",
+  "kategori": "elektrik",
+  "altKategori": "elektrik",
+  "raporNoPrefix": "MT",
+  "sections": [
+    {
+      "id": "firma",
+      "title": "Firma & Rapor Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "firmaAdi",
+          "label": "Firma Adı",
+          "type": "text",
+          "source": "customer.unvan",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporNo",
+          "label": "Rapor Numarası",
+          "type": "text",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "firmaAdres",
+          "label": "Periyodik Kontrol Adresi",
+          "type": "text",
+          "source": "customer.adres",
+          "readonly": true,
+          "autoFill": true
+        },
+        {
+          "id": "raporTarihi",
+          "label": "Rapor Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "isgKatipNo",
+          "label": "İSG-KATİP Sözleşme ID",
+          "type": "text",
+          "placeholder": "İSG-KATİP No"
+        },
+        {
+          "id": "baslangicTarihi",
+          "label": "Periyodik Kontrol Başlangıç Tarihi ve Saati",
+          "type": "date"
+        },
+        {
+          "id": "bitisTarihi",
+          "label": "Periyodik Kontrol Bitiş Tarihi ve Saati",
+          "type": "date"
+        },
+        {
+          "id": "sgkSicilNo",
+          "label": "SGK Sicil Numarası",
+          "type": "text",
+          "placeholder": "SGK Sicil No"
+        },
+        {
+          "id": "sonrakiKontrolTarihi",
+          "label": "Bir Sonraki Periyodik Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "metodKapsam",
+          "label": "Periyodik Kontrol Metodu ve Kapsamı",
+          "type": "text",
+          "placeholder": "TS EN 62305"
+        }
+      ]
+    },
+    {
+      "id": "ekipmanBilgileri",
+      "title": "Ekipman Bilgileri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "enerjiKurulusu",
+          "label": "Enerji Sağlayan Kuruluş",
+          "type": "text",
+          "placeholder": "MEDAŞ"
+        },
+        {
+          "id": "sebekeTipi",
+          "label": "Şebeke Tipi",
+          "type": "radio",
+          "options": ["TT", "IT", "TN", "TN-CS", "TN-C", "TN-S"]
+        },
+        {
+          "id": "sebekeGerilimi",
+          "label": "Şebeke Gerilimi",
+          "type": "text",
+          "placeholder": "380"
+        },
+        {
+          "id": "projeVarMi",
+          "label": "Tesise Ait Proje Var Mı?",
+          "type": "radio",
+          "options": ["Var", "Yok"]
+        },
+        {
+          "id": "riskAnalizi",
+          "label": "Risk Analizi Var Mı?",
+          "type": "radio",
+          "options": ["Var", "Yok"]
+        },
+        {
+          "id": "kontrolNedeni",
+          "label": "Kontrol Nedeni",
+          "type": "radio",
+          "options": ["Periyodik Kontrol", "İlk Kontrol"]
+        },
+        {
+          "id": "projeDetaylari",
+          "label": "Proje Detayları",
+          "type": "text",
+          "placeholder": "Proje detayları"
+        },
+        {
+          "id": "yapiCinsi",
+          "label": "Yapı Cinsi",
+          "type": "radio",
+          "options": ["Ev", "Ticari", "Endüstri", "Diğer"]
+        },
+        {
+          "id": "topraklayiciTipiRing",
+          "label": "Ring",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciTipiYuzeysel",
+          "label": "Yüzeysel",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciTipiTemel",
+          "label": "Temel",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciTipiDerin",
+          "label": "Derin",
+          "type": "checkbox"
+        },
+        {
+          "id": "topraklayiciTipiBelirlenemedi",
+          "label": "Belirlenemedi",
+          "type": "checkbox"
+        },
+        {
+          "id": "yksCinsi",
+          "label": "YKS Cinsi",
+          "type": "radio",
+          "options": ["Ayrılmış YKS", "Ayrılmamış (Eşpotansiyel) YKS"]
+        },
+        {
+          "id": "sonKontrolTarihi",
+          "label": "Son Kontrol Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "havaDurumu",
+          "label": "Hava Durumu ve Sıcaklığı",
+          "type": "text",
+          "placeholder": "Açık, 25°C"
+        },
+        {
+          "id": "zeminNem",
+          "label": "Zemin Nem Durumu",
+          "type": "text",
+          "placeholder": "Kuru"
+        },
+        {
+          "id": "kapsamliDegisiklik",
+          "label": "Kapsamlı Değişiklik",
+          "type": "radio",
+          "options": ["Var", "Yok"]
+        },
+        {
+          "id": "oncekiEtiket",
+          "label": "Önceki Etiket",
+          "type": "radio",
+          "options": ["Var", "Yok"]
+        },
+        {
+          "id": "panoEkipmanTanimi",
+          "label": "Pano/Ekipman Tanımlaması",
+          "type": "text",
+          "placeholder": "Pano/Ekipman tanımlaması"
+        },
+        {
+          "id": "ykTesisatiTipi",
+          "label": "Yıldırımdan Korunma Tesisatı Tipi",
+          "type": "radio",
+          "options": ["ESE (Aktif-Radyoaktif) Paratoner", "Franklin çubuğu: FRANKLİN", "Faraday kafesi: FARADAY", "Doğal Bileşenler (Betonarme donatı, çelik yapı): DOĞAL", "Gerilmiş Tel"]
+        },
+        {
+          "id": "korumaSeviyesi",
+          "label": "Koruma Seviyesi (EPS)",
+          "type": "text",
+          "placeholder": "I, II, III, IV"
+        },
+        {
+          "id": "yapiKullanimAmaci",
+          "label": "Yapı Kullanım Amacı",
+          "type": "text",
+          "placeholder": "Fabrika, Depo vb."
+        }
+      ]
+    },
+    {
+      "id": "olcumAletleri",
+      "title": "Ölçüm Aletleri",
+      "layout": "row-2",
+      "fields": [
+        {
+          "id": "cihazAdi",
+          "label": "Cihaz Adı",
+          "type": "text",
+          "placeholder": "Toprak Direnci Ölçer"
+        },
+        {
+          "id": "cihazSeriNo",
+          "label": "Seri Numarası",
+          "type": "text"
+        },
+        {
+          "id": "kalibrasyonTarihi",
+          "label": "Kalibrasyon Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "kalibrasyonGecerlilikTarihi",
+          "label": "Kalibrasyon Geçerlilik Tarihi",
+          "type": "date"
+        },
+        {
+          "id": "kalibrasyonNo",
+          "label": "Kalibrasyon Numarası",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "id": "kontrol",
+      "title": "Kontrol Kriterleri",
+      "type": "control-questions",
+      "badge": "35+ Kontrol",
+      "questions": [
+        {
+          "id": "kriter1",
+          "no": 1,
+          "text": "Yıldırımdan korunma risk analizi ve kapsama alanı projesi var mı?",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter2",
+          "no": 2,
+          "text": "Yıldırım seviyesine göre montajı yapılmış olan",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter3",
+          "no": 3,
+          "text": "Ölçüm ve doğrulama metodu",
+          "options": ["Çevrim empedansı", "3 Uçlu topraklama", "Klamp metodu"],
+          "default": ""
+        },
+        {
+          "id": "kriter4",
+          "no": 4,
+          "text": "A. Koruma borusu (ESE)",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter5",
+          "no": 5,
+          "text": "B. İndirme iletkenleri (ESE)",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter6",
+          "no": 6,
+          "text": "C. Muayene klemensi",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter7",
+          "no": 7,
+          "text": "D. Çatı/Tesis üstü",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter8",
+          "no": 8,
+          "text": "E. Topraklama tesisi",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter9",
+          "no": 9,
+          "text": "Faraday kafesi kontrol",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter10",
+          "no": 10,
+          "text": "Ana dağıtım panosunda uygun parafudr",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        },
+        {
+          "id": "kriter11",
+          "no": 11,
+          "text": "Parafudr tipi",
+          "options": ["Uygun", "Uygun Değil"],
+          "default": "Uygun"
+        }
+      ]
+    },
+    {
+      "id": "kusur",
+      "title": "Kusur ve Notlar",
+      "fields": [
+        {
+          "id": "ikazOneriler",
+          "label": "İkaz ve Öneriler",
+          "type": "textarea",
+          "rows": 3,
+          "placeholder": "Tespit edilen kusur ve önerileri açıklayın..."
+        }
+      ]
+    },
+    {
+      "id": "sonuc",
+      "title": "Sonuç ve Kanaat",
+      "type": "sonuc",
+      "sonucText": "Periyodik kontrol tarihi itibari ile yukarıda teknik özellikleri belirtilen \"Yıldırımdan Korunma Tesisatı\" mevcut şartlar altında"
+    }
+  ],
+  "wordMapping": {
+    "templatePath": "templates/şablonlar/4. Elektrik/FR7.2.37 Yıldırımdan Korunma Tesisatı Muayene Raporu-1.docx",
+    "fields": [
+      { "label": "Firma Adı", "source": "firma.unvan" },
+      { "label": "Rapor Numarası", "source": "rapor.raporNo" },
+      { "label": "Periyodik Kontrol Adresi", "source": "firma.adres" },
+      { "label": "Rapor Tarihi", "field": "raporTarihi", "format": "date" },
+      { "label": "İSG-KATİP Sözleşme ID", "source": "firmaBilgi.isgKatipId" },
+      { "label": "Periyodik Kontrol Başlangıç Tarihi ve Saati", "field": "baslangicTarihi", "format": "dateTime" },
+      { "label": "Periyodik Kontrol Bitiş Tarihi ve Saati", "field": "bitisTarihi", "format": "dateTime" },
+      { "label": "SGK Sicil Numarası", "source": "firmaBilgi.sgkSicilNo" },
+      { "label": "Bir Sonraki Periyodik Kontrol Tarihi", "field": "sonrakiKontrolTarihi", "format": "date" },
+      { "label": "Periyodik Kontrol Metodu ve Kapsamı", "field": "metodKapsam" },
+      { "label": "Enerji sağlayan kuruluş", "field": "enerjiKurulusu" },
+      { "label": "Şebeke gerilimi", "field": "sebekeGerilimi" },
+      { "label": "Proje detayları", "field": "projeDetaylari" },
+      { "label": "Son kontrol tarihi", "field": "sonKontrolTarihi", "format": "date" },
+      { "label": "Hava durumu ve sıcaklığı", "field": "havaDurumu" },
+      { "label": "Zemin nem durumu", "field": "zeminNem" },
+      { "label": "Pano/Ekipman tanımlaması", "field": "panoEkipmanTanimi" },
+      { "label": "Koruma seviyesi (EPS)", "field": "korumaSeviyesi" },
+      { "label": "Yapı kullanım amacı, yapıya ait detaylar", "field": "yapiKullanimAmaci" },
+      { "label": "Cihaz adı", "field": "cihazAdi" },
+      { "label": "Seri numarası", "field": "cihazSeriNo" },
+      { "label": "Kalibrasyon tarihi", "field": "kalibrasyonTarihi", "format": "date" },
+      { "label": "Kalibrasyon geçerlilik tarihi", "field": "kalibrasyonGecerlilikTarihi", "format": "date" },
+      { "label": "Kalibrasyon numarası", "field": "kalibrasyonNo" }
+    ],
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["TT", "IT", "TN", "TN-CS", "TN-C", "TN-S"],
+        "field": "sebekeTipi",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Periyodik Kontrol", "İlk Kontrol"],
+        "field": "kontrolNedeni",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Ev", "Ticari", "Endüstri", "Diğer"],
+        "field": "yapiCinsi",
+        "direction": "after"
+      },
+      {
+        "type": "multi",
+        "mapping": {
+          "topraklayiciTipiRing": "Ring",
+          "topraklayiciTipiYuzeysel": "Yüzeysel",
+          "topraklayiciTipiTemel": "Temel",
+          "topraklayiciTipiDerin": "Derin",
+          "topraklayiciTipiBelirlenemedi": "Belirlenemedi"
+        },
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Ayrılmış YKS", "Ayrılmamış (Eşpotansiyel) YKS"],
+        "field": "yksCinsi",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["ESE (Aktif-Radyoaktif) Paratoner", "Franklin çubuğu: FRANKLİN", "Faraday kafesi: FARADAY", "Doğal Bileşenler (Betonarme donatı, çelik yapı): DOĞAL", "Gerilmiş Tel"],
+        "field": "ykTesisatiTipi",
+        "direction": "after"
+      },
+      {
+        "type": "radio",
+        "labels": ["Çevrim empedansı", "3 Uçlu topraklama", "Klamp metodu (Çoklu topraklayıcılı"],
+        "field": "olcumMetodu",
+        "direction": "after"
+      }
+    ],
+    "controlQuestions": {
+      "mode": "next",
+      "questions": [
+        { "field": "kriter1", "text": "Yıldırımdan korunma risk analizi ve kapsama alanı" },
+        { "field": "kriter2", "text": "Yıldırım seviyesine göre montajı yapılmış olan" },
+        { "field": "kriter4", "text": "Koruma borusu" },
+        { "field": "kriter5", "text": "İndirme iletkenleri" },
+        { "field": "kriter6", "text": "Muayene klemensi" },
+        { "field": "kriter7", "text": "Çatı direği boyu ve çapı" },
+        { "field": "kriter8", "text": "Topraklama tesisi" },
+        { "field": "kriter9", "text": "Faraday kafesi" },
+        { "field": "kriter10", "text": "Ana dağıtım panosunda uygun parafudr" },
+        { "field": "kriter11", "text": "Parafudr tipi" }
+      ]
+    }
+  }
+}

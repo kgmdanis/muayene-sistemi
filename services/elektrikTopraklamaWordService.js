@@ -57,8 +57,12 @@ function escapeXml(str) {
 
 // ============ HÜCRE İŞLEMLERİ ============
 
+// Calibri 8pt (16 half-points) font özellikleri
+const FONT_RPR = '<w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="16"/><w:szCs w:val="16"/></w:rPr>';
+
 /**
  * Hücreye metin yaz - mevcut içeriği değiştirerek
+ * Tüm yazılan metinler Calibri 8pt olarak formatlanır
  */
 function writeToCell(cellXml, newText) {
     const escapedText = escapeXml(newText || '-');
@@ -67,23 +71,32 @@ function writeToCell(cellXml, newText) {
         if (/<w:pPr>[\s\S]*?<\/w:pPr>/.test(cellXml)) {
             return cellXml.replace(
                 /(<\/w:pPr>)/,
-                `$1<w:r><w:t xml:space="preserve">${escapedText}</w:t></w:r>`
+                `$1<w:r>${FONT_RPR}<w:t xml:space="preserve">${escapedText}</w:t></w:r>`
             );
         }
         return cellXml.replace(
             /(<\/w:p>)/,
-            `<w:r><w:t xml:space="preserve">${escapedText}</w:t></w:r>$1`
+            `<w:r>${FONT_RPR}<w:t xml:space="preserve">${escapedText}</w:t></w:r>$1`
         );
     }
 
     let firstReplaced = false;
-    return cellXml.replace(/<w:t([^>]*)>([^<]*)<\/w:t>/g, (match, attrs, oldText) => {
+    let result = cellXml.replace(/<w:t([^>]*)>([^<]*)<\/w:t>/g, (match, attrs, oldText) => {
         if (!firstReplaced) {
             firstReplaced = true;
             return `<w:t xml:space="preserve">${escapedText}</w:t>`;
         }
         return '<w:t></w:t>';
     });
+
+    // Mevcut run'lardaki font boyutlarını Calibri 8pt'ye normalize et
+    result = result.replace(/<w:sz w:val="\d+"/g, '<w:sz w:val="16"');
+    result = result.replace(/<w:szCs w:val="\d+"/g, '<w:szCs w:val="16"');
+    result = result.replace(/<w:rFonts[^>]*\/>/g, '<w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>');
+    // rPr'si olmayan run'lara font ekle
+    result = result.replace(/<w:r>(\s*)<w:t/g, `<w:r>$1${FONT_RPR}<w:t`);
+
+    return result;
 }
 
 /**
@@ -231,17 +244,36 @@ function setSebekeTipi(xml, sebekeTipi) {
 
 /**
  * Var/Yok tipindeki checkbox'ları ayarla
+ * Row eşleşmesi için getRowText kullanır (XML tag'leri arası bölünmüş metinleri de yakalar)
+ * NOT: Bir satırda birden fazla Var/Yok çifti olabilir (örn: proje + tek hat şeması).
+ * Context label'dan sonraki ilk Var/Yok çiftini bulur.
  */
 function setVarYokCheckbox(xml, contextLabel, value) {
     const rowRegex = /<w:tr[^>]*>[\s\S]*?<\/w:tr>/g;
     const rows = xml.match(rowRegex) || [];
 
+    const normalizedLabel = contextLabel.toLowerCase().replace(/\s+/g, ' ').trim();
+
     for (const row of rows) {
-        if (!row.includes(contextLabel)) continue;
+        const rowText = getRowText(row).toLowerCase().replace(/\s+/g, ' ').trim();
+        if (!rowText.includes(normalizedLabel)) continue;
 
         let updatedRow = row;
-        updatedRow = setCheckboxByLabel(updatedRow, 'Var', value === true);
-        updatedRow = setCheckboxByLabel(updatedRow, 'Yok', value === false);
+        const isTrue = value === true || value === 'true';
+        const isFalse = value === false || value === 'false';
+
+        // Context label'ın XML'deki pozisyonunu bul
+        const contextIndex = findTextPositionInXml(updatedRow, contextLabel);
+
+        if (contextIndex >= 0) {
+            // Context'ten sonraki kısımda Var/Yok ara
+            updatedRow = setCheckboxByLabelAfter(updatedRow, 'Var', isTrue, contextIndex);
+            updatedRow = setCheckboxByLabelAfter(updatedRow, 'Yok', isFalse, contextIndex);
+        } else {
+            // Fallback: eski yöntem
+            updatedRow = setCheckboxByLabel(updatedRow, 'Var', isTrue);
+            updatedRow = setCheckboxByLabel(updatedRow, 'Yok', isFalse);
+        }
 
         if (updatedRow !== row) {
             return xml.replace(row, updatedRow);
@@ -249,6 +281,65 @@ function setVarYokCheckbox(xml, contextLabel, value) {
     }
 
     return xml;
+}
+
+/**
+ * XML içinde bir metin label'ının <w:t> pozisyonunu bul
+ * Metin birden fazla run'a bölünmüş olabilir, ilk kelimeyi arar
+ */
+function findTextPositionInXml(xml, label) {
+    // Önce tam eşleşme dene
+    const directIndex = xml.indexOf(label);
+    if (directIndex >= 0) return directIndex;
+
+    // Tam eşleşme yoksa, label'ın ilk kelimesini (en az 4 karakter) ara
+    const words = label.split(/\s+/).filter(w => w.length >= 4);
+    if (words.length > 0) {
+        return xml.indexOf(words[0]);
+    }
+    return -1;
+}
+
+/**
+ * Belirli bir pozisyondan SONRA gelen label'a ait checkbox'ı işaretle
+ */
+function setCheckboxByLabelAfter(xml, label, checked, afterPos) {
+    // afterPos'tan sonraki ilk label occurrence'ını bul
+    const labelIndex = xml.indexOf(label, afterPos);
+    if (labelIndex === -1) return xml;
+
+    // Label'dan geriye doğru en yakın checkbox'ı bul (max 2000 karakter, ama afterPos'tan geri gitme)
+    const searchStart = Math.max(afterPos, labelIndex - 2000);
+    const searchArea = xml.substring(searchStart, labelIndex);
+
+    const checkboxPattern = /<w:checkBox>[\s\S]*?<\/w:checkBox>/g;
+    let lastMatch = null;
+    let match;
+
+    while ((match = checkboxPattern.exec(searchArea)) !== null) {
+        lastMatch = match;
+    }
+
+    if (!lastMatch) return xml;
+
+    const absolutePos = searchStart + lastMatch.index;
+    const oldCheckbox = lastMatch[0];
+
+    let newCheckbox;
+    if (checked) {
+        newCheckbox = oldCheckbox
+            .replace(/<w:default w:val="[01]"/, '<w:default w:val="1"')
+            .replace(/<\/w:checkBox>/, '<w:checked/></w:checkBox>');
+        if (oldCheckbox.includes('<w:checked')) {
+            newCheckbox = oldCheckbox.replace(/<w:default w:val="[01]"/, '<w:default w:val="1"');
+        }
+    } else {
+        newCheckbox = oldCheckbox
+            .replace(/<w:default w:val="[01]"/, '<w:default w:val="0"')
+            .replace(/<w:checked\s*\/?>/g, '');
+    }
+
+    return xml.substring(0, absolutePos) + newCheckbox + xml.substring(absolutePos + oldCheckbox.length);
 }
 
 /**
@@ -330,18 +421,34 @@ function setTopraklayiciTipi(xml, tip) {
 
 /**
  * Kontrol nedenini ayarla
+ * NOT: "Periyodik Kontrol" tam XML'de aranırsa "Periyodik Kontrol Adresi" bulunur (yanlış).
+ * Bu yüzden "Kontrol nedeni" satırını bulup, o satır içinde işaretleme yaparız.
  */
 function setKontrolNedeni(xml, neden) {
     if (!neden) return xml;
 
-    // Önce ikisini de temizle
-    xml = setCheckboxByLabel(xml, 'Periyodik Kontrol', false);
-    xml = setCheckboxByLabel(xml, 'İlk Kontrol', false);
+    const rowRegex = /<w:tr[^>]*>[\s\S]*?<\/w:tr>/g;
+    const rows = xml.match(rowRegex) || [];
 
-    if (neden.toLowerCase().includes('periyodik')) {
-        xml = setCheckboxByLabel(xml, 'Periyodik Kontrol', true);
-    } else if (neden.toLowerCase().includes('ilk')) {
-        xml = setCheckboxByLabel(xml, 'İlk Kontrol', true);
+    for (const row of rows) {
+        const rowText = getRowText(row);
+        if (!rowText.includes('Kontrol nedeni')) continue;
+
+        let updatedRow = row;
+        // Önce ikisini de temizle
+        updatedRow = setCheckboxByLabel(updatedRow, 'Periyodik Kontrol', false);
+        updatedRow = setCheckboxByLabel(updatedRow, 'İlk Kontrol', false);
+
+        if (neden.toLowerCase().includes('periyodik')) {
+            updatedRow = setCheckboxByLabel(updatedRow, 'Periyodik Kontrol', true);
+        } else if (neden.toLowerCase().includes('ilk')) {
+            updatedRow = setCheckboxByLabel(updatedRow, 'İlk Kontrol', true);
+        }
+
+        if (updatedRow !== row) {
+            return xml.replace(row, updatedRow);
+        }
+        break;
     }
 
     return xml;
@@ -472,7 +579,7 @@ async function generateElektrikTopraklamaWord(rapor, isEmri, olcumler = [], opti
     docXml = setValueByLabel(docXml, 'Periyodik Kontrol Adresi', firma.adres);
     docXml = setValueByLabel(docXml, 'Rapor Tarihi', formatDate(rapor.bitisTarihi || new Date()));
     docXml = setValueByLabel(docXml, 'İSG-KATİP', options.isgKatipNo || rapor.isgKatipNo || firmaBilgi.isgKatipId);
-    docXml = setValueByLabel(docXml, 'SGK Sicil No', firmaBilgi.sgkSicilNo);
+    docXml = setValueByLabel(docXml, 'SGK Sicil Numarası', options.sgkSicilNo || rapor.sgkSicilNo || firmaBilgi.sgkSicilNo);
     docXml = setValueByLabel(docXml, 'Periyodik Kontrol Başlangıç Tarihi ve Saati', formatDateTime(rapor.baslangicTarihi, options.baslangicSaati || '09:00'));
     docXml = setValueByLabel(docXml, 'Periyodik Kontrol Bitiş Tarihi ve Saati', formatDateTime(rapor.bitisTarihi, options.bitisSaati || '17:00'));
     docXml = setValueByLabel(docXml, 'Bir Sonraki Periyodik Kontrol Tarihi', getNextYearDate(rapor.bitisTarihi));
@@ -482,17 +589,31 @@ async function generateElektrikTopraklamaWord(rapor, isEmri, olcumler = [], opti
     docXml = setValueByLabel(docXml, 'Şebeke gerilimi', options.sebekeGerilimi || '380');
     docXml = setValueByLabel(docXml, 'Proje bilgileri', options.projeBilgileri || '-');
     docXml = setValueByLabel(docXml, 'Ekipmanın kullanım amacı', options.kullanimAmaci || firma.spiKodu || 'FABRİKA');
-    docXml = setValueByLabel(docXml, 'Son kontrol tarihi', formatDate(options.sonKontrolTarihi) || '-');
+    // Son kontrol tarihi: metin alanı - sadece Date objesi veya ISO format ise formatDate uygula
+    const sonKontrolRaw = options.sonKontrolTarihi || '-';
+    let sonKontrolStr;
+    if (sonKontrolRaw instanceof Date) {
+        sonKontrolStr = formatDate(sonKontrolRaw);
+    } else if (typeof sonKontrolRaw === 'string' && /^\d{4}-\d{2}-\d{2}/.test(sonKontrolRaw)) {
+        // ISO format (DB'den gelen)
+        sonKontrolStr = formatDate(sonKontrolRaw);
+    } else {
+        // Kullanıcının yazdığı metin (Türkçe tarih formatı, "-" vb.)
+        sonKontrolStr = sonKontrolRaw;
+    }
+    docXml = setValueByLabel(docXml, 'Son kontrol tarihi', sonKontrolStr);
     docXml = setValueByLabel(docXml, 'Hava durumu ve sıcaklığı', options.havaDurumu || rapor.havaDurumu || `${rapor.ortamSicaklik || 25} °C`);
     docXml = setValueByLabel(docXml, 'Zemin nem durumu', options.zeminNem || rapor.zeminNem || (rapor.ortamNem ? (rapor.ortamNem < 50 ? 'KURU' : 'NORMAL') : 'KURU'));
     docXml = setValueByLabel(docXml, 'Pano/Ekipman tanımlaması', options.panoTanimi || '-');
 
     // === 3. ÖLÇÜM CİHAZI ===
     const cihaz = rapor.topraklamaCihaz || {};
+    const kalTarihi = cihaz.kalibrasyonTarihi ? formatDate(cihaz.kalibrasyonTarihi) : '20.01.2026';
+    const kalGecerlilik = cihaz.kalibrasyonGecerlilikTarihi ? formatDate(cihaz.kalibrasyonGecerlilikTarihi) : '20.01.2027';
     docXml = setValueByLabel(docXml, 'Cihaz adı', cihaz.cihazAdi || 'Chauvin Arnoux');
     docXml = setValueByLabel(docXml, 'Seri numarası', cihaz.seriNo || '0165K-0126-00105');
-    docXml = setValueByLabel(docXml, 'Kalibrasyon tarihi', formatDate(cihaz.kalibrasyonTarihi) || '20.01.2026');
-    docXml = setValueByLabel(docXml, 'Kalibrasyon geçerlilik tarihi', formatDate(cihaz.kalibrasyonGecerlilikTarihi) || '20.01.2027');
+    docXml = setValueByLabel(docXml, 'Kalibrasyon tarihi', kalTarihi);
+    docXml = setValueByLabel(docXml, 'Kalibrasyon geçerlilik tarihi', kalGecerlilik);
     docXml = setValueByLabel(docXml, 'Kalibrasyon numarası', cihaz.kalibrasyonNo || '2500290');
 
     // === 3.5 CHECKBOX'LAR ===
@@ -529,9 +650,53 @@ async function generateElektrikTopraklamaWord(rapor, isEmri, olcumler = [], opti
     }
 
     // === 7. NOTLAR ===
-    // Sabit metin + kullanıcının ek notları
+    // Not açıklamaları
+    const notAciklamalari = {
+        'Not-1': 'Not-1: Koruma, otomatik olarak aşırı akım koruma cihazı (MCB) ile sağlanmaktadır.',
+        'Not-2': 'Not-2: Aşırı akım koruma cihazı (MCB) korumayı tek başına sağlayamamaktadır. Ek koruma önlemi gereklidir.',
+        'Not-3': 'Not-3: Topraklama direnci sınır değerin üzerindedir. Topraklama tesisatı iyileştirilmelidir.',
+        'Not-4': 'Not-4: Koruma, kaçak akım koruma cihazı (RCD) ile sağlanmaktadır.',
+        'Not-5': 'Not-5: Kaçak akım koruma cihazı (RCD) çalışmamaktadır. Derhal değiştirilmelidir.',
+        'Not-6': 'Not-6: Kaçak akım koruma cihazı (RCD) gecikmeli çalışmaktadır.',
+        'Not-7': 'Not-7: Tüm kaçak akım röleleri ana pano ve tali panolar seçicilik ilkesine uygun şekilde tesis edilmiştir.',
+        'Not-8': 'Not-8: Kaçak akım röleleri seçicilik ilkesine uygun değildir.',
+        'Not-9': 'Not-9: Elektrik Tesisatı projeye göre uygundur.',
+        'Not-10': 'Not-10: Elektrik Tesisatı projeden sapma göstermektedir.',
+        'Not-11': 'Not-11: Tesisatın projesi bulunmamaktadır.'
+    };
+
+    // Rapordaki tüm Not değerlerini topla
+    const kullanılanNotlar = new Set();
+    if (olcumler && olcumler.length > 0) {
+        for (const o of olcumler) {
+            const s = o.sonuc || '';
+            if (s.startsWith('Not-')) kullanılanNotlar.add(s);
+        }
+    }
+    if (options.rcdSelektivite && options.rcdSelektivite.length > 0) {
+        for (const r of options.rcdSelektivite) {
+            const s = r.sonuc || '';
+            if (s.startsWith('Not-')) kullanılanNotlar.add(s);
+        }
+    }
+
+    // Sabit metin
     const sabitNotlar = 'İŞ EKİPMANLARININ KULLANIMINDA SAĞLIK VE GÜVENLİK ŞARTLARI YÖNETMELİĞİ\nTesisatlar:2.3.7. Elektrik, topraklama ve yıldırımdan korunma tesisatları için periyodik kontrolde tesisat projesi aranır. İşveren, projesi olmayan tesisatların 3/12/2003 tarihli ve 25305 sayılı Resmî Gazete\'de yayımlanan Elektrik İç Tesisleri Proje Hazırlama Yönetmeliği, diğer ilgili yönetmelikler ve ilgili standartlara uygun olarak projelendirilmesini yaptırmak zorundadır.\nNot: Ölçüm Raporları Ölçüm Yapılan Günün Şartları İçin Geçerlidir';
-    const notlarMetni = options.notlar ? `${sabitNotlar}\n${options.notlar}` : sabitNotlar;
+
+    // Kullanılan Not açıklamalarını ekle
+    const notMetinleri = [];
+    const sortedNotlar = Array.from(kullanılanNotlar).sort((a, b) => {
+        const numA = parseInt(a.replace('Not-', ''));
+        const numB = parseInt(b.replace('Not-', ''));
+        return numA - numB;
+    });
+    for (const not of sortedNotlar) {
+        if (notAciklamalari[not]) notMetinleri.push(notAciklamalari[not]);
+    }
+
+    let notlarMetni = sabitNotlar;
+    if (notMetinleri.length > 0) notlarMetni += '\n' + notMetinleri.join('\n');
+    if (options.notlar) notlarMetni += '\n' + options.notlar;
     docXml = fillNotlarTable(docXml, notlarMetni);
 
     // Güncellenmiş XML'i kaydet
@@ -725,6 +890,11 @@ function fillMeasurementRow(rowXml, olcum, rowNum, sistemTipi) {
         const newCell = writeToCell(cells[i], String(values[i]));
         newRow = newRow.replace(cells[i], newCell);
     }
+
+    // Font boyutlarını normalize et: Calibri 8pt
+    newRow = newRow.replace(/<w:sz w:val="\d+"/g, '<w:sz w:val="16"');
+    newRow = newRow.replace(/<w:szCs w:val="\d+"/g, '<w:szCs w:val="16"');
+    newRow = newRow.replace(/<w:rFonts[^>]*\/>/g, '<w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>');
 
     return newRow;
 }

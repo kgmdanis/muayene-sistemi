@@ -139,7 +139,7 @@
       "id": "kontrol",
       "title": "Tespit ve Değerlendirme",
       "type": "control-questions",
-      "badge": "17 Kontrol",
+      "badge": "18 Kontrol",
       "questions": [
         {
           "id": "kriter1",
@@ -309,6 +309,13 @@
             "Uygun",
             "Uygun Değil"
           ],
+          "default": "Uygun"
+        },
+        {
+          "id": "makineSicil",
+          "no": 18,
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu ?",
+          "options": ["Uygun", "Uygun Değil"],
           "default": "Uygun"
         }
       ]
@@ -500,6 +507,10 @@
           "field": "kriter17",
           "text": "Yük altında yapı kontrol",
           "exact": true
+        },
+        {
+          "field": "makineSicil",
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu"
         }
       ]
     }

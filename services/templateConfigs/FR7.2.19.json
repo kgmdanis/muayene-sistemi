@@ -156,6 +156,13 @@
           "label": "Güvenlik Ventili Açma Basınçı (Bar)",
           "type": "text",
           "placeholder": "2"
+        },
+        {
+          "id": "imbisatTipi",
+          "label": "İmbisat Tipi",
+          "type": "radio",
+          "options": ["Açık imbisat", "Kapalı imbisat"],
+          "default": "Açık imbisat"
         }
       ]
     },
@@ -505,6 +512,14 @@
       {
         "label": "Hidrostatik Test",
         "field": "test_hidrostatik_test"
+      }
+    ],
+    "checkboxes": [
+      {
+        "type": "radio",
+        "labels": ["Açık imbisat", "Kapalı imbisat"],
+        "field": "imbisatTipi",
+        "direction": "before"
       }
     ],
     "controlQuestions": {
