@@ -4416,6 +4416,8 @@ app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
             // Ortam koşulları
             havaDurumu,
             zeminNem,
+            // Yer tipi (Normal/Tehlikeli)
+            yerTipi,
             // Ölçüm verileri
             olcumler: formOlcumler,
             // RCD Selektivite verileri
@@ -4471,6 +4473,8 @@ app.post('/api/elektrik-topraklama-raporu/:id/word', async (req, res) => {
             // Ortam koşulları
             havaDurumu,
             zeminNem,
+            // Yer tipi
+            yerTipi,
             // RCD Selektivite
             rcdSelektivite: formRcdSelektivite && formRcdSelektivite.length > 0
                 ? formRcdSelektivite

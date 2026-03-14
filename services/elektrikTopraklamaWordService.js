@@ -621,7 +621,8 @@ async function generateElektrikTopraklamaWord(rapor, isEmri, olcumler = [], opti
 
     // === 4. ÖLÇÜM TABLOSU ===
     if (olcumler && olcumler.length > 0) {
-        docXml = fillMeasurementTable(docXml, olcumler, options.sistemTipi || rapor.sistemTipi || 'TN');
+        const yerTipi = options.yerTipi || rapor.yerTipi || 'NORMAL';
+        docXml = fillMeasurementTable(docXml, olcumler, options.sistemTipi || rapor.sistemTipi || 'TN', yerTipi);
     }
 
     // === 4.5 RCD SELEKTİVİTE TABLOSU ===
@@ -713,7 +714,7 @@ async function generateElektrikTopraklamaWord(rapor, isEmri, olcumler = [], opti
 /**
  * Ölçüm tablosunu doldur
  */
-function fillMeasurementTable(docXml, olcumler, sistemTipi) {
+function fillMeasurementTable(docXml, olcumler, sistemTipi, yerTipi = 'NORMAL') {
     const tableRegex = /<w:tbl>[\s\S]*?<\/w:tbl>/g;
     const tables = docXml.match(tableRegex) || [];
 
@@ -761,7 +762,7 @@ function fillMeasurementTable(docXml, olcumler, sistemTipi) {
         if (cellCount < 12) continue;
 
         const olcum = olcumler[dataRowIndex];
-        const newRow = fillMeasurementRow(row, olcum, dataRowIndex + 1, sistemTipi);
+        const newRow = fillMeasurementRow(row, olcum, dataRowIndex + 1, sistemTipi, yerTipi);
 
         const rowIndex = newTable.indexOf(row);
         if (rowIndex !== -1) {
@@ -823,7 +824,7 @@ function fillMeasurementTable(docXml, olcumler, sistemTipi) {
  * 10: Açma zamanı TΔ (ms)
  * 11: Sonuç (Uygunluk notu)
  */
-function fillMeasurementRow(rowXml, olcum, rowNum, sistemTipi) {
+function fillMeasurementRow(rowXml, olcum, rowNum, sistemTipi, yerTipi = 'NORMAL') {
     const cellRegex = /<w:tc[^>]*>[\s\S]*?<\/w:tc>/g;
     const cells = rowXml.match(cellRegex) || [];
 
@@ -845,18 +846,23 @@ function fillMeasurementRow(rowXml, olcum, rowNum, sistemTipi) {
     const rcdVar = rcdIdn > 0;
 
     // Zs/RA hesaplama: Sınır değer = UL(mV) / Ia
-    let zsra = ia > 0 ? 50000 / ia : 0;
+    // Tehlikeli yer ise UL = 25000mV (25V), normal ise UL = 50000mV (50V)
+    const UL = (yerTipi === 'TEHLIKELI' || yerTipi === 'TEHLİKELİ') ? 25000 : 50000;
+    let zsra = ia > 0 ? UL / ia : 0;
 
     // Ik1 = U₀ / Zx
     let ik = zx > 0 ? (230 / zx) : 0;
 
-    // Sonuç: Zx ≤ Zs → Not-1 (MCB yeterli), Zx > Zs ve RCD var → Not-4, yoksa Not-2
-    let sonuc = 'Not-2';
-    if (zx > 0 && zsra > 0) {
-        if (zx <= zsra) {
-            sonuc = 'Not-1';
-        } else if (rcdVar) {
-            sonuc = 'Not-4';
+    // Sonuç belirleme - formdan gelen sonuç varsa onu kullan
+    let sonuc = olcum.sonuc || '';
+    if (!sonuc) {
+        sonuc = 'Not-2';
+        if (zx > 0 && zsra > 0) {
+            if (zx <= zsra) {
+                sonuc = 'Not-1';
+            } else if (rcdVar) {
+                sonuc = 'Not-4';
+            }
         }
     }
 
@@ -866,8 +872,9 @@ function fillMeasurementRow(rowXml, olcum, rowNum, sistemTipi) {
     const rcdId = olcum.rcdId || '-';
     const rcdTd = olcum.rcdTd || olcum.rcdSure || '-';
 
-    // RCD bilgisi: tip/In(A)/IΔn(mA) formatında
-    const rcdInfo = rcdVar ? `AC/${rcdInStr}/${rcdIdnStr}` : '-';
+    // RCD bilgisi: tip/In(A)/IΔn(mA) formatında - formdan gelen RCD tipini kullan
+    const rcdTipi = olcum.rcdTipi || olcum.rcdType || 'AC';
+    const rcdInfo = rcdVar ? `${rcdTipi}/${rcdInStr}/${rcdIdnStr}` : '-';
 
     // 12 hücre - şablon sırasıyla
     const values = [
