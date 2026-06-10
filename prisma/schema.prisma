@@ -566,16 +566,20 @@ model RCDSecicilik {
   raporId               Int
   siraNo                Int                        @default(1)
 
-  // RCD Bilgileri
-  rcdKonumu             String?                    // Ana Pano, Tali Pano vs
-  rcdTipi               String?                    // A, AC, B vs
-  rcdIAn                Decimal?                   @db.Decimal(10, 2)  // Anma kaçak akımı (mA)
-  rcdAcmaSuresi         Decimal?                   @db.Decimal(10, 2)  // ms
+  // Önceki (üst seviye) RCD bilgileri
+  oncekiPanoAdi         String?
+  oncekiRcdTipi         String?                    // A, AC, B vs
+  oncekiIn              Decimal?                   @db.Decimal(10, 2)  // Anma akımı (A)
+  oncekiIdn             Decimal?                   @db.Decimal(10, 2)  // Anma kaçak akımı (mA)
+  oncekiGecikme         Decimal?                   @db.Decimal(10, 2)  // Gecikme (ms)
 
-  // Seçicilik Durumu
-  ustRcdId              Int?                       // Üst seviye RCD referansı
-  secicilikSaglandi     Boolean                    @default(false)
+  // Son (alt seviye) RCD bilgileri
+  sonPanoAdi            String?
+  sonRcdTipi            String?
+  sonIdn                Decimal?                   @db.Decimal(10, 2)  // Anma kaçak akımı (mA)
+  sonTd                 Decimal?                   @db.Decimal(10, 2)  // Açma süresi (ms)
 
+  sonuc                 String?
   aciklama              String?
   createdAt             DateTime                   @default(now())
 

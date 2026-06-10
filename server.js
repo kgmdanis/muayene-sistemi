@@ -3549,11 +3549,23 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/rcd-secicilik', async (req, r
         });
         const siraNo = sonRcd ? sonRcd.siraNo + 1 : 1;
 
+        const b = req.body || {};
+        const num = (v) => (v === '' || v === null || v === undefined || isNaN(parseFloat(v))) ? null : parseFloat(v);
         const rcd = await auth.prisma.rCDSecicilik.create({
             data: {
                 rapor: { connect: { id: raporId } },
-                siraNo,
-                ...req.body
+                siraNo: b.siraNo ? parseInt(b.siraNo) : siraNo,
+                oncekiPanoAdi: b.oncekiPanoAdi ?? null,
+                oncekiRcdTipi: b.oncekiRcdTipi ?? null,
+                oncekiIn: num(b.oncekiIn),
+                oncekiIdn: num(b.oncekiIdn),
+                oncekiGecikme: num(b.oncekiGecikme),
+                sonPanoAdi: b.sonPanoAdi ?? null,
+                sonRcdTipi: b.sonRcdTipi ?? null,
+                sonIdn: num(b.sonIdn),
+                sonTd: num(b.sonTd),
+                sonuc: b.sonuc ?? null,
+                aciklama: b.aciklama ?? null
             }
         });
 
