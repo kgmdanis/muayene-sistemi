@@ -613,21 +613,100 @@ app.get('/api/hizmetler', auth.authMiddleware(), async (req, res) => {
     }
 });
 
+// Distinct metod/standart listesi (item 3 - seçmeli metod/standart)
+app.get('/api/hizmet-metodlar', auth.authMiddleware(), async (req, res) => {
+    try {
+        const hizmetler = await auth.prisma.hizmet.findMany({
+            select: { metodKapsam: true, standartYonetmelik: true }
+        });
+        const metodlar = [...new Set(hizmetler.map(h => h.metodKapsam).filter(Boolean))].sort();
+        const standartlar = [...new Set(hizmetler.map(h => h.standartYonetmelik).filter(Boolean))].sort();
+        res.json({ metodlar, standartlar });
+    } catch (error) {
+        res.status(500).json({ error: 'Metod/standart listesi alınamadı' });
+    }
+});
+
 app.post('/api/hizmetler', auth.authMiddleware('admin'), async (req, res) => {
     try {
-        const hizmet = await auth.prisma.hizmet.create({ data: req.body });
-        res.json(hizmet);
+        const body = req.body || {};
+
+        // Kategori: id veya isim olarak gelebilir. İsimse bul, yoksa oluştur.
+        let kategoriId = body.kategoriId ? parseInt(body.kategoriId) : null;
+        if (!kategoriId && body.kategori) {
+            const kategoriAdi = String(body.kategori).trim();
+            let kategori = await auth.prisma.kategori.findFirst({ where: { ad: kategoriAdi } });
+            if (!kategori) {
+                kategori = await auth.prisma.kategori.create({ data: { ad: kategoriAdi } });
+            }
+            kategoriId = kategori.id;
+        }
+        if (!kategoriId) {
+            return res.status(400).json({ error: 'Kategori belirtilmeli' });
+        }
+
+        const ad = (body.ad || '').trim();
+        if (!ad) {
+            return res.status(400).json({ error: 'Hizmet adı belirtilmeli' });
+        }
+
+        // Benzersiz kod üret (mevcut format: HZM-{kategoriId}-{timestamp})
+        const kod = body.kod && String(body.kod).trim()
+            ? String(body.kod).trim()
+            : `HZM-${kategoriId}-${Date.now()}`;
+
+        const hizmet = await auth.prisma.hizmet.create({
+            data: {
+                kod,
+                ad,
+                kategoriId,
+                metodKapsam: body.metodKapsam ?? body.metod ?? null,
+                standartYonetmelik: body.standartYonetmelik ?? body.standart ?? null,
+                birim: body.birim || 'Adet',
+                birimFiyat: parseFloat(body.birimFiyat ?? body.fiyat ?? 0) || 0,
+                sablonKodlari: body.sablonKodlari ?? null
+            },
+            include: { kategori: true }
+        });
+        res.json({ success: true, hizmet });
     } catch (error) {
-        res.status(500).json({ error: 'Hizmet eklenemedi' });
+        console.error('❌ Hizmet ekleme hatası:', error);
+        res.status(500).json({ error: 'Hizmet eklenemedi: ' + error.message });
     }
 });
 
 app.put('/api/hizmetler/:id', auth.authMiddleware('admin'), async (req, res) => {
     try {
-        const hizmet = await auth.prisma.hizmet.update({ where: { id: parseInt(req.params.id) }, data: req.body });
-        res.json(hizmet);
+        const body = req.body || {};
+        const data = {};
+
+        // Kategori (id veya isim)
+        if (body.kategoriId) data.kategoriId = parseInt(body.kategoriId);
+        else if (body.kategori) {
+            const kategoriAdi = String(body.kategori).trim();
+            let kategori = await auth.prisma.kategori.findFirst({ where: { ad: kategoriAdi } });
+            if (!kategori) kategori = await auth.prisma.kategori.create({ data: { ad: kategoriAdi } });
+            data.kategoriId = kategori.id;
+        }
+
+        if (body.ad !== undefined) data.ad = String(body.ad).trim();
+        if (body.metodKapsam !== undefined || body.metod !== undefined) data.metodKapsam = body.metodKapsam ?? body.metod ?? null;
+        if (body.standartYonetmelik !== undefined || body.standart !== undefined) data.standartYonetmelik = body.standartYonetmelik ?? body.standart ?? null;
+        if (body.birim !== undefined) data.birim = body.birim;
+        if (body.birimFiyat !== undefined || body.fiyat !== undefined) data.birimFiyat = parseFloat(body.birimFiyat ?? body.fiyat ?? 0) || 0;
+        if (body.sablonKodlari !== undefined) data.sablonKodlari = body.sablonKodlari || null;
+        if (body.isActive !== undefined) data.isActive = !!body.isActive;
+        if (body.sira !== undefined) data.sira = parseInt(body.sira) || 0;
+
+        const hizmet = await auth.prisma.hizmet.update({
+            where: { id: parseInt(req.params.id) },
+            data,
+            include: { kategori: true }
+        });
+        res.json({ success: true, hizmet });
     } catch (error) {
-        res.status(500).json({ error: 'Hizmet güncellenemedi' });
+        console.error('❌ Hizmet güncelleme hatası:', error);
+        res.status(500).json({ error: 'Hizmet güncellenemedi: ' + error.message });
     }
 });
 
@@ -803,22 +882,129 @@ const teklifDurumMap = {
     'Taslak': 'TASLAK',
     'Bekleyen': 'TASLAK',
     'Gönderildi': 'GONDERILDI',
+    'Revize': 'REVIZE',
+    'Revize Edildi': 'REVIZE',
     'Onaylandı': 'ONAYLANDI',
     'Reddedildi': 'REDDEDILDI',
     'İptal': 'IPTAL',
     // Enum değerleri de kabul et
     'TASLAK': 'TASLAK',
     'GONDERILDI': 'GONDERILDI',
+    'REVIZE': 'REVIZE',
     'ONAYLANDI': 'ONAYLANDI',
     'REDDEDILDI': 'REDDEDILDI',
     'IPTAL': 'IPTAL'
 };
 
 // Teklif güncelle (Sadece Admin)
+// Teklif güncellendiğinde bağlı iş emrinin alt görevlerini senkronize et (item 7).
+// GÜVENLİK: Tamamlanmış (durum != BEKLIYOR) veya raporu olan alt görevler ASLA silinmez.
+// Sadece BEKLIYOR + raporsuz alt görevler eklenir/çıkarılır.
+async function syncIsEmriAltGorevler(teklifId) {
+    const isEmirleri = await auth.prisma.isEmri.findMany({
+        where: { teklifId },
+        include: { altGorevler: true }
+    });
+    if (isEmirleri.length === 0) return { synced: false };
+
+    const teklif = await auth.prisma.teklif.findUnique({
+        where: { id: teklifId },
+        include: { detaylar: { include: { hizmet: { include: { kategori: true } } } } }
+    });
+
+    // İstenen miktarlar: hizmetId -> { miktar, hizmet }
+    const istenen = new Map();
+    for (const d of teklif.detaylar) {
+        istenen.set(d.hizmetId, { miktar: d.miktar, hizmet: d.hizmet });
+    }
+
+    // Aktif personel kategori haritası
+    const personeller = await auth.prisma.personel.findMany({ where: { isActive: true } });
+    const kategoriPersonelMap = {};
+    personeller.forEach(p => { kategoriPersonelMap[p.kategori] = p; });
+    const personelKategoriBelirle = (kategoriAdi) => {
+        if (!kategoriAdi) return 'Mekanik';
+        if (kategoriAdi.includes('Elektrik')) return 'Elektriksel';
+        if (kategoriAdi.includes('Hijyen') || kategoriAdi.includes('Ölçüm')) return 'IsHijyeni';
+        return 'Mekanik';
+    };
+    const isLocked = (ag) => (ag.durum && ag.durum !== 'BEKLIYOR') || !!ag.raporNo;
+
+    let eklenen = 0, silinen = 0, korunan = 0;
+
+    for (const isEmri of isEmirleri) {
+        const byHizmet = new Map();
+        for (const ag of isEmri.altGorevler) {
+            if (!byHizmet.has(ag.hizmetId)) byHizmet.set(ag.hizmetId, []);
+            byHizmet.get(ag.hizmetId).push(ag);
+        }
+
+        const eklenecekler = [];
+        const silinecekIdler = [];
+
+        for (const [hizmetId, { miktar, hizmet }] of istenen) {
+            const mevcut = byHizmet.get(hizmetId) || [];
+            const locked = mevcut.filter(isLocked);
+            const free = mevcut.filter(ag => !isLocked(ag));
+            korunan += locked.length;
+            const toplamVar = locked.length + free.length;
+
+            if (toplamVar < miktar) {
+                const personelKategori = personelKategoriBelirle(hizmet.kategori?.ad);
+                const atanan = kategoriPersonelMap[personelKategori];
+                let maxSira = 0;
+                mevcut.forEach(ag => { if (ag.siraNo > maxSira) maxSira = ag.siraNo; });
+                for (let i = 0; i < miktar - toplamVar; i++) {
+                    maxSira++;
+                    eklenecekler.push({
+                        isEmriId: isEmri.id,
+                        hizmetId,
+                        hizmetAdi: hizmet.ad,
+                        kategori: personelKategori,
+                        siraNo: maxSira,
+                        ekipmanAdi: `${hizmet.ad} - ${maxSira}`,
+                        durum: 'BEKLIYOR',
+                        personelId: atanan?.id || null,
+                        personelAdi: atanan?.adSoyad || null
+                    });
+                }
+            } else if (toplamVar > miktar) {
+                const silinecekSayi = Math.min(free.length, toplamVar - miktar);
+                for (let i = 0; i < silinecekSayi; i++) silinecekIdler.push(free[i].id);
+            }
+            byHizmet.delete(hizmetId);
+        }
+
+        // Teklifte artık olmayan hizmetler: free'leri sil, locked'ları koru
+        for (const [, agler] of byHizmet) {
+            for (const ag of agler) {
+                if (isLocked(ag)) korunan++;
+                else silinecekIdler.push(ag.id);
+            }
+        }
+
+        if (silinecekIdler.length) {
+            await auth.prisma.altGorev.deleteMany({ where: { id: { in: silinecekIdler } } });
+            silinen += silinecekIdler.length;
+        }
+        if (eklenecekler.length) {
+            await auth.prisma.altGorev.createMany({ data: eklenecekler });
+            eklenen += eklenecekler.length;
+        }
+    }
+    return { synced: true, eklenen, silinen, korunan };
+}
+
 app.put('/api/teklifler/:id', auth.authMiddleware('admin'), async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const { customerId, teklifTarihi, konu, detaylar, iskontoOran, kdvOrani: girilenKdvOrani, notlar, onayTelefon, sahadaOnay, durum, gecerlilikGun } = req.body;
+
+        // Güncelleme öncesi mevcut durumu al (revize takibi için - item 8)
+        const onceki = await auth.prisma.teklif.findUnique({
+            where: { id },
+            select: { durum: true, revizeNo: true, mailGonderimTarihi: true }
+        });
 
         // Önce mevcut detayları sil
         await auth.prisma.teklifDetay.deleteMany({ where: { teklifId: id } });
@@ -848,8 +1034,18 @@ app.put('/api/teklifler/:id', auth.authMiddleware('admin'), async (req, res) => 
             await auth.prisma.teklifDetay.createMany({ data: detaylarData });
         }
 
-        // Durum dönüşümü
-        const mappedDurum = durum ? teklifDurumMap[durum] : undefined;
+        // Durum dönüşümü (frontend açıkça durum gönderdiyse onu kullan)
+        let mappedDurum = durum ? teklifDurumMap[durum] : undefined;
+
+        // Revize takibi (item 8): daha önce gönderilmiş/onaylanmış/revize edilmiş bir teklif
+        // içerik güncellemesiyle değiştirilirse REVIZE durumuna geç ve revizeNo'yu artır.
+        let revizeNo = undefined;
+        let revizeUyari = false;
+        if (!mappedDurum && onceki && ['GONDERILDI', 'ONAYLANDI', 'REVIZE'].includes(onceki.durum)) {
+            mappedDurum = 'REVIZE';
+            revizeNo = (onceki.revizeNo || 0) + 1;
+            if (onceki.mailGonderimTarihi) revizeUyari = true;
+        }
 
         const teklif = await auth.prisma.teklif.update({
             where: { id },
@@ -868,12 +1064,25 @@ app.put('/api/teklifler/:id', auth.authMiddleware('admin'), async (req, res) => 
                 notlar: notlar || null,
                 onayTelefon: onayTelefon || false,
                 sahadaOnay: sahadaOnay || false,
-                durum: mappedDurum
+                durum: mappedDurum,
+                revizeNo: revizeNo
             },
             include: { customer: true, detaylar: { include: { hizmet: true } } }
         });
 
-        res.json(teklif);
+        // İş emri alt görevlerini senkronize et (item 7)
+        let syncSonuc = { synced: false };
+        try {
+            syncSonuc = await syncIsEmriAltGorevler(id);
+        } catch (syncErr) {
+            console.error('İş emri senkron hatası:', syncErr.message);
+        }
+
+        res.json({
+            ...teklif,
+            _revizeUyari: revizeUyari,
+            _isEmriSync: syncSonuc
+        });
     } catch (error) {
         console.error('Teklif güncelleme hatası:', error);
         res.status(500).json({ error: 'Teklif güncellenemedi: ' + error.message });
@@ -2214,19 +2423,34 @@ app.post('/api/teklifler/:id/send-email', auth.authMiddleware('admin'), async (r
             }
         }
 
-        // En az bir başarılı gönderim varsa durumu güncelle
+        // En az bir başarılı gönderim varsa durumu güncelle + mail takibi (item 6/8)
         const successCount = results.filter(r => r.success).length;
         if (successCount > 0) {
             await auth.prisma.teklif.update({
                 where: { id: teklif.id },
-                data: { durum: 'GONDERILDI' }
+                data: {
+                    durum: 'GONDERILDI',
+                    mailGonderimTarihi: new Date(),
+                    mailGonderimSayisi: { increment: 1 }
+                }
+            });
+        }
+
+        // Hiçbiri gitmediyse 502 dön ki frontend gerçek hatayı göstersin (item 6)
+        const failed = results.filter(r => !r.success);
+        if (successCount === 0) {
+            return res.status(502).json({
+                success: false,
+                error: 'Hiçbir e-posta gönderilemedi: ' + (failed[0]?.error || 'bilinmeyen hata'),
+                results
             });
         }
 
         res.json({
-            success: successCount > 0,
+            success: true,
             message: `${successCount}/${emailList.length} email gönderildi`,
             sentTo: results.filter(r => r.success).map(r => r.email).join(', '),
+            failedTo: failed.map(r => `${r.email} (${r.error})`).join(', '),
             results
         });
 

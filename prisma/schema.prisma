@@ -105,6 +105,7 @@ model Hizmet {
   birim              String        @default("Adet")
   birimFiyat         Decimal       @default(0) @db.Decimal(10, 2)
   kategoriId         Int
+  sablonKodlari      String?       // Virgülle ayrılmış rapor şablon kodları (ör: "FR7.2.82" veya "FR7.2.40,FR7.2.41")
   sira               Int           @default(0)
   akpireditasyon     Boolean       @default(false)
   isActive           Boolean       @default(true)
@@ -132,6 +133,9 @@ model Teklif {
   notlar        String?
   onayTelefon   Boolean       @default(false)
   sahadaOnay    Boolean       @default(false)
+  mailGonderimTarihi DateTime?  // Son mail gönderim tarihi
+  mailGonderimSayisi Int        @default(0)  // Kaç kez mail atıldığı
+  revizeNo      Int           @default(0)  // Revizyon numarası (her güncellemede artar)
   olusturanId   Int
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -581,6 +585,7 @@ model RCDSecicilik {
 enum TeklifDurum {
   TASLAK
   GONDERILDI
+  REVIZE
   ONAYLANDI
   REDDEDILDI
   IPTAL

@@ -7,6 +7,7 @@ const API_BASE = window.location.origin + '/api';
 let musteriler = [];
 let teklifler = [];
 let hizmetler = [];
+let hizmetlerDuz = []; // Hizmet yönetimi için ham (düz) liste
 let firmaBilgi = {};
 let currentFilter = 'all';
 let editingMusteri = null;
@@ -264,6 +265,9 @@ async function loadHizmetler() {
         const response = await authenticatedFetch(`${API_BASE}/hizmetler`);
         const rawHizmetler = await response.json();
 
+        // Yönetim ekranı için düz liste (ham alanlarla) sakla
+        hizmetlerDuz = rawHizmetler;
+
         // API'den düz liste geliyor, kategorilere göre grupla
         const kategoriMap = {};
         rawHizmetler.forEach(hizmet => {
@@ -277,9 +281,10 @@ async function loadHizmetler() {
             kategoriMap[kategoriAdi].items.push({
                 id: hizmet.id,
                 ad: hizmet.ad,
-                metod: hizmet.aciklama || '',
+                metod: hizmet.metodKapsam || hizmet.standartYonetmelik || '',
                 birim: hizmet.birim,
-                fiyat: parseFloat(hizmet.birimFiyat) || 0
+                fiyat: parseFloat(hizmet.birimFiyat) || 0,
+                sablonKodlari: hizmet.sablonKodlari || ''
             });
         });
 
@@ -409,6 +414,7 @@ function navigateToPage(page) {
         loadEmailAyarlar();
         loadPersoneller();
         loadSertifikaSablonlari();
+        loadHizmetler().then(() => renderHizmetYonetimListesi());
     } else if (page === 'gorevlerim') {
         loadGorevlerim();
     } else if (page === 'raporlar') {
@@ -703,6 +709,108 @@ async function musteriKaydet(event) {
     }
 }
 
+// Teklif modalından müşteri ekleme (nested modal - item 1).
+// Teklif modalını bozmadan üstüne açar, kayıt sonrası dropdown'a ekleyip seçer.
+function musteriEkleNested() {
+    const modalHTML = `
+        <div class="modal-overlay" onclick="if(event.target.classList.contains('modal-overlay'))closeSecondaryModal('musteri-ekle-modal')">
+            <div class="modal" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3>Yeni Müşteri Ekle</h3>
+                    <button class="modal-close" onclick="closeSecondaryModal('musteri-ekle-modal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="musteri-nested-form" onsubmit="musteriKaydetNested(event)">
+                        <div class="form-group">
+                            <label class="form-label required">Ünvan</label>
+                            <input type="text" class="form-input" id="n-musteri-unvan" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Vergi No</label>
+                                <input type="text" class="form-input" id="n-musteri-vergiNo">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Telefon</label>
+                                <input type="text" class="form-input" id="n-musteri-telefon">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="n-musteri-email">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Adres</label>
+                            <textarea class="form-textarea" id="n-musteri-adres"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Yetkili Kişi</label>
+                            <input type="text" class="form-input" id="n-musteri-yetkiliKisi">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Notlar</label>
+                            <textarea class="form-textarea" id="n-musteri-notlar"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeSecondaryModal('musteri-ekle-modal')">İptal</button>
+                    <button class="btn btn-primary" onclick="document.getElementById('musteri-nested-form').requestSubmit()">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    `;
+    openSecondaryModal('musteri-ekle-modal', modalHTML);
+}
+
+async function musteriKaydetNested(event) {
+    event.preventDefault();
+    const musteriData = {
+        unvan: document.getElementById('n-musteri-unvan').value,
+        vergiNo: document.getElementById('n-musteri-vergiNo').value,
+        telefon: document.getElementById('n-musteri-telefon').value,
+        email: document.getElementById('n-musteri-email').value,
+        adres: document.getElementById('n-musteri-adres').value,
+        yetkiliKisi: document.getElementById('n-musteri-yetkiliKisi').value,
+        notlar: document.getElementById('n-musteri-notlar').value
+    };
+    showLoading();
+    try {
+        const response = await authenticatedFetch(`${API_BASE}/musteriler`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(musteriData)
+        });
+        if (!response.ok) {
+            const result = await response.json().catch(() => ({}));
+            showToast(result.error || 'Müşteri eklenemedi', 'error');
+            return;
+        }
+        const yeniMusteri = await response.json();
+        showToast('Müşteri eklendi ve teklife seçildi', 'success');
+        closeSecondaryModal('musteri-ekle-modal');
+
+        // Global listeyi tazele ve teklif dropdown'ına ekleyip seç
+        await loadMusteriler();
+        const select = document.getElementById('teklif-musteri');
+        if (select && yeniMusteri && yeniMusteri.id) {
+            const exists = Array.from(select.options).some(o => o.value == yeniMusteri.id);
+            if (!exists) {
+                const opt = document.createElement('option');
+                opt.value = yeniMusteri.id;
+                opt.textContent = yeniMusteri.unvan;
+                select.appendChild(opt);
+            }
+            select.value = yeniMusteri.id;
+        }
+    } catch (error) {
+        console.error('❌ Nested müşteri kaydetme hatası:', error);
+        showToast('Müşteri eklenirken hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
 async function musteriSil(id) {
     const musteri = musteriler.find(m => m.id === id);
     if (!musteri) return;
@@ -840,16 +948,19 @@ function renderTeklifTable() {
         const durumMap = {
             'TASLAK': 'Taslak',
             'GONDERILDI': 'Gönderildi',
+            'REVIZE': 'Revize Edildi',
             'ONAYLANDI': 'Onaylandı',
             'REDDEDILDI': 'Reddedildi',
             'IPTAL': 'İptal',
         };
-        const durumText = durumMap[teklif.durum] || teklif.durum;
+        let durumText = durumMap[teklif.durum] || teklif.durum;
+        if (teklif.durum === 'REVIZE' && teklif.revizeNo) durumText += ` (R${teklif.revizeNo})`;
 
         // Badge renkleri
         const badgeClass = {
             'TASLAK': 'warning',
             'GONDERILDI': 'info',
+            'REVIZE': 'warning',
             'ONAYLANDI': 'success',
             'REDDEDILDI': 'danger',
             'IPTAL': 'secondary'
@@ -870,11 +981,13 @@ function renderTeklifTable() {
                     </span>
                 </td>
                 <td>
-                    <button class="btn btn-primary btn-small" onclick="teklifGoruntule(${teklif.id})" title="Görüntüle">👁️</button>
-                    <button class="btn btn-secondary btn-small" onclick="teklifDuzenle(${teklif.id})" title="Düzenle">✏️</button>
-                    <button class="btn btn-success btn-small" onclick="teklifPDFExcelFormat(${teklif.id})" title="PDF (Excel Format)">📄</button>
-                    <button class="btn btn-info btn-small" onclick="teklifEmailGonder(${teklif.id})" title="E-posta Gönder">📧</button>
-                    <button class="btn btn-danger btn-small" onclick="teklifSil(${teklif.id})" title="Sil">🗑️</button>
+                    <div class="action-buttons action-buttons-right">
+                        <button class="btn btn-primary btn-small" onclick="teklifGoruntule(${teklif.id})" title="Görüntüle">👁️</button>
+                        <button class="btn btn-secondary btn-small" onclick="teklifDuzenle(${teklif.id})" title="Düzenle">✏️</button>
+                        <button class="btn btn-success btn-small" onclick="teklifPDFExcelFormat(${teklif.id})" title="PDF (Excel Format)">📄</button>
+                        <button class="btn btn-info btn-small" onclick="teklifEmailGonder(${teklif.id})" title="E-posta Gönder">📧</button>
+                        <button class="btn btn-danger btn-small" onclick="teklifSil(${teklif.id})" title="Sil">🗑️</button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -946,14 +1059,17 @@ function openTeklifModal(teklif = null, preSelectedMusteriId = null) {
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label required">Müşteri</label>
-                                <select class="form-select" id="teklif-musteri" required>
-                                    <option value="">Müşteri Seçin</option>
-                                    ${musteriler.map(m => `
-                                        <option value="${m.id}" ${(teklif && teklif.musteriId === m.id) || (!teklif && preSelectedMusteriId === m.id) ? 'selected' : ''}>
-                                            ${m.unvan}
-                                        </option>
-                                    `).join('')}
-                                </select>
+                                <div style="display: flex; gap: 8px;">
+                                    <select class="form-select" id="teklif-musteri" required style="flex: 1;">
+                                        <option value="">Müşteri Seçin</option>
+                                        ${musteriler.map(m => `
+                                            <option value="${m.id}" ${(teklif && teklif.musteriId === m.id) || (!teklif && preSelectedMusteriId === m.id) ? 'selected' : ''}>
+                                                ${m.unvan}
+                                            </option>
+                                        `).join('')}
+                                    </select>
+                                    <button type="button" class="btn btn-secondary btn-small" onclick="musteriEkleNested()" title="Yeni müşteri ekle" style="white-space: nowrap;">➕ Müşteri</button>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label required">Teklif Tarihi</label>
@@ -971,6 +1087,7 @@ function openTeklifModal(teklif = null, preSelectedMusteriId = null) {
                                 <select class="form-select" id="teklif-durum">
                                     <option value="Taslak" ${(!teklif || teklif.durum === 'TASLAK') ? 'selected' : ''}>Taslak</option>
                                     <option value="Gönderildi" ${teklif && teklif.durum === 'GONDERILDI' ? 'selected' : ''}>Gönderildi</option>
+                                    <option value="Revize" ${teklif && teklif.durum === 'REVIZE' ? 'selected' : ''}>Revize Edildi</option>
                                     <option value="Onaylandı" ${teklif && teklif.durum === 'ONAYLANDI' ? 'selected' : ''}>Onaylandı</option>
                                     <option value="Reddedildi" ${teklif && teklif.durum === 'REDDEDILDI' ? 'selected' : ''}>Reddedildi</option>
                                 </select>
@@ -1197,6 +1314,20 @@ async function teklifKaydet(event) {
 
         if (response.ok) {
             showToast(editingTeklif ? 'Teklif başarıyla güncellendi' : 'Teklif başarıyla oluşturuldu', 'success');
+
+            // İş emri senkron bilgisi (item 7)
+            if (result._isEmriSync && result._isEmriSync.synced) {
+                const s = result._isEmriSync;
+                if (s.eklenen || s.silinen) {
+                    showToast(`İş emri güncellendi: ${s.eklenen} eklendi, ${s.silinen} kaldırıldı${s.korunan ? `, ${s.korunan} tamamlanmış korundu` : ''}`, 'info');
+                }
+            }
+
+            // Revize hatırlatması (item 8): daha önce mail atılmış teklif revize edildiyse
+            if (result._revizeUyari) {
+                showToast('⚠️ Bu teklif revize edildi. Daha önce mail atılmıştı — güncel teklifi tekrar mail atmayı unutmayın!', 'warning');
+            }
+
             closeModal();
             await loadTeklifler();
             await loadDashboardStats();
@@ -1862,9 +1993,14 @@ async function sendTeklifEmail(teklifId) {
 
         const result = await response.json();
 
-        if (response.ok) {
+        // SADECE gerçekten gönderildiyse başarı göster (item 6 - sahte başarı düzeltildi)
+        if (response.ok && result.success) {
+            const sentCount = (result.results || []).filter(r => r.success).length || emails.length;
             const sentTo = result.sentTo || emails.join(', ');
-            showToast(`Teklif ${emails.length} kişiye gönderildi: ${sentTo}`, 'success');
+            showToast(`Teklif ${sentCount} kişiye gönderildi: ${sentTo}`, 'success');
+            if (result.failedTo) {
+                showToast(`Gönderilemeyen: ${result.failedTo}`, 'warning');
+            }
             await loadTeklifler();
         } else {
             showToast(result.error || 'Email gönderilemedi', 'error');
@@ -3001,16 +3137,27 @@ async function teklifDurumGuncelle(event, teklifId) {
 // HİZMET YÖNETİMİ
 // ========================================
 
-function openHizmetEkleModal() {
+async function openHizmetEkleModal() {
     // Mevcut kategorileri al
     const kategoriler = hizmetler.map(k => k.kategori);
 
+    // Metod/standart listesi ve rapor şablonlarını yükle (item 3 & 9)
+    let metodlar = [], standartlar = [], sablonlar = [];
+    try {
+        const [mResp, sResp] = await Promise.all([
+            authenticatedFetch('/api/hizmet-metodlar'),
+            authenticatedFetch('/api/rapor-sablonu')
+        ]);
+        if (mResp.ok) { const d = await mResp.json(); metodlar = d.metodlar || []; standartlar = d.standartlar || []; }
+        if (sResp.ok) { sablonlar = await sResp.json(); }
+    } catch (e) { console.warn('Metod/şablon listesi yüklenemedi:', e); }
+
     const modalHTML = `
-        <div class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-overlay" onclick="if(event.target.classList.contains('modal-overlay'))closeSecondaryModal('hizmet-ekle-modal')">
             <div class="modal" onclick="event.stopPropagation()" style="max-width: 600px;">
                 <div class="modal-header">
                     <h3>Yeni Hizmet Ekle</h3>
-                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                    <button class="modal-close" onclick="closeSecondaryModal('hizmet-ekle-modal')">&times;</button>
                 </div>
                 <div class="modal-body">
                     <form id="hizmet-ekle-form" onsubmit="hizmetEkle(event)">
@@ -3033,7 +3180,18 @@ function openHizmetEkleModal() {
 
                         <div class="form-group">
                             <label class="form-label required">Metod / Standart</label>
-                            <input type="text" class="form-input" id="hizmet-metod" placeholder="ör: İş Ekipmanların Kullanımında Sağlık ve Güvenlik Şartları Yönetmeliği" required>
+                            <input type="text" class="form-input" id="hizmet-metod" list="metod-listesi" placeholder="Listeden seç veya yeni yaz" required>
+                            <datalist id="metod-listesi">
+                                ${[...new Set([...metodlar, ...standartlar])].map(m => `<option value="${(m || '').replace(/"/g, '&quot;')}"></option>`).join('')}
+                            </datalist>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Rapor Şablonu (ölçüm açılınca bu açılır)</label>
+                            <select class="form-input" id="hizmet-sablonlar" multiple size="5" style="height:auto;">
+                                ${sablonlar.map(s => `<option value="${s.sablonKodu}">${s.sablonKodu} - ${s.sablonAdi}</option>`).join('')}
+                            </select>
+                            <small class="text-muted">Birden fazla seçilebilir (Ctrl/Cmd ile). Tek seçilirse ölçümde direkt açılır.</small>
                         </div>
 
                         <div class="form-row">
@@ -3053,14 +3211,14 @@ function openHizmetEkleModal() {
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" onclick="closeModal()">İptal</button>
+                    <button class="btn btn-secondary" onclick="closeSecondaryModal('hizmet-ekle-modal')">İptal</button>
                     <button class="btn btn-primary" onclick="document.getElementById('hizmet-ekle-form').requestSubmit()">Hizmet Ekle</button>
                 </div>
             </div>
         </div>
     `;
 
-    document.getElementById('modal-container').innerHTML = modalHTML;
+    openSecondaryModal('hizmet-ekle-modal', modalHTML);
 }
 
 function kategoriSecimDegisti() {
@@ -3094,12 +3252,19 @@ async function hizmetEkle(event) {
         return;
     }
 
+    // Seçili rapor şablonları (item 9)
+    const sablonSelect = document.getElementById('hizmet-sablonlar');
+    const sablonKodlari = sablonSelect
+        ? Array.from(sablonSelect.selectedOptions).map(o => o.value).join(',')
+        : '';
+
     const hizmetData = {
         kategori: kategori,
         ad: document.getElementById('hizmet-ad').value.trim(),
         metod: document.getElementById('hizmet-metod').value.trim(),
         birim: document.getElementById('hizmet-birim').value,
-        fiyat: parseFloat(document.getElementById('hizmet-fiyat').value)
+        fiyat: parseFloat(document.getElementById('hizmet-fiyat').value),
+        sablonKodlari: sablonKodlari || null
     };
 
     showLoading();
@@ -3115,15 +3280,20 @@ async function hizmetEkle(event) {
 
         if (response.ok && result.success) {
             showToast('Hizmet başarıyla eklendi', 'success');
-            closeModal();
+
+            // Teklif modalındaki mevcut seçimleri koru (item 5)
+            const seciliHizmetler = captureHizmetSecimi();
+
+            // Hizmet ekleme modalını kapat (teklif modalı ayakta kalır)
+            closeSecondaryModal('hizmet-ekle-modal');
 
             // Hizmetleri yeniden yükle
             await loadHizmetler();
 
-            // Teklif modalındaki hizmet listesini güncelle
+            // Teklif modalındaki hizmet listesini güncelle (seçimleri koruyarak)
             const hizmetSecimiDiv = document.getElementById('hizmet-secimi');
             if (hizmetSecimiDiv) {
-                hizmetSecimiDiv.innerHTML = renderHizmetSecimi([]);
+                hizmetSecimiDiv.innerHTML = renderHizmetSecimi(seciliHizmetler);
 
                 // Event listener'ları yeniden ekle
                 document.querySelectorAll('.hizmet-checkbox').forEach(checkbox => {
@@ -3138,12 +3308,188 @@ async function hizmetEkle(event) {
 
                 hesaplaFiyat();
             }
+
+            // Ayarlar sayfasındaki hizmet yönetim listesini de tazele
+            if (document.getElementById('hizmet-yonetim-listesi')) {
+                renderHizmetYonetimListesi(document.getElementById('hizmet-yonetim-arama')?.value || '');
+            }
         } else {
             showToast(result.error || 'Hizmet eklenirken hata oluştu', 'error');
         }
     } catch (error) {
         console.error('Hizmet ekleme hatası:', error);
         showToast('Hizmet eklenirken hata oluştu', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Teklif modalındaki mevcut hizmet seçimlerini DOM'dan yakala (yeniden render için).
+function captureHizmetSecimi() {
+    const secilenler = [];
+    document.querySelectorAll('#hizmet-secimi .hizmet-checkbox:checked').forEach(cb => {
+        const id = parseInt(cb.getAttribute('data-hizmet-id'));
+        const miktarEl = document.querySelector(`.hizmet-miktar[data-hizmet-id="${id}"]`);
+        const fiyatEl = document.querySelector(`.hizmet-fiyat[data-hizmet-id="${id}"]`);
+        secilenler.push({
+            id,
+            miktar: parseInt(miktarEl?.value) || 1,
+            fiyat: parseFloat(fiyatEl?.value) || 0
+        });
+    });
+    return secilenler;
+}
+
+// ========================================
+// HİZMET YÖNETİMİ (Ayarlar sayfası - item 9)
+// ========================================
+
+function openHizmetEkleModalStandalone() {
+    openHizmetEkleModal();
+}
+
+function renderHizmetYonetimListesi(filter = '') {
+    const container = document.getElementById('hizmet-yonetim-listesi');
+    if (!container) return;
+    const f = (filter || '').toLocaleLowerCase('tr');
+    const liste = (hizmetlerDuz || []).filter(h => !f || (h.ad || '').toLocaleLowerCase('tr').includes(f));
+    if (liste.length === 0) {
+        container.innerHTML = '<p class="text-muted">Hizmet bulunamadı</p>';
+        return;
+    }
+    container.innerHTML = `
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+            <thead>
+                <tr style="text-align:left; border-bottom:2px solid #eee;">
+                    <th style="padding:8px;">Hizmet</th>
+                    <th style="padding:8px;">Kategori</th>
+                    <th style="padding:8px;">Rapor Şablonu</th>
+                    <th style="padding:8px; text-align:right;">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${liste.map(h => {
+                    const kodlar = (h.sablonKodlari || '').split(',').map(k => k.trim()).filter(Boolean);
+                    const sablonRozet = kodlar.length
+                        ? kodlar.map(k => `<span class="badge badge-info">${k}</span>`).join(' ')
+                        : '<span class="badge badge-warning">atanmamış</span>';
+                    return `
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+                            <td style="padding:8px;"><strong>${h.ad}</strong></td>
+                            <td style="padding:8px;">${h.kategori?.ad || '-'}</td>
+                            <td style="padding:8px;">${sablonRozet}</td>
+                            <td style="padding:8px; text-align:right;">
+                                <button class="btn btn-secondary btn-small" onclick="hizmetDuzenleModal(${h.id})">✏️ Düzenle</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+async function hizmetDuzenleModal(id) {
+    const h = (hizmetlerDuz || []).find(x => x.id === id);
+    if (!h) { showToast('Hizmet bulunamadı', 'error'); return; }
+
+    // Şablon ve metod listelerini yükle
+    let sablonlar = [], metodlar = [], standartlar = [];
+    try {
+        const [sResp, mResp] = await Promise.all([
+            authenticatedFetch('/api/rapor-sablonu'),
+            authenticatedFetch('/api/hizmet-metodlar')
+        ]);
+        if (sResp.ok) sablonlar = await sResp.json();
+        if (mResp.ok) { const d = await mResp.json(); metodlar = d.metodlar || []; standartlar = d.standartlar || []; }
+    } catch (e) { console.warn('Liste yüklenemedi:', e); }
+
+    const seciliKodlar = (h.sablonKodlari || '').split(',').map(k => k.trim()).filter(Boolean);
+
+    const modalHTML = `
+        <div class="modal-overlay" onclick="if(event.target.classList.contains('modal-overlay'))closeSecondaryModal('hizmet-duzenle-modal')">
+            <div class="modal" onclick="event.stopPropagation()" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h3>Hizmet Düzenle</h3>
+                    <button class="modal-close" onclick="closeSecondaryModal('hizmet-duzenle-modal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="hizmet-duzenle-form" onsubmit="hizmetGuncelle(event, ${h.id})">
+                        <div class="form-group">
+                            <label class="form-label required">Hizmet Adı</label>
+                            <input type="text" class="form-input" id="d-hizmet-ad" value="${(h.ad || '').replace(/"/g, '&quot;')}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Metod / Standart</label>
+                            <input type="text" class="form-input" id="d-hizmet-metod" list="d-metod-listesi" value="${(h.metodKapsam || '').replace(/"/g, '&quot;')}">
+                            <datalist id="d-metod-listesi">
+                                ${[...new Set([...metodlar, ...standartlar])].map(m => `<option value="${(m || '').replace(/"/g, '&quot;')}"></option>`).join('')}
+                            </datalist>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Birim</label>
+                                <select class="form-input" id="d-hizmet-birim">
+                                    <option value="Adet" ${h.birim === 'Adet' ? 'selected' : ''}>Adet</option>
+                                    <option value="Nokta" ${h.birim === 'Nokta' ? 'selected' : ''}>Nokta</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Birim Fiyat (₺)</label>
+                                <input type="number" class="form-input" id="d-hizmet-fiyat" min="0" step="0.01" value="${parseFloat(h.birimFiyat) || 0}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rapor Şablonu (ölçümde açılır)</label>
+                            <select class="form-input" id="d-hizmet-sablonlar" multiple size="8" style="height:auto;">
+                                ${sablonlar.map(s => `<option value="${s.sablonKodu}" ${seciliKodlar.includes(s.sablonKodu) ? 'selected' : ''}>${s.sablonKodu} - ${s.sablonAdi}</option>`).join('')}
+                            </select>
+                            <small class="text-muted">Birden fazla seçilebilir (Ctrl/Cmd). Tek seçilirse ölçümde direkt açılır.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeSecondaryModal('hizmet-duzenle-modal')">İptal</button>
+                    <button class="btn btn-primary" onclick="document.getElementById('hizmet-duzenle-form').requestSubmit()">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    `;
+    openSecondaryModal('hizmet-duzenle-modal', modalHTML);
+}
+
+async function hizmetGuncelle(event, id) {
+    event.preventDefault();
+    const sablonSelect = document.getElementById('d-hizmet-sablonlar');
+    const sablonKodlari = sablonSelect
+        ? Array.from(sablonSelect.selectedOptions).map(o => o.value).join(',')
+        : '';
+    const data = {
+        ad: document.getElementById('d-hizmet-ad').value.trim(),
+        metod: document.getElementById('d-hizmet-metod').value.trim(),
+        birim: document.getElementById('d-hizmet-birim').value,
+        fiyat: parseFloat(document.getElementById('d-hizmet-fiyat').value) || 0,
+        sablonKodlari: sablonKodlari || null
+    };
+    showLoading();
+    try {
+        const response = await authenticatedFetch(`${API_BASE}/hizmetler/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (response.ok && result.success) {
+            showToast('Hizmet güncellendi', 'success');
+            closeSecondaryModal('hizmet-duzenle-modal');
+            await loadHizmetler();
+            renderHizmetYonetimListesi(document.getElementById('hizmet-yonetim-arama')?.value || '');
+        } else {
+            showToast(result.error || 'Güncellenemedi', 'error');
+        }
+    } catch (error) {
+        console.error('Hizmet güncelleme hatası:', error);
+        showToast('Hizmet güncellenirken hata oluştu', 'error');
     } finally {
         hideLoading();
     }
@@ -3319,6 +3665,25 @@ function closeModal(eventOrId) {
         // Body'ye eklenen overlay'leri de temizle
         document.querySelectorAll('body > .modal-overlay').forEach(el => el.remove());
     }
+}
+
+// İkincil (nested) modal: ana modalı (örn. teklif modalını) yok etmeden üstüne açar.
+// modal-container'a dokunmaz, body'ye ekler. (item 1 & 5)
+function openSecondaryModal(id, innerHtml) {
+    const old = document.getElementById(id);
+    if (old) old.remove();
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = innerHtml.trim();
+    const overlay = wrapper.firstElementChild;
+    if (!overlay) return;
+    overlay.id = id;
+    overlay.style.zIndex = '11000';
+    document.body.appendChild(overlay);
+}
+
+function closeSecondaryModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
 }
 
 // ========================================
@@ -3794,6 +4159,27 @@ async function saveFirmaBilgi(isEmriId) {
 // Ölçüm Yap - Şablon seçme modalını aç
 async function olcumYap(altGorevId, hizmetAdi) {
     try {
+        // Bu alt görevin hizmetine bağlı rapor şablonlarını kontrol et (item 9-10).
+        // Tek şablon → direkt aç, çoklu → sadece onları listele, yok → tam liste.
+        try {
+            const agResp = await authenticatedFetch(`/api/alt-gorevler/${altGorevId}`);
+            if (agResp.ok) {
+                const ag = await agResp.json();
+                const kodlar = (ag.hizmet?.sablonKodlari || '')
+                    .split(',').map(k => k.trim()).filter(Boolean);
+                if (kodlar.length === 1) {
+                    // Tek şablon: doğrudan aç
+                    olcumFormuAc(altGorevId, kodlar[0]);
+                    return;
+                }
+                if (kodlar.length > 1) {
+                    // Çoklu şablon: sadece eşleşenleri seçim modalında göster
+                    olcumSablonSec(altGorevId, hizmetAdi, kodlar);
+                    return;
+                }
+            }
+        } catch (e) { console.warn('Hizmet şablon kontrolü başarısız, tam liste gösteriliyor:', e); }
+
         // Şablon config'lerini yükle
         const response = await authenticatedFetch('/api/rapor-sablonu');
         const sablonlar = response.ok ? await response.json() : [];
@@ -3910,11 +4296,53 @@ function sablonFiltrele(term) {
     });
 }
 
+// Bir hizmete bağlı şablon kodlarından SADECE eşleşenleri seçtiren modal (item 9 - çoklu format)
+function olcumSablonSec(altGorevId, hizmetAdi, kodlar) {
+    const butonlar = kodlar.map(kod => `
+        <button class="btn btn-outline" onclick="olcumFormuAc(${altGorevId}, '${kod}')"
+                style="text-align: left; padding: 12px 15px; border: 2px solid #667eea; background: #f8f9ff; cursor: pointer; font-size: 14px; width: 100%;">
+            <strong>${kod}</strong>
+        </button>
+    `).join('');
+    const modalHtml = `
+        <div class="modal-overlay" onclick="closeModal(event)">
+            <div class="modal" onclick="event.stopPropagation()" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h3>📊 Rapor Formatı Seç</h3>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p style="margin-bottom: 12px;"><strong>Hizmet:</strong> ${hizmetAdi}</p>
+                    <p style="margin-bottom: 12px; color: #666; font-size: 13px;">Bu hizmet için birden fazla rapor formatı var. Lütfen birini seçin:</p>
+                    <div style="display: grid; gap: 8px;">${butonlar}</div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal()">Kapat</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('modal-container').innerHTML = modalHtml;
+}
+
+// Şablon kodunu özel form tipine eşle (özel formlar generic'ten daha zengin)
+const OZEL_FORM_KOD_MAP = {
+    'FR7.2.36': 'elektrik-topraklama',
+    'FR7.2.40': 'elektrik-ic-tesisat',
+    'FR7.2.21': 'kompresor',
+    'FR7.2.156': 'hava-tanki'
+};
+
 // Ölçüm Formunu Aç
 function olcumFormuAc(altGorevId, formTipi) {
     closeModal();
 
-    // Eski özel formlar (geriye uyumluluk)
+    // FR kodu özel bir forma karşılık geliyorsa o forma yönlendir
+    if (OZEL_FORM_KOD_MAP[formTipi]) {
+        formTipi = OZEL_FORM_KOD_MAP[formTipi];
+    }
+
+    // Özel formlar
     if (formTipi === 'elektrik-topraklama') {
         window.open(`/forms/elektrik-topraklama-form-v2.html?altGorevId=${altGorevId}`, '_blank');
     } else if (formTipi === 'elektrik-ic-tesisat') {

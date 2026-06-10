@@ -353,6 +353,14 @@ Akredite kapsamında yapılan ölçümler, İŞ HİJYENİ (ORTAM ÖLÇÜMÜ) par
  */
 async function sendTeklifEmail(teklif, smtpConfig, customMessage = '') {
     const transporter = createTransporter(smtpConfig);
+
+    // Bağlantı/kimlik doğrulamasını önce kontrol et ki hata net olsun (item 6)
+    try {
+        await transporter.verify();
+    } catch (verifyErr) {
+        throw new Error('SMTP bağlantı/doğrulama hatası: ' + (verifyErr.message || verifyErr.code || 'bilinmeyen'));
+    }
+
     const pdfBuffer = await createTeklifPDFBuffer(teklif);
 
     // Tarih formatlama

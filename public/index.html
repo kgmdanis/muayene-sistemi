@@ -525,6 +525,21 @@
                         </div>
                     </div>
 
+                    <div class="settings-card" style="border-left: 4px solid #27ae60;">
+                        <h3 style="font-size: 20px; color: #2c3e50; margin-bottom: 10px;">🛠️ Hizmet Yönetimi</h3>
+                        <p class="text-muted" style="margin-bottom: 15px;">
+                            Hizmetleri ve her hizmete bağlı <strong>rapor şablonunu</strong> buradan yönetin.<br>
+                            Ölçüm yapılırken hizmete atanan şablon doğrudan açılır (tek şablon) veya seçtirilir (çoklu).
+                        </p>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+                            <button class="btn btn-primary" onclick="openHizmetEkleModalStandalone()">➕ Yeni Hizmet Ekle</button>
+                            <input type="text" class="form-input" id="hizmet-yonetim-arama" placeholder="Hizmet ara..." oninput="renderHizmetYonetimListesi(this.value)" style="flex:1; min-width:200px;">
+                        </div>
+                        <div id="hizmet-yonetim-listesi">
+                            <p>Yükleniyor...</p>
+                        </div>
+                    </div>
+
                     <div class="settings-card">
                         <h3>Sertifika Şablonları</h3>
                         <p class="text-muted">Hizmetler için sertifika şablonlarını tanımlayın</p>
