@@ -2715,17 +2715,15 @@ app.get('/api/raporlar', async (req, res) => {
         const whereKompresor = {};
         const whereHavaTanki = {};
 
-        // Tekniker ise sadece kendi kategorisindeki raporları göster
+        // Tekniker ise: tamamlanan raporları herkese aç, taslakları sadece kendi kategorisinde göster
         if (role === 'tekniker' && kategori) {
-            where.altGorev = {
-                hizmetAdi: { contains: kategori, mode: 'insensitive' }
-            };
-            whereKompresor.altGorev = {
-                hizmetAdi: { contains: kategori, mode: 'insensitive' }
-            };
-            whereHavaTanki.altGorev = {
-                hizmetAdi: { contains: kategori, mode: 'insensitive' }
-            };
+            const teknikerOr = [
+                { genelSonuc: { not: null } },
+                { altGorev: { hizmetAdi: { contains: kategori, mode: 'insensitive' } } }
+            ];
+            where.OR = teknikerOr;
+            whereKompresor.OR = teknikerOr;
+            whereHavaTanki.OR = teknikerOr;
         }
 
         // Elektrik topraklama raporları
@@ -2819,9 +2817,10 @@ app.get('/api/raporlar', async (req, res) => {
         // İç tesisat raporları
         const whereIcTesisat = {};
         if (role === 'tekniker' && kategori) {
-            whereIcTesisat.altGorev = {
-                hizmetAdi: { contains: kategori, mode: 'insensitive' }
-            };
+            whereIcTesisat.OR = [
+                { genelSonuc: { not: null } },
+                { altGorev: { hizmetAdi: { contains: kategori, mode: 'insensitive' } } }
+            ];
         }
 
         const icTesisatRaporlar = await auth.prisma.elektrikIcTesisatRaporu.findMany({
@@ -2855,9 +2854,10 @@ app.get('/api/raporlar', async (req, res) => {
         // Generic raporlar (Rapor modeli - config-driven şablonlar)
         const whereGeneric = {};
         if (role === 'tekniker' && kategori) {
-            whereGeneric.altGorev = {
-                hizmetAdi: { contains: kategori, mode: 'insensitive' }
-            };
+            whereGeneric.OR = [
+                { genelSonuc: { not: null } },
+                { altGorev: { hizmetAdi: { contains: kategori, mode: 'insensitive' } } }
+            ];
         }
 
         const genericRaporlar = await auth.prisma.rapor.findMany({
@@ -3151,7 +3151,7 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/olcum', async (req, res) => {
             where: { raporId },
             orderBy: { siraNo: 'desc' }
         });
-        const siraNo = sonOlcum ? sonOlcum.siraNo + 1 : 1;
+        const siraNo = data.siraNo || (sonOlcum ? sonOlcum.siraNo + 1 : 1);
 
         // RCD bazlı RA hesaplama
         const { rcdVarMi: rcdVarBody, rcdIAn: rcdIAnBody } = data;
@@ -3160,16 +3160,19 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/olcum', async (req, res) => {
             ra = (yerTipi === 'TEHLIKELI') ? 25 / ideltaA : 50 / ideltaA;
         }
 
-        let sonuc = null;
-        const isTT = (sebekeTipi || '').toUpperCase() === 'TT';
-        if (isTT) {
-            if (zx && ra) sonuc = parseFloat(zx) <= ra ? 'UYGUN' : 'UYGUN_DEGIL';
-        } else {
-            if (zx && zs) sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
+        // Sonucu kullanıcı gönderdiyse onu kullan, yoksa hesapla
+        let sonuc = data.sonuc || null;
+        if (!sonuc) {
+            const isTT = (sebekeTipi || '').toUpperCase() === 'TT';
+            if (isTT) {
+                if (zx && ra) sonuc = parseFloat(zx) <= ra ? 'UYGUN' : 'UYGUN_DEGIL';
+            } else {
+                if (zx && zs) sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
+            }
         }
 
         // Sadece geçerli alanları al - HTML'den gelen olcumNoktasi'nı tabloAdi'ye map et
-        const { olcumNoktasi, tabloAdi, panoAdi, salterAdi, rcdVarMi, rcdIAn, rcdSure, aciklama } = data;
+        const { olcumNoktasi, tabloAdi, panoAdi, salterAdi, rcdVarMi, rcdIn, rcdIAn, rcdSure, aciklama } = data;
 
         const olcum = await auth.prisma.topraklamaDetayliOlcum.create({
             data: {
@@ -3187,6 +3190,7 @@ app.post('/api/elektrik-topraklama-raporu/:raporId/olcum', async (req, res) => {
                 panoAdi: panoAdi || null,
                 salterAdi: salterAdi || null,
                 rcdVarMi: rcdVarMi === true || rcdVarMi === 'true',
+                rcdIn: rcdIn ? parseFloat(rcdIn) : null,
                 rcdIAn: rcdIAn ? parseFloat(rcdIAn) : null,
                 rcdSure: rcdSure ? parseFloat(rcdSure) : null,
                 aciklama: aciklama || null
@@ -3232,16 +3236,19 @@ app.put('/api/elektrik-topraklama-olcum/:id', async (req, res) => {
             ra = (yerTipi === 'TEHLIKELI') ? 25 / ideltaA : 50 / ideltaA;
         }
 
-        let sonuc = null;
-        const isTT2 = (sebekeTipi || '').toUpperCase() === 'TT';
-        if (isTT2) {
-            if (zx && ra) sonuc = parseFloat(zx) <= ra ? 'UYGUN' : 'UYGUN_DEGIL';
-        } else {
-            if (zx && zs) sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
+        // Sonucu kullanıcı gönderdiyse onu kullan, yoksa hesapla
+        let sonuc = data.sonuc || null;
+        if (!sonuc) {
+            const isTT2 = (sebekeTipi || '').toUpperCase() === 'TT';
+            if (isTT2) {
+                if (zx && ra) sonuc = parseFloat(zx) <= ra ? 'UYGUN' : 'UYGUN_DEGIL';
+            } else {
+                if (zx && zs) sonuc = parseFloat(zx) <= zs ? 'UYGUN' : 'UYGUN_DEGIL';
+            }
         }
 
-        // Sadece geçerli alanları al
-        const { tabloAdi, panoAdi, salterAdi, rcdVarMi, rcdIAn, rcdSure, aciklama } = data;
+        // Sadece geçerli alanları al - olcumNoktasi'nı tabloAdi'ye map et
+        const { olcumNoktasi, tabloAdi, panoAdi, salterAdi, rcdVarMi, rcdIn, rcdIAn, rcdSure, aciklama } = data;
 
         const olcum = await auth.prisma.topraklamaDetayliOlcum.update({
             where: { id: parseInt(req.params.id) },
@@ -3254,10 +3261,11 @@ app.put('/api/elektrik-topraklama-olcum/:id', async (req, res) => {
                 zx: zx ? parseFloat(zx) : null,
                 ik,
                 sonuc,
-                tabloAdi: tabloAdi || null,
+                tabloAdi: olcumNoktasi || tabloAdi || null,
                 panoAdi: panoAdi || null,
                 salterAdi: salterAdi || null,
                 rcdVarMi: rcdVarMi === true || rcdVarMi === 'true',
+                rcdIn: rcdIn ? parseFloat(rcdIn) : null,
                 rcdIAn: rcdIAn ? parseFloat(rcdIAn) : null,
                 rcdSure: rcdSure ? parseFloat(rcdSure) : null,
                 aciklama: aciklama || null

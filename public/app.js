@@ -5857,7 +5857,7 @@ async function gorevDetayGoster(gorevId) {
         ).join('');
 
         const genericOptions = sablonlar.map(s =>
-            `<option value="${s.sablonKodu}">${s.sablonAdi}</option>`
+            `<option value="${s.sablonKodu}">${(s.sablonKodu || '') + ' - ' + (s.sablonAdi || '')}</option>`
         ).join('');
 
         const sablonOptions = `
@@ -5868,6 +5868,14 @@ async function gorevDetayGoster(gorevId) {
                 ${genericOptions}
             </optgroup>
         `;
+
+        // Arama için tam listeyi sakla
+        window._teknikerSablonlarOzel = ozelFormlar.map(s => ({ value: s.kod, label: s.ad, arama: (s.ad + ' ' + s.kod).toLowerCase() }));
+        window._teknikerSablonlarGeneric = sablonlar.map(s => ({
+            value: s.sablonKodu,
+            label: (s.sablonKodu || '') + ' - ' + (s.sablonAdi || ''),
+            arama: ((s.sablonKodu || '') + ' ' + (s.sablonAdi || '') + ' ' + (s.kategori || '')).toLowerCase()
+        }));
 
         const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
@@ -5912,9 +5920,14 @@ async function gorevDetayGoster(gorevId) {
                         <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #eee;">
                             <h4 style="margin: 0 0 12px 0; color: #333; font-size: 14px;">📝 Rapor Oluştur</h4>
                             <div class="form-group">
+                                <label class="form-label" style="font-size: 12px; color: #666;">Şablon Ara</label>
+                                <input type="text" id="sablon-arama-input" class="form-input" placeholder="🔍 Şablon ara... (örn: forklift, kompresör, FR7.2.3)"
+                                       oninput="teknikerSablonFiltrele(this.value)"
+                                       style="width: 100%; padding: 10px; margin-bottom: 10px;">
+                            </div>
+                            <div class="form-group">
                                 <label class="form-label" style="font-size: 12px; color: #666;">Rapor Şablonu Seçin</label>
-                                <select id="sablon-secim" class="form-input" style="width: 100%;">
-                                    <option value="">-- Şablon Seçin --</option>
+                                <select id="sablon-secim" class="form-input" size="8" style="width: 100%; min-height: 180px;">
                                     ${sablonOptions}
                                 </select>
                             </div>
@@ -5934,6 +5947,28 @@ async function gorevDetayGoster(gorevId) {
         console.error('Görev detay hatası:', error);
         showToast('Detay yüklenemedi', 'error');
     }
+}
+
+// Tekniker görev detayındaki şablon arama kutusu
+function teknikerSablonFiltrele(term) {
+    const select = document.getElementById('sablon-secim');
+    if (!select) return;
+    const lt = (term || '').toLowerCase().trim();
+    const ozel = window._teknikerSablonlarOzel || [];
+    const generic = window._teknikerSablonlarGeneric || [];
+    const f = arr => arr.filter(s => !lt || s.arama.includes(lt));
+    const ozelF = f(ozel);
+    const genericF = f(generic);
+    const esc = v => String(v).replace(/"/g, '&quot;');
+    let html = '';
+    if (ozelF.length) {
+        html += '<optgroup label="📌 Özel Formlar">' + ozelF.map(s => `<option value="${esc(s.value)}">${s.label}</option>`).join('') + '</optgroup>';
+    }
+    if (genericF.length) {
+        html += '<optgroup label="📋 Genel Şablonlar">' + genericF.map(s => `<option value="${esc(s.value)}">${s.label}</option>`).join('') + '</optgroup>';
+    }
+    if (!html) html = '<option value="" disabled>Sonuç yok</option>';
+    select.innerHTML = html;
 }
 
 // Rapor formunu aç

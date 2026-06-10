@@ -383,7 +383,7 @@ function autoDetectAndFill(docXml, rapor, formData, firma, firmaBilgi, options) 
     const autoRules = [
         {
             keyword: 'sozlesme',  // normalizeLabel sonrası
-            value: () => firmaBilgi.isgKatipId || formData.isgKatipNo || rapor.isgKatipNo || null
+            value: () => joinIsgKatipIds(firmaBilgi, formData, rapor)
         }
     ];
 
@@ -423,6 +423,20 @@ function autoDetectAndFill(docXml, rapor, formData, firma, firmaBilgi, options) 
 }
 
 /**
+ * İSG-KATİP Sözleşme ID'lerini (1-4) birleştirip döner, boşları atar.
+ * Kullanıcı birden fazla ID girdiyse " / " ile ayırıp tek string halinde verir.
+ */
+function joinIsgKatipIds(firmaBilgi, formData, rapor) {
+    const fb = firmaBilgi || {};
+    const ids = [fb.isgKatipId, fb.isgKatipId2, fb.isgKatipId3, fb.isgKatipId4]
+        .map(v => (v == null ? '' : String(v).trim()))
+        .filter(v => v && v !== '-');
+    if (ids.length) return ids.join(' / ');
+    const fallback = (formData && formData.isgKatipNo) || (rapor && rapor.isgKatipNo) || null;
+    return fallback || null;
+}
+
+/**
  * Field mapping'leri uygula
  */
 function fillFieldMappings(xml, fields, rapor, formData, firma, firmaBilgi, options) {
@@ -432,7 +446,10 @@ function fillFieldMappings(xml, fields, rapor, formData, firma, firmaBilgi, opti
         let value = null;
 
         // Kaynak belirleme
-        if (mapping.source) {
+        if (mapping.source === 'firmaBilgi.isgKatipId') {
+            // Birden fazla Sözleşme ID girilebildiği için hepsini birleştir
+            value = joinIsgKatipIds(firmaBilgi, formData, rapor);
+        } else if (mapping.source) {
             value = resolveSource(mapping.source, { rapor, formData, firma, firmaBilgi, options });
         } else if (mapping.field) {
             value = getValue(mapping.field, rapor, formData, options);
@@ -480,25 +497,25 @@ function fillSonuc(docXml, genelSonuc, pattern) {
             `$1${sonucMetni}`
         );
     } else {
-        // Varsayılan: "uygundur" kelimesini bul ve renklendir
+        // Varsayılan: "uygundur" veya "uygun değildir" kalıbını bul ve renklendir
         const sonucMetni = uygun ? 'uygundur' : 'uygun değildir';
         const sonucRenk = uygun ? '059669' : 'DC2626';
 
         docXml = docXml.replace(
-            /(<w:r\b[^>]*>)([\s\S]*?)(<w:t[^>]*>)\s*(uygundur)\s*(<\/w:t>)/i,
-            (match, rOpen, rContent, tOpen, oldText, tClose) => {
+            /(<w:r\b[^>]*>)([\s\S]*?)(<w:t[^>]*>)([^<]*?)(uygun\s+değildir|uygundur)([^<]*?)(<\/w:t>)/i,
+            (match, rOpen, rContent, tOpen, before, oldPhrase, after, tClose) => {
                 const colorTag = `<w:color w:val="${sonucRenk}"/>`;
                 const boldTag = '<w:b/>';
-                if (rContent.includes('<w:rPr>')) {
-                    let newContent = rContent;
+                let newContent = rContent;
+                if (newContent.includes('<w:rPr>')) {
                     if (newContent.includes('<w:color')) {
                         newContent = newContent.replace(/<w:color[^/]*\/>/g, colorTag);
                     } else {
                         newContent = newContent.replace('</w:rPr>', `${colorTag}${boldTag}</w:rPr>`);
                     }
-                    return `${rOpen}${newContent}${tOpen}${escapeXml(sonucMetni)}${tClose}`;
+                    return `${rOpen}${newContent}${tOpen}${before}${escapeXml(sonucMetni)}${after}${tClose}`;
                 } else {
-                    return `${rOpen}<w:rPr>${colorTag}${boldTag}</w:rPr>${rContent}${tOpen}${escapeXml(sonucMetni)}${tClose}`;
+                    return `${rOpen}<w:rPr>${colorTag}${boldTag}</w:rPr>${newContent}${tOpen}${before}${escapeXml(sonucMetni)}${after}${tClose}`;
                 }
             }
         );

@@ -1130,25 +1130,103 @@
         async function olcumleriKaydet() {
             if (!currentRaporId) return;
 
-            const olcumler = getOlcumTablosuVerileri();
-            for (const olcum of olcumler) {
+            const yerTipi = document.querySelector('input[name="yerTipi"]:checked')?.value || 'NORMAL';
+            const sebekeTipi = document.querySelector('input[name="sistemTipi"]:checked')?.value || 'TN';
+
+            const rows = document.querySelectorAll('#olcumTableBody tr');
+            for (let idx = 0; idx < rows.length; idx++) {
+                const row = rows[idx];
+                const inputs = row.querySelectorAll('input, select');
+                const existingId = row.dataset.id;
+
+                const payload = {
+                    siraNo: idx + 1,
+                    olcumNoktasi: inputs[0]?.value || '',
+                    anmaAkimi: parseFloat(inputs[1]?.value) || 0,
+                    sigortaTipi: inputs[2]?.value || 'C',
+                    zx: parseFloat(inputs[3]?.value) || 0,
+                    rcdIn: parseFloat(inputs[4]?.value) || 0,
+                    rcdVarMi: !!(parseFloat(inputs[5]?.value) > 0),
+                    rcdIAn: parseFloat(inputs[5]?.value) || 0,
+                    rcdSure: parseFloat(inputs[7]?.value) || 0,
+                    sonuc: row.querySelector('.sonuc-select')?.value || 'Not-1',
+                    yerTipi,
+                    sebekeTipi
+                };
+
                 try {
-                    await fetch(`${API_BASE}/elektrik-topraklama-raporu/${currentRaporId}/olcum`, {
+                    let res;
+                    if (existingId) {
+                        // Güncelle
+                        res = await fetch(`${API_BASE}/elektrik-topraklama-olcum/${existingId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                    } else {
+                        // Yeni oluştur
+                        res = await fetch(`${API_BASE}/elektrik-topraklama-raporu/${currentRaporId}/olcum`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                    }
+                    if (res.ok) {
+                        const savedOlcum = await res.json();
+                        row.dataset.id = savedOlcum.id;
+                    }
+                } catch (e) { console.error('Ölçüm kaydetme hatası:', e); }
+            }
+
+            // RCD Selektivite kaydet
+            await rcdleriKaydet();
+        }
+
+        // RCD Selektivite satırlarını kaydet
+        async function rcdleriKaydet() {
+            if (!currentRaporId) return;
+
+            // Önce mevcut RCD kayıtlarını sil
+            const rcdRows = document.querySelectorAll('#rcdTableBody tr');
+            const existingIds = [];
+            rcdRows.forEach(row => {
+                if (row.dataset.id) existingIds.push(row.dataset.id);
+            });
+            for (const id of existingIds) {
+                try {
+                    await fetch(`${API_BASE}/rcd-secicilik/${id}`, { method: 'DELETE' });
+                } catch (e) { console.error('RCD silme hatası:', e); }
+            }
+
+            // Yeni RCD kayıtlarını oluştur
+            for (let idx = 0; idx < rcdRows.length; idx++) {
+                const row = rcdRows[idx];
+                const inputs = row.querySelectorAll('input, select');
+                const payload = {
+                    siraNo: idx + 1,
+                    oncekiPanoAdi: inputs[0]?.value || '',
+                    oncekiRcdTipi: inputs[1]?.value || 'AC',
+                    oncekiIn: parseFloat(inputs[2]?.value) || 0,
+                    oncekiIdn: parseFloat(inputs[3]?.value) || 0,
+                    oncekiGecikme: parseFloat(inputs[4]?.value) || 0,
+                    sonPanoAdi: inputs[5]?.value || '',
+                    sonRcdTipi: inputs[6]?.value || 'AC',
+                    sonIdn: parseFloat(inputs[7]?.value) || 0,
+                    sonTd: parseFloat(inputs[8]?.value) || 0,
+                    sonuc: inputs[9]?.value || 'Not-7'
+                };
+
+                try {
+                    const res = await fetch(`${API_BASE}/elektrik-topraklama-raporu/${currentRaporId}/rcd-secicilik`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            siraNo: olcum.no,
-                            olcumNoktasi: olcum.olcumNoktasi,
-                            anmaAkimi: parseFloat(olcum.inA) || 0,
-                            sigortaTipi: olcum.tip,
-                            zx: parseFloat(olcum.zxRx) || 0,
-                            rcdVarMi: !!(parseFloat(olcum.rcdIdn) > 0),
-                            rcdIAn: parseFloat(olcum.rcdIdn) || 0,
-                            rcdSure: parseFloat(olcum.rcdTd) || 0,
-                            sonuc: olcum.sonuc
-                        })
+                        body: JSON.stringify(payload)
                     });
-                } catch (e) { console.error('Ölçüm kaydetme hatası:', e); }
+                    if (res.ok) {
+                        const savedRcd = await res.json();
+                        row.dataset.id = savedRcd.id;
+                    }
+                } catch (e) { console.error('RCD kaydetme hatası:', e); }
             }
         }
 

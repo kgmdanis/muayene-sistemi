@@ -586,11 +586,13 @@ function fillPanoKontrolTable(docXml, panolar) {
             }
 
             // Termal foto bilgilerini yaz
-            if (pano.termalFotoTarih) {
-                newTable = setValueByLabel(newTable, 'Fotoğraf tarihi', pano.termalFotoTarih);
+            const termalTarih = pano.termalFotoTarih || pano.termalFotografTarihi;
+            const termalNo = pano.termalFotoNo || pano.termalFotografNo;
+            if (termalTarih) {
+                newTable = setValueByLabel(newTable, 'Fotoğraf tarihi', termalTarih);
             }
-            if (pano.termalFotoNo) {
-                newTable = setValueByLabel(newTable, 'Fotoğraf no', pano.termalFotoNo);
+            if (termalNo) {
+                newTable = setValueByLabel(newTable, 'Fotoğraf no', termalNo);
             }
 
             // Kriter satırlarını doldur - 4 sütunlu: Kriter | Değerlendirme | Kriter | Değerlendirme
@@ -766,9 +768,9 @@ function fillLinyeRow(rowXml, cells, linye, rowNum, isTT) {
     const inA = parseFloat(linye.inA) || 0;
     const icuKA = parseFloat(linye.icuKA) || 0;
     const egriTipi = linye.egriTipi || 'C';
-    const zx = parseFloat(linye.zx) || 0;
+    const zx = parseFloat(linye.zx || linye.zxOhm) || 0;
     const rcdIAn = parseFloat(linye.rcdIAn) || 0;
-    const rcdTd = parseFloat(linye.rcdTd) || 0;
+    const rcdTd = parseFloat(linye.rcdTd || linye.rcdTSuresi) || 0;
 
     // Hesaplamalar (eğer DB'de yoksa server-side hesapla)
     let ia = parseFloat(linye.ia) || 0;
@@ -811,8 +813,15 @@ function fillLinyeRow(rowXml, cells, linye, rowNum, isTT) {
         }
     }
 
-    // Pano/Linye adı
-    const panoLinye = [linye.panoAdi, linye.linyeAdi].filter(Boolean).join(' / ') || '-';
+    // Pano/Linye adı - support both separate fields and combined field
+    const panoLinye = linye.panoLinyeAdi || [linye.panoAdi, linye.linyeAdi].filter(Boolean).join(' / ') || '-';
+
+    // Field fallbacks for DB/form name mismatches
+    const kesitFaz = linye.kesitFaz || linye.fazKesiti || '-';
+    const kesitN = linye.kesitN || linye.nKesiti || '-';
+    const kesitPE = linye.kesitPE || linye.peKesiti || '-';
+    const ibVal = linye.ib || linye.ibA;
+    const izVal = linye.iz || linye.izA;
 
     // 14 sütun: No, Pano/Linye, Eğri tipi, Kutup, In(A), Icu(kA), Faz(mm²), N(mm²), PE(mm²),
     //           Ib(A), Iz(A), IΔ(mA), TΔ(ms), Sonuç(Not)
@@ -823,11 +832,11 @@ function fillLinyeRow(rowXml, cells, linye, rowNum, isTT) {
         linye.kutupSayisi || '-',                                // 3: Kutup
         inA ? inA.toString() : '-',                              // 4: In (A)
         icuKA ? icuKA.toString() : '-',                          // 5: Icu (kA)
-        linye.kesitFaz || '-',                                   // 6: Faz (mm²)
-        linye.kesitN || '-',                                     // 7: N (mm²)
-        linye.kesitPE || '-',                                    // 8: PE (mm²)
-        linye.ib ? numStr(linye.ib, 1) : '-',                   // 9: Ib (A)
-        linye.iz ? numStr(linye.iz, 1) : '-',                   // 10: Iz (A)
+        kesitFaz,                                                // 6: Faz (mm²)
+        kesitN,                                                  // 7: N (mm²)
+        kesitPE,                                                 // 8: PE (mm²)
+        ibVal ? numStr(ibVal, 1) : '-',                          // 9: Ib (A)
+        izVal ? numStr(izVal, 1) : '-',                          // 10: Iz (A)
         rcdIAn ? rcdIAn.toString() : '-',                        // 11: IΔ (mA)
         rcdTd ? rcdTd.toString() : '-',                          // 12: TΔ (ms)
         sonuc                                                    // 13: Sonuç (Not)
@@ -898,9 +907,9 @@ function fillPotansiyelDengelemeTable(docXml, veriler) {
         // 7 sütun: No, Bölüm, İletken Kesiti, Süreklilik(Ω), Tamamlayıcı Kesit, Tamamlayıcı Süreklilik, Sonuç
         const values = [
             (dataRowIndex + 1).toString(),                           // 0: No
-            veri.olcumNoktasi || '-',                                // 1: Bölüm/Ölçüm noktası
+            veri.olcumNoktasi || veri.bolumOlcumNoktasi || '-',      // 1: Bölüm/Ölçüm noktası
             veri.iletkenKesiti || '-',                               // 2: İletken Kesiti
-            numStr(veri.sureklillikOhm, 4),                          // 3: Süreklilik (Ω)
+            numStr(veri.sureklillikOhm || veri.sureklilik, 4),       // 3: Süreklilik (Ω)
             veri.tamamlayiciKesit || '-',                            // 4: Tamamlayıcı Kesit
             numStr(veri.tamamlayiciSureklilik, 4),                   // 5: Tamamlayıcı Süreklilik
             veri.sonuc || 'Uygun'                                    // 6: Sonuç
@@ -978,10 +987,10 @@ function fillZeminIzolasyonTable(docXml, veriler) {
         // 6 sütun: No, Yer, En(m), Boy(m), İzolasyon Direnci(kΩ), Sonuç
         const values = [
             (dataRowIndex + 1).toString(),                           // 0: No
-            veri.olcumNoktasi || '-',                                // 1: Yer
-            numStr(veri.eni, 2),                                     // 2: En (m)
-            numStr(veri.boyu, 2),                                    // 3: Boy (m)
-            numStr(veri.izolasyonDirenciKOhm, 2),                    // 4: İzolasyon Direnci (kΩ)
+            veri.olcumNoktasi || veri.yer || '-',                    // 1: Yer
+            numStr(veri.eni || veri.enM, 2),                         // 2: En (m)
+            numStr(veri.boyu || veri.boyM, 2),                       // 3: Boy (m)
+            numStr(veri.izolasyonDirenciKOhm || veri.izolasyonDirenci, 2), // 4: İzolasyon Direnci (kΩ)
             veri.sonuc || 'Uygun'                                    // 5: Sonuç
         ];
 
@@ -1084,7 +1093,9 @@ async function generateElektrikIcTesisatWord(rapor, isEmri, options = {}) {
         docXml = setValueByLabel(docXml, 'Rapor Numarası', rapor.raporNo);
         docXml = setValueByLabel(docXml, 'Periyodik Kontrol Adresi', firma.adres);
         docXml = setValueByLabel(docXml, 'Rapor Tarihi', formatDate(rapor.bitisTarihi || new Date()));
-        docXml = setValueByLabel(docXml, 'İSG-KATİP Sözleşme ID', options.isgKatipNo || firmaBilgi.isgKatipId || rapor.isgKatipNo);
+        const _isgKatipCombined = [firmaBilgi.isgKatipId, firmaBilgi.isgKatipId2, firmaBilgi.isgKatipId3, firmaBilgi.isgKatipId4]
+            .map(v => (v == null ? '' : String(v).trim())).filter(v => v && v !== '-').join(' / ');
+        docXml = setValueByLabel(docXml, 'İSG-KATİP Sözleşme ID', options.isgKatipNo || _isgKatipCombined || firmaBilgi.isgKatipId || rapor.isgKatipNo);
         docXml = setValueByLabel(docXml, 'SGK Sicil Numarası', options.sgkSicilNo || firmaBilgi.sgkSicilNo || rapor.sgkSicilNo);
         docXml = setValueByLabel(docXml, 'Periyodik Kontrol Başlangıç Tarihi ve Saati', formatDateTime(rapor.baslangicTarihi, options.baslangicSaati || '09:00'));
         docXml = setValueByLabel(docXml, 'Periyodik Kontrol Bitiş Tarihi ve Saati', formatDateTime(rapor.bitisTarihi, options.bitisSaati || '17:00'));
@@ -1144,8 +1155,24 @@ async function generateElektrikIcTesisatWord(rapor, isEmri, options = {}) {
     try {
         const formData = typeof rapor.formData === 'string' ? JSON.parse(rapor.formData) : (rapor.formData || {});
 
+        // Helper: build cihaz object from flat form fields (cihaz1Adi, cihaz1SeriNo, etc.)
+        function buildCihazFromFlat(src, prefix) {
+            const obj = {};
+            if (src[`${prefix}Adi`]) obj.cihazAdi = src[`${prefix}Adi`];
+            if (src[`${prefix}SeriNo`]) obj.seriNo = src[`${prefix}SeriNo`];
+            if (src[`${prefix}Kalibrasyon`]) obj.kalibrasyonTarihi = src[`${prefix}Kalibrasyon`];
+            if (src[`${prefix}KalibrasyonGecerlilik`]) obj.kalibrasyonGecerlilikTarihi = src[`${prefix}KalibrasyonGecerlilik`];
+            if (src[`${prefix}KalibrasyonNo`]) obj.kalibrasyonNo = src[`${prefix}KalibrasyonNo`];
+            return Object.keys(obj).length > 0 ? obj : null;
+        }
+
+        // Flat field fallbacks from options and formData
+        const flatCihaz1 = buildCihazFromFlat(options, 'cihaz1') || buildCihazFromFlat(formData, 'cihaz1');
+        const flatCihaz2 = buildCihazFromFlat(options, 'cihaz2') || buildCihazFromFlat(formData, 'cihaz2');
+        const flatCihaz3 = buildCihazFromFlat(options, 'cihaz3') || buildCihazFromFlat(formData, 'cihaz3');
+
         // Cihaz 1 - Ana ölçüm cihazı
-        const cihaz1 = options.cihaz1 || formData.cihaz1 || formData.olcumCihazi || formData.cihaz || options.cihaz || {};
+        const cihaz1 = options.cihaz1 || formData.cihaz1 || formData.olcumCihazi || formData.cihaz || options.cihaz || flatCihaz1 || {};
         const kal1Tarihi = cihaz1.kalibrasyonTarihi ? formatDate(cihaz1.kalibrasyonTarihi) : '-';
         const kal1Gecerlilik = cihaz1.kalibrasyonGecerlilikTarihi ? formatDate(cihaz1.kalibrasyonGecerlilikTarihi) : '-';
         docXml = setValueByLabel(docXml, 'Cihaz adı', cihaz1.cihazAdi || '-');
@@ -1155,7 +1182,7 @@ async function generateElektrikIcTesisatWord(rapor, isEmri, options = {}) {
         docXml = setValueByLabel(docXml, 'Kalibrasyon numarası', cihaz1.kalibrasyonNo || '-');
 
         // Cihaz 2
-        const cihaz2 = options.cihaz2 || formData.cihaz2 || {};
+        const cihaz2 = options.cihaz2 || formData.cihaz2 || flatCihaz2 || {};
         if (cihaz2.cihazAdi) {
             // İkinci "Cihaz adı" etiketini bul - ilk etiketten sonraki
             docXml = setNthValueByLabel(docXml, 'Cihaz adı', cihaz2.cihazAdi, 2);
@@ -1166,7 +1193,7 @@ async function generateElektrikIcTesisatWord(rapor, isEmri, options = {}) {
         }
 
         // Cihaz 3
-        const cihaz3 = options.cihaz3 || formData.cihaz3 || {};
+        const cihaz3 = options.cihaz3 || formData.cihaz3 || flatCihaz3 || {};
         if (cihaz3.cihazAdi) {
             docXml = setNthValueByLabel(docXml, 'Cihaz adı', cihaz3.cihazAdi, 3);
             docXml = setNthValueByLabel(docXml, 'Seri numarası', cihaz3.seriNo || '-', 3);
@@ -1201,28 +1228,38 @@ async function generateElektrikIcTesisatWord(rapor, isEmri, options = {}) {
                 const pano = rapor.panolar[pi];
                 const nth = pi + 1; // 1-indexed
 
+                // Field fallbacks for DB/form name mismatches
+                const panoGerilimFF = pano.gerilimFF || pano.panoVff;
+                const panoGerilimLN = pano.gerilimLN || pano.panoVln;
+                const panoGerilimNPE = pano.gerilimNPE || pano.panoVnpe;
+                const panoKisaDevre = pano.kisaDevreAkimi3Faz || pano.panoIkk;
+                const panoDkdTipi = pano.dkdTipi || pano.panoDkdTipi;
+                const panoDkdAkim = pano.dkdDayanmaAkimi || pano.panoDkdAkim;
+                const panoTermalTarih = pano.termalFotoTarih || pano.termalFotografTarihi;
+                const panoTermalNo = pano.termalFotoNo || pano.termalFotografNo;
+
                 if (pi === 0) {
                     // İlk pano: ana alanlara yaz
                     if (pano.panoAdi) docXml = setValueByLabel(docXml, 'Pano (Ekipman) Adı-Etiketi veya Kodu', pano.panoAdi);
                     if (pano.panoZx) docXml = setValueByLabel(docXml, 'Panodan ölçülen faztoprak', pano.panoZx);
                     if (pano.panoZln) docXml = setValueByLabel(docXml, 'Panodan ölçülen faz-nötr', pano.panoZln);
-                    if (pano.gerilimFF) docXml = setValueByLabel(docXml, 'F-F(V)', pano.gerilimFF);
-                    if (pano.gerilimLN) docXml = setValueByLabel(docXml, 'L-N(V)', pano.gerilimLN);
-                    if (pano.gerilimNPE) docXml = setValueByLabel(docXml, 'N-PE(V)', pano.gerilimNPE);
-                    if (pano.kisaDevreAkimi3Faz) docXml = setValueByLabel(docXml, 'Hesaplanan 3fazlı kısa devre', pano.kisaDevreAkimi3Faz);
-                    if (pano.dkdTipi) docXml = setValueByLabel(docXml, 'Aşırı gerilim koruma (DKD) tipi', pano.dkdTipi);
-                    if (pano.dkdDayanmaAkimi) docXml = setValueByLabel(docXml, 'Aşırı gerilim koruma(DKD) dayanma', pano.dkdDayanmaAkimi);
+                    if (panoGerilimFF) docXml = setValueByLabel(docXml, 'F-F(V)', panoGerilimFF);
+                    if (panoGerilimLN) docXml = setValueByLabel(docXml, 'L-N(V)', panoGerilimLN);
+                    if (panoGerilimNPE) docXml = setValueByLabel(docXml, 'N-PE(V)', panoGerilimNPE);
+                    if (panoKisaDevre) docXml = setValueByLabel(docXml, 'Hesaplanan 3fazlı kısa devre', panoKisaDevre);
+                    if (panoDkdTipi) docXml = setValueByLabel(docXml, 'Aşırı gerilim koruma (DKD) tipi', panoDkdTipi);
+                    if (panoDkdAkim) docXml = setValueByLabel(docXml, 'Aşırı gerilim koruma(DKD) dayanma', panoDkdAkim);
                 } else {
                     // Sonraki panolar: N'inci eşleşen etikete yaz
                     if (pano.panoAdi) docXml = setNthValueByLabel(docXml, 'Pano (Ekipman) Adı-Etiketi veya Kodu', pano.panoAdi, nth);
                     if (pano.panoZx) docXml = setNthValueByLabel(docXml, 'Panodan ölçülen faztoprak', pano.panoZx, nth);
                     if (pano.panoZln) docXml = setNthValueByLabel(docXml, 'Panodan ölçülen faz-nötr', pano.panoZln, nth);
-                    if (pano.gerilimFF) docXml = setNthValueByLabel(docXml, 'F-F(V)', pano.gerilimFF, nth);
-                    if (pano.gerilimLN) docXml = setNthValueByLabel(docXml, 'L-N(V)', pano.gerilimLN, nth);
-                    if (pano.gerilimNPE) docXml = setNthValueByLabel(docXml, 'N-PE(V)', pano.gerilimNPE, nth);
-                    if (pano.kisaDevreAkimi3Faz) docXml = setNthValueByLabel(docXml, 'Hesaplanan 3fazlı kısa devre', pano.kisaDevreAkimi3Faz, nth);
-                    if (pano.dkdTipi) docXml = setNthValueByLabel(docXml, 'Aşırı gerilim koruma (DKD) tipi', pano.dkdTipi, nth);
-                    if (pano.dkdDayanmaAkimi) docXml = setNthValueByLabel(docXml, 'Aşırı gerilim koruma(DKD) dayanma', pano.dkdDayanmaAkimi, nth);
+                    if (panoGerilimFF) docXml = setNthValueByLabel(docXml, 'F-F(V)', panoGerilimFF, nth);
+                    if (panoGerilimLN) docXml = setNthValueByLabel(docXml, 'L-N(V)', panoGerilimLN, nth);
+                    if (panoGerilimNPE) docXml = setNthValueByLabel(docXml, 'N-PE(V)', panoGerilimNPE, nth);
+                    if (panoKisaDevre) docXml = setNthValueByLabel(docXml, 'Hesaplanan 3fazlı kısa devre', panoKisaDevre, nth);
+                    if (panoDkdTipi) docXml = setNthValueByLabel(docXml, 'Aşırı gerilim koruma (DKD) tipi', panoDkdTipi, nth);
+                    if (panoDkdAkim) docXml = setNthValueByLabel(docXml, 'Aşırı gerilim koruma(DKD) dayanma', panoDkdAkim, nth);
                 }
             }
         }

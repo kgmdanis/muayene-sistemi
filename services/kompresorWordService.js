@@ -175,7 +175,9 @@ async function generateKompresorWord(rapor, isEmri, options = {}) {
         headerXml = setValueByLabel(headerXml, 'Sonraki Kontrol Tarihi', formatDate(rapor.sonrakiKontrolTarihi || options.sonrakiKontrolTarihi));
         headerXml = setValueByLabel(headerXml, 'Rapor No', rapor.raporNo);
         headerXml = setValueByLabel(headerXml, 'SGK Sicil No', firmaBilgi.sgkSicilNo);
-        headerXml = setValueByLabel(headerXml, 'İSG-KATİP Sözleşme ID', firmaBilgi.isgKatipId);
+        const _isgKatipCombined = [firmaBilgi.isgKatipId, firmaBilgi.isgKatipId2, firmaBilgi.isgKatipId3, firmaBilgi.isgKatipId4]
+            .map(v => (v == null ? '' : String(v).trim())).filter(v => v && v !== '-').join(' / ');
+        headerXml = setValueByLabel(headerXml, 'İSG-KATİP Sözleşme ID', _isgKatipCombined || firmaBilgi.isgKatipId);
         zip.file('word/header2.xml', headerXml);
     }
 

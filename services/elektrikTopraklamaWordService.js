@@ -578,7 +578,9 @@ async function generateElektrikTopraklamaWord(rapor, isEmri, olcumler = [], opti
     docXml = setValueByLabel(docXml, 'Rapor Numarası', rapor.raporNo);
     docXml = setValueByLabel(docXml, 'Periyodik Kontrol Adresi', firma.adres);
     docXml = setValueByLabel(docXml, 'Rapor Tarihi', formatDate(rapor.bitisTarihi || new Date()));
-    docXml = setValueByLabel(docXml, 'İSG-KATİP', options.isgKatipNo || rapor.isgKatipNo || firmaBilgi.isgKatipId);
+    const _isgKatipCombined = [firmaBilgi.isgKatipId, firmaBilgi.isgKatipId2, firmaBilgi.isgKatipId3, firmaBilgi.isgKatipId4]
+        .map(v => (v == null ? '' : String(v).trim())).filter(v => v && v !== '-').join(' / ');
+    docXml = setValueByLabel(docXml, 'İSG-KATİP', options.isgKatipNo || rapor.isgKatipNo || _isgKatipCombined || firmaBilgi.isgKatipId);
     docXml = setValueByLabel(docXml, 'SGK Sicil Numarası', options.sgkSicilNo || rapor.sgkSicilNo || firmaBilgi.sgkSicilNo);
     docXml = setValueByLabel(docXml, 'Periyodik Kontrol Başlangıç Tarihi ve Saati', formatDateTime(rapor.baslangicTarihi, options.baslangicSaati || '09:00'));
     docXml = setValueByLabel(docXml, 'Periyodik Kontrol Bitiş Tarihi ve Saati', formatDateTime(rapor.bitisTarihi, options.bitisSaati || '17:00'));

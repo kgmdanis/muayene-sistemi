@@ -543,6 +543,7 @@ model TopraklamaDetayliOlcum {
 
   // RCD Bilgileri
   rcdVarMi              Boolean                    @default(false)
+  rcdIn                 Decimal?                   @db.Decimal(10, 2)  // RCD anma akımı In (A)
   rcdIAn                Decimal?                   @db.Decimal(10, 2)  // RCD anma kaçak akımı (mA)
   rcdSure               Decimal?                   @db.Decimal(10, 2)  // RCD açma süresi (ms)
 

@@ -37,7 +37,9 @@
         { "id": "ortamNemi", "label": "Ortam Nemi", "type": "text", "placeholder": "%" },
         { "id": "calismaBasinci", "label": "Çalışma Basıncı (bar)", "type": "text" },
         { "id": "testBasinci", "label": "Test Basıncı (bar)", "type": "text" },
-        { "id": "pompaAdedi", "label": "Pompa Adedi", "type": "text" }
+        { "id": "pompaAdedi", "label": "Pompa Adedi", "type": "text" },
+        { "id": "bulunduguBolum", "label": "Bulunduğu Bölüm", "type": "text", "placeholder": "Nozulların bulunduğu bölüm" },
+        { "id": "dolapNumarasi", "label": "Dolap Numarası", "type": "text", "placeholder": "1" }
       ]
     },
     {
@@ -119,7 +121,9 @@
       { "label": "Ortam Nemi", "field": "ortamNemi" },
       { "label": "Çalışma Basıncı", "field": "calismaBasinci" },
       { "label": "Test Basıncı", "field": "testBasinci" },
-      { "label": "Pompa Adedi", "field": "pompaAdedi" }
+      { "label": "Pompa Adedi", "field": "pompaAdedi" },
+      { "label": "BULUNDUĞU BÖLÜM", "field": "bulunduguBolum" },
+      { "label": "DOLAP NUMARASI", "field": "dolapNumarasi" }
     ],
     "checkboxes": [
       {
