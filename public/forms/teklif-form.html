@@ -97,11 +97,16 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 13px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 5px;
             margin: 10px;
         }
+        /* Kategori altı ekle butonunu sağa yasla (item 2) */
+        .kategori-body { text-align: right; }
+        .kategori-body .hizmet-table { text-align: left; }
+        /* Footer aksiyon butonları sağa yaslı (item 2) */
+        .footer-actions { margin-left: auto; flex-wrap: wrap; }
         .yeni-hizmet-btn:hover { background: #138496; }
 
         /* Modal */
@@ -246,10 +251,11 @@
                         </div>
                         <div class="firma-row">
                             <div class="firma-label">FİRMA ADI</div>
-                            <div class="firma-value">
-                                <select id="musteriSelect" onchange="musteriSecildi()">
+                            <div class="firma-value" style="display:flex; gap:6px; align-items:center;">
+                                <select id="musteriSelect" onchange="musteriSecildi()" style="flex:1;">
                                     <option value="">-- Müşteri Seçin --</option>
                                 </select>
+                                <button type="button" class="ekle-btn" onclick="musteriEkleModalAc()" title="Yeni müşteri ekle" style="white-space:nowrap;">➕ Müşteri</button>
                             </div>
                         </div>
                         <div class="firma-row">
@@ -391,8 +397,9 @@
                     <input type="text" id="hizmetAd" placeholder="Hizmet adını girin" required>
                 </div>
                 <div class="form-group">
-                    <label>Mevzuat / Referans</label>
-                    <input type="text" id="hizmetMevzuat" placeholder="Standart veya yönetmelik">
+                    <label>Mevzuat / Referans (Metod / Standart)</label>
+                    <input type="text" id="hizmetMevzuat" list="mevzuat-listesi" placeholder="Listeden seç veya yeni yaz">
+                    <datalist id="mevzuat-listesi"></datalist>
                 </div>
                 <div class="form-group">
                     <label>Varsayılan Birim</label>
@@ -414,6 +421,46 @@
             <div class="modal-footer">
                 <button class="btn btn-light" onclick="modalKapat()">İptal</button>
                 <button class="btn btn-success" onclick="hizmetKaydet()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yeni Müşteri Ekle Modal -->
+    <div class="modal-overlay" id="yeniMusteriModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Yeni Müşteri Ekle</h3>
+                <button class="modal-close" onclick="musteriModalKapat()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Ünvan / Firma Adı <span class="required">*</span></label>
+                    <input type="text" id="m-unvan" placeholder="Firma ünvanı" required>
+                </div>
+                <div class="form-group">
+                    <label>Yetkili Kişi</label>
+                    <input type="text" id="m-yetkili" placeholder="Yetkili adı soyadı">
+                </div>
+                <div class="form-group">
+                    <label>Telefon</label>
+                    <input type="text" id="m-telefon" placeholder="Telefon / Faks">
+                </div>
+                <div class="form-group">
+                    <label>E-Mail</label>
+                    <input type="email" id="m-email" placeholder="ornek@firma.com">
+                </div>
+                <div class="form-group">
+                    <label>Vergi No</label>
+                    <input type="text" id="m-vergiNo" placeholder="Vergi numarası">
+                </div>
+                <div class="form-group">
+                    <label>Adres</label>
+                    <input type="text" id="m-adres" placeholder="Firma adresi">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-light" onclick="musteriModalKapat()">İptal</button>
+                <button class="btn btn-success" onclick="musteriEkleKaydet()">Kaydet</button>
             </div>
         </div>
     </div>
@@ -938,9 +985,21 @@
                 if (res.ok) {
                     const mesaj = editingTeklifId ? 'Teklif güncellendi: ' : 'Teklif oluşturuldu: ';
                     showToast(mesaj + result.teklifNo, 'success');
+
+                    // İş emri senkron bilgisi (item 7)
+                    if (result._isEmriSync && result._isEmriSync.synced && (result._isEmriSync.eklenen || result._isEmriSync.silinen)) {
+                        const s = result._isEmriSync;
+                        showToast(`İş emri güncellendi: ${s.eklenen} eklendi, ${s.silinen} kaldırıldı${s.korunan ? `, ${s.korunan} korundu` : ''}`, 'success');
+                    }
+                    // Revize hatırlatması (item 8)
+                    let bekle = 1500;
+                    if (result._revizeUyari) {
+                        showToast('⚠️ Bu teklif revize edildi. Daha önce mail atılmıştı — güncel teklifi tekrar mail atmayı unutmayın!', 'warning');
+                        bekle = 4000;
+                    }
                     setTimeout(() => {
                         window.location.href = '/index.html';
-                    }, 1500);
+                    }, bekle);
                 } else {
                     showToast(result.error || 'İşlem başarısız', 'error');
                 }
@@ -964,7 +1023,20 @@
 
         // ============ HİZMET MODAL FONKSİYONLARI ============
 
+        // Mevcut hizmetlerden metod/standart listesini datalist'e doldur (item 3)
+        function mevzuatListesiniDoldur() {
+            const dl = document.getElementById('mevzuat-listesi');
+            if (!dl) return;
+            const set = new Set();
+            kategoriler.forEach(k => (k.hizmetler || []).forEach(h => {
+                if (h.metodKapsam) set.add(h.metodKapsam);
+                if (h.standartYonetmelik) set.add(h.standartYonetmelik);
+            }));
+            dl.innerHTML = [...set].sort().map(m => `<option value="${(m || '').replace(/"/g, '&quot;')}"></option>`).join('');
+        }
+
         function yeniHizmetModalAc(kategoriId, kategoriAd) {
+            mevzuatListesiniDoldur();
             secilenKategoriId = kategoriId;
             document.getElementById('editingHizmetId').value = '';
             document.getElementById('hizmetModalTitle').textContent = 'Yeni Hizmet Ekle';
@@ -991,6 +1063,7 @@
         }
 
         function hizmetDuzenle(hizmetId) {
+            mevzuatListesiniDoldur();
             // Hizmeti bul
             let hizmet = null;
             let kategoriId = null;
@@ -1036,6 +1109,56 @@
             document.getElementById('yeniHizmetModal').classList.remove('active');
             document.getElementById('editingHizmetId').value = '';
             secilenKategoriId = null;
+        }
+
+        // ============ MÜŞTERİ EKLEME (item 1) ============
+        function musteriEkleModalAc() {
+            ['m-unvan','m-yetkili','m-telefon','m-email','m-vergiNo','m-adres'].forEach(id => {
+                const el = document.getElementById(id); if (el) el.value = '';
+            });
+            document.getElementById('yeniMusteriModal').classList.add('active');
+        }
+
+        function musteriModalKapat() {
+            document.getElementById('yeniMusteriModal').classList.remove('active');
+        }
+
+        async function musteriEkleKaydet() {
+            const unvan = document.getElementById('m-unvan').value.trim();
+            if (!unvan) { showToast('Ünvan zorunludur', 'error'); return; }
+            const data = {
+                unvan,
+                yetkili: document.getElementById('m-yetkili').value.trim() || null,
+                telefon: document.getElementById('m-telefon').value.trim() || null,
+                email: document.getElementById('m-email').value.trim() || null,
+                vergiNo: document.getElementById('m-vergiNo').value.trim() || null,
+                adres: document.getElementById('m-adres').value.trim() || null
+            };
+            try {
+                const res = await fetch(API_BASE + '/api/customers', {
+                    method: 'POST', headers: getHeaders(), body: JSON.stringify(data)
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    showToast(err.error || 'Müşteri eklenemedi', 'error');
+                    return;
+                }
+                const yeni = await res.json();
+                // Listeye ekle, select'e ekle ve seç
+                musteriler.push(yeni);
+                const select = document.getElementById('musteriSelect');
+                const opt = document.createElement('option');
+                opt.value = yeni.id;
+                opt.textContent = yeni.unvan;
+                select.appendChild(opt);
+                select.value = yeni.id;
+                musteriSecildi();
+                musteriModalKapat();
+                showToast('Müşteri eklendi ve seçildi', 'success');
+            } catch (e) {
+                console.error('Müşteri ekleme hatası:', e);
+                showToast('Müşteri eklenirken hata oluştu', 'error');
+            }
         }
 
         async function hizmetKaydet() {
