@@ -1032,11 +1032,11 @@ function yeniTeklifModal() {
     }
 
     // Excel formatına uygun yeni teklif formunu aç
-    window.location.href = '/forms/teklif-form.html';
+    window.location.href = '/forms/teklif-form.html?v=2';
 }
 
 function teklifDuzenle(id) {
-    window.location.href = '/forms/teklif-form.html?id=' + id;
+    window.location.href = '/forms/teklif-form.html?id=' + id + '&v=2';
 }
 
 function musteriIcinTeklifOlustur(musteriId) {

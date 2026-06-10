@@ -88,7 +88,16 @@ const dosyaUpload = multer({
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use(express.static('public'));
+app.use(express.static('public', {
+    setHeaders: (res, filePath) => {
+        // HTML dosyaları her zaman tazelensin (cache sorunlarını önler)
+        if (filePath.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+        }
+    }
+}));
 
 // Şablon dosyası yükleme endpoint'i
 app.post('/api/upload-template', upload.single('file'), (req, res) => {
