@@ -973,9 +973,31 @@ app.patch('/api/teklifler/:id/durum', auth.authMiddleware('admin'), async (req, 
 // Teklif sil
 app.delete('/api/teklifler/:id', auth.authMiddleware('admin'), async (req, res) => {
     try {
-        await auth.prisma.teklif.delete({ where: { id: parseInt(req.params.id) } });
+        const id = parseInt(req.params.id);
+
+        // Bağlı kayıtları kontrol et (FK kısıtı nedeniyle silinemez)
+        const [isEmriSayisi, muayeneSayisi, workOrderSayisi] = await Promise.all([
+            auth.prisma.isEmri.count({ where: { teklifId: id } }),
+            auth.prisma.muayene.count({ where: { teklifId: id } }),
+            auth.prisma.workOrder.count({ where: { teklifId: id } })
+        ]);
+
+        const engeller = [];
+        if (isEmriSayisi > 0) engeller.push(`${isEmriSayisi} iş emri`);
+        if (muayeneSayisi > 0) engeller.push(`${muayeneSayisi} muayene`);
+        if (workOrderSayisi > 0) engeller.push(`${workOrderSayisi} iş kaydı`);
+
+        if (engeller.length > 0) {
+            return res.status(400).json({
+                error: `Bu teklif silinemez: bağlı ${engeller.join(', ')} mevcut. Önce bunları silin veya teklifi İPTAL durumuna alın.`
+            });
+        }
+
+        // TeklifDetay cascade ile otomatik silinir
+        await auth.prisma.teklif.delete({ where: { id } });
         res.json({ success: true });
     } catch (error) {
+        console.error('❌ Teklif silme hatası:', error);
         res.status(500).json({ error: 'Teklif silinemedi' });
     }
 });
