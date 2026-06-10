@@ -7,7 +7,7 @@ const JSZip = require('jszip');
 const fs = require('fs');
 const path = require('path');
 const { formatDate, formatDateTime, getNextYearDate, escapeXml } = require('./wordHelpers');
-const { setValueByLabel, setKontrolSorusu, setTestRow, fillKusurTable, fillNotlarTable, getCellText, normalizeLabel, writeToCell } = require('./wordCellOperations');
+const { setValueByLabel, setKontrolSorusu, setTestRow, fillKusurTable, fillNotlarTable, fillIkazOneriler, getCellText, normalizeLabel, writeToCell } = require('./wordCellOperations');
 const { fillCheckboxesFromConfig } = require('./wordCheckboxHandler');
 const { fillTableFromConfig, fillSingleCellTable } = require('./wordTableHandler');
 
@@ -171,6 +171,11 @@ async function generateGenericWord(rapor, isEmri, options = {}) {
 
     const notlarText = getValue('notlar', rapor, formData, options);
     if (notlarText) docXml = fillNotlarTable(docXml, notlarText);
+
+    // İKAZ VE ÖNERİLER (form alanı: ikazOneriler) — şablonlardaki "İKAZ VE ÖNERİLER" satırına basılır
+    const ikazText = getValue('ikazOneriler', rapor, formData, options)
+        || getValue('kusurAciklama', rapor, formData, options);
+    if (ikazText) docXml = fillIkazOneriler(docXml, ikazText);
 
     // === 8. SONUÇ (renkli) ===
     const genelSonuc = rapor.genelSonuc || formData.genelSonuc || options.genelSonuc;

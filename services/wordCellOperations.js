@@ -318,6 +318,43 @@ function fillNotlarTable(docXml, notlarText) {
     return docXml;
 }
 
+/**
+ * "İKAZ VE ÖNERİLER" başlık satırının HEMEN ALTINDAKİ satırın ilk hücresine yazar.
+ * Şablonlarda bu bölüm ayrı tablo değil; büyük tablonun içinde başlık satırı + boş satır şeklinde.
+ * Form alanı `ikazOneriler` buraya basılır (eskiden hiç yazılmıyordu).
+ */
+function fillIkazOneriler(docXml, text) {
+    if (!text) return docXml;
+
+    const tableRegex = /<w:tbl>[\s\S]*?<\/w:tbl>/g;
+    const tables = docXml.match(tableRegex) || [];
+
+    // Türkçe İ harfi normalizeLabel'da combining-dot sorunu yaratıyor; ham büyük harf karşılaştır
+    const buyuk = (s) => (s || '').toLocaleUpperCase('tr');
+    for (const table of tables) {
+        const rows = table.match(/<w:tr[^>]*>[\s\S]*?<\/w:tr>/g) || [];
+        for (let i = 0; i < rows.length - 1; i++) {
+            const rowUp = buyuk(getRowText(rows[i]));
+            // "İKAZ" ve "ÖNERİ" aynı satırda (başlık satırı)
+            if (rowUp.includes('İKAZ') && rowUp.includes('ÖNER')) {
+                const hedef = rows[i + 1];
+                const hedefUp = buyuk(getRowText(hedef));
+                // Bir sonraki satır başka bir başlıksa (sonuc/kanaat) atla
+                if (hedefUp.includes('SONUÇ') || hedefUp.includes('KANAAT')) continue;
+                const cells = hedef.match(/<w:tc[^>]*>[\s\S]*?<\/w:tc>/g) || [];
+                if (cells.length > 0) {
+                    const newCell = writeToCell(cells[0], text);
+                    const newRow = hedef.replace(cells[0], newCell);
+                    const newTable = table.replace(hedef, newRow);
+                    return docXml.replace(table, newTable);
+                }
+            }
+        }
+    }
+
+    return docXml;
+}
+
 module.exports = {
     writeToCell,
     getRowText,
@@ -327,5 +364,6 @@ module.exports = {
     setKontrolSorusu,
     setTestRow,
     fillKusurTable,
-    fillNotlarTable
+    fillNotlarTable,
+    fillIkazOneriler
 };
