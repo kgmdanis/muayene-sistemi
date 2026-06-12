@@ -342,6 +342,7 @@
           "mode": "last"
         },
         {
+          "exact": true,
           "field": "kriter2",
           "text": "Manometre",
           "mode": "last"

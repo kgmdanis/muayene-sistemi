@@ -424,21 +424,25 @@
       "mode": "next",
       "questions": [
         {
+          "exact": true,
           "field": "kriter1",
           "text": "Manometre",
           "mode": "last"
         },
         {
+          "exact": true,
           "field": "kriter2",
           "text": "Termometre",
           "mode": "last"
         },
         {
+          "exact": true,
           "field": "kriter3",
           "text": "Emniyet ventili",
           "mode": "last"
         },
         {
+          "exact": true,
           "field": "kriter4",
           "text": "Tahliye Blöf vanası",
           "mode": "last"

@@ -520,6 +520,7 @@
           "mode": "last"
         },
         {
+          "exact": true,
           "field": "kriter8",
           "text": "manometre",
           "mode": "last"

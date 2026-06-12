@@ -531,6 +531,7 @@
       "mode": "next",
       "questions": [
         {
+          "exact": true,
           "field": "kriter1",
           "text": "Manometre",
           "mode": "last"
@@ -551,6 +552,7 @@
           "mode": "last"
         },
         {
+          "exact": true,
           "field": "kriter5",
           "text": "Güvenlik Ventili",
           "mode": "last"
