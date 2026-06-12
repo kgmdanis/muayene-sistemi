@@ -385,53 +385,43 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Kanca veya mapa bağlantı",
-          "exact": true
+          "text": "Kanca veya mapa bağlantı"
         },
         {
           "field": "kriter2",
-          "text": "Bez sapanın yapısı ve",
-          "exact": true
+          "text": "Bez sapanın yapısı ve"
         },
         {
           "field": "kriter3",
-          "text": "Zincir sapanın yapısı ve bağlantı",
-          "exact": true
+          "text": "Zincir sapanın yapısı ve bağlantı"
         },
         {
           "field": "kriter4",
-          "text": "Zincir sapanın kanca durumu",
-          "exact": true
+          "text": "Zincir sapanın kanca durumu"
         },
         {
           "field": "kriter5",
-          "text": "Sapanda ezilme daralma",
-          "exact": true
+          "text": "Sapanda ezilme daralma"
         },
         {
           "field": "kriter6",
-          "text": "şınma ve deformasyon",
-          "exact": true
+          "text": "şınma ve deformasyon"
         },
         {
           "field": "kriter7",
-          "text": "I. Yüksüz hareket durumu",
-          "exact": true
+          "text": "I. Yüksüz hareket durumu"
         },
         {
           "field": "kriter8",
-          "text": "II .Yük altında statik kontrol durumu",
-          "exact": true
+          "text": "II .Yük altında statik kontrol durumu"
         },
         {
           "field": "kriter9",
-          "text": "III.Yük altında dinamik kontrol durumu",
-          "exact": true
+          "text": "III.Yük altında dinamik kontrol durumu"
         },
         {
           "field": "kriter10",
-          "text": "Makine sicil kartı, bakım-onarım",
-          "exact": true
+          "text": "Makine sicil kartı, bakım-onarım"
         }
       ]
     }

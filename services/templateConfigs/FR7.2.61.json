@@ -368,73 +368,59 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Pres üzerinde güvenlik etiket",
-          "exact": true
+          "text": "Pres üzerinde güvenlik etiket"
         },
         {
           "field": "kriter2",
-          "text": "Pres etrafında tehlike yaratacak",
-          "exact": true
+          "text": "Pres etrafında tehlike yaratacak"
         },
         {
           "field": "kriter3",
-          "text": "Presin tüm koruyucu kapakları",
-          "exact": true
+          "text": "Presin tüm koruyucu kapakları"
         },
         {
           "field": "kriter4",
-          "text": "Elektrik bağlantıları uygun mu",
-          "exact": true
+          "text": "Elektrik bağlantıları uygun mu"
         },
         {
           "field": "kriter5",
-          "text": "Hidrolik yağı her 2500",
-          "exact": true
+          "text": "Hidrolik yağı her 2500"
         },
         {
           "field": "kriter6",
-          "text": "Kolon mili somunlarında gevşeme",
-          "exact": true
+          "text": "Kolon mili somunlarında gevşeme"
         },
         {
           "field": "kriter7",
-          "text": "Depo da ki yağ",
-          "exact": true
+          "text": "Depo da ki yağ"
         },
         {
           "field": "kriter8",
-          "text": "Emiş filtresi üç ayda",
-          "exact": true
+          "text": "Emiş filtresi üç ayda"
         },
         {
           "field": "kriter9",
-          "text": "Hidrolik devrelerin temizliği uygun",
-          "exact": true
+          "text": "Hidrolik devrelerin temizliği uygun"
         },
         {
           "field": "kriter10",
-          "text": "Presin gövdesinde herhangi bir",
-          "exact": true
+          "text": "Presin gövdesinde herhangi bir"
         },
         {
           "field": "kriter11",
-          "text": "Presin acil stop butonu",
-          "exact": true
+          "text": "Presin acil stop butonu"
         },
         {
           "field": "kriter12",
-          "text": "Parça konulan yer dışında",
-          "exact": true
+          "text": "Parça konulan yer dışında"
         },
         {
           "field": "kriter13",
-          "text": "Presin bulunduğu yerde ki",
-          "exact": true
+          "text": "Presin bulunduğu yerde ki"
         },
         {
           "field": "kriter14",
-          "text": "Presi kullanan kişi gerekli",
-          "exact": true
+          "text": "Presi kullanan kişi gerekli"
         }
       ]
     }

@@ -339,49 +339,40 @@
         {
           "field": "kriter1",
           "text": "Emniyet Ventilli",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter2",
           "text": "Manometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter3",
-          "text": "Manometre çalışıyor, konum ve",
-          "exact": true
+          "text": "Manometre çalışıyor, konum ve"
         },
         {
           "field": "kriter4",
-          "text": "Emniyet ventili çalışıyor ve",
-          "exact": true
+          "text": "Emniyet ventili çalışıyor ve"
         },
         {
           "field": "kriter5",
-          "text": "Blöf vanası çalışıyor mu?",
-          "exact": true
+          "text": "Blöf vanası çalışıyor mu?"
         },
         {
           "field": "kriter6",
-          "text": "Basınç ayar otomatiği çalışıyor",
-          "exact": true
+          "text": "Basınç ayar otomatiği çalışıyor"
         },
         {
           "field": "kriter7",
-          "text": "Yapılan bakım ve onarımlar",
-          "exact": true
+          "text": "Yapılan bakım ve onarımlar"
         },
         {
           "field": "kriter8",
-          "text": "Yangın söndürücü yeri ve",
-          "exact": true
+          "text": "Yangın söndürücü yeri ve"
         },
         {
           "field": "kriter9",
-          "text": "Uyarı ve kullanma talimatı",
-          "exact": true
+          "text": "Uyarı ve kullanma talimatı"
         }
       ]
     }

@@ -589,78 +589,63 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Uyarı levhalarının durumu",
-          "exact": true
+          "text": "Uyarı levhalarının durumu"
         },
         {
           "field": "kriter2",
-          "text": "Pergel vincin yapısı ve",
-          "exact": true
+          "text": "Pergel vincin yapısı ve"
         },
         {
           "field": "kriter3",
-          "text": "Pergel vincin elektrik ekipmanları,",
-          "exact": true
+          "text": "Pergel vincin elektrik ekipmanları,"
         },
         {
           "field": "kriter4",
-          "text": "Pergel vincin kumanda buton",
-          "exact": true
+          "text": "Pergel vincin kumanda buton"
         },
         {
           "field": "kriter5",
-          "text": "Pergel vincin sınır kesicilerin",
-          "exact": true
+          "text": "Pergel vincin sınır kesicilerin"
         },
         {
           "field": "kriter6",
-          "text": "Pergel vincin acil stop",
-          "exact": true
+          "text": "Pergel vincin acil stop"
         },
         {
           "field": "kriter7",
-          "text": "Güvenlik mandalları ve kumanda",
-          "exact": true
+          "text": "Güvenlik mandalları ve kumanda"
         },
         {
           "field": "kriter8",
-          "text": "Yük zinciri boyu kaldırma",
-          "exact": true
+          "text": "Yük zinciri boyu kaldırma"
         },
         {
           "field": "kriter9",
-          "text": "Yük ve tahrik zinciri",
-          "exact": true
+          "text": "Yük ve tahrik zinciri"
         },
         {
           "field": "kancaDurumu",
-          "text": "Halatta aşınma ve deformasyon durumu",
-          "exact": true
+          "text": "Halatta aşınma ve deformasyon durumu"
         },
         {
           "field": "yukZinciri",
-          "text": "Yük-tahrik zincirleri ve yük kancası",
-          "exact": true
+          "text": "Yük-tahrik zincirleri ve yük kancası"
         },
         {
           "field": "makineSicil",
-          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
-          "exact": true
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu"
         },
         {
           "field": "kriter12",
-          "text": "I. Yüksüz hareket durumu",
-          "exact": true
+          "text": "I. Yüksüz hareket durumu"
         },
         {
           "field": "kriter13",
-          "text": "II .Yük altında statik",
-          "exact": true
+          "text": "II .Yük altında statik"
         },
         {
           "field": "kriter14",
-          "text": "III.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük altında dinamik kontrol"
         }
       ]
     }

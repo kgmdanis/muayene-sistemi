@@ -398,68 +398,55 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Hidrolik silindirler durumu",
-          "exact": true
+          "text": "Hidrolik silindirler durumu"
         },
         {
           "field": "kriter2",
-          "text": "Kumanda valfi durumu",
-          "exact": true
+          "text": "Kumanda valfi durumu"
         },
         {
           "field": "kriter3",
-          "text": "Hidrolik hortumların durumu",
-          "exact": true
+          "text": "Hidrolik hortumların durumu"
         },
         {
           "field": "kriter4",
-          "text": "Pompa kasası fiziksel ve",
-          "exact": true
+          "text": "Pompa kasası fiziksel ve"
         },
         {
           "field": "kriter5",
-          "text": "Yangın söndürücü durumu",
-          "exact": true
+          "text": "Yangın söndürücü durumu"
         },
         {
           "field": "kriter6",
-          "text": "Operatör belgesi var mı",
-          "exact": true
+          "text": "Operatör belgesi var mı"
         },
         {
           "field": "kriter7",
-          "text": "Eksoz sistemi ve gaz",
-          "exact": true
+          "text": "Eksoz sistemi ve gaz"
         },
         {
           "field": "kriter8",
-          "text": "Yüksüz hareket durumu",
-          "exact": true
+          "text": "Yüksüz hareket durumu"
         },
         {
           "field": "kriter9",
-          "text": "Yük altında statik kontrol",
-          "exact": true
+          "text": "Yük altında statik kontrol"
         },
         {
           "field": "kriter10",
-          "text": "Yük altında dinamik kontrol",
-          "exact": true
+          "text": "Yük altında dinamik kontrol"
         },
         {
           "field": "kriter11",
-          "text": "Yük altında yapı kontrol",
-          "exact": true
+          "text": "Yük altında yapı kontrol"
         },
         {
           "field": "kriter12",
-          "text": "Basma Ayakların Durumu",
-          "exact": true
+          "text": "Basma Ayakların Durumu"
         },
         {
           "field": "kriter13",
-          "text": "Beton Taşıma Boruların genel",
-          "exact": true
+          "text": "Beton Taşıma Boruların genel"
         }
       ]
     }

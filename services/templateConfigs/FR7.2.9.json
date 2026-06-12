@@ -526,119 +526,96 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Uyarı levhası durumu",
-          "exact": true
+          "text": "Uyarı levhası durumu"
         },
         {
           "field": "kriter2",
-          "text": "Vinç kancasının durumu",
-          "exact": true
+          "text": "Vinç kancasının durumu"
         },
         {
           "field": "kriter3",
-          "text": "Şaside bükülme, eğilme, çatlak",
-          "exact": true
+          "text": "Şaside bükülme, eğilme, çatlak"
         },
         {
           "field": "kriter4",
-          "text": "Vinç makaralarının durumu",
-          "exact": true
+          "text": "Vinç makaralarının durumu"
         },
         {
           "field": "kriter5",
-          "text": "Bom kayıcı yüzeylerde",
-          "exact": true
+          "text": "Bom kayıcı yüzeylerde"
         },
         {
           "field": "kriter6",
-          "text": "Kanca emniyet mandalı",
-          "exact": true
+          "text": "Kanca emniyet mandalı"
         },
         {
           "field": "kriter7",
-          "text": "Yağ tankında sızıntı durumu",
-          "exact": true
+          "text": "Yağ tankında sızıntı durumu"
         },
         {
           "field": "kriter8",
           "text": "Moment",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter9",
-          "text": "Hidrolik pompada gürültü",
-          "exact": true
+          "text": "Hidrolik pompada gürültü"
         },
         {
           "field": "kriter10",
-          "text": "Tamburda çatlak ve düzensiz",
-          "exact": true
+          "text": "Tamburda çatlak ve düzensiz"
         },
         {
           "field": "kriter11",
-          "text": "Hidrolik pompada sızıntı",
-          "exact": true
+          "text": "Hidrolik pompada sızıntı"
         },
         {
           "field": "kriter12",
-          "text": "Halatta kalıcı uzama",
-          "exact": true
+          "text": "Halatta kalıcı uzama"
         },
         {
           "field": "kriter13",
-          "text": "Kaldırma silindirinin durumu",
-          "exact": true
+          "text": "Kaldırma silindirinin durumu"
         },
         {
           "field": "kriter14",
-          "text": "Halatta hasar, yıpranma",
-          "exact": true
+          "text": "Halatta hasar, yıpranma"
         },
         {
           "field": "kriter15",
-          "text": "Boru ve hortumlarda hasar",
-          "exact": true
+          "text": "Boru ve hortumlarda hasar"
         },
         {
           "field": "kriter16",
-          "text": "Hidrolik bağlantılarında kaçak",
-          "exact": true
+          "text": "Hidrolik bağlantılarında kaçak"
         },
         {
           "field": "kriter17",
-          "text": "Bomda çatlak ve deformasyon",
-          "exact": true
+          "text": "Bomda çatlak ve deformasyon"
         },
         {
           "field": "kriter18",
-          "text": "Yağ tankı seviye göstergesi",
-          "exact": true
+          "text": "Yağ tankı seviye göstergesi"
         },
         {
           "field": "kriter19",
-          "text": "Destek ayaklarının durumu",
-          "exact": true
+          "text": "Destek ayaklarının durumu"
         },
         {
           "field": "kriter20",
-          "text": "Yük altında Statik Kontrol",
-          "exact": true
+          "text": "Yük altında Statik Kontrol"
         },
         {
           "field": "kriter21",
-          "text": "Yük kanca bloğu durumu",
-          "exact": true
+          "text": "Yük kanca bloğu durumu"
         },
         {
           "field": "kriter22",
-          "text": "Yük altında Dinamik Kontrol",
-          "exact": true
+          "text": "Yük altında Dinamik Kontrol"
         },
         {
           "field": "kriter23",
-          "text": "Yük altında Kararlılık Kontrol",
-          "exact": true
+          "text": "Yük altında Kararlılık Kontrol"
         }
       ]
     }

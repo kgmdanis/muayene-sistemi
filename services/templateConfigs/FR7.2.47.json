@@ -395,43 +395,35 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Uyarı levhası durumu",
-          "exact": true
+          "text": "Uyarı levhası durumu"
         },
         {
           "field": "kriter2",
-          "text": "Sepet taşıyıcı sistemi durumu",
-          "exact": true
+          "text": "Sepet taşıyıcı sistemi durumu"
         },
         {
           "field": "kriter3",
-          "text": "Yana dışarı doğru açılır",
-          "exact": true
+          "text": "Yana dışarı doğru açılır"
         },
         {
           "field": "kriter4",
-          "text": "Sepet içerisini çevreleyen el",
-          "exact": true
+          "text": "Sepet içerisini çevreleyen el"
         },
         {
           "field": "kriter5",
-          "text": "Sepet tabanını çevreleyen 150mm",
-          "exact": true
+          "text": "Sepet tabanını çevreleyen 150mm"
         },
         {
           "field": "kriter6",
-          "text": "Sepet yukarı-aşağı hareket, fren",
-          "exact": true
+          "text": "Sepet yukarı-aşağı hareket, fren"
         },
         {
           "field": "kriter7",
-          "text": "II.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "II.Yük altında dinamik kontrol"
         },
         {
           "field": "kriter8",
-          "text": "III.Yük altında statik kontrol",
-          "exact": true
+          "text": "III.Yük altında statik kontrol"
         }
       ]
     }

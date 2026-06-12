@@ -366,44 +366,36 @@
         {
           "field": "kriter1",
           "text": "Manometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter2",
           "text": "Emniyet ventili",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter3",
-          "text": "Emniyet ventili açma basıncı",
-          "exact": true
+          "text": "Emniyet ventili açma basıncı"
         },
         {
           "field": "kriter4",
-          "text": "Manometre çalışıyor, konum ve",
-          "exact": true
+          "text": "Manometre çalışıyor, konum ve"
         },
         {
           "field": "kriter5",
-          "text": "Emniyet ventili çalışıyor ve",
-          "exact": true
+          "text": "Emniyet ventili çalışıyor ve"
         },
         {
           "field": "kriter6",
-          "text": "Yapılan bakım ve onarım",
-          "exact": true
+          "text": "Yapılan bakım ve onarım"
         },
         {
           "field": "kriter7",
-          "text": "Genleşme tankında kalıcı deformasyon",
-          "exact": true
+          "text": "Genleşme tankında kalıcı deformasyon"
         },
         {
           "field": "kriter8",
-          "text": "Uyarı ve kullanma talimatı",
-          "exact": true
+          "text": "Uyarı ve kullanma talimatı"
         }
       ]
     }

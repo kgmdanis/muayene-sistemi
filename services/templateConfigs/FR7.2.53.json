@@ -358,68 +358,55 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Mengene tablaya bağlı mı?",
-          "exact": true
+          "text": "Mengene tablaya bağlı mı?"
         },
         {
           "field": "kriter2",
-          "text": "Matkap ucu uygun şekilde",
-          "exact": true
+          "text": "Matkap ucu uygun şekilde"
         },
         {
           "field": "kriter3",
-          "text": "Matkap ucu ve devir",
-          "exact": true
+          "text": "Matkap ucu ve devir"
         },
         {
           "field": "kriter4",
-          "text": "Soğutma amacıyla bor yağı",
-          "exact": true
+          "text": "Soğutma amacıyla bor yağı"
         },
         {
           "field": "kriter5",
-          "text": "Matkap tezgahı yere sabit",
-          "exact": true
+          "text": "Matkap tezgahı yere sabit"
         },
         {
           "field": "kriter6",
-          "text": "Matkabın dönme hızı motora",
-          "exact": true
+          "text": "Matkabın dönme hızı motora"
         },
         {
           "field": "kriter7",
-          "text": "Makine yere sabit mi?",
-          "exact": true
+          "text": "Makine yere sabit mi?"
         },
         {
           "field": "kriter8",
-          "text": "Matkabın kayış kasnak koruyucusu",
-          "exact": true
+          "text": "Matkabın kayış kasnak koruyucusu"
         },
         {
           "field": "kriter9",
-          "text": "Matkabın mandren koruyusucu var",
-          "exact": true
+          "text": "Matkabın mandren koruyusucu var"
         },
         {
           "field": "kriter10",
-          "text": "Matkap tezgahının bulunduğu ortamda",
-          "exact": true
+          "text": "Matkap tezgahının bulunduğu ortamda"
         },
         {
           "field": "kriter11",
-          "text": "Acil stop düğmesi mevcut",
-          "exact": true
+          "text": "Acil stop düğmesi mevcut"
         },
         {
           "field": "kriter12",
-          "text": "Koruyucu muhafaza mevcut mu?",
-          "exact": true
+          "text": "Koruyucu muhafaza mevcut mu?"
         },
         {
           "field": "kriter13",
-          "text": "Gerekli ise gövde topraklaması",
-          "exact": true
+          "text": "Gerekli ise gövde topraklaması"
         }
       ]
     }

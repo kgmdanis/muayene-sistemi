@@ -380,48 +380,39 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Piston ve kumanda valfi kaçak durumu",
-          "exact": true
+          "text": "Piston ve kumanda valfi kaçak durumu"
         },
         {
           "field": "kriter2",
-          "text": "Piston deformasyon ve çatlaklık durumu durumu",
-          "exact": true
+          "text": "Piston deformasyon ve çatlaklık durumu durumu"
         },
         {
           "field": "kriter3",
-          "text": "Tekerleklerde deformasyon ve çatlaklık durumu",
-          "exact": true
+          "text": "Tekerleklerde deformasyon ve çatlaklık durumu"
         },
         {
           "field": "kriter4",
-          "text": "Yürüyüş ve park freni durumu",
-          "exact": true
+          "text": "Yürüyüş ve park freni durumu"
         },
         {
           "field": "kriter5",
-          "text": "Bağlantı cıvataları durumu",
-          "exact": true
+          "text": "Bağlantı cıvataları durumu"
         },
         {
           "field": "kriter6",
-          "text": "I. Yüksüz hareket durumu",
-          "exact": true
+          "text": "I. Yüksüz hareket durumu"
         },
         {
           "field": "kriter7",
-          "text": "II. Yük altında statik kontrol durumu",
-          "exact": true
+          "text": "II. Yük altında statik kontrol durumu"
         },
         {
           "field": "kriter8",
-          "text": "III.Yük altında dinanik kontrol durumu",
-          "exact": true
+          "text": "III.Yük altında dinanik kontrol durumu"
         },
         {
           "field": "kriter9",
-          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
-          "exact": true
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu"
         }
       ]
     }

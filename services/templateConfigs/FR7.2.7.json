@@ -549,63 +549,51 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Vinç metal yapısı ve",
-          "exact": true
+          "text": "Vinç metal yapısı ve"
         },
         {
           "field": "halatKilavuzu",
-          "text": "Halat kılavuzu, makara ve tamburun durumu",
-          "exact": true
+          "text": "Halat kılavuzu, makara ve tamburun durumu"
         },
         {
           "field": "halatDurumu",
-          "text": "Halat\u2019ın durumu",
-          "exact": true
+          "text": "Halat\u2019ın durumu"
         },
         {
           "field": "kriter2",
-          "text": "Redüktör ve yağ sızıntı",
-          "exact": true
+          "text": "Redüktör ve yağ sızıntı"
         },
         {
           "field": "halatBaglantilari",
-          "text": "Sabit ve taşıma halat bağlantıları durumu",
-          "exact": true
+          "text": "Sabit ve taşıma halat bağlantıları durumu"
         },
         {
           "field": "kancaDurumu",
-          "text": "Kanca ve kanca güvenlik mandalının durumu",
-          "exact": true
+          "text": "Kanca ve kanca güvenlik mandalının durumu"
         },
         {
           "field": "kancaBlogu",
-          "text": "Kanca bloğunun durumu",
-          "exact": true
+          "text": "Kanca bloğunun durumu"
         },
         {
           "field": "kriter3",
-          "text": "Otomatik ve kablolu kumanda,",
-          "exact": true
+          "text": "Otomatik ve kablolu kumanda,"
         },
         {
           "field": "kriter4",
-          "text": "Elektrik motoru, elektrik elemanları,",
-          "exact": true
+          "text": "Elektrik motoru, elektrik elemanları,"
         },
         {
           "field": "kriter7",
-          "text": "I.Yüksüz hareket",
-          "exact": true
+          "text": "I.Yüksüz hareket"
         },
         {
           "field": "kriter8",
-          "text": "II. Yükte statik kontrol",
-          "exact": true
+          "text": "II. Yükte statik kontrol"
         },
         {
           "field": "kriter9",
-          "text": "III.Yükte dinamik kontrol durumu",
-          "exact": true
+          "text": "III.Yükte dinamik kontrol durumu"
         }
       ]
     }

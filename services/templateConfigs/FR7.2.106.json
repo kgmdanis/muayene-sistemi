@@ -348,63 +348,51 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "İş ekipmanından kaynaklanacak parça",
-          "exact": true
+          "text": "İş ekipmanından kaynaklanacak parça"
         },
         {
           "field": "kriter2",
-          "text": "Bağlantılar ve vidaların kontrolü;",
-          "exact": true
+          "text": "Bağlantılar ve vidaların kontrolü;"
         },
         {
           "field": "kriter3",
-          "text": "Hızlanma ve yavaşlama durumu",
-          "exact": true
+          "text": "Hızlanma ve yavaşlama durumu"
         },
         {
           "field": "kriter4",
-          "text": "Hareketli bir parçanın sabit",
-          "exact": true
+          "text": "Hareketli bir parçanın sabit"
         },
         {
           "field": "kriter5",
-          "text": "Keskin kenarlar durumu uygun",
-          "exact": true
+          "text": "Keskin kenarlar durumu uygun"
         },
         {
           "field": "kriter6",
-          "text": "Elektrik kaynağı arızası, arıza",
-          "exact": true
+          "text": "Elektrik kaynağı arızası, arıza"
         },
         {
           "field": "kriter7",
-          "text": "Şase bağlantı papuçları,hortumlarda gaz",
-          "exact": true
+          "text": "Şase bağlantı papuçları,hortumlarda gaz"
         },
         {
           "field": "kriter8",
-          "text": "Elektrik motoru, pano, redüktör",
-          "exact": true
+          "text": "Elektrik motoru, pano, redüktör"
         },
         {
           "field": "kriter9",
-          "text": "Tezgahın boş durumda çalıştırılması",
-          "exact": true
+          "text": "Tezgahın boş durumda çalıştırılması"
         },
         {
           "field": "kriter10",
-          "text": "Kumanda panelindeki anahtarların çalışma",
-          "exact": true
+          "text": "Kumanda panelindeki anahtarların çalışma"
         },
         {
           "field": "kriter11",
-          "text": "Kumanda cihazları; işaret, görülebilirlik,",
-          "exact": true
+          "text": "Kumanda cihazları; işaret, görülebilirlik,"
         },
         {
           "field": "kriter12",
-          "text": "Test sonunda yapılan gözle",
-          "exact": true
+          "text": "Test sonunda yapılan gözle"
         }
       ]
     }

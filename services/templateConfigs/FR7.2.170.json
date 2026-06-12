@@ -385,48 +385,39 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Uyarı levhası ve kullanma",
-          "exact": true
+          "text": "Uyarı levhası ve kullanma"
         },
         {
           "field": "kriter2",
-          "text": "Merdiven taşıyıcı sistemi durumu",
-          "exact": true
+          "text": "Merdiven taşıyıcı sistemi durumu"
         },
         {
           "field": "kriter3",
-          "text": "Merdiven destek ayağı bağlantı",
-          "exact": true
+          "text": "Merdiven destek ayağı bağlantı"
         },
         {
           "field": "kriter4",
-          "text": "Merdiven alt-üst sınır kesiciler",
-          "exact": true
+          "text": "Merdiven alt-üst sınır kesiciler"
         },
         {
           "field": "kriter5",
-          "text": "Merdiven yukarı-aşağı hareket, fren",
-          "exact": true
+          "text": "Merdiven yukarı-aşağı hareket, fren"
         },
         {
           "field": "kriter6",
-          "text": "Hidrolik pistonlarda kaçak durumu",
-          "exact": true
+          "text": "Hidrolik pistonlarda kaçak durumu"
         },
         {
           "field": "kriter7",
-          "text": "I.Yüksüz hareket-fren durumu",
-          "exact": true
+          "text": "I.Yüksüz hareket-fren durumu"
         },
         {
           "field": "kriter8",
-          "text": "II.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "II.Yük altında dinamik kontrol"
         },
         {
           "field": "kriter9",
-          "text": "III.Yük altında statik kontrol",
-          "exact": true
+          "text": "III.Yük altında statik kontrol"
         }
       ]
     }

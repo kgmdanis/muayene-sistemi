@@ -335,48 +335,39 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Mekanik caraskal durumu",
-          "exact": true
+          "text": "Mekanik caraskal durumu"
         },
         {
           "field": "kriter2",
-          "text": "Kapının yapısı ve bağlantı",
-          "exact": true
+          "text": "Kapının yapısı ve bağlantı"
         },
         {
           "field": "kriter3",
-          "text": "Zincirlerin aşınma ve deformasyon",
-          "exact": true
+          "text": "Zincirlerin aşınma ve deformasyon"
         },
         {
           "field": "kriter4",
-          "text": "Zincir tamburu durumu",
-          "exact": true
+          "text": "Zincir tamburu durumu"
         },
         {
           "field": "kriter5",
-          "text": "Alt ve üst noktalarda",
-          "exact": true
+          "text": "Alt ve üst noktalarda"
         },
         {
           "field": "kriter6",
-          "text": "Elektriksel panonun konumu ve",
-          "exact": true
+          "text": "Elektriksel panonun konumu ve"
         },
         {
           "field": "kriter7",
-          "text": "Pano üzerindeki tuşların durumu",
-          "exact": true
+          "text": "Pano üzerindeki tuşların durumu"
         },
         {
           "field": "kriter8",
-          "text": "Durdurma acil stop butonu",
-          "exact": true
+          "text": "Durdurma acil stop butonu"
         },
         {
           "field": "kriter9",
-          "text": "Kapı önü güvenlik ışın",
-          "exact": true
+          "text": "Kapı önü güvenlik ışın"
         },
         {
           "field": "kriter10",
@@ -385,13 +376,11 @@
         },
         {
           "field": "kriter11",
-          "text": "II . Statik kontrol",
-          "exact": true
+          "text": "II . Statik kontrol"
         },
         {
           "field": "kriter12",
-          "text": "III.Dinamik kontrol durumu",
-          "exact": true
+          "text": "III.Dinamik kontrol durumu"
         },
         {
           "field": "makineSicil",

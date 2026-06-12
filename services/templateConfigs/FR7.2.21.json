@@ -371,53 +371,43 @@
       "questions": [
         {
           "field": "soru1ArizaKarti",
-          "text": "arıza kartı var mı",
-          "exact": true
+          "text": "arıza kartı var mı"
         },
         {
           "field": "soru2TseCe",
-          "text": "TSE/CE işareti var mı",
-          "exact": true
+          "text": "TSE/CE işareti var mı"
         },
         {
           "field": "soru3YagToz",
-          "text": "yağ/toz var mı",
-          "exact": true
+          "text": "yağ/toz var mı"
         },
         {
           "field": "soru4BasincAyar",
-          "text": "otomatiği çalışıyor mu",
-          "exact": true
+          "text": "otomatiği çalışıyor mu"
         },
         {
           "field": "soru5KayisKasnak",
-          "text": "koruyucu sacı var mı",
-          "exact": true
+          "text": "koruyucu sacı var mı"
         },
         {
           "field": "soru6ElektrikMotor",
-          "text": "gevşeklik var mı",
-          "exact": true
+          "text": "gevşeklik var mı"
         },
         {
           "field": "soru7VanaHortum",
-          "text": "hava kaçağı var mı",
-          "exact": true
+          "text": "hava kaçağı var mı"
         },
         {
           "field": "soru8HavaFiltresi",
-          "text": "Filtresi temiz mi",
-          "exact": true
+          "text": "Filtresi temiz mi"
         },
         {
           "field": "soru9YanginSondurucu",
-          "text": "söndürücü yeri",
-          "exact": true
+          "text": "söndürücü yeri"
         },
         {
           "field": "soru10UyariTalimat",
-          "text": "kullanma talimatı durumu",
-          "exact": true
+          "text": "kullanma talimatı durumu"
         }
       ]
     }

@@ -368,73 +368,59 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "İş ekipmanından kaynaklanacak parça",
-          "exact": true
+          "text": "İş ekipmanından kaynaklanacak parça"
         },
         {
           "field": "kriter2",
-          "text": "Bağlantılar ve vidaların kontrolü;",
-          "exact": true
+          "text": "Bağlantılar ve vidaların kontrolü;"
         },
         {
           "field": "kriter3",
-          "text": "Hareketli ve dönen parçaların",
-          "exact": true
+          "text": "Hareketli ve dönen parçaların"
         },
         {
           "field": "kriter4",
-          "text": "Kumanda panelindeki anahtarların çalışma",
-          "exact": true
+          "text": "Kumanda panelindeki anahtarların çalışma"
         },
         {
           "field": "kriter5",
-          "text": "Kumanda cihazları; işaret, görülebilirlik,",
-          "exact": true
+          "text": "Kumanda cihazları; işaret, görülebilirlik,"
         },
         {
           "field": "kriter6",
-          "text": "Taşların yüzeyleri uygun mu?",
-          "exact": true
+          "text": "Taşların yüzeyleri uygun mu?"
         },
         {
           "field": "kriter7",
-          "text": "Taş dengeli bir şekilde",
-          "exact": true
+          "text": "Taş dengeli bir şekilde"
         },
         {
           "field": "kriter8",
-          "text": "Taşın siperlikleri uygun mu?",
-          "exact": true
+          "text": "Taşın siperlikleri uygun mu?"
         },
         {
           "field": "kriter9",
-          "text": "Taşlama makinasının koruyucu kapakları",
-          "exact": true
+          "text": "Taşlama makinasının koruyucu kapakları"
         },
         {
           "field": "kriter10",
-          "text": "Taşlama makinasının mesnet aralığı",
-          "exact": true
+          "text": "Taşlama makinasının mesnet aralığı"
         },
         {
           "field": "kriter11",
-          "text": "Taşlama makinasının dönme hızı",
-          "exact": true
+          "text": "Taşlama makinasının dönme hızı"
         },
         {
           "field": "kriter12",
-          "text": "Taş üzerinde aşınma var",
-          "exact": true
+          "text": "Taş üzerinde aşınma var"
         },
         {
           "field": "kriter13",
-          "text": "Taş bağlantı ve denge",
-          "exact": true
+          "text": "Taş bağlantı ve denge"
         },
         {
           "field": "kriter14",
-          "text": "Taşlama makinasında vibrasyon mevcut",
-          "exact": true
+          "text": "Taşlama makinasında vibrasyon mevcut"
         }
       ]
     }

@@ -629,88 +629,71 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Rayların durumu",
-          "exact": true
+          "text": "Rayların durumu"
         },
         {
           "field": "kriter2",
-          "text": "Acil stop butonu durumu",
-          "exact": true
+          "text": "Acil stop butonu durumu"
         },
         {
           "field": "kriter3",
-          "text": "Vinç metal yapısı ve",
-          "exact": true
+          "text": "Vinç metal yapısı ve"
         },
         {
           "field": "kriter4",
-          "text": "Vinç köprü ve kedi",
-          "exact": true
+          "text": "Vinç köprü ve kedi"
         },
         {
           "field": "kriter5",
-          "text": "Takip kılavuzunun durumu",
-          "exact": true
+          "text": "Takip kılavuzunun durumu"
         },
         {
           "field": "kriter6",
-          "text": "Redüktör ve yağ sızıntı",
-          "exact": true
+          "text": "Redüktör ve yağ sızıntı"
         },
         {
           "field": "kriter7",
-          "text": "Otomatik ve kablolu kumanda,",
-          "exact": true
+          "text": "Otomatik ve kablolu kumanda,"
         },
         {
           "field": "kriter8",
-          "text": "Sınır kesicilerin durumu",
-          "exact": true
+          "text": "Sınır kesicilerin durumu"
         },
         {
           "field": "kriter9",
-          "text": "Elektrik motoru, elektrik elemanları,",
-          "exact": true
+          "text": "Elektrik motoru, elektrik elemanları,"
         },
         {
           "field": "kancaDurumu",
-          "text": "Kanca ve kanca güvenlik mandalının durumu",
-          "exact": true
+          "text": "Kanca ve kanca güvenlik mandalının durumu"
         },
         {
           "field": "halatKilavuzu",
-          "text": "Halat kılavuzu, makara ve tamburun durumu",
-          "exact": true
+          "text": "Halat kılavuzu, makara ve tamburun durumu"
         },
         {
           "field": "halatDurumu",
-          "text": "Halat’ın durumu",
-          "exact": true
+          "text": "Halat’ın durumu"
         },
         {
           "field": "halatBaglantilari",
-          "text": "Sabit ve taşıma halat bağlantıları durumu",
-          "exact": true
+          "text": "Sabit ve taşıma halat bağlantıları durumu"
         },
         {
           "field": "makineSicil",
-          "text": "Makina sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
-          "exact": true
+          "text": "Makina sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu"
         },
         {
           "field": "kriter12",
-          "text": "I.Yüksüz hareket",
-          "exact": true
+          "text": "I.Yüksüz hareket"
         },
         {
           "field": "kriter13",
-          "text": "II.Yük altında statik kontrol",
-          "exact": true
+          "text": "II.Yük altında statik kontrol"
         },
         {
           "field": "kriter14",
-          "text": "III.Yük alltında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük alltında dinamik kontrol"
         }
       ]
     }

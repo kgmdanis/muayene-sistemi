@@ -428,103 +428,83 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Çalışmaya başlamadan önce yerde",
-          "exact": true
+          "text": "Çalışmaya başlamadan önce yerde"
         },
         {
           "field": "kriter2",
-          "text": "CNC tezgahının kapılarında swich",
-          "exact": true
+          "text": "CNC tezgahının kapılarında swich"
         },
         {
           "field": "kriter3",
-          "text": "CNC tezgahının acil stop",
-          "exact": true
+          "text": "CNC tezgahının acil stop"
         },
         {
           "field": "kriter4",
-          "text": "Tezgah içinde ki aydınlatmalar",
-          "exact": true
+          "text": "Tezgah içinde ki aydınlatmalar"
         },
         {
           "field": "kriter5",
-          "text": "Soğutma fanları uygun çalışmakta",
-          "exact": true
+          "text": "Soğutma fanları uygun çalışmakta"
         },
         {
           "field": "kriter6",
-          "text": "Günlük pompa ünitesi yağ",
-          "exact": true
+          "text": "Günlük pompa ünitesi yağ"
         },
         {
           "field": "kriter7",
-          "text": "Günlük yağ miktarı ve",
-          "exact": true
+          "text": "Günlük yağ miktarı ve"
         },
         {
           "field": "kriter8",
-          "text": "Günlük kızak yağlama ünitesi",
-          "exact": true
+          "text": "Günlük kızak yağlama ünitesi"
         },
         {
           "field": "kriter9",
-          "text": "Günlük tabla yağlama yağı",
-          "exact": true
+          "text": "Günlük tabla yağlama yağı"
         },
         {
           "field": "kriter10",
-          "text": "Günlük Fener mili soğutma",
-          "exact": true
+          "text": "Günlük Fener mili soğutma"
         },
         {
           "field": "kriter11",
-          "text": "Günlük Ana kol yağlama",
-          "exact": true
+          "text": "Günlük Ana kol yağlama"
         },
         {
           "field": "kriter12",
-          "text": "Günlük Soğutucu ünitesi sıvı",
-          "exact": true
+          "text": "Günlük Soğutucu ünitesi sıvı"
         },
         {
           "field": "kriter13",
-          "text": "(Haftalık )Pompa ünitesinde yağ",
-          "exact": true
+          "text": "(Haftalık )Pompa ünitesinde yağ"
         },
         {
           "field": "kriter14",
-          "text": "(Haftalık )Kontrol paneli soğutma",
-          "exact": true
+          "text": "(Haftalık )Kontrol paneli soğutma"
         },
         {
           "field": "kriter15",
-          "text": "(Haftalık )Magazin operasyon noktası",
-          "exact": true
+          "text": "(Haftalık )Magazin operasyon noktası"
         },
         {
           "field": "kriter16",
-          "text": "(Haftalık )Ön kapak ile",
-          "exact": true
+          "text": "(Haftalık )Ön kapak ile"
         },
         {
           "field": "kriter17",
-          "text": "(Aylık )Fener mili dönerken",
-          "exact": true
+          "text": "(Aylık )Fener mili dönerken"
         },
         {
           "field": "kriter18",
-          "text": "(Aylık )Fener mili takımının",
-          "exact": true
+          "text": "(Aylık )Fener mili takımının"
         },
         {
           "field": "kriter19",
-          "text": "(Yıllık )Magazin zinciri gerginliği",
-          "exact": true
+          "text": "(Yıllık )Magazin zinciri gerginliği"
         },
         {
           "field": "kriter20",
-          "text": "(Yıllık )Her bir ünitenin",
-          "exact": true
+          "text": "(Yıllık )Her bir ünitenin"
         }
       ]
     }

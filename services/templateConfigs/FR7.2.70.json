@@ -659,98 +659,79 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Uyarı levhalarının durumu",
-          "exact": true
+          "text": "Uyarı levhalarının durumu"
         },
         {
           "field": "kriter2",
-          "text": "Rayların durumu",
-          "exact": true
+          "text": "Rayların durumu"
         },
         {
           "field": "kriter3",
-          "text": "Acil stop butonu durumu",
-          "exact": true
+          "text": "Acil stop butonu durumu"
         },
         {
           "field": "kriter4",
-          "text": "Vinç metal yapısı ve",
-          "exact": true
+          "text": "Vinç metal yapısı ve"
         },
         {
           "field": "kriter5",
-          "text": "Vinç köprü ve kedi",
-          "exact": true
+          "text": "Vinç köprü ve kedi"
         },
         {
           "field": "kriter6",
-          "text": "Takip kılavuzunun durumu",
-          "exact": true
+          "text": "Takip kılavuzunun durumu"
         },
         {
           "field": "kriter7",
-          "text": "Redüktör ve yağ sızıntı",
-          "exact": true
+          "text": "Redüktör ve yağ sızıntı"
         },
         {
           "field": "kriter8",
-          "text": "Sesli, ışıklı ikaz sistemi",
-          "exact": true
+          "text": "Sesli, ışıklı ikaz sistemi"
         },
         {
           "field": "kriter9",
-          "text": "Otomatik ve kablolu kumanda,",
-          "exact": true
+          "text": "Otomatik ve kablolu kumanda,"
         },
         {
           "field": "kriter10",
-          "text": "Elektrik motoru, elektrik elemanları,",
-          "exact": true
+          "text": "Elektrik motoru, elektrik elemanları,"
         },
         {
           "field": "kriter11",
-          "text": "Sınır kesicilerin ve yaklaşma",
-          "exact": true
+          "text": "Sınır kesicilerin ve yaklaşma"
         },
         {
           "field": "kancaDurumu",
-          "text": "Kanca ve kanca güvenlik mandalının durumu",
-          "exact": true
+          "text": "Kanca ve kanca güvenlik mandalının durumu"
         },
         {
           "field": "halatKilavuzu",
-          "text": "Halat kılavuzu, makara ve tamburun durumu",
-          "exact": true
+          "text": "Halat kılavuzu, makara ve tamburun durumu"
         },
         {
           "field": "halatDurumu",
-          "text": "Halat’ın durumu",
-          "exact": true
+          "text": "Halat’ın durumu"
         },
         {
           "field": "halatBaglantilari",
-          "text": "Sabit ve taşıma halat bağlantıları durumu",
-          "exact": true
+          "text": "Sabit ve taşıma halat bağlantıları durumu"
         },
         {
           "field": "makineSicil",
-          "text": "Makina sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
-          "exact": true
+          "text": "Makina sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu"
         },
         {
           "field": "kriter14",
-          "text": "I.Yüksüz hareket",
-          "exact": true
+          "text": "I.Yüksüz hareket"
         },
         {
           "field": "kriter15",
-          "text": "II.Yük altında statik kontrol",
-          "exact": true
+          "text": "II.Yük altında statik kontrol"
         },
         {
           "field": "kriter16",
-          "text": "III.Yük alltında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük alltında dinamik kontrol"
         }
       ]
     }

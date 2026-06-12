@@ -456,78 +456,63 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Piston ve kumanda valfi",
-          "exact": true
+          "text": "Piston ve kumanda valfi"
         },
         {
           "field": "kriter2",
-          "text": "Tekerlek çatalında deformasyon ve",
-          "exact": true
+          "text": "Tekerlek çatalında deformasyon ve"
         },
         {
           "field": "kriter3",
-          "text": "Lastiklerin genel durumu",
-          "exact": true
+          "text": "Lastiklerin genel durumu"
         },
         {
           "field": "kriter4",
-          "text": "Asansör makaralarının durumu",
-          "exact": true
+          "text": "Asansör makaralarının durumu"
         },
         {
           "field": "kriter5",
-          "text": "Yürüyüş ve park freni",
-          "exact": true
+          "text": "Yürüyüş ve park freni"
         },
         {
           "field": "kriter6",
-          "text": "Bağlantı cıvataları durumu",
-          "exact": true
+          "text": "Bağlantı cıvataları durumu"
         },
         {
           "field": "kriter7",
-          "text": "Gal zinciri bakla ve",
-          "exact": true
+          "text": "Gal zinciri bakla ve"
         },
         {
           "field": "kriter8",
-          "text": "Korna çalışma durumu",
-          "exact": true
+          "text": "Korna çalışma durumu"
         },
         {
           "field": "kriter9",
-          "text": "Aşırı yük koruma valfi durumu",
-          "exact": true
+          "text": "Aşırı yük koruma valfi durumu"
         },
         {
           "field": "kriter10",
-          "text": "Panel göstergeleri durumu",
-          "exact": true
+          "text": "Panel göstergeleri durumu"
         },
         {
           "field": "kriter11",
-          "text": "I. Yüksüz hareket durumu",
-          "exact": true
+          "text": "I. Yüksüz hareket durumu"
         },
         {
           "field": "kriter12",
-          "text": "II. Yük altında statik",
-          "exact": true
+          "text": "II. Yük altında statik"
         },
         {
           "field": "kriter13",
-          "text": "III.Yük altında dinanik kontrol",
-          "exact": true
+          "text": "III.Yük altında dinanik kontrol"
         },
         {
           "field": "kriter14",
-          "text": "III.Yük altında yapı kontrol",
-          "exact": true
+          "text": "III.Yük altında yapı kontrol"
         },
         {
           "field": "kriter15",
-          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu",
-          "exact": true
+          "text": "Makine sicil kartı, bakım-onarım ve periyodik kontrol dosyaları uygun mu"
         }
       ]
     }

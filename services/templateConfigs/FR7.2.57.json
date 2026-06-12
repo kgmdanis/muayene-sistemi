@@ -358,68 +358,55 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Saç malzemesi gönyesinde ve",
-          "exact": true
+          "text": "Saç malzemesi gönyesinde ve"
         },
         {
           "field": "kriter2",
-          "text": "Çalışma mesafesine uyuluyor mu?",
-          "exact": true
+          "text": "Çalışma mesafesine uyuluyor mu?"
         },
         {
           "field": "kriter3",
-          "text": "Alt ve üst bıçaklar",
-          "exact": true
+          "text": "Alt ve üst bıçaklar"
         },
         {
           "field": "kriter4",
-          "text": "Arka dayama tamponu aktif",
-          "exact": true
+          "text": "Arka dayama tamponu aktif"
         },
         {
           "field": "kriter5",
-          "text": "Günlük çalışmadan sonra operatör",
-          "exact": true
+          "text": "Günlük çalışmadan sonra operatör"
         },
         {
           "field": "kriter6",
-          "text": "El ayak kumanda paneli",
-          "exact": true
+          "text": "El ayak kumanda paneli"
         },
         {
           "field": "kriter7",
-          "text": "Bıçaklar periyodik aralıklar kontrol",
-          "exact": true
+          "text": "Bıçaklar periyodik aralıklar kontrol"
         },
         {
           "field": "kriter8",
-          "text": "Bileme işleminden sonra kesme",
-          "exact": true
+          "text": "Bileme işleminden sonra kesme"
         },
         {
           "field": "kriter9",
-          "text": "Bileme işleminden sonra arka",
-          "exact": true
+          "text": "Bileme işleminden sonra arka"
         },
         {
           "field": "kriter10",
-          "text": "Kısa saç kesilirken yanına",
-          "exact": true
+          "text": "Kısa saç kesilirken yanına"
         },
         {
           "field": "kriter11",
-          "text": "Şerit saç keserken malzemenin",
-          "exact": true
+          "text": "Şerit saç keserken malzemenin"
         },
         {
           "field": "kriter12",
-          "text": "Acil stop butonu var",
-          "exact": true
+          "text": "Acil stop butonu var"
         },
         {
           "field": "kriter13",
-          "text": "Makasta arkada ve önde",
-          "exact": true
+          "text": "Makasta arkada ve önde"
         }
       ]
     }

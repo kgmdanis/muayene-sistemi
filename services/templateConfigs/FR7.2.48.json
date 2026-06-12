@@ -452,53 +452,43 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Uyarı levhası var mı?",
-          "exact": true
+          "text": "Uyarı levhası var mı?"
         },
         {
           "field": "kriter2",
-          "text": "Alimak yapısı ve bağlantı",
-          "exact": true
+          "text": "Alimak yapısı ve bağlantı"
         },
         {
           "field": "kriter3",
-          "text": "Güç iletici mil veya zincir",
-          "exact": true
+          "text": "Güç iletici mil veya zincir"
         },
         {
           "field": "kriter4",
-          "text": "Kumanda buton durumu çalışıyor",
-          "exact": true
+          "text": "Kumanda buton durumu çalışıyor"
         },
         {
           "field": "kriter5",
-          "text": "Acil stop butonu uygun",
-          "exact": true
+          "text": "Acil stop butonu uygun"
         },
         {
           "field": "kriter6",
-          "text": "Yürüme yolu ve rayların",
-          "exact": true
+          "text": "Yürüme yolu ve rayların"
         },
         {
           "field": "kriter7",
-          "text": "Redüktör ve yağ sızıntı",
-          "exact": true
+          "text": "Redüktör ve yağ sızıntı"
         },
         {
           "field": "kriter8",
-          "text": "I.Yüksüz harekette kaldırma kollarının",
-          "exact": true
+          "text": "I.Yüksüz harekette kaldırma kollarının"
         },
         {
           "field": "kriter9",
-          "text": "II.Yük altında statik kontrol",
-          "exact": true
+          "text": "II.Yük altında statik kontrol"
         },
         {
           "field": "kriter10",
-          "text": "III.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük altında dinamik kontrol"
         }
       ]
     }

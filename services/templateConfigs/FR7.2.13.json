@@ -477,86 +477,70 @@
         {
           "field": "kriter1",
           "text": "Motor gücü (kw)",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter2",
           "text": "Motor markası",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter3",
           "text": "Motor devri",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter4",
           "text": "Motor bağlantısı",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter5",
-          "text": "Sonsuz vida alt-üst rulmanlarının",
-          "exact": true
+          "text": "Sonsuz vida alt-üst rulmanlarının"
         },
         {
           "field": "kriter6",
-          "text": "Yük şaryosu kilidi görev",
-          "exact": true
+          "text": "Yük şaryosu kilidi görev"
         },
         {
           "field": "kriter7",
-          "text": "Güç iletici mil veya",
-          "exact": true
+          "text": "Güç iletici mil veya"
         },
         {
           "field": "kriter8",
-          "text": "Yük kolları (Mafsallı /",
-          "exact": true
+          "text": "Yük kolları (Mafsallı /"
         },
         {
           "field": "kriter9",
-          "text": "Yük şaryosu baskıları ile",
-          "exact": true
+          "text": "Yük şaryosu baskıları ile"
         },
         {
           "field": "kriter10",
-          "text": "Yük kolları açısal kilidi",
-          "exact": true
+          "text": "Yük kolları açısal kilidi"
         },
         {
           "field": "kriter11",
-          "text": "Yük kollarının inişi ve",
-          "exact": true
+          "text": "Yük kollarının inişi ve"
         },
         {
           "field": "kriter12",
-          "text": "Kriko yük takozu ileri-geri",
-          "exact": true
+          "text": "Kriko yük takozu ileri-geri"
         },
         {
           "field": "kriter13",
-          "text": "I.Yüksüz harekette kaldırma kollarının",
-          "exact": true
+          "text": "I.Yüksüz harekette kaldırma kollarının"
         },
         {
           "field": "kriter14",
-          "text": "II.Yük altında statik kontrol",
-          "exact": true
+          "text": "II.Yük altında statik kontrol"
         },
         {
           "field": "kriter15",
-          "text": "III.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük altında dinamik kontrol"
         },
         {
           "field": "kriter16",
-          "text": "Selenoid emniyet valfleri çalışıyor",
-          "exact": true
+          "text": "Selenoid emniyet valfleri çalışıyor"
         }
       ]
     },

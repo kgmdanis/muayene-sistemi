@@ -443,83 +443,67 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Uyarı levhası ve kullanma",
-          "exact": true
+          "text": "Uyarı levhası ve kullanma"
         },
         {
           "field": "kriter2",
-          "text": "Elektrik motoru, elektrik elemanları,",
-          "exact": true
+          "text": "Elektrik motoru, elektrik elemanları,"
         },
         {
           "field": "kriter3",
-          "text": "Platform taşıyıcı sistemi durumu",
-          "exact": true
+          "text": "Platform taşıyıcı sistemi durumu"
         },
         {
           "field": "kriter4",
-          "text": "Otomatik ve kablolu kumanda,",
-          "exact": true
+          "text": "Otomatik ve kablolu kumanda,"
         },
         {
           "field": "kriter5",
-          "text": "Ray metal yapısı ve",
-          "exact": true
+          "text": "Ray metal yapısı ve"
         },
         {
           "field": "kriter6",
-          "text": "Platform destek ayağı bağlantı",
-          "exact": true
+          "text": "Platform destek ayağı bağlantı"
         },
         {
           "field": "kriter7",
-          "text": "Platform alt-üst sınır kesiciler",
-          "exact": true
+          "text": "Platform alt-üst sınır kesiciler"
         },
         {
           "field": "kriter8",
-          "text": "Platform hareket sağlayıcı kramiyer",
-          "exact": true
+          "text": "Platform hareket sağlayıcı kramiyer"
         },
         {
           "field": "kriter9",
-          "text": "Platform yukarı-aşağı hareket, fren",
-          "exact": true
+          "text": "Platform yukarı-aşağı hareket, fren"
         },
         {
           "field": "kriter10",
-          "text": "Tekerlek fren kilidi durumu",
-          "exact": true
+          "text": "Tekerlek fren kilidi durumu"
         },
         {
           "field": "kriter11",
-          "text": "Köprü ve kedi tekerlerinin",
-          "exact": true
+          "text": "Köprü ve kedi tekerlerinin"
         },
         {
           "field": "kriter12",
-          "text": "I.Yüksüz hareket-fren durumu",
-          "exact": true
+          "text": "I.Yüksüz hareket-fren durumu"
         },
         {
           "field": "kriter13",
-          "text": "II.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "II.Yük altında dinamik kontrol"
         },
         {
           "field": "kriter14",
-          "text": "III.Yük altında statik kontrol",
-          "exact": true
+          "text": "III.Yük altında statik kontrol"
         },
         {
           "field": "kriter15",
-          "text": "Halat kılavuzu, makara ve",
-          "exact": true
+          "text": "Halat kılavuzu, makara ve"
         },
         {
           "field": "kriter16",
-          "text": "Halat\u2019ın durumu",
-          "exact": true
+          "text": "Halat\u2019ın durumu"
         }
       ]
     }

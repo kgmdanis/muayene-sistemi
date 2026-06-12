@@ -360,6 +360,7 @@ module.exports = {
     getRowText,
     getCellText,
     normalizeLabel,
+    labelsMatch,
     setValueByLabel,
     setKontrolSorusu,
     setTestRow,

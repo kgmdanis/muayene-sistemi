@@ -358,68 +358,55 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Mengene kilitleme mekanizmasının arka",
-          "exact": true
+          "text": "Mengene kilitleme mekanizmasının arka"
         },
         {
           "field": "kriter2",
-          "text": "Kalıp bölümü koruyucu kapısı",
-          "exact": true
+          "text": "Kalıp bölümü koruyucu kapısı"
         },
         {
           "field": "kriter3",
-          "text": "Kalıp bölümü üstten operatörün",
-          "exact": true
+          "text": "Kalıp bölümü üstten operatörün"
         },
         {
           "field": "kriter4",
-          "text": "Kalıp ve mengene kısmına",
-          "exact": true
+          "text": "Kalıp ve mengene kısmına"
         },
         {
           "field": "kriter5",
-          "text": "Nozzle ( meme )",
-          "exact": true
+          "text": "Nozzle ( meme )"
         },
         {
           "field": "kriter6",
-          "text": "Kovan ısıtıcıların korumaları ve",
-          "exact": true
+          "text": "Kovan ısıtıcıların korumaları ve"
         },
         {
           "field": "kriter7",
-          "text": "Huni bölgesinde vida kısmına",
-          "exact": true
+          "text": "Huni bölgesinde vida kısmına"
         },
         {
           "field": "kriter8",
-          "text": "Vida tahrik kısmındaki koruyucular",
-          "exact": true
+          "text": "Vida tahrik kısmındaki koruyucular"
         },
         {
           "field": "kriter9",
-          "text": "Elektrik tesisatı, kumanda paneli",
-          "exact": true
+          "text": "Elektrik tesisatı, kumanda paneli"
         },
         {
           "field": "kriter10",
-          "text": "Kovan ve nozzle (meme)",
-          "exact": true
+          "text": "Kovan ve nozzle (meme)"
         },
         {
           "field": "kriter11",
-          "text": "Hidrolik hortumlarda deformasyon, hidrolik",
-          "exact": true
+          "text": "Hidrolik hortumlarda deformasyon, hidrolik"
         },
         {
           "field": "kriter12",
-          "text": "Makinenin çevresinde ve yerlerde",
-          "exact": true
+          "text": "Makinenin çevresinde ve yerlerde"
         },
         {
           "field": "kriter13",
-          "text": "Makine bakımları ve temizlikleri",
-          "exact": true
+          "text": "Makine bakımları ve temizlikleri"
         }
       ]
     }

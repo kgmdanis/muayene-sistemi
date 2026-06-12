@@ -368,63 +368,51 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Zemin Bağlantı Papuç Durumu",
-          "exact": true
+          "text": "Zemin Bağlantı Papuç Durumu"
         },
         {
           "field": "kriter2",
-          "text": "Zemin Bağlantısı Ankraj Vidaları",
-          "exact": true
+          "text": "Zemin Bağlantısı Ankraj Vidaları"
         },
         {
           "field": "kriter3",
-          "text": "Uyarı Levhaları Durumu (Max",
-          "exact": true
+          "text": "Uyarı Levhaları Durumu (Max"
         },
         {
           "field": "kriter4",
-          "text": "Raf Bağlantıları Durumu",
-          "exact": true
+          "text": "Raf Bağlantıları Durumu"
         },
         {
           "field": "kriter5",
-          "text": "Emniyet Profili Veya Emniyet",
-          "exact": true
+          "text": "Emniyet Profili Veya Emniyet"
         },
         {
           "field": "kriter6",
-          "text": "Zemin Bağlantısı Korozyon Engelleyici",
-          "exact": true
+          "text": "Zemin Bağlantısı Korozyon Engelleyici"
         },
         {
           "field": "kriter7",
-          "text": "Tavan Bağlantısı Korozyon Engelleyici",
-          "exact": true
+          "text": "Tavan Bağlantısı Korozyon Engelleyici"
         },
         {
           "field": "kriter8",
-          "text": "Raf Başlarına Veya Sonlarına",
-          "exact": true
+          "text": "Raf Başlarına Veya Sonlarına"
         },
         {
           "field": "kriter9",
-          "text": "Raflarda Sağ Ve Solda",
-          "exact": true
+          "text": "Raflarda Sağ Ve Solda"
         },
         {
           "field": "kriter10",
-          "text": "Raflar Önü Çapraz Bağ",
-          "exact": true
+          "text": "Raflar Önü Çapraz Bağ"
         },
         {
           "field": "kriter11",
-          "text": "Kolon Ayaklarının Düşey Eksen",
-          "exact": true
+          "text": "Kolon Ayaklarının Düşey Eksen"
         },
         {
           "field": "kriter12",
-          "text": "Korozyon Engelleyici Boya Durumu",
-          "exact": true
+          "text": "Korozyon Engelleyici Boya Durumu"
         }
       ]
     }

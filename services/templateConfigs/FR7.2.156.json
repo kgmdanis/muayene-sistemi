@@ -487,74 +487,62 @@
         {
           "field": "kriter1",
           "text": "Bilgi etiketi",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter2",
           "text": "İşletme talimatları",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter3",
           "text": "Tank üzerinde işlemler",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter4",
           "text": "Tank yüzeyleri",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter5",
           "text": "giriş açıklıkları",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter6",
           "text": "Boşaltma tertibatları",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter7",
           "text": "titreşimden korunması",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter8",
           "text": "manometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter9",
           "text": "Emniyet valfleri",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter10",
           "text": "mekanik darbelere",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "testHidrostatik",
           "text": "Hidrostatik test",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "testEmniyetValfi",
           "text": "Emniyet valfi testi",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         }
       ]
     }

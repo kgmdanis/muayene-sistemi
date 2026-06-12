@@ -471,81 +471,66 @@
         {
           "field": "kriter1",
           "text": "Motor gücü (kw)",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter2",
           "text": "Motor markası",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter3",
           "text": "Motor devri",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter4",
           "text": "Motor bağlantısı",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter5",
-          "text": "Uyarı levhası var mı?",
-          "exact": true
+          "text": "Uyarı levhası var mı?"
         },
         {
           "field": "kriter6",
-          "text": "Yük asansörünün yapısı ve",
-          "exact": true
+          "text": "Yük asansörünün yapısı ve"
         },
         {
           "field": "kriter7",
-          "text": "Kumanda buton durumu çalışıyor",
-          "exact": true
+          "text": "Kumanda buton durumu çalışıyor"
         },
         {
           "field": "kriter8",
-          "text": "Acil stop butonu uygun",
-          "exact": true
+          "text": "Acil stop butonu uygun"
         },
         {
           "field": "kriter9",
-          "text": "Yürüme yolu ve rayların",
-          "exact": true
+          "text": "Yürüme yolu ve rayların"
         },
         {
           "field": "kriter10",
-          "text": "Redüktör ve yağ sızıntı",
-          "exact": true
+          "text": "Redüktör ve yağ sızıntı"
         },
         {
           "field": "kriter11",
-          "text": "I.Yüksüz harekette kaldırma kollarının",
-          "exact": true
+          "text": "I.Yüksüz harekette kaldırma kollarının"
         },
         {
           "field": "kriter12",
-          "text": "II.Yük altında statik kontrol",
-          "exact": true
+          "text": "II.Yük altında statik kontrol"
         },
         {
           "field": "kriter13",
-          "text": "III.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük altında dinamik kontrol"
         },
         {
           "field": "kriter14",
-          "text": "Halatın durumu uygun mu?",
-          "exact": true
+          "text": "Halatın durumu uygun mu?"
         },
         {
           "field": "kriter15",
-          "text": "Güç iletici mil veya halat",
-          "exact": true
+          "text": "Güç iletici mil veya halat"
         }
       ]
     }

@@ -262,45 +262,37 @@
         {
           "field": "kriter1",
           "text": "Manometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter2",
           "text": "Basınç ayar otomatiği (presostat)",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter3",
           "text": "Drenaj vanası",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter4",
-          "text": "Manometre çalışıyor, konum ve",
-          "exact": true
+          "text": "Manometre çalışıyor, konum ve"
         },
         {
           "field": "kriter5",
-          "text": "Basınç ayar otomatiği çalışıyor",
-          "exact": true
+          "text": "Basınç ayar otomatiği çalışıyor"
         },
         {
           "field": "kriter6",
-          "text": "Yapılan bakım ve onarım",
-          "exact": true
+          "text": "Yapılan bakım ve onarım"
         },
         {
           "field": "kriter7",
-          "text": "Hidrofor tankında kalıcı deformasyon",
-          "exact": true
+          "text": "Hidrofor tankında kalıcı deformasyon"
         },
         {
           "field": "kriter8",
-          "text": "Test Pompası",
-          "exact": true
+          "text": "Test Pompası"
         }
       ]
     }

@@ -2,6 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const JSZip = require('jszip');
 
+// Gerçek Word motorunun eşleştirme mantığını birebir kullan (Türkçe karakter +
+// boşluk normalize). Naif includes() kullanıldığında "Sözlesme ID", trailing-space
+// vb. farklarda sahte "bulunamadı" hataları üretiliyordu.
+const { normalizeLabel, labelsMatch, getCellText } = require('../services/wordCellOperations');
+
 const CONFIGS_DIR = path.join(__dirname, '..', 'services', 'templateConfigs');
 const BASE_DIR = path.join(__dirname, '..');
 
@@ -48,6 +53,31 @@ function findTextOccurrences(xml, searchText) {
     return occurrences;
 }
 
+// Field label'ı gerçek motorun yaptığı gibi HÜCRE bazında, normalize ederek ara.
+// (setValueByLabel ile aynı labelsMatch mantığı — sahte uyumsuzlukları önler.)
+function findLabelCells(xml, label) {
+    const rows = xml.match(/<w:tr[^>]*>[\s\S]*?<\/w:tr>/g) || [];
+    const occurrences = [];
+    rows.forEach((row, rowIdx) => {
+        const cells = row.match(/<w:tc[^>]*>[\s\S]*?<\/w:tc>/g) || [];
+        cells.forEach((cell, colIdx) => {
+            const cellText = getCellText(cell);
+            if (cellText && labelsMatch(cellText, label)) {
+                occurrences.push({ rowIdx, colIdx, colCount: cells.length, cellText: cellText.substring(0, 80) });
+            }
+        });
+    });
+    return occurrences;
+}
+
+// autoDetectAndFill tarafından otomatik doldurulan alanlar (Sözleşme ID) statik
+// label eşleşmesi gerektirmez; "bulunamadı" sahte hatası üretmesinler.
+function isAutoDetectedField(field) {
+    if (field.source && /isgKatipId/i.test(field.source)) return true;
+    if (field.label && normalizeLabel(field.label).includes('sozlesme')) return true;
+    return false;
+}
+
 async function auditConfig(configFile) {
     const issues = [];
     const warnings = [];
@@ -90,12 +120,14 @@ async function auditConfig(configFile) {
         rows: analyzeTable(t)
     }));
 
-    // 3. Field label eşleşme kontrolü
+    // 3. Field label eşleşme kontrolü (gerçek motor mantığı: hücre bazında labelsMatch)
     if (config.wordMapping.fields) {
         for (const field of config.wordMapping.fields) {
             if (!field.label) continue;
-            const occs = findTextOccurrences(fullXml, field.label);
+            const occs = findLabelCells(fullXml, field.label);
             if (occs.length === 0) {
+                // autoDetectAndFill ile dolan alanlar statik label gerektirmez → sahte hata değil
+                if (isAutoDetectedField(field)) continue;
                 issues.push(`[${sablonKodu}] Label bulunamadı: "${field.label}" (field: ${field.field || field.source})`);
             } else if (occs.length > 1) {
                 warnings.push(`[${sablonKodu}] Label birden fazla yerde: "${field.label}" (${occs.length} kez) - yanlış hücreye yazabilir`);
@@ -204,8 +236,28 @@ async function main() {
         }
     }
 
+    // Kategori bazlı özet — gerçek sinyali gürültüden ayır
+    const allIssues = results.flatMap(r => r.issues);
+    const allWarnings = results.flatMap(r => r.warnings);
+    const cakisma = allIssues.filter(i => i.includes('ÇAKIŞMA')).length;
+    const bulunamadi = allIssues.filter(i => i.includes('bulunamadı')).length;
+    const kolonUyari = allWarnings.filter(w => w.includes('mode:"next"')).length;
+    const tekrarUyari = allWarnings.filter(w => w.includes('birden fazla yerde')).length;
+    const kismiUyari = allWarnings.filter(w => w.includes('Kısmi eşleşme')).length;
+    const harfUyari = allWarnings.filter(w => w.includes('Büyük/küçük harf')).length;
+
     console.log(`\n${'='.repeat(80)}`);
-    console.log(`ÖZET: ${configFiles.length} config, ${totalIssues} hata, ${totalWarnings} uyarı`);
+    console.log(`ÖZET: ${configFiles.length} config | ${totalIssues} hata, ${totalWarnings} uyarı`);
+    console.log(`${'-'.repeat(80)}`);
+    console.log(`🔴 GERÇEK HATA:`);
+    console.log(`     • Çakışma (yanlış hücre riski, exact:true gerek): ${cakisma}`);
+    console.log(`     • Label/soru bulunamadı (gerçekten eksik):        ${bulunamadi}`);
+    console.log(`🟡 İNCELENMELİ:`);
+    console.log(`     • mode:"next" + 4 sütun (kolon kayması olabilir):  ${kolonUyari}`);
+    console.log(`     • Label birden fazla yerde (çoğu zararsız):        ${tekrarUyari}`);
+    console.log(`🔵 KOZMETİK / DÜŞÜK:`);
+    console.log(`     • Kısmi eşleşme riski:                             ${kismiUyari}`);
+    console.log(`     • Büyük/küçük harf karışık (UYGUN/Uygun):          ${harfUyari}`);
     console.log(`${'='.repeat(80)}\n`);
 }
 

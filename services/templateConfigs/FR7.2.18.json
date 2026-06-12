@@ -513,77 +513,63 @@
         {
           "field": "kriter1",
           "text": "Manometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter2",
           "text": "Termometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter3",
           "text": "Sıcakalık Ayar Otomatiği (Termostat)",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter4",
           "text": "Güvenlik Ventili",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter5",
           "text": "Blöf Düzeni",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter6",
-          "text": "Manometre çalışıyor, konum ve",
-          "exact": true
+          "text": "Manometre çalışıyor, konum ve"
         },
         {
           "field": "kriter7",
-          "text": "Termometre çalışıyor, konum ve",
-          "exact": true
+          "text": "Termometre çalışıyor, konum ve"
         },
         {
           "field": "kriter8",
-          "text": "Emniyet ventili çalışıyor ve",
-          "exact": true
+          "text": "Emniyet ventili çalışıyor ve"
         },
         {
           "field": "kriter9",
-          "text": "Blöf vanası çalışıyor mu?",
-          "exact": true
+          "text": "Blöf vanası çalışıyor mu?"
         },
         {
           "field": "kriter10",
-          "text": "Duman sandığı kapak contalarının",
-          "exact": true
+          "text": "Duman sandığı kapak contalarının"
         },
         {
           "field": "kriter11",
-          "text": "Yapılan bakım ve onarımlar",
-          "exact": true
+          "text": "Yapılan bakım ve onarımlar"
         },
         {
           "field": "kriter12",
-          "text": "Yangın söndürücü yeri ve",
-          "exact": true
+          "text": "Yangın söndürücü yeri ve"
         },
         {
           "field": "kriter13",
-          "text": "Uyarı ve kullanma talimatı",
-          "exact": true
+          "text": "Uyarı ve kullanma talimatı"
         },
         {
           "field": "kriter14",
-          "text": "Kazan Operatör belgesi var",
-          "exact": true
+          "text": "Kazan Operatör belgesi var"
         }
       ]
     }

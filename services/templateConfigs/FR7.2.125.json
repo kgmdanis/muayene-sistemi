@@ -378,78 +378,63 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "İş ekipmanından kaynaklanacak parça",
-          "exact": true
+          "text": "İş ekipmanından kaynaklanacak parça"
         },
         {
           "field": "kriter2",
-          "text": "Bağlantılar ve vidaların kontrolü;",
-          "exact": true
+          "text": "Bağlantılar ve vidaların kontrolü;"
         },
         {
           "field": "kriter3",
-          "text": "Hızlanma ve yavaşlama durumu",
-          "exact": true
+          "text": "Hızlanma ve yavaşlama durumu"
         },
         {
           "field": "kriter4",
-          "text": "Hareketli bir parçanın sabit",
-          "exact": true
+          "text": "Hareketli bir parçanın sabit"
         },
         {
           "field": "kriter5",
-          "text": "Hareketli ve dönen parçaların",
-          "exact": true
+          "text": "Hareketli ve dönen parçaların"
         },
         {
           "field": "kriter6",
-          "text": "Pürüzlü, kaygan yüzey, zeminin",
-          "exact": true
+          "text": "Pürüzlü, kaygan yüzey, zeminin"
         },
         {
           "field": "kriter7",
-          "text": "Keskin kenarlar durumu uygun",
-          "exact": true
+          "text": "Keskin kenarlar durumu uygun"
         },
         {
           "field": "kriter8",
-          "text": "Elektrik kaynağı arızası, arıza",
-          "exact": true
+          "text": "Elektrik kaynağı arızası, arıza"
         },
         {
           "field": "kriter9",
-          "text": "Elektrik motoru, pano, redüktör",
-          "exact": true
+          "text": "Elektrik motoru, pano, redüktör"
         },
         {
           "field": "kriter10",
-          "text": "Tezgahın boş durumda çalıştırılması",
-          "exact": true
+          "text": "Tezgahın boş durumda çalıştırılması"
         },
         {
           "field": "kriter11",
-          "text": "Kumanda panelindeki anahtarların çalışma",
-          "exact": true
+          "text": "Kumanda panelindeki anahtarların çalışma"
         },
         {
           "field": "kriter12",
-          "text": "Kumanda cihazları; işaret, görülebilirlik,",
-          "exact": true
+          "text": "Kumanda cihazları; işaret, görülebilirlik,"
         },
         {
           "field": "kriter13",
-          "text": "Hidrolik sistemler, bağlantılar, sınırlama",
-          "exact": true
+          "text": "Hidrolik sistemler, bağlantılar, sınırlama"
         },
         {
           "field": "kriter14",
-          "text": "Hareketli koruyucu kontrolü (varsa)",
-          "exact": true
+          "text": "Hareketli koruyucu kontrolü (varsa)"
         },
         {
           "field": "kriter15",
-          "text": "Test sonunda yapılan gözle",
-          "exact": true
+          "text": "Test sonunda yapılan gözle"
         }
       ]
     }

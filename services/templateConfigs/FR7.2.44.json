@@ -352,48 +352,39 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Mıknatısın yapısı ve bağlantı",
-          "exact": true
+          "text": "Mıknatısın yapısı ve bağlantı"
         },
         {
           "field": "kriter2",
-          "text": "Mıknatıs aktifleştirme kolu durumu",
-          "exact": true
+          "text": "Mıknatıs aktifleştirme kolu durumu"
         },
         {
           "field": "kriter3",
-          "text": "Mıknatıs aktifleştirme kolu sabitleme",
-          "exact": true
+          "text": "Mıknatıs aktifleştirme kolu sabitleme"
         },
         {
           "field": "kriter4",
-          "text": "Askı demiri aşınma ve",
-          "exact": true
+          "text": "Askı demiri aşınma ve"
         },
         {
           "field": "kriter5",
-          "text": "Bağlantı cıvataları durumu",
-          "exact": true
+          "text": "Bağlantı cıvataları durumu"
         },
         {
           "field": "kriter6",
-          "text": "Manyetik sistem kavrama durumu",
-          "exact": true
+          "text": "Manyetik sistem kavrama durumu"
         },
         {
           "field": "kriter7",
-          "text": "I. Yüksüz hareket durumu",
-          "exact": true
+          "text": "I. Yüksüz hareket durumu"
         },
         {
           "field": "kriter8",
-          "text": "II .Yük altında statik",
-          "exact": true
+          "text": "II .Yük altında statik"
         },
         {
           "field": "kriter9",
-          "text": "III.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük altında dinamik kontrol"
         },
         {
           "field": "makineSicil",

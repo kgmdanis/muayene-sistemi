@@ -490,93 +490,75 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Uyarı levhası ve kullanma",
-          "exact": true
+          "text": "Uyarı levhası ve kullanma"
         },
         {
           "field": "kriter2",
-          "text": "Platform taşıyıcı sistemi durumu",
-          "exact": true
+          "text": "Platform taşıyıcı sistemi durumu"
         },
         {
           "field": "kriter3",
-          "text": "Platform alt-üst sınır kesiciler",
-          "exact": true
+          "text": "Platform alt-üst sınır kesiciler"
         },
         {
           "field": "kriter4",
-          "text": "Platform yukarı-aşağı hareket, fren",
-          "exact": true
+          "text": "Platform yukarı-aşağı hareket, fren"
         },
         {
           "field": "kriter5",
-          "text": "Hidrolik pistonlarda kaçak durumu",
-          "exact": true
+          "text": "Hidrolik pistonlarda kaçak durumu"
         },
         {
           "field": "kriter6",
-          "text": "Hidrolik silindirler, kumanda valfi,",
-          "exact": true
+          "text": "Hidrolik silindirler, kumanda valfi,"
         },
         {
           "field": "kriter7",
-          "text": "Kova, kepçe, kırıcı durumu",
-          "exact": true
+          "text": "Kova, kepçe, kırıcı durumu"
         },
         {
           "field": "kriter8",
-          "text": "Kabin korkuluğu, deformasyon veya",
-          "exact": true
+          "text": "Kabin korkuluğu, deformasyon veya"
         },
         {
           "field": "kriter9",
-          "text": "Servis freni, park freni",
-          "exact": true
+          "text": "Servis freni, park freni"
         },
         {
           "field": "kriter10",
-          "text": "Lastiklerin/paletlerin genel durumu",
-          "exact": true
+          "text": "Lastiklerin/paletlerin genel durumu"
         },
         {
           "field": "kriter11",
-          "text": "Ön far, stop, sinyal,",
-          "exact": true
+          "text": "Ön far, stop, sinyal,"
         },
         {
           "field": "kriter12",
-          "text": "Korna çalışma ve aynaların",
-          "exact": true
+          "text": "Korna çalışma ve aynaların"
         },
         {
           "field": "kriter13",
-          "text": "Sesli ikaz durumu",
-          "exact": true
+          "text": "Sesli ikaz durumu"
         },
         {
           "field": "kriter14",
-          "text": "Panel göstergeleri durumu",
-          "exact": true
+          "text": "Panel göstergeleri durumu"
         },
         {
           "field": "kriter15",
-          "text": "Yangın söndürücü durumu",
-          "exact": true
+          "text": "Yangın söndürücü durumu"
         },
         {
           "field": "kriter16",
-          "text": "I.Yüksüz hareket-fren durumu",
-          "exact": true
+          "text": "I.Yüksüz hareket-fren durumu"
         },
         {
           "field": "kriter17",
-          "text": "II.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "II.Yük altında dinamik kontrol"
         },
         {
           "field": "kriter18",
-          "text": "III.Yük altında statik kontrol",
-          "exact": true
+          "text": "III.Yük altında statik kontrol"
         }
       ]
     }

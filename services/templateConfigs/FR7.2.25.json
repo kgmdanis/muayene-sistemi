@@ -426,71 +426,58 @@
         {
           "field": "kriter1",
           "text": "Manometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter2",
           "text": "Termometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter3",
           "text": "Emniyet ventili",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter4",
           "text": "Tahliye Blöf vanası",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter5",
-          "text": "Manometre çalışıyor, konum ve",
-          "exact": true
+          "text": "Manometre çalışıyor, konum ve"
         },
         {
           "field": "kriter6",
-          "text": "Emniyet ventili çalışıyor ve",
-          "exact": true
+          "text": "Emniyet ventili çalışıyor ve"
         },
         {
           "field": "kriter7",
-          "text": "Termometre ventili çalışıyor ve",
-          "exact": true
+          "text": "Termometre ventili çalışıyor ve"
         },
         {
           "field": "kriter8",
-          "text": "Tahliye Blöf vanası çalışıyor",
-          "exact": true
+          "text": "Tahliye Blöf vanası çalışıyor"
         },
         {
           "field": "kriter9",
-          "text": "Basınç ayar otomatiği çalışıyor",
-          "exact": true
+          "text": "Basınç ayar otomatiği çalışıyor"
         },
         {
           "field": "kriter10",
-          "text": "Otoklavda kalıcı deformasyon var",
-          "exact": true
+          "text": "Otoklavda kalıcı deformasyon var"
         },
         {
           "field": "kriter11",
-          "text": "Kapak contalarının durumu uygun",
-          "exact": true
+          "text": "Kapak contalarının durumu uygun"
         },
         {
           "field": "kriter12",
-          "text": "Yapılan bakım ve onarımlar",
-          "exact": true
+          "text": "Yapılan bakım ve onarımlar"
         },
         {
           "field": "kriter13",
-          "text": "Test Pompası",
-          "exact": true
+          "text": "Test Pompası"
         }
       ]
     }

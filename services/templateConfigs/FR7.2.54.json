@@ -388,83 +388,67 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Kesici ve delici takımların",
-          "exact": true
+          "text": "Kesici ve delici takımların"
         },
         {
           "field": "kriter2",
-          "text": "Parçalar daima elyaf yönünde",
-          "exact": true
+          "text": "Parçalar daima elyaf yönünde"
         },
         {
           "field": "kriter3",
-          "text": "Bıçaklar iş parçasının altında",
-          "exact": true
+          "text": "Bıçaklar iş parçasının altında"
         },
         {
           "field": "kriter4",
-          "text": "Bıçakların topa ve mile",
-          "exact": true
+          "text": "Bıçakların topa ve mile"
         },
         {
           "field": "kriter5",
-          "text": "Günlük çalışmadan sonra operatör",
-          "exact": true
+          "text": "Günlük çalışmadan sonra operatör"
         },
         {
           "field": "kriter6",
-          "text": "Siper açıklıkları işlenen parçaya",
-          "exact": true
+          "text": "Siper açıklıkları işlenen parçaya"
         },
         {
           "field": "kriter7",
-          "text": "İş parçası daime bıçakların",
-          "exact": true
+          "text": "İş parçası daime bıçakların"
         },
         {
           "field": "kriter8",
-          "text": "Bütün yağlama noktaları yağlanıyor",
-          "exact": true
+          "text": "Bütün yağlama noktaları yağlanıyor"
         },
         {
           "field": "kriter9",
-          "text": "Düzgün şekilli olmayan parçalarda",
-          "exact": true
+          "text": "Düzgün şekilli olmayan parçalarda"
         },
         {
           "field": "kriter10",
-          "text": "Tezgahın yere bağlantısı sağlam",
-          "exact": true
+          "text": "Tezgahın yere bağlantısı sağlam"
         },
         {
           "field": "kriter11",
-          "text": "Motor, şalter ve kablo",
-          "exact": true
+          "text": "Motor, şalter ve kablo"
         },
         {
           "field": "kriter12",
-          "text": "Mil ayar düzenleri normal",
-          "exact": true
+          "text": "Mil ayar düzenleri normal"
         },
         {
           "field": "kriter13",
-          "text": "Siperlik ve eklentileri var",
-          "exact": true
+          "text": "Siperlik ve eklentileri var"
         },
         {
           "field": "kriter14",
-          "text": "Acil stop butonu var",
-          "exact": true
+          "text": "Acil stop butonu var"
         },
         {
           "field": "kriter15",
-          "text": "Freze siperli var mı?",
-          "exact": true
+          "text": "Freze siperli var mı?"
         },
         {
           "field": "kriter16",
-          "text": "Önceki periyodik kontrol raporu",
-          "exact": true
+          "text": "Önceki periyodik kontrol raporu"
         }
       ]
     }

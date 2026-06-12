@@ -425,88 +425,71 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Hidrolik silindirler, kumanda valfi,",
-          "exact": true
+          "text": "Hidrolik silindirler, kumanda valfi,"
         },
         {
           "field": "kriter2",
-          "text": "Elmas ucların genel durumu",
-          "exact": true
+          "text": "Elmas ucların genel durumu"
         },
         {
           "field": "kriter3",
-          "text": "Kabin korkuluğu, deformasyon veya",
-          "exact": true
+          "text": "Kabin korkuluğu, deformasyon veya"
         },
         {
           "field": "kriter4",
-          "text": "Servis freni, park freni",
-          "exact": true
+          "text": "Servis freni, park freni"
         },
         {
           "field": "kriter5",
-          "text": "Lastiklerin/paletlerin genel durumu",
-          "exact": true
+          "text": "Lastiklerin/paletlerin genel durumu"
         },
         {
           "field": "kriter6",
-          "text": "Uyarın levhaları",
-          "exact": true
+          "text": "Uyarın levhaları"
         },
         {
           "field": "kriter7",
-          "text": "Ön far, stop, sinyal,",
-          "exact": true
+          "text": "Ön far, stop, sinyal,"
         },
         {
           "field": "kriter8",
-          "text": "Korna çalışma ve aynaların",
-          "exact": true
+          "text": "Korna çalışma ve aynaların"
         },
         {
           "field": "kriter9",
-          "text": "Sesli ikaz durumu",
-          "exact": true
+          "text": "Sesli ikaz durumu"
         },
         {
           "field": "kriter10",
-          "text": "Panel göstergeleri durumu",
-          "exact": true
+          "text": "Panel göstergeleri durumu"
         },
         {
           "field": "kriter11",
-          "text": "Yangın söndürücü durumu",
-          "exact": true
+          "text": "Yangın söndürücü durumu"
         },
         {
           "field": "kriter12",
-          "text": "Operatör belgesi var mı",
-          "exact": true
+          "text": "Operatör belgesi var mı"
         },
         {
           "field": "kriter13",
-          "text": "Eksoz sistemi ve gaz",
-          "exact": true
+          "text": "Eksoz sistemi ve gaz"
         },
         {
           "field": "kriter14",
-          "text": "Yüksüz hareket durumu",
-          "exact": true
+          "text": "Yüksüz hareket durumu"
         },
         {
           "field": "kriter15",
-          "text": "Yük altında statik kontrol",
-          "exact": true
+          "text": "Yük altında statik kontrol"
         },
         {
           "field": "kriter16",
-          "text": "Yük altında dinamik kontrol",
-          "exact": true
+          "text": "Yük altında dinamik kontrol"
         },
         {
           "field": "kriter17",
-          "text": "Yük altında yapı kontrol",
-          "exact": true
+          "text": "Yük altında yapı kontrol"
         },
         {
           "field": "makineSicil",

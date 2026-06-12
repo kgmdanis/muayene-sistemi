@@ -406,38 +406,31 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Piston ve kumanda valfi",
-          "exact": true
+          "text": "Piston ve kumanda valfi"
         },
         {
           "field": "kriter2",
-          "text": "Tekerlek çatalında deformasyon ve",
-          "exact": true
+          "text": "Tekerlek çatalında deformasyon ve"
         },
         {
           "field": "kriter3",
-          "text": "Bağlantı cıvataları durumu",
-          "exact": true
+          "text": "Bağlantı cıvataları durumu"
         },
         {
           "field": "kriter4",
-          "text": "Pimlerinin aşınma ve gerginlik",
-          "exact": true
+          "text": "Pimlerinin aşınma ve gerginlik"
         },
         {
           "field": "kriter5",
-          "text": "I.Yüksüz hareket",
-          "exact": true
+          "text": "I.Yüksüz hareket"
         },
         {
           "field": "kriter6",
-          "text": "II.Yük altında statik kontrol",
-          "exact": true
+          "text": "II.Yük altında statik kontrol"
         },
         {
           "field": "kriter7",
-          "text": "III.Yük alltında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük alltında dinamik kontrol"
         },
         {
           "field": "kancaDurumu",

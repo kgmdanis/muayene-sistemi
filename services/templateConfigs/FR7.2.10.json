@@ -520,58 +520,47 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Caraskalın yapısı ve bağlantı",
-          "exact": true
+          "text": "Caraskalın yapısı ve bağlantı"
         },
         {
           "field": "kriter2",
-          "text": "Elektrikli caraskal elektrik ekipmanları,",
-          "exact": true
+          "text": "Elektrikli caraskal elektrik ekipmanları,"
         },
         {
           "field": "kriter3",
-          "text": "Elektrikli caraskal kumanda buton",
-          "exact": true
+          "text": "Elektrikli caraskal kumanda buton"
         },
         {
           "field": "kriter4",
-          "text": "Elektrikli caraskal sınır kesicilerin",
-          "exact": true
+          "text": "Elektrikli caraskal sınır kesicilerin"
         },
         {
           "field": "kriter5",
-          "text": "Elektrikli caraskal acil stop",
-          "exact": true
+          "text": "Elektrikli caraskal acil stop"
         },
         {
           "field": "kriter6",
-          "text": "Güvenlik mandalları ve kumanda",
-          "exact": true
+          "text": "Güvenlik mandalları ve kumanda"
         },
         {
           "field": "kriter7",
-          "text": "Yük zinciri boyu kaldırma",
-          "exact": true
+          "text": "Yük zinciri boyu kaldırma"
         },
         {
           "field": "kriter8",
-          "text": "Yük ve tahrik zinciri",
-          "exact": true
+          "text": "Yük ve tahrik zinciri"
         },
         {
           "field": "kriter9",
-          "text": "I. Yüksüz hareket durumu",
-          "exact": true
+          "text": "I. Yüksüz hareket durumu"
         },
         {
           "field": "kriter10",
-          "text": "II .Yük altında statik",
-          "exact": true
+          "text": "II .Yük altında statik"
         },
         {
           "field": "kriter11",
-          "text": "III.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük altında dinamik kontrol"
         },
         {
           "field": "kancaDurumu",

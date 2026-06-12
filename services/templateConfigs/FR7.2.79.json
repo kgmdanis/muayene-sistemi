@@ -349,33 +349,27 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Ataşmanın yapısı ve genel",
-          "exact": true
+          "text": "Ataşmanın yapısı ve genel"
         },
         {
           "field": "kriter2",
-          "text": "Sapan askı demiri aşınma",
-          "exact": true
+          "text": "Sapan askı demiri aşınma"
         },
         {
           "field": "kriter3",
-          "text": "Kaynak bağlantıların durumu",
-          "exact": true
+          "text": "Kaynak bağlantıların durumu"
         },
         {
           "field": "kriter4",
-          "text": "I. Yüksüz hareket durumu",
-          "exact": true
+          "text": "I. Yüksüz hareket durumu"
         },
         {
           "field": "kriter5",
-          "text": "II .Yük altında statik",
-          "exact": true
+          "text": "II .Yük altında statik"
         },
         {
           "field": "kriter6",
-          "text": "III.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük altında dinamik kontrol"
         },
         {
           "field": "mapaKancaDurumu",

@@ -532,103 +532,83 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Uyarı etiket ve işaretlerin",
-          "exact": true
+          "text": "Uyarı etiket ve işaretlerin"
         },
         {
           "field": "kriter2",
-          "text": "Asansör silindir ve makaraları",
-          "exact": true
+          "text": "Asansör silindir ve makaraları"
         },
         {
           "field": "kriter3",
-          "text": "Asansör kep civataları sıkılık",
-          "exact": true
+          "text": "Asansör kep civataları sıkılık"
         },
         {
           "field": "kriter4",
-          "text": "Çatal kilit priminin ayna",
-          "exact": true
+          "text": "Çatal kilit priminin ayna"
         },
         {
           "field": "kriter5",
-          "text": "Tilt silindirleri paralellik ve",
-          "exact": true
+          "text": "Tilt silindirleri paralellik ve"
         },
         {
           "field": "kriter6",
-          "text": "Karşıt ağırlık bağlantı ve",
-          "exact": true
+          "text": "Karşıt ağırlık bağlantı ve"
         },
         {
           "field": "kriter7",
-          "text": "Ön (çatal) ve üst",
-          "exact": true
+          "text": "Ön (çatal) ve üst"
         },
         {
           "field": "kriter8",
-          "text": "Çatalda deformasyon ve çatlaklık",
-          "exact": true
+          "text": "Çatalda deformasyon ve çatlaklık"
         },
         {
           "field": "kriter9",
-          "text": "Dikiz aynası, direksiyon topuzu",
-          "exact": true
+          "text": "Dikiz aynası, direksiyon topuzu"
         },
         {
           "field": "kriter10",
-          "text": "Kumanda valfi,hidrolik hortum ve",
-          "exact": true
+          "text": "Kumanda valfi,hidrolik hortum ve"
         },
         {
           "field": "kriter11",
-          "text": "Lastiklerin diş kalınlığı,bijonlar ve",
-          "exact": true
+          "text": "Lastiklerin diş kalınlığı,bijonlar ve"
         },
         {
           "field": "kriter12",
-          "text": "Servis ve el freni",
-          "exact": true
+          "text": "Servis ve el freni"
         },
         {
           "field": "kriter13",
-          "text": "Korna ve geri sesli",
-          "exact": true
+          "text": "Korna ve geri sesli"
         },
         {
           "field": "kriter14",
-          "text": "Ön far, sinyal, stop,",
-          "exact": true
+          "text": "Ön far, sinyal, stop,"
         },
         {
           "field": "kriter15",
-          "text": "Egzoz sistemi ve gaz",
-          "exact": true
+          "text": "Egzoz sistemi ve gaz"
         },
         {
           "field": "kriter16",
-          "text": "Forklifti kullanan operatör belgesi",
-          "exact": true
+          "text": "Forklifti kullanan operatör belgesi"
         },
         {
           "field": "kriter17",
-          "text": "I.Yüksüz hareket-fren durumu",
-          "exact": true
+          "text": "I.Yüksüz hareket-fren durumu"
         },
         {
           "field": "kriter18",
-          "text": "II. Yük altında statik",
-          "exact": true
+          "text": "II. Yük altında statik"
         },
         {
           "field": "kriter19",
-          "text": "III. Yük altında dinamik",
-          "exact": true
+          "text": "III. Yük altında dinamik"
         },
         {
           "field": "kriter20",
-          "text": "IV. Yük altında Kararlılık",
-          "exact": true
+          "text": "IV. Yük altında Kararlılık"
         },
         {
           "field": "bakimDosyasi",

@@ -533,94 +533,77 @@
         {
           "field": "kriter1",
           "text": "Manometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter2",
           "text": "Su Seviyesi Göstergesi",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter3",
           "text": "Basınç Ayar Otomatiği (Presostat)",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter4",
           "text": "Alarm Aygıtı",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter5",
           "text": "Güvenlik Ventili",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter6",
           "text": "Blöf Düzeni",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter7",
           "text": "Otomatik su besleme hidroforu",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter8",
-          "text": "Manometre çalışıyor, konum ve",
-          "exact": true
+          "text": "Manometre çalışıyor, konum ve"
         },
         {
           "field": "kriter9",
-          "text": "Emniyet ventili çalışıyor ve",
-          "exact": true
+          "text": "Emniyet ventili çalışıyor ve"
         },
         {
           "field": "kriter10",
-          "text": "Su seviye göstergesi çalışıyor",
-          "exact": true
+          "text": "Su seviye göstergesi çalışıyor"
         },
         {
           "field": "kriter11",
-          "text": "Alarm sistemi çalışıyor mu?",
-          "exact": true
+          "text": "Alarm sistemi çalışıyor mu?"
         },
         {
           "field": "kriter12",
-          "text": "Blöf vanası çalışıyor mu?",
-          "exact": true
+          "text": "Blöf vanası çalışıyor mu?"
         },
         {
           "field": "kriter13",
-          "text": "Duman sandığı kapak contalarının",
-          "exact": true
+          "text": "Duman sandığı kapak contalarının"
         },
         {
           "field": "kriter14",
-          "text": "Yapılan bakım ve onarımlar",
-          "exact": true
+          "text": "Yapılan bakım ve onarımlar"
         },
         {
           "field": "kriter15",
-          "text": "Kazan Operatör belgesi var",
-          "exact": true
+          "text": "Kazan Operatör belgesi var"
         },
         {
           "field": "kriter16",
-          "text": "Yangın söndürücü yeri ve",
-          "exact": true
+          "text": "Yangın söndürücü yeri ve"
         },
         {
           "field": "kriter17",
-          "text": "Uyarı ve kullanma talimatı",
-          "exact": true
+          "text": "Uyarı ve kullanma talimatı"
         }
       ]
     }

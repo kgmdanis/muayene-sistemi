@@ -396,38 +396,31 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Triforun yapısı ve bağlantı",
-          "exact": true
+          "text": "Triforun yapısı ve bağlantı"
         },
         {
           "field": "kriter2",
-          "text": "Güvenlik mandalları durumu",
-          "exact": true
+          "text": "Güvenlik mandalları durumu"
         },
         {
           "field": "kriter3",
-          "text": "Zincirlerin aşınma ve deformasyon",
-          "exact": true
+          "text": "Zincirlerin aşınma ve deformasyon"
         },
         {
           "field": "kriter4",
-          "text": "Trifor kulunun durumu",
-          "exact": true
+          "text": "Trifor kulunun durumu"
         },
         {
           "field": "kriter5",
-          "text": "I. Yüksüz hareket durumu",
-          "exact": true
+          "text": "I. Yüksüz hareket durumu"
         },
         {
           "field": "kriter6",
-          "text": "II .Yük altında statik",
-          "exact": true
+          "text": "II .Yük altında statik"
         },
         {
           "field": "kriter7",
-          "text": "III.Yük altında dinamik kontrol",
-          "exact": true
+          "text": "III.Yük altında dinamik kontrol"
         },
         {
           "field": "kancaDurumu",

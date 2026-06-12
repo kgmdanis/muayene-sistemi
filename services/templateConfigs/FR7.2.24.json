@@ -406,61 +406,50 @@
         {
           "field": "kriter1",
           "text": "Manometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter2",
           "text": "Termometre",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter3",
           "text": "Emniyet ventili",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter4",
           "text": "Tahliye Blöf vanası",
-          "mode": "last",
-          "exact": true
+          "mode": "last"
         },
         {
           "field": "kriter5",
-          "text": "Manometre çalışıyor, konum ve",
-          "exact": true
+          "text": "Manometre çalışıyor, konum ve"
         },
         {
           "field": "kriter6",
-          "text": "Termometre çalışıyor, konum ve",
-          "exact": true
+          "text": "Termometre çalışıyor, konum ve"
         },
         {
           "field": "kriter7",
-          "text": "Emniyet ventili çalışıyor ve",
-          "exact": true
+          "text": "Emniyet ventili çalışıyor ve"
         },
         {
           "field": "kriter8",
-          "text": "Tahliye blöf vanası çalışıyor",
-          "exact": true
+          "text": "Tahliye blöf vanası çalışıyor"
         },
         {
           "field": "kriter9",
-          "text": "Basınçlı kapta kalıcı deformasyon",
-          "exact": true
+          "text": "Basınçlı kapta kalıcı deformasyon"
         },
         {
           "field": "kriter10",
-          "text": "Yapılan bakım ve onarımlar",
-          "exact": true
+          "text": "Yapılan bakım ve onarımlar"
         },
         {
           "field": "kriter11",
-          "text": "Test Pompası",
-          "exact": true
+          "text": "Test Pompası"
         }
       ]
     }

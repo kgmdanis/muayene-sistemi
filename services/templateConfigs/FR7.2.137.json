@@ -365,43 +365,35 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Araçta deformasyon ve çatlaklık",
-          "exact": true
+          "text": "Araçta deformasyon ve çatlaklık"
         },
         {
           "field": "kriter2",
-          "text": "Lastiklerin genel durumu",
-          "exact": true
+          "text": "Lastiklerin genel durumu"
         },
         {
           "field": "kriter3",
-          "text": "Bağlantı cıvataları durumu",
-          "exact": true
+          "text": "Bağlantı cıvataları durumu"
         },
         {
           "field": "kriter4",
-          "text": "I. Yüksüz hareket durumu",
-          "exact": true
+          "text": "I. Yüksüz hareket durumu"
         },
         {
           "field": "kriter5",
-          "text": "II. Yük altında statik",
-          "exact": true
+          "text": "II. Yük altında statik"
         },
         {
           "field": "kriter6",
-          "text": "III.Yük altında dinanik kontrol",
-          "exact": true
+          "text": "III.Yük altında dinanik kontrol"
         },
         {
           "field": "kriter7",
-          "text": "III.Yük altında yapı kontrol",
-          "exact": true
+          "text": "III.Yük altında yapı kontrol"
         },
         {
           "field": "kriter8",
-          "text": "Park teker kilitleme durumu",
-          "exact": true
+          "text": "Park teker kilitleme durumu"
         },
         {
           "field": "makineSicil",

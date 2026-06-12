@@ -388,83 +388,67 @@
       "questions": [
         {
           "field": "kriter1",
-          "text": "Sağlık ve güvenlik işaretleri",
-          "exact": true
+          "text": "Sağlık ve güvenlik işaretleri"
         },
         {
           "field": "kriter2",
-          "text": "İşaretleme, kullanma talimatı uygun",
-          "exact": true
+          "text": "İşaretleme, kullanma talimatı uygun"
         },
         {
           "field": "kriter3",
-          "text": "Makinenin çevresinde ve yerlerde",
-          "exact": true
+          "text": "Makinenin çevresinde ve yerlerde"
         },
         {
           "field": "kriter4",
-          "text": "Hareket ve ayar kolları,",
-          "exact": true
+          "text": "Hareket ve ayar kolları,"
         },
         {
           "field": "kriter5",
-          "text": "Hareket sınırlayıcı mekanik kilitler",
-          "exact": true
+          "text": "Hareket sınırlayıcı mekanik kilitler"
         },
         {
           "field": "kriter6",
-          "text": "Titreşime ve sarsıntıya karşı",
-          "exact": true
+          "text": "Titreşime ve sarsıntıya karşı"
         },
         {
           "field": "kriter7",
-          "text": "Tabla, gövde yapısı ve",
-          "exact": true
+          "text": "Tabla, gövde yapısı ve"
         },
         {
           "field": "kriter8",
-          "text": "Cihaz çalışma alanının güvenliği",
-          "exact": true
+          "text": "Cihaz çalışma alanının güvenliği"
         },
         {
           "field": "kriter9",
-          "text": "Kapak gövde menteşe ve",
-          "exact": true
+          "text": "Kapak gövde menteşe ve"
         },
         {
           "field": "kriter10",
-          "text": "Yardımcı ışık, aydınlatma",
-          "exact": true
+          "text": "Yardımcı ışık, aydınlatma"
         },
         {
           "field": "kriter11",
-          "text": "Acil durdurma butonu uygun",
-          "exact": true
+          "text": "Acil durdurma butonu uygun"
         },
         {
           "field": "kriter12",
-          "text": "Elektrik pano bağlantıları, muhafazası",
-          "exact": true
+          "text": "Elektrik pano bağlantıları, muhafazası"
         },
         {
           "field": "kriter13",
-          "text": "Ezilme, sıkışma ve kesme",
-          "exact": true
+          "text": "Ezilme, sıkışma ve kesme"
         },
         {
           "field": "kriter14",
-          "text": "Parça fırlama tehlikesine karşı",
-          "exact": true
+          "text": "Parça fırlama tehlikesine karşı"
         },
         {
           "field": "kriter15",
-          "text": "Tezgahın hareketli parçalarıyla teması",
-          "exact": true
+          "text": "Tezgahın hareketli parçalarıyla teması"
         },
         {
           "field": "kriter16",
-          "text": "Testere koruyucuları uygun mu?",
-          "exact": true
+          "text": "Testere koruyucuları uygun mu?"
         }
       ]
     }
