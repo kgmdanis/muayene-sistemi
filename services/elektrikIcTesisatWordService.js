@@ -1411,12 +1411,20 @@ async function removeTemplatePlaceholderImages(zip, docXml) {
 
     // Strateji: Belgenin sonundaki fotoğraf tablolarını (sayfa sonu + foto grid) temizle
     // "EKİPMAN FOTOGRAFLARI" veya "FOTOĞRAF" başlığından sonraki tüm içeriği kaldır
-    const fotoBaslikPattern = /<w:p[^>]*>[\s\S]*?EK(?:İ|I)PMAN\s*FOTO(?:Ğ|G)RAF(?:LARI)?[\s\S]*?<\/w:p>/gi;
-    const fotoMatch = docXml.match(fotoBaslikPattern);
+    // Foto başlık METNİNİ bul, sonra onu İÇEREN paragrafın başını tespit et.
+    // (Önceki regex `<w:p..>[\s\S]*?EKİPMAN..` belgenin İLK <w:p>'sinden başlığa
+    //  kadar uzanıyordu → indexOf belgenin tepesini gösterip TÜM GÖVDEYİ sildiriyordu.)
+    const fotoTextMatch = docXml.match(/EK(?:İ|I)PMAN\s*FOTO(?:Ğ|G)RAF(?:LARI)?/i);
 
-    if (fotoMatch && fotoMatch.length > 0) {
-        // Foto başlığının pozisyonunu bul
-        const fotoBaslikPos = docXml.indexOf(fotoMatch[0]);
+    if (fotoTextMatch) {
+        const fotoTextPos = fotoTextMatch.index;
+        // Foto metninden ÖNCEKİ son paragraf açılışı (<w:pPr> hariç) = başlık paragrafının başı
+        const paraOpenRe = /<w:p(?:\s[^>]*)?>/g;
+        let fotoBaslikPos = -1, _pm;
+        while ((_pm = paraOpenRe.exec(docXml)) !== null) {
+            if (_pm.index >= fotoTextPos) break;
+            fotoBaslikPos = _pm.index;
+        }
         if (fotoBaslikPos > 0) {
             // Başlıktan önceki sayfa sonu paragrafını da bul (varsa)
             const beforeBaslik = docXml.substring(Math.max(0, fotoBaslikPos - 500), fotoBaslikPos);
