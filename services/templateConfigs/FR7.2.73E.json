@@ -1121,7 +1121,8 @@
         },
         {
           "field": "kriter49",
-          "text": "Kapı ölüm tehlikesi"
+          "text": "Kapı ölüm tehlikesi",
+          "occurrence": 2
         },
         {
           "field": "kriter50",

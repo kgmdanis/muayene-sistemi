@@ -168,12 +168,16 @@ function setValueByLabel(xml, labelText, newValue) {
  * mode: 'last' = satırın son hücresi (2 sütunlu tablolar)
  * exact: true = hücre metni tam olarak soruText'e eşit olmalı (normalize edilmiş)
  */
-function setKontrolSorusu(xml, soruText, deger, mode = 'last', exact = false) {
+function setKontrolSorusu(xml, soruText, deger, mode = 'last', exact = false, occurrence = 1) {
     if (!deger) return xml;
 
     const rowRegex = /<w:tr[^>]*>[\s\S]*?<\/w:tr>/g;
     const rows = xml.match(rowRegex) || [];
     const normalizedSoru = normalizeLabel(soruText);
+
+    // occurrence > 1: aynı soru metni birden fazla tabloda birebir tekrar
+    // ediyorsa, kaçıncı eşleşen satıra yazılacağını belirler (1 = ilk).
+    let matchCount = 0;
 
     for (const row of rows) {
         const rowText = getRowText(row);
@@ -208,6 +212,10 @@ function setKontrolSorusu(xml, soruText, deger, mode = 'last', exact = false) {
         }
 
         if (!foundMatchingCell) continue;
+
+        // İstenen tekrara ulaşana kadar eşleşen satırları atla
+        matchCount++;
+        if (matchCount < occurrence) continue;
 
         if (mode === 'next') {
             if (matchingCellIndex + 1 < cells.length) {

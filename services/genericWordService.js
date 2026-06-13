@@ -118,7 +118,8 @@ async function generateGenericWord(rapor, isEmri, options = {}) {
             if (!deger) deger = '-';
             const mode = q.mode || cq.mode || 'last';
             const exact = q.exact || false;
-            docXml = setKontrolSorusu(docXml, q.text, deger, mode, exact);
+            const occurrence = q.occurrence || 1;
+            docXml = setKontrolSorusu(docXml, q.text, deger, mode, exact, occurrence);
         }
     }
 

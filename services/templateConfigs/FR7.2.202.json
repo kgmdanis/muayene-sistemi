@@ -148,8 +148,7 @@
         { "field": "kriter4", "text": "vanası uygun şekilde" },
         { "field": "kriter5", "text": "montajı ve çalışması" },
         { "field": "kriter6", "text": "konumlandırılmışlardır" },
-        { "field": "kriter7", "text": "su basıncının, su akışının" },
-        { "field": "kriter8", "text": "noktalarda konumlandırılmış" }
+        { "field": "kriter7", "text": "su basıncının, su akışının" }
       ]
     }
   }
