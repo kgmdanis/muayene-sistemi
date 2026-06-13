@@ -1,8 +1,75 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { PrismaClient } = require('@prisma/client');
+const tenantContext = require('./tenantContext');
 
+// Ham client: auth iç işlemleri (login/session/kullanıcı yönetimi) ve extension'ın
+// kendi ön-kontrol sorguları bunu kullanır → tenant filtrelemesinden muaf.
 const prisma = new PrismaClient();
+
+// === ÇOKLU-TENANT VERİ İZOLASYONU ===
+// Üst-seviye tablolar: aktif tenant bağlamı varsa sorgular otomatik tenantId ile filtrelenir.
+const TENANT_SCOPED = new Set([
+    'Customer', 'Teklif', 'IsEmri', 'Muayene', 'OlcumCihazi', 'WorkOrder',
+    'ElektrikTopraklamaRaporu', 'KompresorRaporu', 'HavaTankiRaporu', 'Rapor',
+    'ElektrikIcTesisatRaporu', 'Hizmet', 'Kategori', 'Personel', 'SistemDosya',
+    'RaporSablonu', 'FirmaAyarlari', 'User', 'LoginLog'
+]);
+const TENANT_READ_OPS = new Set(['findFirst', 'findFirstOrThrow', 'findMany', 'count', 'aggregate', 'groupBy']);
+
+const prismaScoped = prisma.$extends({
+    query: {
+        $allModels: {
+            async $allOperations({ model, operation, args, query }) {
+                const tid = tenantContext.getTenantId();
+                // Bağlam yoksa (superadmin/sistem/pre-auth) veya scope dışı model → dokunma
+                if (tid == null || !TENANT_SCOPED.has(model)) return query(args);
+                const delegate = model.charAt(0).toLowerCase() + model.slice(1);
+
+                if (TENANT_READ_OPS.has(operation)) {
+                    args.where = { ...(args.where || {}), tenantId: tid };
+                    return query(args);
+                }
+                // findUnique: where'e non-unique alan eklenemez → sonucu tenant'a göre süz
+                if (operation === 'findUnique' || operation === 'findUniqueOrThrow') {
+                    const res = await query(args);
+                    if (res && res.tenantId !== tid) {
+                        if (operation === 'findUniqueOrThrow') throw new Error('Kayıt bulunamadı');
+                        return null;
+                    }
+                    return res;
+                }
+                if (operation === 'create') {
+                    args.data = { ...(args.data || {}), tenantId: tid };
+                    return query(args);
+                }
+                if (operation === 'createMany') {
+                    args.data = Array.isArray(args.data)
+                        ? args.data.map(d => ({ ...d, tenantId: tid }))
+                        : { ...(args.data || {}), tenantId: tid };
+                    return query(args);
+                }
+                if (operation === 'updateMany' || operation === 'deleteMany') {
+                    args.where = { ...(args.where || {}), tenantId: tid };
+                    return query(args);
+                }
+                // update/delete tekil: where unique olmalı → önce sahiplik doğrula
+                if (operation === 'update' || operation === 'delete') {
+                    const owned = await prisma[delegate].findFirst({
+                        where: { ...(args.where || {}), tenantId: tid }, select: { id: true }
+                    });
+                    if (!owned) throw new Error('Kayıt bulunamadı veya bu firmaya ait değil');
+                    return query(args);
+                }
+                if (operation === 'upsert') {
+                    args.create = { ...(args.create || {}), tenantId: tid };
+                    return query(args);
+                }
+                return query(args);
+            }
+        }
+    }
+});
 // JWT_SECRET .env'den gelir (PrismaClient yukarıda .env'i process.env'e yükler).
 // Sabit/fallback secret GÜVENLİK AÇIĞIDIR — yoksa uygulama başlamaz.
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -31,7 +98,8 @@ function generateToken(user) {
         {
             userId: user.id,
             email: user.email,
-            role: user.role
+            role: user.role,
+            tenantId: user.tenantId ?? null
         },
         JWT_SECRET,
         { expiresIn: JWT_EXPIRES_IN }
@@ -136,6 +204,7 @@ async function verifySession(token) {
             user: {
                 id: personel.id,
                 personelId: personel.id,
+                tenantId: personel.tenantId ?? null,
                 email: personel.email,
                 name: personel.adSoyad,
                 role: personel.role || 'tekniker',
@@ -168,6 +237,7 @@ async function verifySession(token) {
         success: true,
         user: {
             id: user.id,
+            tenantId: user.tenantId ?? null,
             email: user.email,
             name: user.name,
             role: user.role,
@@ -256,7 +326,8 @@ async function personelLogin(loginIdentifier, password) {
                 personelId: personel.id,
                 email: personel.email,
                 role: personel.role || 'tekniker',
-                kategori: personel.kategori
+                kategori: personel.kategori,
+                tenantId: personel.tenantId ?? null
             },
             JWT_SECRET,
             { expiresIn: JWT_EXPIRES_IN }
@@ -403,5 +474,6 @@ module.exports = {
     hashPassword,
     verifyPassword,
     generateToken,
-    prisma
+    prisma: prismaScoped,    // server.js route'ları tenant-filtreli client kullanır
+    prismaRaw: prisma        // filtrelemesiz ham client (gerekirse)
 };

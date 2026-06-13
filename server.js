@@ -9,6 +9,7 @@ const crypto = require('crypto');
 const execFileAsync = promisify(execFile);
 const mammoth = require('mammoth');
 const auth = require('./auth');
+const tenantContext = require('./tenantContext');
 const reportEngine = require('./reports');
 const emailService = require('./emailService');
 const wordTemplateService = require('./wordTemplateService');
@@ -131,7 +132,11 @@ const requireAuth = auth.authMiddleware();
 app.use('/api', (req, res, next) => {
     if (req.method === 'OPTIONS') return next();          // CORS preflight
     if (PUBLIC_API_PATHS.has(req.path)) return next();    // public auth route'ları
-    return requireAuth(req, res, next);
+    // Auth başarılı olunca isteğin geri kalanını tenant bağlamında çalıştır
+    // (Prisma extension bu bağlamdan tenantId'yi okuyup sorguları otomatik filtreler).
+    return requireAuth(req, res, () => {
+        tenantContext.run({ tenantId: req.user ? (req.user.tenantId ?? null) : null, role: req.user && req.user.role }, next);
+    });
 });
 
 // Şablon dosyası yükleme endpoint'i (sadece admin)
