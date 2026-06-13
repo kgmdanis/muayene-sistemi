@@ -30,6 +30,7 @@ body {
     background: var(--light);
     color: var(--dark);
     line-height: 1.6;
+    overflow-x: hidden; /* mobilde sayfa geneli yatay kaymasın (tablolar kendi kapsayıcısında kayar) */
 }
 
 /* Container */

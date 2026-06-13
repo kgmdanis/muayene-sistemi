@@ -226,6 +226,33 @@
         .kategori-btn.duzenle { background: #ffc107; color: #333; }
         .kategori-btn.sil { background: #dc3545; color: white; }
         .kategori-btn:hover { opacity: 0.8; }
+
+        /* === Mobil uyum (responsive) === */
+        @media (max-width: 768px) {
+            body { padding: 0; }
+            .container { max-width: 100%; }
+            /* İki sütunlu firma bilgileri tek sütuna insin */
+            .firma-grid { grid-template-columns: 1fr; }
+            /* Etiket/değer satırları: etiket üstte, değer altta */
+            .firma-row { grid-template-columns: 1fr; }
+            /* Başlık ve footer dikey yığılsın */
+            .header, .footer { flex-direction: column; align-items: stretch; gap: 10px; text-align: center; }
+            .footer-actions { flex-direction: column; }
+            .footer-actions .btn, .footer-actions button { width: 100%; }
+            .kategori-header { flex-direction: column; align-items: stretch; gap: 8px; }
+            /* Toplam kutusu tam genişlik */
+            .toplam-box { max-width: 100%; margin-left: 0; }
+            .toplam-row { grid-template-columns: 1fr 120px; }
+            /* Geniş tablolar yatay kaydırılabilsin, sayfayı taşırmasın */
+            .hizmet-table, table { display: block; overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch; }
+            /* Modallar mobilde tam genişlik */
+            .modal { max-width: 95vw !important; width: 95vw; }
+            .search-box { flex-direction: column; align-items: stretch !important; }
+        }
+        @media (max-width: 480px) {
+            .header h1, .header h2 { font-size: 18px; }
+            .firma-row { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
