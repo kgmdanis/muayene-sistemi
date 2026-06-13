@@ -3,7 +3,12 @@ const crypto = require('crypto');
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-in-production';
+// JWT_SECRET .env'den gelir (PrismaClient yukarıda .env'i process.env'e yükler).
+// Sabit/fallback secret GÜVENLİK AÇIĞIDIR — yoksa uygulama başlamaz.
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+    throw new Error('JWT_SECRET tanımlı değil veya çok kısa. .env dosyasına güçlü bir JWT_SECRET ekleyin (>=32 karakter).');
+}
 const JWT_EXPIRES_IN = '24h';
 
 // Şifre hashleme

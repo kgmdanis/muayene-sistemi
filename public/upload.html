@@ -38,8 +38,10 @@
             formData.append('file', fileInput.files[0]);
 
             try {
+                const token = localStorage.getItem('token');
                 const response = await fetch('/api/upload-template', {
                     method: 'POST',
+                    headers: token ? { 'Authorization': 'Bearer ' + token } : {},
                     body: formData
                 });
                 const data = await response.json();

@@ -5425,7 +5425,7 @@ async function sertifikaKaydet() {
 async function loadOlcumCihazlari() {
     showLoading();
     try {
-        const response = await fetch('/api/olcum-cihazlari');
+        const response = await authenticatedFetch('/api/olcum-cihazlari');
         const cihazlar = await response.json();
         renderOlcumCihazlari(cihazlar);
     } catch (error) {
@@ -5442,7 +5442,7 @@ async function renderOlcumCihazlari(cihazlar) {
     // Kalibrasyon uyarıları
     let uyarilar = [];
     try {
-        const uyariResponse = await fetch('/api/olcum-cihazlari-kalibrasyon-uyari');
+        const uyariResponse = await authenticatedFetch('/api/olcum-cihazlari-kalibrasyon-uyari');
         uyarilar = await uyariResponse.json();
     } catch (e) {
         console.error('Kalibrasyon uyarıları alınamadı:', e);
@@ -5746,7 +5746,7 @@ async function cihazKaydet(event, id = null) {
 async function cihazDuzenleModal(id) {
     try {
         showLoading();
-        const response = await fetch('/api/olcum-cihazlari/' + id);
+        const response = await authenticatedFetch('/api/olcum-cihazlari/' + id);
         const cihaz = await response.json();
 
         if (!cihaz) {
@@ -5790,7 +5790,7 @@ async function cihazSil(id) {
 
     try {
         showLoading();
-        const response = await fetch('/api/olcum-cihazlari/' + id, { method: 'DELETE' });
+        const response = await authenticatedFetch('/api/olcum-cihazlari/' + id, { method: 'DELETE' });
         if (response.ok) {
             showToast('Cihaz silindi', 'success');
             loadOlcumCihazlari();
@@ -5809,7 +5809,7 @@ async function cihazSil(id) {
 async function cihazDetayModal(id) {
     try {
         showLoading();
-        const response = await fetch('/api/olcum-cihazlari/' + id + '/detay');
+        const response = await authenticatedFetch('/api/olcum-cihazlari/' + id + '/detay');
         const cihaz = await response.json();
 
         if (!cihaz) {
@@ -5986,7 +5986,7 @@ async function kalibrasyonKaydet(event, cihazId) {
 
     try {
         showLoading();
-        const response = await fetch('/api/olcum-cihazlari/' + cihazId + '/kalibrasyon-gecmisi', {
+        const response = await authenticatedFetch('/api/olcum-cihazlari/' + cihazId + '/kalibrasyon-gecmisi', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -6016,7 +6016,7 @@ async function kalibrasyonGecmisiSil(gecmisId, cihazId) {
 
     try {
         showLoading();
-        const response = await fetch('/api/kalibrasyon-gecmisi/' + gecmisId, { method: 'DELETE' });
+        const response = await authenticatedFetch('/api/kalibrasyon-gecmisi/' + gecmisId, { method: 'DELETE' });
         if (response.ok) {
             showToast('Kalibrasyon kaydı silindi', 'success');
             closeModal('cihazDetayModal');
@@ -6038,7 +6038,7 @@ async function kalibrasyonHatirlatmaGonder() {
 
     try {
         showLoading();
-        const uyariResponse = await fetch('/api/olcum-cihazlari-kalibrasyon-uyari');
+        const uyariResponse = await authenticatedFetch('/api/olcum-cihazlari-kalibrasyon-uyari');
         const uyarilar = await uyariResponse.json();
 
         if (uyarilar.length === 0) {
@@ -6048,7 +6048,7 @@ async function kalibrasyonHatirlatmaGonder() {
 
         const cihazIds = uyarilar.map(c => c.id);
 
-        const response = await fetch('/api/olcum-cihazlari/kalibrasyon-hatirlatma', {
+        const response = await authenticatedFetch('/api/olcum-cihazlari/kalibrasyon-hatirlatma', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ cihazIds, email })

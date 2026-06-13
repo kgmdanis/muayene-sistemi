@@ -23,10 +23,22 @@ const storage = multer.diskStorage({
         cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalname);
+        // Path traversal koruması: dizin bileşenlerini at, sadece dosya adını kullan
+        cb(null, path.basename(file.originalname));
     }
 });
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 25 * 1024 * 1024 }, // 25MB limit
+    fileFilter: (req, file, cb) => {
+        // Sadece Word şablonları (.doc/.docx)
+        if (/\.docx?$/i.test(file.originalname)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Sadece Word (.doc/.docx) şablon dosyaları yüklenebilir'));
+        }
+    }
+});
 
 // Sertifika dosyaları için multer konfigürasyonu
 const sertifikaStorage = multer.diskStorage({
@@ -85,7 +97,10 @@ const dosyaUpload = multer({
 });
 
 // Middleware
-app.use(cors());
+// CORS: CORS_ORIGIN env'i tanımlıysa (virgülle ayrılmış) yalnızca o origin'lere izin ver,
+// tanımsızsa tüm origin'lere izin ver (geriye dönük uyumluluk). Üretimde CORS_ORIGIN ayarlanmalı.
+const corsOrigin = process.env.CORS_ORIGIN;
+app.use(cors(corsOrigin ? { origin: corsOrigin.split(',').map(s => s.trim()) } : {}));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static('public', {
@@ -99,8 +114,25 @@ app.use(express.static('public', {
     }
 }));
 
-// Şablon dosyası yükleme endpoint'i
-app.post('/api/upload-template', upload.single('file'), (req, res) => {
+// === GLOBAL API KORUMASI ===
+// Aşağıdaki public route'lar hariç TÜM /api endpoint'leri geçerli token ister.
+// (Daha önce 94 endpoint korumasızdı — bu middleware hepsini tek noktadan korur.)
+const PUBLIC_API_PATHS = new Set([
+    '/auth/login',
+    '/auth/personel-login',
+    '/auth/logout',
+    '/auth/forgot-password',
+    '/auth/reset-password'
+]);
+const requireAuth = auth.authMiddleware();
+app.use('/api', (req, res, next) => {
+    if (req.method === 'OPTIONS') return next();          // CORS preflight
+    if (PUBLIC_API_PATHS.has(req.path)) return next();    // public auth route'ları
+    return requireAuth(req, res, next);
+});
+
+// Şablon dosyası yükleme endpoint'i (sadece admin)
+app.post('/api/upload-template', auth.authMiddleware('admin'), upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, error: 'Dosya yüklenmedi' });
     }
@@ -1547,8 +1579,15 @@ app.post('/api/reports/:reportType/:workOrderId/pdf', auth.authMiddleware(), asy
 
 app.get('/api/reports/download/:filename', auth.authMiddleware(), async (req, res) => {
     try {
-        const { filename } = req.params;
-        const filePath = path.join(__dirname, 'storage', 'reports', filename);
+        // Path traversal koruması: dizin bileşenlerini at, sadece dosya adını kullan
+        const filename = path.basename(req.params.filename);
+        const reportsDir = path.join(__dirname, 'storage', 'reports');
+        const filePath = path.join(reportsDir, filename);
+
+        // Çözülen yolun reports dizininin içinde kaldığını doğrula
+        if (!filePath.startsWith(reportsDir + path.sep)) {
+            return res.status(400).json({ error: 'Geçersiz dosya adı' });
+        }
 
         if (!fs.existsSync(filePath)) {
             return res.status(404).json({ error: 'Dosya bulunamadı' });
