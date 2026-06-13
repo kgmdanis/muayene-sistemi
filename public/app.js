@@ -113,6 +113,7 @@ function renderSidebar() {
         { icon: '📋', text: 'İş Emirleri', page: 'is-emirleri' },
         { icon: '📊', text: 'Raporlar', page: 'raporlar' },
         { icon: '🔧', text: 'Ölçüm Cihazları', page: 'olcum-cihazlari' },
+        { icon: '🔔', text: 'Muayene Hatırlatma', page: 'hatirlatma' },
         { icon: '👤', text: 'Profilim', page: 'profil' },
         { icon: '⚙️', text: 'Ayarlar', page: 'ayarlar' }
     ];
@@ -409,6 +410,8 @@ function navigateToPage(page) {
         loadSertifikalar();
     } else if (page === 'olcum-cihazlari') {
         loadOlcumCihazlari();
+    } else if (page === 'hatirlatma') {
+        loadYaklasanMuayeneler();
     } else if (page === 'ayarlar') {
         renderFirmaBilgileri();
         loadEmailAyarlar();
@@ -5420,6 +5423,118 @@ async function sertifikaKaydet() {
 }
 
 // ========================================
+// ===================== MUAYENE HATIRLATMA =====================
+let yaklasanMuayeneListesi = [];
+let hatirlatmaEsikGun = 30;
+
+async function loadYaklasanMuayeneler() {
+    const container = document.getElementById('hatirlatma-content');
+    if (!container) return;
+    container.innerHTML = '<div style="padding:20px;">Yükleniyor...</div>';
+    try {
+        const res = await authenticatedFetch(`/api/yaklasan-muayeneler?gun=${hatirlatmaEsikGun}`);
+        yaklasanMuayeneListesi = await res.json();
+        renderYaklasanMuayeneler();
+    } catch (e) {
+        container.innerHTML = '<div style="padding:20px;color:#c00;">Liste yüklenemedi.</div>';
+        console.error('Yaklaşan muayeneler yüklenemedi:', e);
+    }
+}
+
+function hatirlatmaEsikDegistir(v) {
+    hatirlatmaEsikGun = parseInt(v) || 30;
+    loadYaklasanMuayeneler();
+}
+
+function renderYaklasanMuayeneler() {
+    const container = document.getElementById('hatirlatma-content');
+    const liste = yaklasanMuayeneListesi;
+    const fmt = d => d ? new Date(d).toLocaleDateString('tr-TR') : '-';
+    const emailliSayi = liste.filter(m => m.musteriEmail).length;
+    const rows = liste.map((m, i) => {
+        const gecti = m.kalanGun < 0;
+        const renk = gecti ? '#dc3545' : (m.kalanGun <= 30 ? '#e67e22' : '#27ae60');
+        const kalanText = gecti ? Math.abs(m.kalanGun) + ' gün geçti' : m.kalanGun + ' gün kaldı';
+        return `<tr>
+            <td><input type="checkbox" class="hatirlatma-chk" data-i="${i}"></td>
+            <td>${m.musteri}</td>
+            <td>${m.ekipman}</td>
+            <td>${fmt(m.sonrakiTarih)}</td>
+            <td style="color:${renk};font-weight:bold;white-space:nowrap;">${kalanText}</td>
+            <td>${m.musteriEmail ? '✉️ ' + m.musteriEmail : '<span style="color:#999;">e-posta yok</span>'}</td>
+        </tr>`;
+    }).join('');
+
+    container.innerHTML = `
+    <div class="page-header">
+        <div>
+            <h2>🔔 Muayene Hatırlatma</h2>
+            <p>Periyodik muayene tarihi yaklaşan ekipmanlar (${liste.length} kayıt, ${emailliSayi} müşteri e-postalı)</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <label>Eşik:</label>
+            <select onchange="hatirlatmaEsikDegistir(this.value)" style="padding:8px;border:1px solid #ccc;border-radius:6px;">
+                <option value="30" ${hatirlatmaEsikGun==30?'selected':''}>30 gün</option>
+                <option value="60" ${hatirlatmaEsikGun==60?'selected':''}>60 gün</option>
+                <option value="90" ${hatirlatmaEsikGun==90?'selected':''}>90 gün</option>
+                <option value="180" ${hatirlatmaEsikGun==180?'selected':''}>180 gün</option>
+            </select>
+            <button class="btn btn-outline" onclick="loadYaklasanMuayeneler()">🔄 Yenile</button>
+        </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="hatirlatmaGonder('firma')">🏢 Firmaya Özet Gönder</button>
+        <button class="btn btn-secondary" onclick="hatirlatmaGonder('musteri')">✉️ Seçili Müşterilere Gönder</button>
+    </div>
+    ${liste.length === 0 ? '<div style="padding:30px;text-align:center;color:#666;">Bu eşikte yaklaşan muayene yok. 🎉</div>' : `
+    <div class="table-container">
+        <table>
+            <thead><tr>
+                <th><input type="checkbox" title="Tümünü seç" onclick="document.querySelectorAll('.hatirlatma-chk').forEach(c=>c.checked=this.checked)"></th>
+                <th>Müşteri</th><th>Ekipman</th><th>Sonraki Muayene</th><th>Kalan</th><th>Müşteri E-posta</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+        </table>
+    </div>`}`;
+}
+
+async function hatirlatmaGonder(hedef) {
+    let secili;
+    if (hedef === 'firma') {
+        const checked = [...document.querySelectorAll('.hatirlatma-chk:checked')].map(c => yaklasanMuayeneListesi[+c.dataset.i]);
+        secili = checked.length ? checked : yaklasanMuayeneListesi; // seçim yoksa tümü
+    } else {
+        secili = [...document.querySelectorAll('.hatirlatma-chk:checked')].map(c => yaklasanMuayeneListesi[+c.dataset.i]);
+        if (!secili.length) { showToast('Önce müşteri seçin', 'error'); return; }
+    }
+    if (!secili.length) { showToast('Gönderilecek kayıt yok', 'error'); return; }
+
+    const onay = hedef === 'firma'
+        ? `${secili.length} kalemin özetini firma e-postanıza göndereyim mi?`
+        : `Seçili ${secili.length} kalemi ilgili müşterilere göndereyim mi? (e-postası olmayanlar atlanır)`;
+    if (!confirm(onay)) return;
+
+    try {
+        const res = await authenticatedFetch('/api/muayene-hatirlatma', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ hedef, items: secili })
+        });
+        const data = await res.json();
+        if (!res.ok) { showToast(data.error || 'Gönderilemedi', 'error'); return; }
+        if (hedef === 'musteri') {
+            let msg = `${data.gonderilen} müşteriye gönderildi`;
+            if (data.atlanan && data.atlanan.length) msg += `, ${data.atlanan.length} kayıt e-postasız atlandı`;
+            showToast(msg, 'success');
+        } else {
+            showToast(`Özet ${data.alici} adresine gönderildi`, 'success');
+        }
+    } catch (e) {
+        showToast('Gönderim hatası', 'error');
+        console.error('Hatırlatma gönderim hatası:', e);
+    }
+}
+
 // ===================== ÖLÇÜM CİHAZLARI =====================
 
 async function loadOlcumCihazlari() {

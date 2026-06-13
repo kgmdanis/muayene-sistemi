@@ -2874,6 +2874,172 @@ app.post('/api/olcum-cihazlari/kalibrasyon-hatirlatma', auth.authMiddleware('adm
     }
 });
 
+// ===================== PERİYODİK MUAYENE HATIRLATMA =====================
+
+// "YYYY-MM-DD" string veya DateTime → Date (geçersizse null)
+function hatirlatmaTarihParse(v) {
+    if (!v) return null;
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+}
+function hatirlatmaAyEkle(date, months) {
+    const d = new Date(date);
+    d.setMonth(d.getMonth() + (months || 12));
+    return d;
+}
+
+// Tüm rapor tiplerinden "sonraki kontrol tarihi"ni toplar; her biri
+// altGorev → isEmri → customer zinciriyle müşteriye bağlanır.
+async function yaklasanMuayeneTopla() {
+    const prisma = auth.prisma;
+    const musteriInclude = { altGorev: { include: { isEmri: { include: { customer: true } } } } };
+    const ekle = (liste, r, tip, sonrakiHam, baslangicHam) => {
+        let sonraki = hatirlatmaTarihParse(sonrakiHam);
+        // Sonraki tarih yoksa kontrol/başlangıç tarihine +12 ay ekleyerek tahmin et
+        if (!sonraki) {
+            const b = hatirlatmaTarihParse(baslangicHam);
+            if (b) sonraki = hatirlatmaAyEkle(b, 12);
+        }
+        if (!sonraki) return;
+        const cust = r.altGorev?.isEmri?.customer;
+        liste.push({
+            tip, id: r.id,
+            musteri: cust?.unvan || '-',
+            musteriEmail: cust?.email || null,
+            yetkili: cust?.yetkili || null,
+            ekipman: r.altGorev?.ekipmanAdi || '-',
+            sonrakiTarih: sonraki
+        });
+    };
+
+    const tumu = [];
+    const [generic, komp, hava, topr, icTes] = await Promise.all([
+        prisma.rapor.findMany({ include: musteriInclude }),
+        prisma.kompresorRaporu.findMany({ include: musteriInclude }),
+        prisma.havaTankiRaporu.findMany({ include: musteriInclude }),
+        prisma.elektrikTopraklamaRaporu.findMany({ include: musteriInclude }),
+        prisma.elektrikIcTesisatRaporu.findMany({ include: musteriInclude })
+    ]);
+    for (const r of generic) {
+        const fd = typeof r.formData === 'string' ? JSON.parse(r.formData || '{}') : (r.formData || {});
+        ekle(tumu, r, 'generic', fd.sonrakiKontrolTarihi, fd.kontrolTarihi || r.baslangicTarihi);
+    }
+    for (const r of komp) ekle(tumu, r, 'kompresor', r.sonrakiKontrolTarihi, r.kontrolTarihi);
+    for (const r of hava) ekle(tumu, r, 'havatanki', r.sonrakiKontrolTarihi, r.kontrolTarihi);
+    for (const r of topr) ekle(tumu, r, 'topraklama', r.sonKontrolTarihi, r.baslangicTarihi);
+    for (const r of icTes) ekle(tumu, r, 'ictesisat', r.sonKontrolTarihi, r.baslangicTarihi);
+
+    // Aynı müşteri+ekipman için en ileri (en güncel) sonraki tarihi tut
+    const enGuncel = new Map();
+    for (const x of tumu) {
+        const key = (x.musteri || '') + '|' + (x.ekipman || '');
+        const v = enGuncel.get(key);
+        if (!v || x.sonrakiTarih > v.sonrakiTarih) enGuncel.set(key, x);
+    }
+    return [...enGuncel.values()];
+}
+
+// Yaklaşan periyodik muayeneler: sonraki kontrol tarihine <= eşik gün kalanlar (gecikmiş dahil)
+app.get('/api/yaklasan-muayeneler', async (req, res) => {
+    try {
+        const esikGun = parseInt(req.query.gun) || 30;
+        const bugun = new Date(); bugun.setHours(0, 0, 0, 0);
+        const esik = new Date(bugun); esik.setDate(esik.getDate() + esikGun);
+
+        const hepsi = await yaklasanMuayeneTopla();
+        const sonuc = hepsi
+            .filter(x => x.sonrakiTarih <= esik)
+            .map(x => ({ ...x, kalanGun: Math.ceil((x.sonrakiTarih - bugun) / 86400000) }))
+            .sort((a, b) => a.kalanGun - b.kalanGun);
+        res.json(sonuc);
+    } catch (error) {
+        console.error('Yaklaşan muayeneler hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Seçili kalemler için hatırlatma e-postası gönder (hedef: 'firma' | 'musteri')
+// Frontend seçilen kalemlerin verisini gönderir: { items:[{musteri,email,ekipman,sonrakiTarih}], hedef, firmaEmail }
+app.post('/api/muayene-hatirlatma', auth.authMiddleware('admin'), async (req, res) => {
+    try {
+        const { items, hedef, firmaEmail } = req.body;
+        if (!Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ error: 'Hatırlatılacak kalem seçilmedi' });
+        }
+
+        const smtp = {
+            host: process.env.SMTP_HOST,
+            port: process.env.SMTP_PORT,
+            secure: process.env.SMTP_SECURE === 'true',
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
+        };
+        if (!smtp.user || !smtp.pass) {
+            return res.status(400).json({ error: 'E-posta ayarları yapılandırılmamış' });
+        }
+        const transporter = emailService.createTransporter(smtp);
+
+        const fmt = d => d ? new Date(d).toLocaleDateString('tr-TR') : '-';
+        const satir = m => `<tr>
+            <td style="padding:8px;border:1px solid #ddd;">${m.musteri || '-'}</td>
+            <td style="padding:8px;border:1px solid #ddd;">${m.ekipman || '-'}</td>
+            <td style="padding:8px;border:1px solid #ddd;text-align:center;font-weight:bold;">${fmt(m.sonrakiTarih)}</td>
+        </tr>`;
+        const html = (liste, baslik) => `
+        <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;">
+            <div style="background:#1a5f7a;color:white;padding:20px;text-align:center;border-radius:8px 8px 0 0;">
+                <h2 style="margin:0;">📅 ${baslik}</h2>
+            </div>
+            <div style="padding:20px;border:1px solid #ddd;border-top:none;">
+                <p>Aşağıdaki ekipmanların periyodik muayene tarihi yaklaşıyor:</p>
+                <table style="width:100%;border-collapse:collapse;margin:15px 0;">
+                    <thead><tr style="background:#f5f5f5;">
+                        <th style="padding:8px;border:1px solid #ddd;text-align:left;">Müşteri</th>
+                        <th style="padding:8px;border:1px solid #ddd;text-align:left;">Ekipman</th>
+                        <th style="padding:8px;border:1px solid #ddd;text-align:center;">Sonraki Muayene</th>
+                    </tr></thead>
+                    <tbody>${liste.map(satir).join('')}</tbody>
+                </table>
+                <p style="color:#666;">Lütfen periyodik muayene planlamasını yapmayı unutmayın.</p>
+                <hr><p style="color:#888;font-size:12px;">ÖNDER MUAYENE Test ve Ölçüm</p>
+            </div>
+        </div>`;
+
+        if (hedef === 'musteri') {
+            // E-postası olan kalemleri müşteriye göre grupla, her müşteriye tek mail
+            const grup = new Map();
+            const atlanan = [];
+            for (const m of items) {
+                if (!m.email) { atlanan.push(m.musteri || m.ekipman); continue; }
+                if (!grup.has(m.email)) grup.set(m.email, []);
+                grup.get(m.email).push(m);
+            }
+            let gonderilen = 0;
+            for (const [email, liste] of grup) {
+                await transporter.sendMail({
+                    from: smtp.user, to: email,
+                    subject: 'Periyodik Muayene Hatırlatması - ÖNDER MUAYENE',
+                    html: html(liste, 'Periyodik Muayene Hatırlatması')
+                });
+                gonderilen++;
+            }
+            return res.json({ success: true, gonderilen, atlanan });
+        } else {
+            // Firma içine tek özet e-posta
+            const to = firmaEmail || smtp.user;
+            await transporter.sendMail({
+                from: smtp.user, to,
+                subject: 'Yaklaşan Periyodik Muayeneler - ÖNDER MUAYENE',
+                html: html(items, 'Yaklaşan Periyodik Muayeneler')
+            });
+            return res.json({ success: true, gonderilen: 1, alici: to });
+        }
+    } catch (error) {
+        console.error('Muayene hatırlatma hatası:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // ===================== İŞ EMRİ FİRMA BİLGİLERİ =====================
 
 // Firma bilgisi getir
