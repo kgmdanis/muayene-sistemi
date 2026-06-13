@@ -6240,6 +6240,87 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+// ===================== SUPERADMIN (TENANT YÖNETİMİ) =====================
+// Sadece platform sahibi (role='superadmin'). Tenant'lar arası tam erişim.
+function superadminOnly(req, res, next) {
+    if (!req.user || req.user.role !== 'superadmin') {
+        return res.status(403).json({ error: 'Bu işlem için superadmin yetkisi gerekli' });
+    }
+    next();
+}
+
+// Tenant listesi + kayıt sayıları
+app.get('/api/superadmin/tenants', superadminOnly, async (req, res) => {
+    try {
+        const tenants = await auth.prisma.tenant.findMany({ orderBy: { id: 'asc' } });
+        const sayim = async (model) => {
+            const g = await auth.prisma[model].groupBy({ by: ['tenantId'], _count: { _all: true } });
+            return new Map(g.map(x => [x.tenantId, x._count._all]));
+        };
+        const [musteri, teklif, kullanici, isemri] = await Promise.all([
+            sayim('customer'), sayim('teklif'), sayim('user'), sayim('isEmri')
+        ]);
+        res.json(tenants.map(t => ({
+            ...t,
+            sayim: {
+                musteri: musteri.get(t.id) || 0,
+                teklif: teklif.get(t.id) || 0,
+                kullanici: kullanici.get(t.id) || 0,
+                isemri: isemri.get(t.id) || 0
+            }
+        })));
+    } catch (e) { console.error('Tenant listesi hatası:', e); res.status(500).json({ error: e.message }); }
+});
+
+// Yeni tenant oluştur (+ firma ayarları + opsiyonel ilk admin kullanıcı)
+app.post('/api/superadmin/tenants', superadminOnly, async (req, res) => {
+    try {
+        const { ad, slug, plan, adminEmail, adminSifre, adminAd } = req.body;
+        if (!ad || !slug) return res.status(400).json({ error: 'Firma adı ve slug (kısa ad) zorunlu' });
+        if (!/^[a-z0-9-]+$/.test(slug)) return res.status(400).json({ error: 'Slug sadece küçük harf, rakam ve - içerebilir' });
+
+        const mevcut = await auth.prisma.tenant.findUnique({ where: { slug } });
+        if (mevcut) return res.status(400).json({ error: 'Bu slug zaten kullanımda' });
+
+        if (adminEmail) {
+            const varMi = await auth.prisma.user.findUnique({ where: { email: adminEmail } });
+            if (varMi) return res.status(400).json({ error: 'Bu admin e-postası zaten kayıtlı' });
+        }
+
+        const tenant = await auth.prisma.tenant.create({ data: { ad, slug, plan: plan || 'standart', aktif: true } });
+
+        // Firma ayarları (FirmaAyarlari.id autoincrement değil → sonraki id'yi manuel ver)
+        const enBuyuk = await auth.prisma.firmaAyarlari.findFirst({ orderBy: { id: 'desc' } });
+        await auth.prisma.firmaAyarlari.create({ data: { id: (enBuyuk?.id || 0) + 1, tenantId: tenant.id, name: ad } });
+
+        let kullanici = null;
+        if (adminEmail && adminSifre) {
+            kullanici = await auth.prisma.user.create({
+                data: {
+                    tenantId: tenant.id, email: adminEmail, password: auth.hashPassword(adminSifre),
+                    name: adminAd || ad, role: 'admin', emailVerified: true
+                }
+            });
+        }
+        res.json({ success: true, tenant, kullanici: kullanici ? { id: kullanici.id, email: kullanici.email } : null });
+    } catch (e) { console.error('Tenant oluşturma hatası:', e); res.status(500).json({ error: e.message }); }
+});
+
+// Tenant güncelle (ad / plan / aktif / notlar)
+app.put('/api/superadmin/tenants/:id', superadminOnly, async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const { ad, plan, aktif, notlar } = req.body;
+        const data = {};
+        if (ad !== undefined) data.ad = ad;
+        if (plan !== undefined) data.plan = plan;
+        if (aktif !== undefined) data.aktif = aktif;
+        if (notlar !== undefined) data.notlar = notlar;
+        const tenant = await auth.prisma.tenant.update({ where: { id }, data });
+        res.json({ success: true, tenant });
+    } catch (e) { console.error('Tenant güncelleme hatası:', e); res.status(500).json({ error: e.message }); }
+});
+
 // ============ GLOBAL HATA YAKALAYICI ============
 // Route'larda yakalanmayan hatalar burada toplanır; iç hata detayı client'a sızmaz.
 // (multer dosya filtresi/boyut hataları da buraya düşer.)

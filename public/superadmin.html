@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Süper Admin - Tenant Yönetimi</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f6f9; color: #222; }
+        .topbar { background: #1a2942; color: #fff; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .topbar h1 { font-size: 18px; }
+        .topbar .sag { display: flex; gap: 10px; align-items: center; }
+        .container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+        .btn { padding: 9px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-success { background: #16a34a; color: #fff; }
+        .btn-outline { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.4); }
+        .btn-sm { padding: 5px 10px; font-size: 12px; }
+        .card { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.08); padding: 18px; margin-bottom: 18px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+        th { background: #f8fafc; color: #475569; font-weight: 600; }
+        .badge { padding: 3px 9px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .badge.aktif { background: #dcfce7; color: #166534; }
+        .badge.pasif { background: #fee2e2; color: #991b1b; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); align-items: flex-start; justify-content: center; padding: 30px 16px; overflow-y: auto; }
+        .modal-overlay.acik { display: flex; }
+        .modal { background: #fff; border-radius: 10px; width: 100%; max-width: 460px; padding: 22px; }
+        .modal h3 { margin-bottom: 16px; }
+        .form-group { margin-bottom: 13px; }
+        .form-group label { display: block; font-size: 13px; color: #475569; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+        .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+        .ipucu { font-size: 12px; color: #94a3b8; margin-top: 3px; }
+        .table-wrap { overflow-x: auto; }
+        @media (max-width: 600px) { th, td { padding: 8px; font-size: 13px; } }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <h1>🏢 Süper Admin — Tenant Yönetimi</h1>
+        <div class="sag">
+            <span id="kullaniciAd" style="font-size:13px;opacity:.85;"></span>
+            <button class="btn btn-outline btn-sm" onclick="cikis()">Çıkış</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+            <div>
+                <h2 style="font-size:16px;">Kiracı Firmalar (Tenant)</h2>
+                <p style="font-size:13px;color:#64748b;">Her firma kendi verisiyle izole çalışır.</p>
+            </div>
+            <button class="btn btn-success" onclick="yeniTenantAc()">+ Yeni Tenant</button>
+        </div>
+
+        <div class="card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Firma</th><th>Slug</th><th>Plan</th><th>Durum</th><th>Müşteri</th><th>Teklif</th><th>Kullanıcı</th><th>İşlem</th></tr>
+                    </thead>
+                    <tbody id="tenantBody">
+                        <tr><td colspan="9" style="text-align:center;color:#94a3b8;">Yükleniyor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yeni/Düzenle Tenant Modal -->
+    <div class="modal-overlay" id="tenantModal">
+        <div class="modal">
+            <h3 id="modalBaslik">Yeni Tenant</h3>
+            <input type="hidden" id="tenantId">
+            <div class="form-group">
+                <label>Firma Adı *</label>
+                <input type="text" id="ad" placeholder="ör. ABC Muayene Ltd.">
+            </div>
+            <div class="form-group">
+                <label>Slug (kısa ad / subdomain) *</label>
+                <input type="text" id="slug" placeholder="ör. abc">
+                <div class="ipucu">Sadece küçük harf, rakam ve tire (-). Sonradan değiştirilemez.</div>
+            </div>
+            <div class="form-group">
+                <label>Plan</label>
+                <select id="plan">
+                    <option value="standart">Standart</option>
+                    <option value="pro">Pro</option>
+                    <option value="kurumsal">Kurumsal</option>
+                </select>
+            </div>
+            <div class="form-group" id="aktifGroup" style="display:none;">
+                <label>Durum</label>
+                <select id="aktif"><option value="true">Aktif</option><option value="false">Pasif</option></select>
+            </div>
+            <div id="adminAlanlari">
+                <hr style="margin:14px 0;border:none;border-top:1px solid #eee;">
+                <p style="font-size:13px;color:#475569;margin-bottom:10px;">İlk admin kullanıcı (opsiyonel)</p>
+                <div class="form-group"><label>Admin Ad Soyad</label><input type="text" id="adminAd"></div>
+                <div class="form-group"><label>Admin E-posta</label><input type="email" id="adminEmail"></div>
+                <div class="form-group"><label>Admin Şifre</label><input type="text" id="adminSifre"></div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-outline" style="color:#475569;border-color:#cbd5e1;" onclick="modalKapat()">İptal</button>
+                <button class="btn btn-primary" id="kaydetBtn" onclick="tenantKaydet()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) location.href = '/login.html';
+
+        async function api(url, options = {}) {
+            const res = await fetch(url, {
+                ...options,
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, ...(options.headers || {}) }
+            });
+            if (res.status === 401) { location.href = '/login.html'; throw new Error('Oturum yok'); }
+            if (res.status === 403) { alert('Bu sayfa için superadmin yetkisi gerekli.'); location.href = '/index.html'; throw new Error('Yetkisiz'); }
+            return res;
+        }
+
+        async function tenantleriYukle() {
+            try {
+                const res = await api('/api/superadmin/tenants');
+                const list = await res.json();
+                const body = document.getElementById('tenantBody');
+                if (!list.length) { body.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#94a3b8;">Tenant yok</td></tr>'; return; }
+                body.innerHTML = list.map(t => `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td><b>${t.ad}</b></td>
+                        <td>${t.slug}</td>
+                        <td>${t.plan}</td>
+                        <td><span class="badge ${t.aktif ? 'aktif' : 'pasif'}">${t.aktif ? 'Aktif' : 'Pasif'}</span></td>
+                        <td>${t.sayim.musteri}</td>
+                        <td>${t.sayim.teklif}</td>
+                        <td>${t.sayim.kullanici}</td>
+                        <td><button class="btn btn-primary btn-sm" onclick='duzenleAc(${JSON.stringify(t)})'>Düzenle</button></td>
+                    </tr>`).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        function yeniTenantAc() {
+            document.getElementById('modalBaslik').textContent = 'Yeni Tenant';
+            document.getElementById('tenantId').value = '';
+            document.getElementById('ad').value = '';
+            document.getElementById('slug').value = '';
+            document.getElementById('slug').disabled = false;
+            document.getElementById('plan').value = 'standart';
+            document.getElementById('aktifGroup').style.display = 'none';
+            document.getElementById('adminAlanlari').style.display = 'block';
+            document.getElementById('adminAd').value = '';
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminSifre').value = '';
+            document.getElementById('tenantModal').classList.add('acik');
+        }
+
+        function duzenleAc(t) {
+            document.getElementById('modalBaslik').textContent = 'Tenant Düzenle';
+            document.getElementById('tenantId').value = t.id;
+            document.getElementById('ad').value = t.ad;
+            document.getElementById('slug').value = t.slug;
+            document.getElementById('slug').disabled = true;
+            document.getElementById('plan').value = t.plan;
+            document.getElementById('aktifGroup').style.display = 'block';
+            document.getElementById('aktif').value = String(t.aktif);
+            document.getElementById('adminAlanlari').style.display = 'none';
+            document.getElementById('tenantModal').classList.add('acik');
+        }
+
+        function modalKapat() { document.getElementById('tenantModal').classList.remove('acik'); }
+
+        async function tenantKaydet() {
+            const id = document.getElementById('tenantId').value;
+            const ad = document.getElementById('ad').value.trim();
+            const slug = document.getElementById('slug').value.trim();
+            const plan = document.getElementById('plan').value;
+            if (!ad || !slug) { alert('Firma adı ve slug zorunlu'); return; }
+            const btn = document.getElementById('kaydetBtn');
+            btn.disabled = true;
+            try {
+                if (id) {
+                    const aktif = document.getElementById('aktif').value === 'true';
+                    const res = await api('/api/superadmin/tenants/' + id, { method: 'PUT', body: JSON.stringify({ ad, plan, aktif }) });
+                    const d = await res.json();
+                    if (!res.ok) { alert(d.error || 'Hata'); btn.disabled = false; return; }
+                } else {
+                    const body = {
+                        ad, slug, plan,
+                        adminAd: document.getElementById('adminAd').value.trim(),
+                        adminEmail: document.getElementById('adminEmail').value.trim(),
+                        adminSifre: document.getElementById('adminSifre').value
+                    };
+                    const res = await api('/api/superadmin/tenants', { method: 'POST', body: JSON.stringify(body) });
+                    const d = await res.json();
+                    if (!res.ok) { alert(d.error || 'Hata'); btn.disabled = false; return; }
+                }
+                modalKapat();
+                tenantleriYukle();
+            } catch (e) { alert('İşlem hatası: ' + e.message); }
+            btn.disabled = false;
+        }
+
+        function cikis() { localStorage.clear(); location.href = '/login.html'; }
+
+        tenantleriYukle();
+    </script>
+</body>
+</html>
