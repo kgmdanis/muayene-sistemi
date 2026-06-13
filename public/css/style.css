@@ -1271,6 +1271,16 @@ textarea.form-input {
     .hizmet-fiyat {
         grid-column: 2;
     }
+
+    /* Telefonda input'a dokununca iOS otomatik zoom yapmasın */
+    input, select, textarea { font-size: 16px; }
+
+    /* Dokunma hedefleri daha rahat */
+    .btn { padding: 12px 18px; }
+
+    /* Modal buton satırı dikey yığılsın ve tam genişlik olsun */
+    .modal-footer { flex-direction: column; gap: 8px; }
+    .modal-footer .btn { width: 100%; }
 }
 
 @media (max-width: 480px) {

@@ -92,6 +92,23 @@
         @media (max-width: 768px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } .checkbox-group { flex-direction: column; } }
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .btn:disabled { cursor: not-allowed; }
+    
+        /* MOBIL-UYUM-BLOK: telefon (dar ekran) icin responsive */
+        @media (max-width: 768px) {
+            body { font-size: 14px; }
+            .header { flex-direction: column; align-items: stretch; gap: 8px; text-align: center; padding: 10px; }
+            .header h1 { font-size: 16px; line-height: 1.3; }
+            .header-status { flex-wrap: wrap; justify-content: center; gap: 6px; }
+            .container { padding: 8px !important; max-width: 100%; }
+            .card { padding: 12px !important; }
+            .form-row, .form-row-3, .form-grid, .bilgi-grid, .firma-grid { grid-template-columns: 1fr !important; }
+            table { display: block; overflow-x: auto; white-space: nowrap; max-width: 100%; -webkit-overflow-scrolling: touch; }
+            .btn { width: 100%; }
+            .header-status .btn-new { width: auto; }
+            .checkbox-group { flex-direction: column; align-items: flex-start; }
+            .modal, .modal-content { max-width: 95vw !important; width: 95vw !important; max-height: 92vh; overflow-y: auto; }
+            input, select, textarea { font-size: 16px; }
+        }
     </style>
 </head>
 <body>
