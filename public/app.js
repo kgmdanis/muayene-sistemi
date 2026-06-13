@@ -327,6 +327,19 @@ async function loadDashboardStats() {
         // Durum grafiğini çiz
         drawDurumChart();
 
+        // Yaklaşan muayene sayısı (30 gün) — kendi try'ı, dashboard'ı bozmasın
+        try {
+            const ymRes = await authenticatedFetch(`${API_BASE}/yaklasan-muayeneler?gun=30`);
+            const ym = await ymRes.json();
+            const el = document.getElementById('stat-yaklasan-muayene');
+            const card = document.getElementById('stat-card-muayene');
+            if (el) el.textContent = ym.length || 0;
+            // Yaklaşan varsa kartı vurgula (turuncu)
+            if (card) card.style.borderLeft = (ym.length > 0) ? '4px solid #e67e22' : '';
+        } catch (e) {
+            console.error('Yaklaşan muayene sayısı alınamadı:', e);
+        }
+
         console.log('✅ Dashboard istatistikleri yüklendi');
     } catch (error) {
         console.error('❌ Dashboard istatistikleri yükleme hatası:', error);

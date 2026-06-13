@@ -78,6 +78,13 @@
                             <p>Bu Ay Toplam Teklif Tutarı</p>
                         </div>
                     </div>
+                    <div class="stat-card" id="stat-card-muayene" onclick="navigateToPage('hatirlatma')" style="cursor:pointer;" title="Muayene Hatırlatma sayfasına git">
+                        <div class="stat-icon">🔔</div>
+                        <div class="stat-info">
+                            <h3 id="stat-yaklasan-muayene">0</h3>
+                            <p>30 Gün İçinde Yaklaşan Muayene</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Teklif Durum Grafiği -->
@@ -828,6 +835,6 @@
     <!-- Hidden File Input for Excel -->
     <input type="file" id="excel-file-input" accept=".xlsx,.xls" style="display: none;" onchange="excelDosyaYukle(event)">
 
-    <script src="app.js?v=11"></script>
+    <script src="app.js?v=12"></script>
 </body>
 </html>
