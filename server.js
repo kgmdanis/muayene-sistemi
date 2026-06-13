@@ -3,7 +3,10 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { execSync } = require('child_process');
+const { execFile } = require('child_process');
+const { promisify } = require('util');
+const crypto = require('crypto');
+const execFileAsync = promisify(execFile);
 const mammoth = require('mammoth');
 const auth = require('./auth');
 const reportEngine = require('./reports');
@@ -4756,31 +4759,28 @@ async function wordBufferToPdf(wordBuffer, label) {
     const fixedBuffer = await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
 
     const tmpDir = path.join(__dirname, 'tmp');
-    if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
-    const tmpFile = path.join(tmpDir, `pdf-${label || 'doc'}-${Date.now()}.docx`);
-    fs.writeFileSync(tmpFile, fixedBuffer);
+    await fs.promises.mkdir(tmpDir, { recursive: true });
+    // Benzersiz dosya adı (eşzamanlı isteklerde çakışma/yarış durumunu önler)
+    const benzersiz = Date.now() + '-' + crypto.randomBytes(4).toString('hex');
+    const tmpFile = path.join(tmpDir, `pdf-${label || 'doc'}-${benzersiz}.docx`);
+    const pdfFile = tmpFile.replace(/\.docx$/, '.pdf');
 
     try {
-        execSync(`libreoffice --headless --norestore --convert-to pdf --outdir "${tmpDir}" "${tmpFile}"`, {
+        await fs.promises.writeFile(tmpFile, fixedBuffer);
+        // execFile (shell yok) + async: 60sn'ye kadar event-loop'u bloklamaz
+        await execFileAsync('libreoffice', ['--headless', '--norestore', '--convert-to', 'pdf', '--outdir', tmpDir, tmpFile], {
             timeout: 60000,
-            stdio: 'pipe',
             env: { ...process.env, HOME: '/tmp' }
         });
+        // PDF yoksa readFile ENOENT fırlatır → aşağıda yakalanır
+        return await fs.promises.readFile(pdfFile);
     } catch (loError) {
-        if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
         throw new Error('PDF dönüştürme hatası: ' + loError.message);
+    } finally {
+        // Geçici dosyaları her durumda temizle (sızıntı olmasın)
+        await fs.promises.unlink(tmpFile).catch(() => {});
+        await fs.promises.unlink(pdfFile).catch(() => {});
     }
-
-    const pdfFile = tmpFile.replace('.docx', '.pdf');
-    if (!fs.existsSync(pdfFile)) {
-        if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
-        throw new Error('PDF dosyası oluşturulamadı');
-    }
-
-    const pdfBuffer = fs.readFileSync(pdfFile);
-    fs.unlinkSync(tmpFile);
-    fs.unlinkSync(pdfFile);
-    return pdfBuffer;
 }
 
 // Rapor önizleme (Word → HTML via mammoth)
