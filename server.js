@@ -2448,7 +2448,7 @@ app.post('/api/teklifler/:id/send-email', auth.authMiddleware('admin'), async (r
 
         const smtp = smtpConfig || {
             host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: parseInt(process.env.SMTP_PORT) || 587,
+            port: parseInt(process.env.SMTP_PORT) || 465,
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS
         };
@@ -2514,7 +2514,7 @@ app.post('/api/email/test', auth.authMiddleware('admin'), async (req, res) => {
 
         const smtp = smtpConfig || {
             host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: parseInt(process.env.SMTP_PORT) || 587,
+            port: parseInt(process.env.SMTP_PORT) || 465,
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS
         };
@@ -2816,7 +2816,7 @@ app.post('/api/olcum-cihazlari/kalibrasyon-hatirlatma', auth.authMiddleware('adm
 
         const smtp = {
             host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: parseInt(process.env.SMTP_PORT) || 587,
+            port: parseInt(process.env.SMTP_PORT) || 465,
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS
         };
@@ -3363,15 +3363,19 @@ app.get('/api/raporlar', async (req, res) => {
 
         // Grouped mode: iş emri bazlı gruplama
         if (req.query.grouped === 'true') {
+            // N+1 önleme: tüm benzersiz iş emirlerini döngü öncesi TEK sorguda çek
+            const isEmriNolar = [...new Set(formattedRaporlar.map(r => r.isEmriNo).filter(n => n && n !== '-'))];
+            const isEmriKayitlari = isEmriNolar.length ? await auth.prisma.isEmri.findMany({
+                where: { isEmriNo: { in: isEmriNolar } },
+                include: { customer: { select: { unvan: true } } }
+            }) : [];
+            const isEmriMap = new Map(isEmriKayitlari.map(ie => [ie.isEmriNo, ie]));
+
             const grouped = {};
             for (const rapor of formattedRaporlar) {
                 const key = rapor.isEmriNo || 'Bilinmiyor';
                 if (!grouped[key]) {
-                    // İlgili iş emri bilgilerini al
-                    const isEmriData = rapor.isEmriNo !== '-' ? await auth.prisma.isEmri.findFirst({
-                        where: { isEmriNo: rapor.isEmriNo },
-                        include: { customer: { select: { unvan: true } } }
-                    }) : null;
+                    const isEmriData = isEmriMap.get(rapor.isEmriNo) || null;
                     grouped[key] = {
                         isEmriNo: rapor.isEmriNo,
                         isEmriId: isEmriData?.id || null,
@@ -3384,6 +3388,21 @@ app.get('/api/raporlar', async (req, res) => {
                 grouped[key].raporlar.push(rapor);
             }
             return res.json(Object.values(grouped));
+        }
+
+        // Opsiyonel sayfalama (geriye uyumlu): ?page & ?limit verilmezse tüm liste (eski davranış) döner
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+        if (page > 0 && limit > 0) {
+            const total = formattedRaporlar.length;
+            const start = (page - 1) * limit;
+            return res.json({
+                data: formattedRaporlar.slice(start, start + limit),
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            });
         }
 
         res.json(formattedRaporlar);
@@ -6219,6 +6238,26 @@ app.get('/login', (req, res) => {
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// ============ GLOBAL HATA YAKALAYICI ============
+// Route'larda yakalanmayan hatalar burada toplanır; iç hata detayı client'a sızmaz.
+// (multer dosya filtresi/boyut hataları da buraya düşer.)
+app.use((err, req, res, next) => {
+    console.error('Yakalanmayan istek hatası:', err && err.message ? err.message : err);
+    if (res.headersSent) return next(err);
+    const status = err && err.status ? err.status : (err && err.code === 'LIMIT_FILE_SIZE' ? 400 : 500);
+    res.status(status).json({ error: err && err.message ? err.message : 'Sunucu hatası' });
+});
+
+// Süreç seviyesinde güvenlik ağı: yakalanmayan promise reddi / istisna process'i düşürmesin
+process.on('unhandledRejection', (reason) => {
+    console.error('İşlenmeyen promise reddi:', reason);
+});
+process.on('uncaughtException', (err) => {
+    console.error('Yakalanmayan istisna:', err);
+    // Loglanır; PM2 gerçekten ölümcül durumda yeniden başlatır. Süreci burada zorla kapatmıyoruz
+    // ki tek bir hatalı istek tüm servisi düşürmesin.
 });
 
 // ============ SERVER START ============
